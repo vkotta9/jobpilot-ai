@@ -166,3 +166,46 @@ def test_jsearch_uses_search_v2_and_explains_errors():
     a = ADAPTERS["jsearch"]("auto", context=ctx, transport=mock({"https://jsearch.p.rapidapi.com/": (403, {})}), sleep=lambda s: None)
     with pytest.raises(SourceError, match="subscribe to the free Basic plan"):
         a.fetch()
+
+
+def test_workday_describe_and_stable_ids():
+    from .test_v3 import WD, mock, wd_routes
+
+    a = ADAPTERS["workday"]("acme|wd5|AcmeCareers", transport=mock(wd_routes()), sleep=lambda s: None)
+    assert a._req_id("/job/US-NY/Senior-Software-Engineer_JR1") == "JR1"
+    assert "Build Java services" in a.describe("JR1", f"{WD}/en-US/AcmeCareers/job/US-NY/Senior-Software-Engineer_JR1")
+    a.known_described = frozenset({"JR1"})  # already stored with a description → no detail request
+    seen = []
+    a._transport = mock(wd_routes(), seen)
+    jobs = a.fetch()
+    assert not any("/job/US-NY/Senior" in str(r.url) for r in seen)
+    assert {j.external_id for j in jobs} == {"JR1", "JR2"}
+
+
+def test_full_description_is_kept_and_fetched_on_open(client, monkeypatch):
+    from app.db import session_scope
+    from app.models import Job
+    from app.services import discovery
+    from app.services.sources.base import NormalizedJob
+
+    from .conftest import make_user, setup_profile
+
+    h, email = make_user(client)
+    setup_profile(client, h)
+    uid = client.get("/api/auth/me", headers=h).json()["id"]
+    full = "Build Python services on AWS. " * 20
+    with session_scope() as db:
+        n = NormalizedJob(external_id="JR9", title="Software Engineer", company="Acme", description_text=full, url="https://x/job/a_JR9")
+        job, _ = discovery.upsert_job(db, uid, None, n, "workday", False)
+        n2 = NormalizedJob(external_id="JR9", title="Software Engineer", company="Acme", location="NYC", description_text="", url="https://x/job/a_JR9")
+        discovery.upsert_job(db, uid, None, n2, "workday", False)
+        assert job.description_text == full and job.location == "NYC"
+        bare = Job(user_id=uid, source_kind="workday", external_id="JR10", fingerprint="f10", title="Backend Engineer",
+                   company="Acme", description_text="", url="https://acme.wd5.myworkdayjobs.com/S/job/b_JR10")
+        db.add(bare)
+        db.commit()
+        bare_id = bare.id
+    monkeypatch.setattr(ADAPTERS["workday"], "describe", lambda self, eid, url: "Python FastAPI PostgreSQL Docker. " * 20)
+    monkeypatch.setattr(ADAPTERS["workday"], "__init__", lambda self, ident, **kw: None)
+    j = client.get(f"/api/jobs/{bare_id}", headers=h).json()
+    assert "FastAPI" in j["description_text"] and j["match"] is not None

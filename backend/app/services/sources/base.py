@@ -53,6 +53,11 @@ class JobSourceAdapter:
     label = ""
     min_interval_hours = 0
     title_filter: Optional[Callable[[str], bool]] = None  # set by discovery for company boards
+    known_described: frozenset = frozenset()  # external ids already stored with a full description (set by discovery)
+
+    def describe(self, external_id: str, url: str) -> Optional[str]:
+        """Fetch one job's full description from the source, or None if the source can't."""
+        return None
 
     def _skip_detail(self, title) -> bool:
         """True when discovery will drop this title anyway, so don't spend CPU on its description."""

@@ -50,7 +50,7 @@ class WorkdayAdapter(JobSourceAdapter):
     kind = "workday"
     partial = True  # we search, so missing jobs aren't necessarily closed
     min_interval_hours = 20
-    detail_limit = 30
+    detail_limit = 80
     docs_url = "https://www.workday.com/"
 
     def __init__(self, identifier: str, **kw):
@@ -65,6 +65,20 @@ class WorkdayAdapter(JobSourceAdapter):
 
     def company_name(self) -> str:
         return self.tenant.replace("-", " ").title()
+
+    @staticmethod
+    def _req_id(path: str) -> str:
+        """Workday paths end in the requisition id (…/Senior-Engineer_JR-2026123); use it as the stable id."""
+        tail = path.rstrip("/").rsplit("/", 1)[-1]
+        return tail.rsplit("_", 1)[-1] if "_" in tail else path
+
+    def describe(self, external_id: str, url: str) -> Optional[str]:
+        i = (url or "").find("/job/")
+        if i < 0:
+            return None
+        api = f"{self.host}/wday/cxs/{self.tenant}/{self.site}"
+        d = self._get_json(api + url[i:].split("?")[0], max_attempts=2)
+        return strip_html(((d or {}).get("jobPostingInfo") or {}).get("jobDescription", "")) or None
 
     def _robots_ok(self) -> bool:
         rp = urllib.robotparser.RobotFileParser()
@@ -98,9 +112,11 @@ class WorkdayAdapter(JobSourceAdapter):
         for path, it in postings.items():
             title = it.get("title", "")
             desc, extra = "", {}
-            if (self.title_filter is None or self.title_filter(title)) and details < self.detail_limit:
+            ext_id = self._req_id(path)
+            if (self.title_filter is None or self.title_filter(title)) and details < self.detail_limit \
+                    and ext_id not in self.known_described:
                 try:
-                    d = self._get_json(f"{api}{path}", max_attempts=1)
+                    d = self._get_json(f"{api}{path}", max_attempts=2)
                     extra = (d or {}).get("jobPostingInfo") or {}
                     desc = strip_html(extra.get("jobDescription", ""))
                     details += 1
@@ -115,7 +131,7 @@ class WorkdayAdapter(JobSourceAdapter):
                 except ValueError:
                     posted = None
             out.append(NormalizedJob(
-                external_id=extra.get("jobReqId") or path, title=title.strip(), company=self.company_name(),
+                external_id=extra.get("jobReqId") or ext_id, title=title.strip(), company=self.company_name(),
                 location=loc, remote_type=infer_remote_type(loc, extra.get("remoteType", "") or ""),
                 employment_type=extra.get("timeType", "") or "", description_text=desc,
                 posted_at=posted or _posted(it.get("postedOn", "")), url=url, apply_url=url))

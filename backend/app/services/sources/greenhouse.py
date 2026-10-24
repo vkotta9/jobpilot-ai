@@ -41,7 +41,7 @@ class GreenhouseAdapter(JobSourceAdapter):
             if not isinstance(data, dict) or "jobs" not in data:
                 raise SourceError("greenhouse: response missing 'jobs'")
             jobs = [j for j in data.get("jobs") or [] if j.get("id") and j.get("title")]
-            wanted = [j for j in jobs if not self._skip_detail(j["title"])]
+            wanted = [j for j in jobs if not self._skip_detail(j["title"]) and str(j["id"]) not in self.known_described]
             if len(wanted) <= self.DETAIL_MAX:
                 detail = {}
                 for j in wanted:
@@ -56,6 +56,10 @@ class GreenhouseAdapter(JobSourceAdapter):
         if not isinstance(data, dict) or "jobs" not in data:
             raise SourceError("greenhouse: response missing 'jobs'")
         return [self.normalize(self._lite(j, "title", ("content",)), company) for j in data.get("jobs") or [] if j.get("id") and j.get("title")]
+
+    def describe(self, external_id: str, url: str) -> Optional[str]:
+        d = self._get_json(API.format(token=self.identifier) + f"/jobs/{external_id}", max_attempts=2)
+        return strip_html((d or {}).get("content") or "") if isinstance(d, dict) else None
 
     def _board_name(self) -> str:
         try:

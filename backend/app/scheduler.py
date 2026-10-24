@@ -29,7 +29,19 @@ def user_lock(user_id: int) -> threading.Lock:
 def tick() -> list[int]:
     from .services.discovery import run_all_sources
 
+    from .services.discovery import score_unscored
+
     ran = []
+    with session_scope() as db:  # catch up on jobs left unscored by an interrupted run
+        from .models import CandidateProfile
+
+        for (uid,) in db.query(CandidateProfile.user_id).all():
+            lock = user_lock(uid)
+            if lock.acquire(blocking=False):
+                try:
+                    score_unscored(db, uid, limit=200)
+                finally:
+                    lock.release()
     with session_scope() as db:
         due = []
         for st in db.query(UserSettings).filter(UserSettings.automation_paused.is_(False)).all():

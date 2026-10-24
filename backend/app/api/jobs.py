@@ -13,7 +13,7 @@ from ..models import CandidateProfile, Job, JobSnapshot, JobSource, Resume, Save
 from ..schemas import ManualJobIn, SavedSearchIn, SourceIn
 from ..security import audit, current_user, owned, rate_limit
 from ..services import applications as appsvc
-from ..services.discovery import run_all_sources, run_source, upsert_job
+from ..services.discovery import describe_now, run_all_sources, run_source, upsert_job
 from ..services.matching import assess, latest_assessment, score_job, score_jobs
 from ..services.sources import ADAPTERS, NormalizedJob
 from ..services.textutil import seniority_of, sha256
@@ -202,8 +202,14 @@ def list_jobs(
 @router.get("/jobs/{jid}")
 def job_detail(jid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     job = owned(db, Job, jid, user)
-    m = latest_assessment(db, job.id)
     profile = db.query(CandidateProfile).filter_by(user_id=user.id).one_or_none()
+    # fill in the full description from the source if we only have a summary, then (re)score
+    changed = describe_now(db, job)
+    m = latest_assessment(db, job.id)
+    if profile is not None and (changed or m is None):
+        score_job(db, job, profile)
+        db.commit()
+        m = latest_assessment(db, job.id)
     resume = db.query(Resume).filter_by(user_id=user.id, is_primary=True).one_or_none()
     live = assess(job, profile, resume.text if resume else "") if profile else None
     out = job_out(job, m, full=True)

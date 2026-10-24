@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from ..db import get_db
 from ..models import JobSource, User, to_dict
 from ..security import audit, current_user, rate_limit
-from ..services.discovery import pause_between_sources, run_source
+from ..services.discovery import pause_between_sources, run_source, score_unscored
 from ..services.matching import score_jobs
 from ..services.sources import COMPANY_KINDS
 from ..services.sources.catalog import POPULAR, TOP_TECH
@@ -69,7 +69,6 @@ def _follow(db: Session, user: User, items: list[FollowItem], run_now: bool) -> 
             def work(uid=user.id, ids=ids):
                 try:
                     with session_scope() as bg:
-                        ch: list[int] = []
                         for n, sid in enumerate(ids):
                             if n:
                                 pause_between_sources()
@@ -77,11 +76,12 @@ def _follow(db: Session, user: User, items: list[FollowItem], run_now: bool) -> 
                             if src is None:
                                 continue
                             try:
-                                ch += run_source(bg, src).pop("changed_job_ids", []) or []
+                                ch = run_source(bg, src).pop("changed_job_ids", []) or []
+                                if ch:  # score each company as it finishes, so a restart midway loses nothing
+                                    score_jobs(bg, uid, ch)
                             except Exception:  # noqa: BLE001 - one bad source mustn't stop the rest
                                 bg.rollback()
-                        if ch:
-                            score_jobs(bg, uid, ch)
+                        score_unscored(bg, uid)
                 finally:
                     lock.release()
 

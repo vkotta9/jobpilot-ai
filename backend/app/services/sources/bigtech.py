@@ -47,13 +47,14 @@ def _dt(s) -> Optional[datetime]:
 class _CareersSiteAdapter(JobSourceAdapter):
     partial = True          # we search the site, so a missing job isn't necessarily closed
     min_interval_hours = 20
-    detail_limit = 25
+    detail_limit = 60
 
     def __init__(self, identifier: str, **kw):
         super().__init__(identifier, **kw)
         self.queries: list[str] = []
         self.title_filter = None
         self.display = ""
+        self.known_described = frozenset()
 
     def _allowed(self, url: str) -> None:
         parts = urlparse(url)
@@ -73,7 +74,9 @@ class _CareersSiteAdapter(JobSourceAdapter):
     def _searches(self) -> list[str]:
         return self.queries[:3] or ["software engineer"]
 
-    def _want_detail(self, title: str, done: int) -> bool:
+    def _want_detail(self, title: str, done: int, ext_id=None) -> bool:
+        if ext_id is not None and str(ext_id) in self.known_described:
+            return False
         return done < self.detail_limit and (self.title_filter is None or self.title_filter(title))
 
 
@@ -156,12 +159,11 @@ class EightfoldAdapter(_CareersSiteAdapter):
         out, done = [], 0
         for pid, p in positions.items():
             desc, url = "", ""
-            if self._want_detail(p.get("name", ""), done):
+            if self._want_detail(p.get("name", ""), done, pid):
                 if done:
                     self._sleep(1.5)  # the site rate-limits bursts of detail requests
                 try:
-                    d = ((self._get_json(base + "/position_details", params={"position_id": pid, "domain": self.domain, "hl": "en"},
-                                         max_attempts=2) or {}).get("data") or {})
+                    d = self._pcsx_detail(pid)
                     desc, url = strip_html(d.get("jobDescription", "") or ""), d.get("publicUrl") or ""
                     done += 1
                 except SourceError:
@@ -178,6 +180,17 @@ class EightfoldAdapter(_CareersSiteAdapter):
                 url=url, apply_url=url))
         return out
 
+    def _pcsx_detail(self, pid: str) -> dict:
+        return (self._get_json(f"https://{self.host}/api/pcsx/position_details",
+                               params={"position_id": pid, "domain": self.domain, "hl": "en"}, max_attempts=2) or {}).get("data") or {}
+
+    def describe(self, external_id: str, url: str) -> Optional[str]:
+        try:
+            return strip_html(self._pcsx_detail(external_id).get("jobDescription", "") or "") or None
+        except SourceError:
+            d = self._get_json(f"https://{self.host}/api/apply/v2/jobs/{external_id}", params={"domain": self.domain}, max_attempts=1)
+            return strip_html((d or {}).get("job_description", "") or "") or None
+
     def _fetch_v2(self, base: str) -> list[NormalizedJob]:
         positions: dict[str, dict] = {}
         for q in self._searches():
@@ -193,7 +206,7 @@ class EightfoldAdapter(_CareersSiteAdapter):
         out, done = [], 0
         for pid, p in positions.items():
             desc = strip_html(p.get("job_description", "") or "")
-            if not desc and self._want_detail(p.get("name", ""), done):
+            if not desc and self._want_detail(p.get("name", ""), done, pid):
                 try:
                     d = self._get_json(f"{base}/{pid}", params={"domain": self.domain}, max_attempts=1)
                     desc = strip_html((d or {}).get("job_description", "") or "")
@@ -248,14 +261,9 @@ class OracleHCMAdapter(_CareersSiteAdapter):
         det_api = f"https://{self.host}/hcmRestApi/resources/latest/recruitingCEJobRequisitionDetails"
         for rid, r in reqs.items():
             desc = strip_html(r.get("ShortDescriptionStr", "") or "")
-            if self._want_detail(r.get("Title", ""), done):
+            if self._want_detail(r.get("Title", ""), done, rid):
                 try:
-                    finder = f'ById;Id="{rid}",siteNumber={self.site}'
-                    d = self._get_json(det_api + "?expand=all&onlyData=true&finder=" + quote(finder, safe="=;,"), max_attempts=1)
-                    it = ((d or {}).get("items") or [{}])[0]
-                    full = "\n\n".join(strip_html(it.get(k, "") or "") for k in
-                                       ("ExternalDescriptionStr", "ExternalResponsibilitiesStr", "ExternalQualificationsStr") if it.get(k))
-                    desc = full or desc
+                    desc = self.describe(rid, "") or desc
                     done += 1
                 except SourceError:
                     pass
@@ -266,6 +274,14 @@ class OracleHCMAdapter(_CareersSiteAdapter):
                 remote_type="remote" if "remote" in str(r.get("WorkplaceType", "")).lower() else infer_remote_type(loc),
                 description_text=desc, posted_at=_dt(r.get("PostedDate")), url=url, apply_url=url))
         return [n for n in out if n.title]
+
+    def describe(self, external_id: str, url: str) -> Optional[str]:
+        det_api = f"https://{self.host}/hcmRestApi/resources/latest/recruitingCEJobRequisitionDetails"
+        finder = f'ById;Id="{external_id}",siteNumber={self.site}'
+        d = self._get_json(det_api + "?expand=all&onlyData=true&finder=" + quote(finder, safe="=;,"), max_attempts=2)
+        it = ((d or {}).get("items") or [{}])[0]
+        return "\n\n".join(strip_html(it.get(k, "") or "") for k in
+                           ("ExternalDescriptionStr", "ExternalResponsibilitiesStr", "ExternalQualificationsStr") if it.get(k)) or None
 
 
 class MicrosoftAdapter(_CareersSiteAdapter):
@@ -280,8 +296,11 @@ class MicrosoftAdapter(_CareersSiteAdapter):
     def fetch(self) -> list[NormalizedJob]:
         ef = EightfoldAdapter("apply.careers.microsoft.com|microsoft.com", transport=self._transport, sleep=self._sleep)
         ef.queries, ef.title_filter, ef.detail_limit, ef.display, ef.timeout_s = self.queries, self.title_filter, self.detail_limit, "Microsoft", self.timeout_s
-        ef.detail_limit = min(self.detail_limit, 15)
+        ef.detail_limit, ef.known_described = min(self.detail_limit, 25), self.known_described
         return ef._fetch_pcsx()
+
+    def describe(self, external_id: str, url: str) -> Optional[str]:
+        return EightfoldAdapter("apply.careers.microsoft.com|microsoft.com", transport=self._transport).describe(external_id, url)
 
 
 class GoogleAdapter(_CareersSiteAdapter):
@@ -313,19 +332,10 @@ class GoogleAdapter(_CareersSiteAdapter):
         for jid, slug in list(found.items())[:60]:
             title = slug.replace("-", " ").title()
             desc, loc = "", ""
-            if self._want_detail(title, done):
+            if self._want_detail(title, done, jid):
                 try:
-                    page = self._html(f"{self.BASE}/{jid}-{slug}")
-                    m = re.search(r"<title>([^<|–—]+)", page)
-                    if m and "google" not in m.group(1).lower()[:8]:
-                        title = re.sub(r"\s*[—–-]\s*Google Careers.*$", "", m.group(1)).strip() or title
-                    text = strip_html(page)
-                    i = text.find("Minimum qualifications")
-                    if i >= 0:
-                        end = min([k for k in (text.find("Google is proud to be", i), text.find("Information collected and processed", i)) if k > 0] or [i + 8000])
-                        desc = text[i:end].strip()
-                    lm = re.search(r"place\s*([^\n]{3,160})", text)
-                    loc = lm.group(1).strip() if lm else ""
+                    title2, desc, loc = self._parse_job(self._html(f"{self.BASE}/{jid}-{slug}"))
+                    title = title2 or title
                     done += 1
                 except SourceError:
                     pass
@@ -333,6 +343,25 @@ class GoogleAdapter(_CareersSiteAdapter):
             out.append(NormalizedJob(external_id=jid, title=title, company="Google", location=loc, remote_type=infer_remote_type(loc),
                                      description_text=desc, url=url, apply_url=url))
         return out
+
+
+def _google_parse(page: str) -> tuple[str, str, str]:
+    title = ""
+    m = re.search(r"<title>([^<|–—]+)", page)
+    if m and "google" not in m.group(1).lower()[:8]:
+        title = re.sub(r"\s*[—–-]\s*Google Careers.*$", "", m.group(1)).strip()
+    text = strip_html(page)
+    desc = ""
+    i = text.find("Minimum qualifications")
+    if i >= 0:
+        end = min([k for k in (text.find("Google is proud to be", i), text.find("Information collected and processed", i)) if k > 0] or [i + 8000])
+        desc = text[i:end].strip()
+    lm = re.search(r"place\s*([^\n]{3,160})", text)
+    return title, desc, (lm.group(1).strip() if lm else "")
+
+
+GoogleAdapter._parse_job = staticmethod(_google_parse)
+GoogleAdapter.describe = lambda self, external_id, url: _google_parse(self._html(url))[1] or None
 
 
 class AppleAdapter(_CareersSiteAdapter):
@@ -389,13 +418,9 @@ class AppleAdapter(_CareersSiteAdapter):
             slug = r.get("transformedPostingTitle") or re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
             url = f"{self.BASE}/details/{pid}/{slug}"
             desc = r.get("jobSummary", "") or ""
-            if self._want_detail(title, done):
+            if self._want_detail(title, done, pid):
                 try:
-                    d = self._find(self._page_data(url), "description") or self._find(self._page_data(url), "jobSummary") or {}
-                    if isinstance(d, dict):
-                        parts = [d.get(k) for k in ("jobSummary", "description", "responsibilities", "minimumQualifications",
-                                                     "preferredQualifications") if isinstance(d.get(k), str)]
-                        desc = "\n\n".join(strip_html(x) for x in parts if x) or desc
+                    desc = self.describe(pid, url) or desc
                     done += 1
                 except SourceError:
                     pass
@@ -406,6 +431,15 @@ class AppleAdapter(_CareersSiteAdapter):
                                      description_text=strip_html(desc), posted_at=_dt(r.get("postDateInGMT") or r.get("postingDate")),
                                      url=url, apply_url=url))
         return [n for n in out if n.title]
+
+    def describe(self, external_id: str, url: str) -> Optional[str]:
+        data = self._page_data(url)
+        d = self._find(data, "description") or self._find(data, "jobSummary") or {}
+        if not isinstance(d, dict):
+            return None
+        parts = [d.get(k) for k in ("jobSummary", "description", "responsibilities", "minimumQualifications",
+                                     "preferredQualifications") if isinstance(d.get(k), str)]
+        return "\n\n".join(strip_html(x) for x in parts if x) or None
 
 
 # link patterns for detection

@@ -44,10 +44,11 @@ def main() -> int:
         for ident in arg.split(","):
             try:
                 a = WorkdayAdapter(ident)
-                a.queries, a.detail_limit = ["Software Engineer"], 2
+                a.queries = ["Software Engineer"]
+                a.title_filter = lambda t: "engineer" in t.lower()
                 jobs = a.fetch()
                 withdesc = sum(1 for j in jobs if len(j.description_text) > 200)
-                rows.append(f"{ident}={len(jobs)} jobs/{withdesc} desc")
+                rows.append(f"{ident}={len(jobs)} jobs/{sum(1 for j in jobs if 'engineer' in j.title.lower())} match/{withdesc} desc")
             except Exception as e:  # noqa: BLE001
                 rows.append(f"{ident}=ERR {str(e)[:60]}")
         for i in range(0, len(rows), 8):

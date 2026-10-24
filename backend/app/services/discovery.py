@@ -8,12 +8,14 @@ from datetime import timedelta
 from typing import Optional
 
 import httpx
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ..config import settings
 from ..models import Job, JobSnapshot, JobSource, utcnow
 from ..security import audit
 from .sources import ADAPTERS, COMPANY_KINDS, NormalizedJob, SourceError
+from .sources.base import JobSourceAdapter
 from .sources.keyword import title_matches
 from .textutil import job_fingerprint, sha256
 
@@ -47,6 +49,11 @@ def upsert_job(db: Session, user_id: int, source: Optional[JobSource], n: Normal
         db.add(JobSnapshot(job_id=job.id, content_hash=chash, data=_jsonable(data)))
         _mark_duplicate(db, job)
         return job, "new"
+    if len(n.description_text or "") < 200 and len(job.description_text or "") > len(n.description_text or ""):
+        # this run only got a summary; keep the full description fetched earlier (or pasted by the user)
+        n.description_text = job.description_text
+        chash = _content_hash(n)
+        data["description_text"] = n.description_text
     job.last_checked_at = now
     state = "unchanged"
     if job.listing_status != "active":
@@ -100,6 +107,9 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
         adapter.title_filter = keep
     if hasattr(adapter, "queries") and not adapter_cls.keyword:
         adapter.queries = queries  # Workday: search the site for the target titles
+    adapter.known_described = frozenset(eid for (eid,) in db.query(Job.external_id).filter(
+        Job.user_id == source.user_id, Job.source_kind == source.kind, Job.source_id == source.id,
+        func.length(Job.description_text) >= 200))
     source.last_run_at = utcnow()
     try:
         listings = adapter.fetch()
@@ -132,6 +142,7 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
             job.listing_status = "closed"
             job.last_checked_at = utcnow()
             stats["closed"] += 1
+    new_ids += backfill_descriptions(db, source, adapter)
     source.last_status, source.last_error, source.last_job_count = "ok", "", len(listings)
     if not source.display_name and listings:
         source.display_name = listings[0].company
@@ -168,6 +179,53 @@ def search_context(db: Session, user_id: int) -> dict:
     return {"queries": search_queries(profile), "locations": locations, "credentials": creds}
 
 
+MIN_DESC = 200  # shorter than this is a summary, not a job description
+
+
+def backfill_descriptions(db: Session, source: JobSource, adapter, limit: int = 40) -> list[int]:
+    """Fetch full descriptions for this source's saved jobs that only have a summary."""
+    if type(adapter).describe is JobSourceAdapter.describe:
+        return []
+    jobs = db.query(Job).filter(Job.source_id == source.id, Job.listing_status == "active",
+                                func.length(Job.description_text) < MIN_DESC).order_by(Job.discovered_at.desc()).limit(limit).all()
+    done = []
+    for i, job in enumerate(jobs):
+        if i:
+            adapter._sleep(0.3)
+        try:
+            desc = adapter.describe(job.external_id, job.url or job.apply_url or "")
+        except SourceError:
+            continue
+        except Exception:  # noqa: BLE001 - one odd page mustn't fail the run
+            log.exception("describe failed for job %s", job.id)
+            continue
+        if desc and len(desc) > len(job.description_text or ""):
+            job.description_text = desc
+            done.append(job.id)
+    return done
+
+
+def describe_now(db: Session, job: Job) -> bool:
+    """Fetch a job's full description on demand (when the user opens it). Returns True if it changed."""
+    if job.is_manual or len(job.description_text or "") >= MIN_DESC:
+        return False
+    src = db.get(JobSource, job.source_id) if job.source_id else None
+    cls = ADAPTERS.get(job.source_kind)
+    if cls is None or cls.describe is JobSourceAdapter.describe or cls.is_simulated:
+        return False
+    try:
+        adapter = cls(src.identifier if src else "auto", context=None if not cls.keyword else {"queries": [], "locations": [], "credentials": {}})
+        adapter.timeout_s = 15
+        desc = adapter.describe(job.external_id, job.url or job.apply_url or "")
+    except Exception:  # noqa: BLE001
+        return False
+    if desc and len(desc) > len(job.description_text or ""):
+        job.description_text = desc
+        db.commit()
+        return True
+    return False
+
+
 def pause_between_sources() -> None:
     """Give web requests a turn: on a small (0.1 CPU) server a long search run otherwise starves the site."""
     if settings.source_pause_s:
@@ -181,8 +239,20 @@ def run_all_sources(db: Session, user_id: int) -> list[dict]:
     for i, src in enumerate(db.query(JobSource).filter(JobSource.user_id == user_id, JobSource.enabled.is_(True)).all()):
         if i:
             pause_between_sources()
-        results.append(run_source(db, src))
-    changed = [jid for r in results for jid in r.get("changed_job_ids", [])]
-    if changed:
-        score_jobs(db, user_id, changed)
+        r = run_source(db, src)
+        results.append(r)
+        if r.get("changed_job_ids"):  # score as we go, so an interrupted run still leaves scored jobs
+            score_jobs(db, user_id, r["changed_job_ids"])
+    score_unscored(db, user_id)
     return results
+
+
+def score_unscored(db: Session, user_id: int, limit: int = 500) -> int:
+    """Score jobs that never got an ATS score (e.g. a run was cut off by a restart)."""
+    from ..models import MatchAssessment
+    from .matching import score_jobs
+
+    scored = db.query(MatchAssessment.job_id).filter(MatchAssessment.user_id == user_id)
+    ids = [jid for (jid,) in db.query(Job.id).filter(Job.user_id == user_id, Job.duplicate_of_id.is_(None),
+                                                      ~Job.id.in_(scored)).limit(limit)]
+    return score_jobs(db, user_id, ids) if ids else 0
