@@ -22,6 +22,12 @@ def main() -> int:
         print(r.status_code, r.text[:300])
         print(f"::notice title=site::HTTP {r.status_code} {r.text[:120]}")
         return 0 if r.status_code == 200 and '"status":"ok"' in r.text.replace(" ", "") else 1
+    if kind == "detect":
+        from app.services.sources.detect import detect
+
+        res = [detect(x).dict() for x in arg.split("|")]
+        print("::notice title=detect::" + " | ".join(f"{r['input']} → {r['status']} {r['kind']}:{r['identifier']} ({r['jobs']} jobs) {r['message'][:60]}" for r in res))
+        return 0
     ctx = {"queries": ["Software Engineer"], "locations": [], "credentials": {}}
     try:
         cls = ADAPTERS[kind]

@@ -121,7 +121,7 @@ class ProfilePatch(BaseModel):
 
 
 class SourceIn(BaseModel):
-    kind: Literal["greenhouse", "lever", "mock", "adzuna", "remotive", "muse"]
+    kind: Literal["greenhouse", "lever", "ashby", "smartrecruiters", "workable", "recruitee", "mock", "adzuna", "remotive", "muse", "himalayas", "jobicy", "arbeitnow", "jsearch", "usajobs"]
     identifier: str = Field(min_length=1, max_length=200, pattern=r"^[A-Za-z0-9_.\-]+$")
     display_name: str = Field(default="", max_length=200)
 

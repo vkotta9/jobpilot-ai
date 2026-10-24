@@ -67,11 +67,21 @@ class JobSourceAdapter:
         return self.identifier.replace("-", " ").replace("_", " ").title()
 
     # -- shared HTTP with bounded retries
+    timeout_s: Optional[float] = None
+
+    def _get_json_headers(self, url: str, params: dict, headers: dict, max_attempts: int = 2) -> Any:
+        self._extra_headers = headers
+        try:
+            return self._get_json(url, params=params, max_attempts=max_attempts)
+        finally:
+            self._extra_headers = {}
+
     def _get_json(self, url: str, params: Optional[dict] = None, max_attempts: int = 3) -> Any:
         last_err: Optional[SourceError] = None
-        with httpx.Client(timeout=settings.http_timeout_s, transport=self._transport,
-                          headers={"User-Agent": settings.user_agent, "Accept": "application/json"},
-                          follow_redirects=True) as client:
+        headers = {"User-Agent": settings.user_agent, "Accept": "application/json"}
+        headers.update(getattr(self, "_extra_headers", {}) or {})
+        with httpx.Client(timeout=self.timeout_s or settings.http_timeout_s, transport=self._transport,
+                          headers=headers, follow_redirects=True) as client:
             for attempt in range(1, max_attempts + 1):
                 try:
                     resp = client.get(url, params=params)

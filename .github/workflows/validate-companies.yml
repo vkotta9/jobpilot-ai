@@ -1,0 +1,26 @@
+name: Validate company boards
+
+# Detects which public job board (Greenhouse/Lever/Ashby/…) each candidate company uses.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "backend/scripts/validate_companies.py"
+      - "backend/app/services/sources/detect.py"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chunk: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r backend/requirements.txt
+      - name: Detect boards
+        working-directory: backend
+        run: python scripts/validate_companies.py ${{ matrix.chunk }} 4

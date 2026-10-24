@@ -12,7 +12,8 @@ from sqlalchemy.orm import Session
 from ..config import settings
 from ..models import Job, JobSnapshot, JobSource, utcnow
 from ..security import audit
-from .sources import ADAPTERS, NormalizedJob, SourceError
+from .sources import ADAPTERS, COMPANY_KINDS, NormalizedJob, SourceError
+from .sources.keyword import title_matches
 from .textutil import job_fingerprint, sha256
 
 log = logging.getLogger("jobpilot.discovery")
@@ -86,11 +87,16 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
              "closed": 0, "error": None, "simulated": adapter_cls.is_simulated}
     if adapter_cls.min_interval_hours and source.last_run_at and source.last_status == "ok" and \
             utcnow() - source.last_run_at < timedelta(hours=adapter_cls.min_interval_hours):
-        stats["skipped"] = f"{source.kind} allows only a few searches per day — next run after " \
+        stats["skipped"] = f"{source.kind}: searched recently — its terms allow one run every " \
                            f"{adapter_cls.min_interval_hours}h."
         return stats
-    context = search_context(db, source.user_id) if adapter_cls.keyword else None
-    adapter = adapter_cls(source.identifier, transport=transport, context=context)
+    context = search_context(db, source.user_id) if (adapter_cls.keyword or source.kind in COMPANY_KINDS) else None
+    adapter = adapter_cls(source.identifier, transport=transport, context=context if adapter_cls.keyword else None)
+    # company boards list every opening; keep only roles matching the user's target titles
+    queries = (context or {}).get("queries", []) if source.kind in COMPANY_KINDS else []
+    keep = (lambda t: title_matches(t, queries)) if queries else None
+    if keep and hasattr(adapter, "title_filter"):
+        adapter.title_filter = keep
     source.last_run_at = utcnow()
     try:
         listings = adapter.fetch()
@@ -100,11 +106,14 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
         audit(db, source.user_id, "discovery.error", "job_source", source.id, error=str(e))
         db.commit()
         return stats
-    seen: set[str] = set()
+    seen: set[str] = {n.external_id for n in listings}  # everything still on the board (for closed detection)
     new_ids: list[int] = []
+    stats["on_board"] = len(listings)
+    if keep:
+        listings = [n for n in listings if keep(n.title)]
+    stats["matching"] = len(listings)
     for n in listings:
         job, state = upsert_job(db, source.user_id, source, n, source.kind, adapter_cls.is_simulated)
-        seen.add(n.external_id)
         stats[state] += 1
         if state in ("new", "updated"):
             new_ids.append(job.id)
@@ -145,12 +154,12 @@ def search_context(db: Session, user_id: int) -> dict:
 
     profile = db.query(CandidateProfile).filter_by(user_id=user_id).one_or_none()
     prefs = (profile.preferences or {}) if profile else {}
-    creds = {}
+    creds: dict = {}
     for row in db.query(IntegrationSetting).filter_by(user_id=user_id).all():
-        creds[row.provider] = unseal(row.data_encrypted)
+        if row.provider != "ai":  # provider fields use distinct names (app_id, rapidapi_key, usajobs_key, …)
+            creds.update(unseal(row.data_encrypted))
     locations = [l for l in prefs.get("locations") or [] if l.strip()]
-    return {"queries": search_queries(profile), "locations": locations,
-            "credentials": {**creds.get("adzuna", {}), **({"api_key": creds["muse"].get("api_key")} if creds.get("muse") else {})}}
+    return {"queries": search_queries(profile), "locations": locations, "credentials": creds}
 
 
 def run_all_sources(db: Session, user_id: int) -> list[dict]:

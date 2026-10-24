@@ -11,7 +11,7 @@
 from __future__ import annotations
 
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from ..textutil import STOPWORDS, strip_html
@@ -184,3 +184,217 @@ class MuseAdapter(KeywordAdapter):
             description_text=strip_html(j.get("contents", "")), posted_at=_dt(j.get("publication_date")),
             url=url, apply_url=url,
         )
+
+
+def _unix(ts) -> Optional[datetime]:
+    try:
+        v = float(ts)
+        if v > 1e12:
+            v /= 1000
+        return datetime.fromtimestamp(v, tz=timezone.utc).replace(tzinfo=None)
+    except (TypeError, ValueError):
+        return _dt(ts) if isinstance(ts, str) else None
+
+
+class ArbeitnowAdapter(KeywordAdapter):
+    """Free, no key. Mostly Europe (Germany); useful if you're open to EU roles / visa sponsorship."""
+
+    kind = "arbeitnow"
+    docs_url = "https://www.arbeitnow.com/blog/job-board-api"
+    label = "Arbeitnow (Europe, visa-friendly)"
+
+    def fetch(self) -> list[NormalizedJob]:
+        self._need_queries()
+        out: dict[str, NormalizedJob] = {}
+        for page in range(1, 4):
+            data = self._get_json("https://www.arbeitnow.com/api/job-board-api", params={"page": page}, max_attempts=2)
+            items = (data or {}).get("data", [])
+            for j in items:
+                if title_matches(j.get("title", ""), self.queries):
+                    n = self.normalize(j)
+                    if n:
+                        out[n.external_id] = n
+            if not items or not (data or {}).get("links", {}).get("next"):
+                break
+        return list(out.values())
+
+    @staticmethod
+    def normalize(j: dict) -> Optional[NormalizedJob]:
+        if not j.get("slug") or not j.get("title"):
+            return None
+        loc = j.get("location", "") or ""
+        return NormalizedJob(
+            external_id=str(j["slug"]), title=j["title"].strip(), company=j.get("company_name", "") or "Unknown",
+            location=loc, remote_type="remote" if j.get("remote") else infer_remote_type(loc),
+            employment_type=", ".join(j.get("job_types") or []), description_text=strip_html(j.get("description", "")),
+            posted_at=_unix(j.get("created_at")), url=j.get("url", ""), apply_url=j.get("url", ""))
+
+
+class HimalayasAdapter(KeywordAdapter):
+    """Free remote jobs. Terms: link to Himalayas as the source, use their applicationLink unchanged."""
+
+    kind = "himalayas"
+    docs_url = "https://himalayas.app/api"
+    label = "Himalayas (remote jobs)"
+
+    def fetch(self) -> list[NormalizedJob]:
+        self._need_queries()
+        out: dict[str, NormalizedJob] = {}
+        for q in self.queries[:3]:
+            data = self._get_json("https://himalayas.app/jobs/api/search", params={"q": q, "sort": "recent"}, max_attempts=2)
+            for j in (data or {}).get("jobs", []):
+                if title_matches(j.get("title", ""), self.queries):
+                    n = self.normalize(j)
+                    if n:
+                        out[n.external_id] = n
+        return list(out.values())
+
+    @staticmethod
+    def normalize(j: dict) -> Optional[NormalizedJob]:
+        gid = j.get("guid") or j.get("applicationLink")
+        if not gid or not j.get("title"):
+            return None
+        locs = ", ".join(j.get("locationRestrictions") or []) or "Worldwide"
+        period = (j.get("salaryPeriod") or "").lower()
+        return NormalizedJob(
+            external_id=str(gid), title=j["title"].strip(), company=j.get("companyName", "") or "Unknown",
+            location="Remote — " + locs, remote_type="remote", employment_type=j.get("employmentType", "") or "",
+            department=", ".join(j.get("categories") or [])[:200],
+            description_text=strip_html(j.get("description", "") or j.get("excerpt", "")) + "\n\n(Listing via Himalayas)",
+            salary_min=j.get("minSalary"), salary_max=j.get("maxSalary"), salary_currency=j.get("currency", "") or "",
+            salary_interval="per-year-salary" if "year" in period or "annual" in period else period,
+            posted_at=_unix(j.get("pubDate")), url=str(j.get("guid") or j.get("applicationLink")),
+            apply_url=j.get("applicationLink", "") or str(gid))
+
+
+class JobicyAdapter(KeywordAdapter):
+    """Free remote jobs. Terms: credit Jobicy with a link; sync at most once per hour."""
+
+    kind = "jobicy"
+    docs_url = "https://jobicy.com/jobs-rss-feed"
+    label = "Jobicy (remote jobs)"
+    min_interval_hours = 1
+
+    def fetch(self) -> list[NormalizedJob]:
+        self._need_queries()
+        out: dict[str, NormalizedJob] = {}
+        for q in self.queries[:2]:
+            tag = " ".join(core_words(q)) or q
+            data = self._get_json("https://jobicy.com/api/jobs", params={"count": 100, "tag": tag}, max_attempts=2)
+            for j in (data or {}).get("jobs", []):
+                if title_matches(j.get("jobTitle", ""), self.queries):
+                    n = self.normalize(j)
+                    if n:
+                        out[n.external_id] = n
+        return list(out.values())
+
+    @staticmethod
+    def normalize(j: dict) -> Optional[NormalizedJob]:
+        if not j.get("id") or not j.get("jobTitle"):
+            return None
+        jt = j.get("jobType")
+        return NormalizedJob(
+            external_id=str(j["id"]), title=strip_html(j["jobTitle"]), company=j.get("companyName", "") or "Unknown",
+            location="Remote — " + (j.get("jobGeo") or "Anywhere"), remote_type="remote",
+            employment_type=", ".join(jt) if isinstance(jt, list) else (jt or ""),
+            department=", ".join(j["jobIndustry"]) if isinstance(j.get("jobIndustry"), list) else (j.get("jobIndustry") or ""),
+            description_text=strip_html(j.get("jobDescription", "") or j.get("jobExcerpt", "")) + "\n\n(Listing via Jobicy)",
+            salary_min=j.get("salaryMin"), salary_max=j.get("salaryMax"), salary_currency=j.get("salaryCurrency", "") or "",
+            salary_interval="per-year-salary" if str(j.get("salaryPeriod", "")).lower().startswith("year") else str(j.get("salaryPeriod") or ""),
+            posted_at=_dt(j.get("pubDate")), url=j.get("url", ""), apply_url=j.get("url", ""))
+
+
+class JSearchAdapter(KeywordAdapter):
+    """Google for Jobs results (LinkedIn, Indeed, Glassdoor, company sites…) via RapidAPI. Free plan: ~200 requests/month."""
+
+    kind = "jsearch"
+    requires_credentials = True
+    docs_url = "https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch"
+    label = "JSearch (LinkedIn, Indeed, Glassdoor via Google Jobs)"
+    min_interval_hours = 12  # keep within the free monthly allowance
+
+    def fetch(self) -> list[NormalizedJob]:
+        self._need_queries()
+        key = self.credentials.get("rapidapi_key")
+        if not key:
+            raise SourceError("jsearch: connect your free RapidAPI key in Settings → Connections.")
+        out: dict[str, NormalizedJob] = {}
+        loc = next((l for l in self.locations if l.lower() not in ("remote", "anywhere")), "")
+        for q in self.queries[:2]:
+            query = f"{q} in {loc}" if loc else f"{q} in USA"
+            data = self._get_json_headers("https://jsearch.p.rapidapi.com/search",
+                                          {"query": query, "page": 1, "num_pages": 1, "date_posted": "week", "country": "us"},
+                                          {"X-RapidAPI-Key": key, "X-RapidAPI-Host": "jsearch.p.rapidapi.com"})
+            for j in (data or {}).get("data", []) or []:
+                n = self.normalize(j)
+                if n:
+                    out[n.external_id] = n
+        return list(out.values())
+
+    @staticmethod
+    def normalize(j: dict) -> Optional[NormalizedJob]:
+        if not j.get("job_id") or not j.get("job_title"):
+            return None
+        loc = ", ".join(x for x in [j.get("job_city"), j.get("job_state"), j.get("job_country")] if x)
+        period = (j.get("job_salary_period") or "").upper()
+        return NormalizedJob(
+            external_id=str(j["job_id"]), title=j["job_title"].strip(), company=j.get("employer_name", "") or "Unknown",
+            location=loc or ("Remote" if j.get("job_is_remote") else ""),
+            remote_type="remote" if j.get("job_is_remote") else infer_remote_type(loc),
+            employment_type=(j.get("job_employment_type") or "").replace("FULLTIME", "Full-time"),
+            description_text=strip_html(j.get("job_description", "")) + (f"\n\n(Found via {j['job_publisher']})" if j.get("job_publisher") else ""),
+            salary_min=j.get("job_min_salary") if period == "YEAR" else None,
+            salary_max=j.get("job_max_salary") if period == "YEAR" else None,
+            salary_currency="USD" if period == "YEAR" and j.get("job_min_salary") else "",
+            salary_interval="per-year-salary" if period == "YEAR" else "",
+            posted_at=_dt(j.get("job_posted_at_datetime_utc")), url=j.get("job_apply_link", "") or "",
+            apply_url=j.get("job_apply_link", "") or "")
+
+
+class USAJobsAdapter(KeywordAdapter):
+    """US federal government jobs (free key from developer.usajobs.gov). Most require US citizenship."""
+
+    kind = "usajobs"
+    requires_credentials = True
+    docs_url = "https://developer.usajobs.gov/"
+    label = "USAJOBS (US federal jobs)"
+
+    def fetch(self) -> list[NormalizedJob]:
+        self._need_queries()
+        key, email = self.credentials.get("usajobs_key"), self.credentials.get("usajobs_email")
+        if not key or not email:
+            raise SourceError("usajobs: connect your free USAJOBS key and email in Settings → Connections.")
+        out: dict[str, NormalizedJob] = {}
+        for q in self.queries[:2]:
+            params = {"Keyword": q, "ResultsPerPage": 50, "DatePosted": 14}
+            loc = next((l for l in self.locations if l.lower() not in ("remote", "anywhere")), "")
+            if loc:
+                params["LocationName"] = loc
+            data = self._get_json_headers("https://data.usajobs.gov/api/search", params,
+                                          {"Host": "data.usajobs.gov", "User-Agent": email, "Authorization-Key": key})
+            for item in ((data or {}).get("SearchResult") or {}).get("SearchResultItems", []):
+                n = self.normalize(item.get("MatchedObjectDescriptor") or {})
+                if n:
+                    out[n.external_id] = n
+        return list(out.values())
+
+    @staticmethod
+    def normalize(d: dict) -> Optional[NormalizedJob]:
+        if not d.get("PositionID") or not d.get("PositionTitle"):
+            return None
+        pay = (d.get("PositionRemuneration") or [{}])[0]
+        yearly = pay.get("RateIntervalCode") in ("PA", "Per Year")
+        details = ((d.get("UserArea") or {}).get("Details") or {})
+        duties = details.get("MajorDuties") or []
+        desc = "\n\n".join(x for x in [details.get("JobSummary", ""), "\n".join(duties) if isinstance(duties, list) else str(duties),
+                                       d.get("QualificationSummary", "")] if x)
+        apply = (d.get("ApplyURI") or [d.get("PositionURI", "")])[0]
+        return NormalizedJob(
+            external_id=str(d["PositionID"]), title=d["PositionTitle"].strip(),
+            company=d.get("OrganizationName") or d.get("DepartmentName") or "US Government",
+            location=d.get("PositionLocationDisplay", "") or "", remote_type=infer_remote_type(d.get("PositionLocationDisplay", "")),
+            department=d.get("DepartmentName", "") or "", description_text=strip_html(desc),
+            salary_min=float(pay["MinimumRange"]) if yearly and pay.get("MinimumRange") else None,
+            salary_max=float(pay["MaximumRange"]) if yearly and pay.get("MaximumRange") else None,
+            salary_currency="USD" if yearly else "", salary_interval="per-year-salary" if yearly else "",
+            posted_at=_dt(d.get("PublicationStartDate")), url=d.get("PositionURI", "") or apply, apply_url=apply)

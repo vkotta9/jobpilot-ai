@@ -14,8 +14,7 @@ from ..services import llm
 from ..services.discovery import run_source, search_queries
 from ..services.matching import score_job, score_jobs
 from ..services.secretbox import mask, seal, unseal
-from ..services.sources import ADAPTERS, KEYWORD_KINDS, SourceError
-from ..services.sources.keyword import AdzunaAdapter
+from ..services.sources import ADAPTERS, FREE_DEFAULT_KINDS, KEYWORD_KINDS, SourceError
 
 router = APIRouter(prefix="/api", tags=["integrations"])
 
@@ -37,6 +36,15 @@ class MuseIn(BaseModel):
     api_key: str = Field(default="", max_length=200)
 
 
+class JSearchIn(BaseModel):
+    rapidapi_key: str = Field(default="", max_length=200)
+
+
+class USAJobsIn(BaseModel):
+    usajobs_key: str = Field(default="", max_length=200)
+    usajobs_email: str = Field(default="", max_length=320)
+
+
 def _row(db: Session, user: User, provider: str) -> Optional[IntegrationSetting]:
     return db.query(IntegrationSetting).filter_by(user_id=user.id, provider=provider).one_or_none()
 
@@ -56,6 +64,8 @@ def list_integrations(user: User = Depends(current_user), db: Session = Depends(
     ai = unseal(_row(db, user, "ai").data_encrypted) if _row(db, user, "ai") else {}
     adz = unseal(_row(db, user, "adzuna").data_encrypted) if _row(db, user, "adzuna") else {}
     muse = unseal(_row(db, user, "muse").data_encrypted) if _row(db, user, "muse") else {}
+    js = unseal(_row(db, user, "jsearch").data_encrypted) if _row(db, user, "jsearch") else {}
+    uj = unseal(_row(db, user, "usajobs").data_encrypted) if _row(db, user, "usajobs") else {}
     env = llm.env_config()
     cfg = llm.config_for(db, user.id)
     return {
@@ -65,6 +75,9 @@ def list_integrations(user: User = Depends(current_user), db: Session = Depends(
         "adzuna": {"configured": bool(adz.get("app_id") and adz.get("app_key")), "app_id_hint": mask(adz.get("app_id", "")),
                    "country": adz.get("country", "us")},
         "muse": {"configured": bool(muse.get("api_key")), "key_hint": mask(muse.get("api_key", ""))},
+        "jsearch": {"configured": bool(js.get("rapidapi_key")), "key_hint": mask(js.get("rapidapi_key", ""))},
+        "usajobs": {"configured": bool(uj.get("usajobs_key") and uj.get("usajobs_email")), "key_hint": mask(uj.get("usajobs_key", "")),
+                    "email": uj.get("usajobs_email", "")},
     }
 
 
@@ -100,6 +113,27 @@ def save_muse(body: MuseIn, user: User = Depends(current_user), db: Session = De
     return list_integrations(user, db)["muse"]
 
 
+@router.put("/integrations/jsearch")
+def save_jsearch(body: JSearchIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    old = unseal(_row(db, user, "jsearch").data_encrypted) if _row(db, user, "jsearch") else {}
+    key = body.rapidapi_key.strip() or old.get("rapidapi_key", "")
+    if not key:
+        raise HTTPException(400, "Paste your RapidAPI key.")
+    _save(db, user, "jsearch", {"rapidapi_key": key})
+    return list_integrations(user, db)["jsearch"]
+
+
+@router.put("/integrations/usajobs")
+def save_usajobs(body: USAJobsIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    old = unseal(_row(db, user, "usajobs").data_encrypted) if _row(db, user, "usajobs") else {}
+    data = {"usajobs_key": body.usajobs_key.strip() or old.get("usajobs_key", ""),
+            "usajobs_email": body.usajobs_email.strip() or old.get("usajobs_email", "")}
+    if not data["usajobs_key"] or "@" not in data["usajobs_email"]:
+        raise HTTPException(400, "USAJOBS needs your API key and the email you registered with.")
+    _save(db, user, "usajobs", data)
+    return list_integrations(user, db)["usajobs"]
+
+
 @router.delete("/integrations/{provider}")
 def delete_integration(provider: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
     row = _row(db, user, provider)
@@ -120,11 +154,11 @@ def test_integration(provider: str, user: User = Depends(current_user), db: Sess
             return {"ok": True, "message": f"Connected to {llm.test_connection(cfg)}."}
         except llm.LLMError as e:
             raise HTTPException(400, str(e))
-    if provider == "adzuna":
-        creds = unseal(_row(db, user, "adzuna").data_encrypted) if _row(db, user, "adzuna") else {}
+    if provider in ("adzuna", "jsearch", "usajobs"):
+        creds = unseal(_row(db, user, provider).data_encrypted) if _row(db, user, provider) else {}
         try:
-            n = len(AdzunaAdapter("auto", context={"queries": ["software engineer"], "locations": [], "credentials": creds}).fetch())
-            return {"ok": True, "message": f"Adzuna works — test search returned {n} jobs."}
+            n = len(ADAPTERS[provider]("auto", context={"queries": ["software engineer"], "locations": [], "credentials": creds}).fetch())
+            return {"ok": True, "message": f"{provider} works — test search returned {n} jobs."}
         except SourceError as e:
             raise HTTPException(400, str(e))
     raise HTTPException(400, "Nothing to test for this connection.")
@@ -133,8 +167,19 @@ def test_integration(provider: str, user: User = Depends(current_user), db: Sess
 # ---------------------------------------------------------------- automatic job search
 
 
+KeywordKind = Literal["remotive", "muse", "himalayas", "jobicy", "arbeitnow", "jsearch", "usajobs", "adzuna"]
+NEEDS_KEY = {"adzuna": "adzuna", "jsearch": "jsearch", "usajobs": "usajobs"}
+NOTES = {
+    "remotive": "Remote jobs · free", "muse": "Curated companies · free", "himalayas": "Remote jobs · free",
+    "jobicy": "Remote jobs · free", "arbeitnow": "Mostly Europe (often visa sponsorship) · free",
+    "jsearch": "LinkedIn, Indeed, Glassdoor & more via Google Jobs · free key, ~200 searches/month",
+    "usajobs": "US federal jobs (most need US citizenship) · free key",
+    "adzuna": "Most US job boards · paid (£8/month) after 25 test calls",
+}
+
+
 class AutoIn(BaseModel):
-    kinds: list[Literal["adzuna", "remotive", "muse"]] = Field(default_factory=lambda: ["adzuna", "remotive", "muse"])
+    kinds: list[KeywordKind] = Field(default_factory=lambda: list(FREE_DEFAULT_KINDS))
 
 
 @router.get("/discovery/auto")
@@ -143,12 +188,12 @@ def auto_status(user: User = Depends(current_user), db: Session = Depends(get_db
     prefs = (profile.preferences or {}) if profile else {}
     srcs = {s.kind: to_dict(s) for s in db.query(JobSource).filter(JobSource.user_id == user.id,
                                                                     JobSource.kind.in_(KEYWORD_KINDS)).all()}
-    adz = _row(db, user, "adzuna")
     return {
         "queries": search_queries(profile), "titles_from_profile": bool(prefs.get("target_titles")),
         "locations": prefs.get("locations") or [],
-        "sources": [{"kind": k, "label": ADAPTERS[k].label, "needs_key": ADAPTERS[k].requires_credentials,
-                     "key_ok": (k != "adzuna") or bool(adz), "source": srcs.get(k)} for k in KEYWORD_KINDS],
+        "sources": [{"kind": k, "label": ADAPTERS[k].label, "note": NOTES.get(k, ""), "needs_key": k in NEEDS_KEY,
+                     "key_ok": k not in NEEDS_KEY or bool(_row(db, user, NEEDS_KEY[k])),
+                     "default_on": k in FREE_DEFAULT_KINDS, "source": srcs.get(k)} for k in KEYWORD_KINDS],
     }
 
 
@@ -165,8 +210,8 @@ def auto_run(body: AutoIn, user: User = Depends(current_user), db: Session = Dep
             if src:
                 src.enabled = False
             continue
-        if kind == "adzuna" and not _row(db, user, "adzuna"):
-            results.append({"kind": kind, "error": "Connect a free Adzuna key in Settings → Connections to search all US job boards.",
+        if kind in NEEDS_KEY and not _row(db, user, NEEDS_KEY[kind]):
+            results.append({"kind": kind, "error": f"Connect your {ADAPTERS[kind].label.split(' (')[0]} key in Settings → Connections first.",
                             "new": 0, "updated": 0})
             continue
         if src is None:

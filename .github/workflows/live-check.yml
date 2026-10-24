@@ -36,6 +36,30 @@ jobs:
         working-directory: backend
         run: python scripts/live_check.py lever palantir
         continue-on-error: true
+      - name: Himalayas (remote, no key)
+        working-directory: backend
+        run: python scripts/live_check.py himalayas
+        continue-on-error: true
+      - name: Jobicy (remote, no key)
+        working-directory: backend
+        run: python scripts/live_check.py jobicy
+        continue-on-error: true
+      - name: Arbeitnow (no key)
+        working-directory: backend
+        run: python scripts/live_check.py arbeitnow
+        continue-on-error: true
+      - name: Ashby board (openai)
+        working-directory: backend
+        run: python scripts/live_check.py ashby openai
+        continue-on-error: true
+      - name: Workable account (huggingface)
+        working-directory: backend
+        run: python scripts/live_check.py workable huggingface
+        continue-on-error: true
+      - name: Detect from links and names
+        working-directory: backend
+        run: python scripts/live_check.py detect "https://stripe.com/jobs|Databricks|https://jobs.ashbyhq.com/openai|Google"
+        continue-on-error: true
       - name: Deployed site health
         working-directory: backend
         run: python scripts/live_check.py site https://jobpilot-ai-45bq.onrender.com

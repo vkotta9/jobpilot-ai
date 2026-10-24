@@ -348,7 +348,8 @@ def test_auto_search_requires_titles_and_paste_description(client):
     assert client.post("/api/discovery/auto", json={"kinds": ["remotive"]}, headers=h).status_code == 400
     setup_profile(client, h)
     st = client.get("/api/discovery/auto", headers=h).json()
-    assert st["queries"] == ["Backend Engineer"] and {s["kind"] for s in st["sources"]} == {"adzuna", "remotive", "muse"}
+    kinds = {s["kind"] for s in st["sources"]}
+    assert st["queries"] == ["Backend Engineer"] and {"remotive", "muse", "himalayas", "jobicy", "jsearch", "usajobs"} <= kinds
     j = client.post("/api/jobs/manual", headers=h, json={"title": "Backend Engineer", "company": "X", "description_text": "short"}).json()["job"]
     full = "Requirements\n- 3+ years with Python, FastAPI, PostgreSQL, Docker, AWS and Redis\n- Bachelor's degree in Computer Science\n" * 3
     r = client.put(f"/api/jobs/{j['id']}/description", json={"description_text": full}, headers=h)
