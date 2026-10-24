@@ -22,6 +22,21 @@ def main() -> int:
         print(r.status_code, r.text[:300])
         print(f"::notice title=site::HTTP {r.status_code} {r.text[:120]}")
         return 0 if r.status_code == 200 and '"status":"ok"' in r.text.replace(" ", "") else 1
+    if kind == "timing":
+        import time as _t
+
+        rows = []
+        base = arg.rstrip("/")
+        for rnd in (1, 2, 3):
+            for path in ("/api/health", "/", "/app.js", "/js/app.js", "/styles.css", "/api/companies/top-tech"):
+                t0 = _t.time()
+                try:
+                    r = httpx.get(base + path, timeout=180, follow_redirects=True)
+                    rows.append(f"r{rnd} {path} {r.status_code} {len(r.content)}B {(_t.time() - t0):.2f}s")
+                except Exception as e:  # noqa: BLE001
+                    rows.append(f"r{rnd} {path} ERR {type(e).__name__} {(_t.time() - t0):.2f}s")
+        print("::notice title=timing::" + " || ".join(rows))
+        return 0
     if kind == "workday":
         from app.services.sources.workday import WorkdayAdapter
 
