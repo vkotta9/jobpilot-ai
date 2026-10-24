@@ -38,6 +38,31 @@ def main() -> int:
         for i in range(0, len(rows), 8):
             print("::notice title=workday::" + " | ".join(rows[i:i + 8]))
         return 0
+    if kind == "robots":
+        import urllib.robotparser
+        from urllib.parse import urlparse
+
+        rows = []
+        for url in arg.split(","):
+            pr = urlparse(url)
+            rp = urllib.robotparser.RobotFileParser(f"{pr.scheme}://{pr.netloc}/robots.txt")
+            try:
+                rp.read()
+                rows.append(f"{url} → {'ALLOWED' if rp.can_fetch('JobPilotAI/0.1', url) else 'DISALLOWED'}")
+            except Exception as e:  # noqa: BLE001
+                rows.append(f"{url} → error {e}")
+        print("::notice title=robots::" + " || ".join(rows))
+        return 0
+    if kind == "probe":
+        rows = []
+        for url in arg.split(","):
+            try:
+                r = httpx.get(url, timeout=20, follow_redirects=True, headers={"User-Agent": "JobPilotAI/0.1", "Accept": "application/json"})
+                rows.append(f"{url[:90]} → {r.status_code} {r.headers.get('content-type','')[:30]} {r.text[:160]!r}")
+            except Exception as e:  # noqa: BLE001
+                rows.append(f"{url[:90]} → {type(e).__name__}")
+        print("::notice title=probe::" + " || ".join(rows))
+        return 0
     if kind == "debug":
         from app.services.sources import ADAPTERS as A
 

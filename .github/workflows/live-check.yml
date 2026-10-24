@@ -72,6 +72,14 @@ jobs:
         working-directory: backend
         run: python scripts/live_check.py debug "google,microsoft,amazon,eightfold=explore.jobs.netflix.net|netflix.com,oraclehcm=eeho.fa.us2.oraclecloud.com|CX_45001"
         continue-on-error: true
+      - name: Robots rules for big-tech careers
+        working-directory: backend
+        run: python scripts/live_check.py robots "https://www.google.com/about/careers/applications/jobs/results?q=software,https://apply.careers.microsoft.com/api/apply/v2/jobs?domain=microsoft.com,https://apply.careers.microsoft.com/api/pcsx/search?domain=microsoft.com,https://www.metacareers.com/jobs,https://www.tesla.com/careers/search,https://jobs.apple.com/en-us/search,https://www.uber.com/us/en/careers/list/,https://jobs.careers.microsoft.com/global/en/search"
+        continue-on-error: true
+      - name: Probe Microsoft endpoints
+        working-directory: backend
+        run: python scripts/live_check.py probe "https://apply.careers.microsoft.com/api/apply/v2/jobs?domain=microsoft.com&query=software%20engineer&start=0&num=10,https://apply.careers.microsoft.com/api/pcsx/search?domain=microsoft.com&query=software%20engineer&start=0"
+        continue-on-error: true
       - name: Deployed site health
         working-directory: backend
         run: python scripts/live_check.py site https://jobpilot-ai-45bq.onrender.com
