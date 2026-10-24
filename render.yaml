@@ -19,7 +19,7 @@ services:
       - key: JOBPILOT_DATA_DIR
         value: /data
       - key: JOBPILOT_ALLOW_REGISTRATION
-        value: "1"          # set to 0 after you create your account
+        value: first        # only the first account can sign up; set 1 to reopen, 0 to close
       - key: JOBPILOT_ALLOW_MOCK_SOURCES
         value: "1"          # labelled demo listings; set to 0 once you use real sources
       - key: OPENAI_API_KEY

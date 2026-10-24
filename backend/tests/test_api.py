@@ -294,3 +294,14 @@ def test_profile_patch_keeps_other_fields_and_revisions(client):
     assert len(revs) >= 2
     restored = client.post(f"/api/profile/revisions/{revs[0]['id']}/restore", headers=h).json()
     assert restored["headline"] == "Backend Engineer"
+
+
+def test_registration_first_mode(client, monkeypatch):
+    make_user(client)  # at least one account exists
+    monkeypatch.setattr(settings, "registration_mode", "first")
+    r = client.post("/api/auth/register", json={"email": "late@example.com", "password": "correct-horse-1"})
+    assert r.status_code == 403
+    monkeypatch.setattr(settings, "registration_mode", "0")
+    assert client.post("/api/auth/register", json={"email": "late@example.com", "password": "correct-horse-1"}).status_code == 403
+    monkeypatch.setattr(settings, "registration_mode", "1")
+    assert client.post("/api/auth/register", json={"email": "late@example.com", "password": "correct-horse-1"}).status_code == 200

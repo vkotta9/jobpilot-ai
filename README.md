@@ -152,7 +152,7 @@ The repo includes `render.yaml`, so Render creates the web service and a Postgre
 1. Sign in at https://dashboard.render.com with GitHub.
 2. **New → Blueprint**, pick this repository, click **Apply**. Leave `OPENAI_API_KEY` blank unless you have one.
 3. Wait for the first build (~3–5 min), then open `https://<service-name>.onrender.com` and create your account.
-4. In the service's **Environment** tab set `JOBPILOT_ALLOW_REGISTRATION=0` so nobody else can sign up.
+4. Sign-up closes automatically after the first account (`JOBPILOT_ALLOW_REGISTRATION=first`), so create yours right away.
 
 Free-plan limits (Render docs): the service sleeps after 15 min without traffic and takes ~1 min to wake, so scheduled searches only run while it's awake; the free database **expires 30 days after creation** (14-day grace to upgrade, ~$7/mo for the smallest paid plan at time of writing). Resumes are stored in Postgres, so nothing is lost when the container restarts.
 
@@ -164,7 +164,7 @@ Any container host works (Fly.io, Render, Railway, a VPS). Checklist:
 
 - Use the `Dockerfile`, a managed PostgreSQL (`DATABASE_URL`), and a persistent volume for `JOBPILOT_DATA_DIR` (uploaded resumes). For multiple instances, move uploads to private object storage (S3/GCS) and the scheduler to a single worker.
 - Serve only over HTTPS (session cookies become `Secure` automatically behind HTTPS; keep `--proxy-headers`).
-- After creating your account set `JOBPILOT_ALLOW_REGISTRATION=0` and `JOBPILOT_ALLOW_MOCK_SOURCES=0`.
+- Use `JOBPILOT_ALLOW_REGISTRATION=first` (or `0` after signing up) and `JOBPILOT_ALLOW_MOCK_SOURCES=0`.
 - Keep `OPENAI_API_KEY` in the host's secret manager, never in the image.
 - Enable encrypted-at-rest storage for the database and volume (the app stores resumes and personal data); take regular backups.
 - Rate limiting is in-memory per process — put a reverse proxy rate limit in front for public exposure.

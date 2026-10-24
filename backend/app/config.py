@@ -62,7 +62,8 @@ class Settings:
         # Security
         self.session_days = int(os.getenv("JOBPILOT_SESSION_DAYS", "14"))
         self.max_upload_bytes = int(os.getenv("JOBPILOT_MAX_UPLOAD_MB", "5")) * 1024 * 1024
-        self.allow_registration = os.getenv("JOBPILOT_ALLOW_REGISTRATION", "1") == "1"
+        # "1" = open, "0" = closed, "first" = only until the first account exists
+        self.registration_mode = os.getenv("JOBPILOT_ALLOW_REGISTRATION", "1").strip().lower()
 
         # Development-only simulated job source (always labelled as SIMULATED in UI)
         self.allow_mock_sources = os.getenv("JOBPILOT_ALLOW_MOCK_SOURCES", "1") == "1"

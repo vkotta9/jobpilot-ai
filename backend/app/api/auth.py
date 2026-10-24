@@ -30,8 +30,9 @@ def _set_cookie(resp: Response, token: str, request: Request) -> None:
 
 @router.post("/register", dependencies=[Depends(rate_limit("auth", 10, 60))])
 def register(body: Credentials, request: Request, response: Response, db: Session = Depends(get_db)):
-    if not settings.allow_registration:
-        raise HTTPException(403, "Registration is disabled on this instance.")
+    mode = settings.registration_mode
+    if mode in ("0", "false", "no") or (mode == "first" and db.query(User.id).first() is not None):
+        raise HTTPException(403, "Registration is closed on this instance.")
     if db.query(User).filter_by(email=body.email).first():
         raise HTTPException(409, "An account with this email already exists.")
     user = User(email=body.email, password_hash=hash_password(body.password))
