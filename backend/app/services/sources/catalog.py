@@ -5,6 +5,20 @@ board returned open roles. Re-run that workflow to refresh the list.
 """
 
 _RAW = """
+Large companies (Workday)|NVIDIA|workday|nvidia|wd5|NVIDIAExternalCareerSite
+Large companies (Workday)|Salesforce|workday|salesforce|wd12|External_Career_Site
+Large companies (Workday)|Intel|workday|intel|wd1|External
+Large companies (Workday)|Adobe|workday|adobe|wd5|external_experienced
+Large companies (Workday)|HP|workday|hp|wd5|ExternalCareerSite
+Large companies (Workday)|PayPal|workday|paypal|wd1|jobs
+Large companies (Workday)|Capital One|workday|capitalone|wd12|Capital_One
+Large companies (Workday)|Mastercard|workday|mastercard|wd1|CorporateCareers
+Large companies (Workday)|Boeing|workday|boeing|wd1|EXTERNAL_CAREERS
+Large companies (Workday)|Target|workday|target|wd5|targetcareers
+Large companies (Workday)|Disney|workday|disney|wd5|disneycareer
+Large companies (Workday)|Workday|workday|workday|wd5|Workday
+Large companies (Workday)|Snap|workday|snapchat|wd1|snap
+Large companies (Workday)|Autodesk|workday|autodesk|wd1|Ext
 AI & ML|Anthropic|greenhouse|anthropic
 AI & ML|OpenAI|ashby|openai
 AI & ML|Scale AI|greenhouse|scaleai

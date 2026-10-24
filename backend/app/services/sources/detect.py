@@ -52,7 +52,7 @@ IN_HOUSE = {"google": "Google", "alphabet": "Google", "amazon": "Amazon", "aws":
             "jpmorgan": "JPMorgan Chase", "jpmorganchase": "JPMorgan Chase", "goldmansachs": "Goldman Sachs",
             "bloomberg": "Bloomberg", "qualcomm": "Qualcomm", "cisco": "Cisco", "x": "X", "twitter": "X"}
 # Well-known companies on Workday (verified live — see scripts/validate_companies.py)
-KNOWN_WORKDAY = {"nvidia": "nvidia|wd5|NVIDIAExternalCareerSite"}
+KNOWN_WORKDAY = {"nvidia": "nvidia|wd5|NVIDIAExternalCareerSite", "salesforce": "salesforce|wd12|External_Career_Site", "intel": "intel|wd1|External", "adobe": "adobe|wd5|external_experienced", "hp": "hp|wd5|ExternalCareerSite", "hpinc": "hp|wd5|ExternalCareerSite", "paypal": "paypal|wd1|jobs", "capitalone": "capitalone|wd12|Capital_One", "mastercard": "mastercard|wd1|CorporateCareers", "boeing": "boeing|wd1|EXTERNAL_CAREERS", "target": "target|wd5|targetcareers", "disney": "disney|wd5|disneycareer", "waltdisney": "disney|wd5|disneycareer", "thewaltdisneycompany": "disney|wd5|disneycareer", "workday": "workday|wd5|Workday", "snap": "snapchat|wd1|snap", "snapchat": "snapchat|wd1|snap", "snapinc": "snapchat|wd1|snap", "autodesk": "autodesk|wd1|Ext"}
 IGNORE_SLUGS = {"embed", "api", "jobs", "careers", "www", "apply", "job_board", "v1", "boards", "js"}
 PROBE_ORDER = ("greenhouse", "lever", "ashby", "workable", "recruitee", "smartrecruiters")
 
