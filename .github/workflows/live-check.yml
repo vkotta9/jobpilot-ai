@@ -80,6 +80,10 @@ jobs:
         working-directory: backend
         run: python scripts/live_check.py probe "https://apply.careers.microsoft.com/api/apply/v2/jobs?domain=microsoft.com&query=software%20engineer&start=0&num=10,https://apply.careers.microsoft.com/api/pcsx/search?domain=microsoft.com&query=software%20engineer&start=0"
         continue-on-error: true
+      - name: Data shapes (Microsoft, Google, Apple)
+        working-directory: backend
+        run: python scripts/live_check.py shape
+        continue-on-error: true
       - name: Deployed site health
         working-directory: backend
         run: python scripts/live_check.py site https://jobpilot-ai-45bq.onrender.com

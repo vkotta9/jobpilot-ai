@@ -63,6 +63,40 @@ def main() -> int:
                 rows.append(f"{url[:90]} → {type(e).__name__}")
         print("::notice title=probe::" + " || ".join(rows))
         return 0
+    if kind == "shape":
+        import json as _j
+        import re as _re
+
+        out = []
+        h = {"User-Agent": "JobPilotAI/0.1"}
+        r = httpx.get("https://apply.careers.microsoft.com/api/pcsx/search?domain=microsoft.com&query=software%20engineer&location=United%20States&start=0&sort_by=timestamp", headers=h, timeout=20)
+        d = r.json().get("data", {})
+        p0 = (d.get("positions") or [{}])[0]
+        out.append("MS search keys=" + ",".join(sorted(d.keys())) + " pos keys=" + ",".join(sorted(p0.keys())) + " sample=" + _j.dumps({k: p0[k] for k in list(p0)[:14]})[:900])
+        pid = p0.get("id")
+        for path in [f"/api/pcsx/position_details?position_id={pid}&domain=microsoft.com&hl=en", f"/api/apply/v2/jobs/{pid}?domain=microsoft.com"]:
+            rr = httpx.get("https://apply.careers.microsoft.com" + path, headers=h, timeout=20)
+            try:
+                dd = rr.json()
+                dd2 = dd.get("data", dd)
+                out.append(f"MS detail {path[:40]} {rr.status_code} keys=" + ",".join(sorted(dd2.keys()))[:600] + " desc=" + str(dd2.get("jobDescription") or dd2.get("job_description") or "")[:200])
+            except Exception:
+                out.append(f"MS detail {path[:40]} {rr.status_code} {rr.text[:120]!r}")
+        g = httpx.get("https://www.google.com/about/careers/applications/jobs/results?q=software%20engineer&location=United%20States", headers={**h, "Accept": "text/html"}, timeout=20, follow_redirects=True)
+        html = g.text
+        ids = _re.findall(r'jobs/results/(\d{6,})-([a-z0-9-]+)', html)
+        h3 = _re.findall(r'<h3[^>]*>([^<]{5,120})</h3>', html)
+        out.append(f"GOOGLE {g.status_code} len={len(html)} ids={ids[:3]} h3={h3[:3]} jsonld={'JobPosting' in html} af={'AF_initDataCallback' in html}")
+        if ids:
+            jp = httpx.get(f"https://www.google.com/about/careers/applications/jobs/results/{ids[0][0]}-{ids[0][1]}", headers={**h, "Accept": "text/html"}, timeout=20, follow_redirects=True)
+            t = jp.text
+            out.append(f"GOOGLE job {jp.status_code} jsonld={'JobPosting' in t} h2={_re.findall(r'<h2[^>]*>([^<]{3,80})</h2>', t)[:4]} quals={'Minimum qualifications' in t}")
+        a = httpx.get("https://jobs.apple.com/en-us/search?search=software%20engineer&sort=newest", headers={**h, "Accept": "text/html"}, timeout=20, follow_redirects=True)
+        at = a.text
+        out.append(f"APPLE {a.status_code} len={len(at)} details={_re.findall(r'/en-us/details/([0-9-]+)/([a-z0-9-]+)', at)[:3]} hydration={'__staticRouterHydrationData' in at} jsonld={'JobPosting' in at}")
+        for i in range(0, len(out), 1):
+            print("::notice title=shape::" + out[i][:3000])
+        return 0
     if kind == "debug":
         from app.services.sources import ADAPTERS as A
 
