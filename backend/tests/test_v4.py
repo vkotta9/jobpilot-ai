@@ -135,7 +135,13 @@ def test_jsearch_company_follow_checked_weekly():
 def test_detect_uses_verified_top_tech_entries():
     from app.services.sources import detect as det
 
-    d = det.detect("Meta")
+    d = det.detect("Meta", transport=_offline())
     assert d.status == "found" and d.kind == "jsearch"
-    d = det.detect("eBay")
+    d = det.detect("eBay", transport=_offline())
     assert d.kind == "jsearch"  # its Workday tenant is a subsidiary's site, so don't guess
+
+
+def _offline():
+    import httpx
+
+    return httpx.MockTransport(lambda req: httpx.Response(404, json={}))

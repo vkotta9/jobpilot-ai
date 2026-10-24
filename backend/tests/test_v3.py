@@ -106,7 +106,7 @@ def test_detect_parses_links_and_rejects_unsupported():
     assert det.from_text("https://jobs.lever.co/palantir") == [("lever", "palantir")]
     assert ("ashby", "openai") in det.from_text("<a href='https://jobs.ashbyhq.com/openai'>")
     assert det.detect("https://acme.taleo.net/careersection/jobs").status == "unsupported"
-    g = det.detect("Google")
+    g = det.detect("Google", transport=mock({}))  # careers site unreachable → falls back to Google Jobs
     assert g.status == "found" and g.kind == "jsearch" and g.identifier == "Google" and "JSearch" in g.message
 
 
