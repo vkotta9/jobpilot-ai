@@ -47,8 +47,11 @@ def tick() -> list[int]:
                 st = db.get(UserSettings, uid)
                 if st.automation_paused:  # re-check: user may have paused meanwhile
                     continue
-                run_all_sources(db, uid)
+                # mark the run first: if the free server sleeps or restarts midway, it mustn't
+                # start the whole (slow) run over again on every wake-up
                 st.last_auto_search_at = utcnow()
+                db.commit()
+                run_all_sources(db, uid)
             ran.append(uid)
         except Exception:  # pragma: no cover - logged, loop continues
             log.exception("Scheduled discovery failed for user %s", uid)

@@ -52,6 +52,16 @@ class JobSourceAdapter:
     keyword = False
     label = ""
     min_interval_hours = 0
+    title_filter: Optional[Callable[[str], bool]] = None  # set by discovery for company boards
+
+    def _skip_detail(self, title) -> bool:
+        """True when discovery will drop this title anyway, so don't spend CPU on its description."""
+        return self.title_filter is not None and not self.title_filter(str(title or ""))
+
+    def _lite(self, item: dict, title_key: str, desc_keys: tuple) -> dict:
+        if not isinstance(item, dict) or not self._skip_detail(item.get(title_key)):
+            return item
+        return {k: v for k, v in item.items() if k not in desc_keys}
 
     @classmethod
     def interval_for(cls, identifier: str) -> int:

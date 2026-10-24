@@ -9,6 +9,7 @@ _TMP = tempfile.mkdtemp(prefix="jobpilot-test-")
 os.environ["JOBPILOT_DATA_DIR"] = _TMP
 os.environ["DATABASE_URL"] = os.environ.get("TEST_DATABASE_URL") or f"sqlite:///{_TMP}/test.db"
 os.environ["JOBPILOT_SCHEDULER"] = "0"
+os.environ["JOBPILOT_SOURCE_PAUSE"] = "0"
 os.environ["OPENAI_API_KEY"] = ""
 os.environ["JOBPILOT_ALLOW_MOCK_SOURCES"] = "1"
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))

@@ -35,7 +35,7 @@ class AshbyAdapter(JobSourceAdapter):
         if not isinstance(data, dict) or "jobs" not in data:
             raise SourceError(f"ashby: board '{self.identifier}' not found.", status=404)
         company = self.company_name()
-        return [n for n in (self.normalize(j, company) for j in data.get("jobs") or [] if j.get("isListed", True)) if n]
+        return [n for n in (self.normalize(self._lite(j, "title", ("descriptionHtml", "descriptionPlain")), company) for j in data.get("jobs") or [] if j.get("isListed", True)) if n]
 
     @staticmethod
     def normalize(j: dict, company: str) -> Optional[NormalizedJob]:
@@ -65,7 +65,6 @@ class SmartRecruitersAdapter(JobSourceAdapter):
 
     def __init__(self, identifier: str, **kw):
         super().__init__(identifier, **kw)
-        self.title_filter = None  # set by discovery: callable(title) -> bool
 
     def fetch(self) -> list[NormalizedJob]:
         base = f"https://api.smartrecruiters.com/v1/companies/{self.identifier}/postings"
@@ -124,7 +123,7 @@ class WorkableAdapter(JobSourceAdapter):
         if not isinstance(data, dict) or "jobs" not in data:
             raise SourceError(f"workable: account '{self.identifier}' not found.", status=404)
         company = data.get("name") or self.company_name()
-        return [n for n in (self.normalize(j, company) for j in data.get("jobs") or []) if n]
+        return [n for n in (self.normalize(self._lite(j, "title", ("full_description", "description", "requirements", "benefits")), company) for j in data.get("jobs") or []) if n]
 
     @staticmethod
     def normalize(j: dict, company: str) -> Optional[NormalizedJob]:
@@ -155,7 +154,7 @@ class RecruiteeAdapter(JobSourceAdapter):
         data = self._get_json(f"https://{self.identifier}.recruitee.com/api/offers/")
         if not isinstance(data, dict) or "offers" not in data:
             raise SourceError(f"recruitee: careers site '{self.identifier}' not found.", status=404)
-        return [n for n in (self.normalize(o, self.company_name()) for o in data.get("offers") or []) if n]
+        return [n for n in (self.normalize(self._lite(o, "title", ("description", "requirements")), self.company_name()) for o in data.get("offers") or []) if n]
 
     @staticmethod
     def normalize(o: dict, company: str) -> Optional[NormalizedJob]:

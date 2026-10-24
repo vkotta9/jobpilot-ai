@@ -29,13 +29,33 @@ def _parse_dt(s: Optional[str]) -> Optional[datetime]:
 class GreenhouseAdapter(JobSourceAdapter):
     kind = "greenhouse"
     docs_url = "https://developers.greenhouse.io/job-board.html"
+    DETAIL_MAX = 40  # more matching roles than this: one bulk download is cheaper than many requests
 
     def fetch(self) -> list[NormalizedJob]:
         company = self._board_name()
-        data = self._get_json(API.format(token=self.identifier) + "/jobs", params={"content": "true"})
+        base = API.format(token=self.identifier) + "/jobs"
+        if self.title_filter is not None:
+            # Big boards (SpaceX lists ~2,800 roles) are slow to download with descriptions. List titles
+            # first, then fetch descriptions only for roles matching the user's target titles.
+            data = self._get_json(base)
+            if not isinstance(data, dict) or "jobs" not in data:
+                raise SourceError("greenhouse: response missing 'jobs'")
+            jobs = [j for j in data.get("jobs") or [] if j.get("id") and j.get("title")]
+            wanted = [j for j in jobs if not self._skip_detail(j["title"])]
+            if len(wanted) <= self.DETAIL_MAX:
+                detail = {}
+                for j in wanted:
+                    try:
+                        d = self._get_json(f"{base}/{j['id']}", max_attempts=2)
+                        if isinstance(d, dict) and d.get("id") and d.get("title"):
+                            detail[j["id"]] = d
+                    except SourceError:
+                        pass
+                return [self.normalize(detail.get(j["id"], j), company) for j in jobs]
+        data = self._get_json(base, params={"content": "true"})
         if not isinstance(data, dict) or "jobs" not in data:
             raise SourceError("greenhouse: response missing 'jobs'")
-        return [self.normalize(j, company) for j in data.get("jobs") or [] if j.get("id") and j.get("title")]
+        return [self.normalize(self._lite(j, "title", ("content",)), company) for j in data.get("jobs") or [] if j.get("id") and j.get("title")]
 
     def _board_name(self) -> str:
         try:

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from dataclasses import asdict
 from datetime import timedelta
 from typing import Optional
@@ -167,11 +168,19 @@ def search_context(db: Session, user_id: int) -> dict:
     return {"queries": search_queries(profile), "locations": locations, "credentials": creds}
 
 
+def pause_between_sources() -> None:
+    """Give web requests a turn: on a small (0.1 CPU) server a long search run otherwise starves the site."""
+    if settings.source_pause_s:
+        time.sleep(settings.source_pause_s)
+
+
 def run_all_sources(db: Session, user_id: int) -> list[dict]:
     from .matching import score_jobs  # local import to avoid cycle
 
     results = []
-    for src in db.query(JobSource).filter(JobSource.user_id == user_id, JobSource.enabled.is_(True)).all():
+    for i, src in enumerate(db.query(JobSource).filter(JobSource.user_id == user_id, JobSource.enabled.is_(True)).all()):
+        if i:
+            pause_between_sources()
         results.append(run_source(db, src))
     changed = [jid for r in results for jid in r.get("changed_job_ids", [])]
     if changed:

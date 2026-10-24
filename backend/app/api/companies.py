@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from ..db import get_db
 from ..models import JobSource, User, to_dict
 from ..security import audit, current_user, rate_limit
-from ..services.discovery import run_source
+from ..services.discovery import pause_between_sources, run_source
 from ..services.matching import score_jobs
 from ..services.sources import COMPANY_KINDS
 from ..services.sources.catalog import POPULAR, TOP_TECH
@@ -70,7 +70,9 @@ def _follow(db: Session, user: User, items: list[FollowItem], run_now: bool) -> 
                 try:
                     with session_scope() as bg:
                         ch: list[int] = []
-                        for sid in ids:
+                        for n, sid in enumerate(ids):
+                            if n:
+                                pause_between_sources()
                             src = bg.get(JobSource, sid)
                             if src is None:
                                 continue

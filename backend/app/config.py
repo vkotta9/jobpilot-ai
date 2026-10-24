@@ -58,6 +58,7 @@ class Settings:
         # Background automation
         self.scheduler_enabled = os.getenv("JOBPILOT_SCHEDULER", "1") == "1"
         self.scheduler_tick_s = int(os.getenv("JOBPILOT_SCHEDULER_TICK", "60"))
+        self.source_pause_s = float(os.getenv("JOBPILOT_SOURCE_PAUSE", "0.5"))
 
         # Security
         self.session_days = int(os.getenv("JOBPILOT_SESSION_DAYS", "14"))

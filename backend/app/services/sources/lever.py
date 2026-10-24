@@ -31,7 +31,8 @@ class LeverAdapter(JobSourceAdapter):
         if not isinstance(data, list):
             raise SourceError("lever: expected a JSON array of postings")
         company = self.company_name()
-        return [self.normalize(p, company) for p in data if p.get("id") and p.get("text")]
+        return [self.normalize(self._lite(p, "text", ("description", "descriptionPlain", "lists", "additional", "additionalPlain")), company)
+                for p in data if p.get("id") and p.get("text")]
 
     @staticmethod
     def normalize(p: dict, company: str) -> NormalizedJob:
