@@ -1,5 +1,5 @@
 import { api } from "../api.js";
-import { h, mount, loading, scoreRing, recBadge, simBadge, statusBadge, money, fmtDate, ago, busy, toast, confirmDialog } from "../ui.js";
+import { h, mount, loading, scoreRing, recBadge, simBadge, statusBadge, money, fmtDate, ago, busy, toast, confirmDialog, modal } from "../ui.js";
 
 export async function render(root, id) {
   mount(root, loading());
@@ -44,26 +44,14 @@ export async function render(root, id) {
         letter, tailor)),
     h("div", { class: "grid side" },
       h("div", { class: "stack" },
-        m ? h("div", { class: "card" },
-          h("div", { class: "card-head" }, h("h2", {}, "Match analysis"), h("div", { class: "row" }, h("span", { class: "faint" }, `scored ${ago(m.created_at)}`), rescore)),
-          h("p", {}, m.explanation),
-          (m.flags || []).map((f) => h("div", { class: `alert ${f.startsWith("SIMULATED") ? "sim" : "warn"}`, style: { margin: "6px 0" } }, f)),
-          h("hr"),
-          Object.entries(m.breakdown).map(([k, b]) => [
-            h("div", { class: "breakdown-row" }, h("span", { style: { textTransform: "capitalize", fontWeight: 600 } }, k),
-              h("div", { class: "bar", role: "img", "aria-label": `${k} ${Math.round(b.score * 100)}%` }, h("i", { style: { width: `${Math.round(b.score * 100)}%` } })),
-              h("span", { class: "small muted" }, `${b.points} / ${Math.round(100 * b.weight / Object.values(m.breakdown).reduce((a, x) => a + x.weight, 0))}`)),
-            h("p", { class: "breakdown-note" }, b.note)]),
-          h("p", { class: "faint" }, "Score = weighted sum of the components above (points earned / points possible). Change weights in your profile. Protected characteristics are never used.")
-        ) : h("div", { class: "alert" }, "Complete your profile to see a match score for this job."),
-        m && h("div", { class: "card" }, h("div", { class: "grid cols-2" },
-          h("div", {}, h("h3", {}, `Evidenced skills (${m.matched_skills.length})`), m.matched_skills.map((s) => h("span", { class: "chip good" }, s)), !m.matched_skills.length && h("p", { class: "muted small" }, "None found.")),
-          h("div", {}, h("h3", {}, `Missing or not evidenced (${m.missing_skills.length})`), m.missing_skills.map((s) => h("span", { class: "chip bad" }, s)),
-            h("p", { class: "faint", style: { marginTop: "6px" } }, "If you genuinely have one of these, add it to your profile with evidence — JobPilot won't add it for you.")))),
+        m ? atsCard(m, rescore) : h("div", { class: "alert" }, "Upload your resume (or fill in your profile) to see an ATS match score for this job."),
+        m && keywordCard(m),
         (j.relevant_experience || []).length > 0 && h("div", { class: "card" }, h("h2", {}, "Your most relevant experience"),
           j.relevant_experience.map((r) => h("div", { class: "list-item" }, h("div", {}, h("div", { class: "small muted" }, `${r.title} · ${r.company}`), h("div", {}, r.bullet)),
             h("div", {}, r.skills.map((s) => h("span", { class: "chip" }, s)))))),
-        h("div", { class: "card" }, h("h2", {}, "Job description"),
+        h("div", { class: "card" }, h("div", { class: "card-head" }, h("h2", {}, "Job description"), pasteBtn(j, root, id)),
+          (j.description_text || "").length < 600 && h("div", { class: "alert warn", style: { marginBottom: "8px" } },
+            "This source only provides a short summary. Open the official posting, copy the full description and paste it here for an accurate ATS score and better tailoring."),
           h("p", { class: "faint" }, "Shown as plain text exactly as published. It is treated as untrusted data by the AI features."),
           h("div", { class: "desc" }, j.description_text || "No description provided."))),
       h("div", { class: "stack" },
@@ -85,6 +73,51 @@ export async function render(root, id) {
             h("button", { class: "btn-sm btn-danger", onclick: async () => {
               if (await confirmDialog("Delete this job?", "Removes the job, its scores and materials from JobPilot.", "Delete", true)) { await api.del(`/api/jobs/${id}`); location.hash = "#/discover"; }
             } }, "Delete"))))));
+}
+
+const LABELS = { keywords: "Skills & keywords", title: "Job title", experience: "Experience", education: "Education", soft_skills: "Soft skills" };
+
+function atsCard(m, rescore) {
+  const comps = Object.entries(m.breakdown).filter(([k]) => !k.startsWith("_"));
+  const total = comps.reduce((a, [, x]) => a + x.weight, 0) || 1;
+  const prefs = m.breakdown._preferences || {};
+  return h("div", { class: "card" },
+    h("div", { class: "card-head" }, h("h2", {}, "ATS match"), h("div", { class: "row" }, h("span", { class: "faint" }, `scored ${ago(m.created_at)} against your ${m.breakdown._resume_source || "resume"}`), rescore)),
+    h("p", {}, m.explanation),
+    (m.flags || []).map((f) => h("div", { class: `alert ${f.startsWith("SIMULATED") ? "sim" : "warn"}`, style: { margin: "6px 0" } }, f)),
+    h("hr"),
+    comps.map(([k, b]) => [
+      h("div", { class: "breakdown-row" }, h("span", { style: { fontWeight: 600 } }, LABELS[k] || k),
+        h("div", { class: "bar", role: "img", "aria-label": `${k} ${Math.round(b.score * 100)}%` }, h("i", { style: { width: `${Math.round(b.score * 100)}%` } })),
+        h("span", { class: "small muted" }, `${b.points} / ${Math.round(100 * b.weight / total)}`)),
+      h("p", { class: "breakdown-note" }, b.note)]),
+    Object.keys(prefs).length > 0 && h("div", { style: { marginTop: "8px" } }, h("h3", {}, "Your preferences (not part of the ATS score)"),
+      Object.entries(prefs).map(([k, v]) => h("div", { class: "small", style: { margin: "3px 0" } },
+        h("span", { class: `badge ${v.score >= 0.75 ? "good" : v.score >= 0.4 ? "" : "warn"}`, style: { marginRight: "6px", textTransform: "capitalize" } }, k), v.note))),
+    h("p", { class: "faint", style: { marginTop: "8px" } }, "An estimate of how applicant tracking systems rank resumes: keyword overlap with the posting (required items count double), job title, years, education and soft skills. Change the weights in your profile. Protected characteristics are never used."));
+}
+
+function keywordCard(m) {
+  const kws = m.breakdown._keywords || [];
+  const req = kws.filter((k) => k.required && k.kind === "hard"), other = kws.filter((k) => !k.required && k.kind === "hard");
+  const soft = kws.filter((k) => k.kind === "soft");
+  const chips = (list) => list.map((k) => h("span", { class: `chip ${k.found ? "good" : "bad"}`, title: k.found ? "in your resume" : "not in your resume" }, k.term));
+  return h("div", { class: "card" }, h("h2", {}, "Keywords from the posting"),
+    req.length > 0 && h("div", {}, h("h3", {}, "Required"), chips(req)),
+    other.length > 0 && h("div", { style: { marginTop: "8px" } }, h("h3", {}, "Also mentioned / preferred"), chips(other)),
+    soft.length > 0 && h("div", { style: { marginTop: "8px" } }, h("h3", {}, "Soft skills"), chips(soft)),
+    !kws.length && h("p", { class: "muted small" }, "No keywords found — paste the full description."),
+    h("p", { class: "faint", style: { marginTop: "6px" } }, "Green = found in your resume, red = missing. “Tailor resume” can add the ones you truly have to your skills section."));
+}
+
+function pasteBtn(j, root, id) {
+  return h("button", { class: "btn-sm", onclick: async () => {
+    const ta = h("textarea", { rows: 14, placeholder: "Paste the full job description from the official posting", value: (j.description_text || "").length >= 600 ? j.description_text : "" });
+    const r = await modal("Paste the full job description", h("div", {}, ta), [{ label: "Cancel", value: () => null },
+      { label: "Save & rescore", primary: true, value: async () => { if (ta.value.trim().length < 50) { toast("Paste the whole description.", "bad"); return false; }
+        return api.put(`/api/jobs/${id}/description`, { description_text: ta.value }); } }]);
+    if (r) { toast(`Rescored: ${r.score}/100`); render(root, id); }
+  } }, "Paste full description");
 }
 
 const kv = (k, v) => h("div", { class: "list-item small" }, h("span", { class: "muted" }, k), h("span", { style: { textAlign: "right" } }, v || "—"));

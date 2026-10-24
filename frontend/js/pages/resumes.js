@@ -51,6 +51,9 @@ function resumeCard(r, root) {
           if (await confirmDialog("Delete resume?", "The file is removed from storage. Your profile is not changed.", "Delete", true)) { await api.del(`/api/resumes/${r.id}`); render(root); }
         } }, "Delete"))),
     (p.warnings || []).map((w) => h("div", { class: "alert warn", style: { marginBottom: "8px" } }, w)),
+    r.is_primary && h("div", { class: "alert good", style: { marginBottom: "8px" } }, "This is the resume JobPilot tailors. Tailored versions keep this exact file's layout, fonts and contact details — only matching lines and skills change."),
+    r.mime_type === "pdf" && h("details", { style: { marginBottom: "10px" } }, h("summary", { style: { cursor: "pointer" } }, "Show the file"),
+      h("img", { src: `/api/resumes/${r.id}/preview.png`, alt: "Resume preview", style: { width: "100%", maxWidth: "640px", border: "1px solid var(--border)", borderRadius: "8px", marginTop: "8px", background: "#fff" } })),
     h("div", { class: "grid cols-2" },
       h("div", {}, h("h3", {}, "Extracted details"),
         kv("Name", p.full_name), kv("Email", p.email), kv("Phone", p.phone), kv("Headline", p.headline),

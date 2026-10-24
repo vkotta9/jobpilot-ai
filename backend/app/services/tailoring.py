@@ -54,7 +54,7 @@ def job_keywords(job: Job, profile: CandidateProfile) -> list[str]:
     return find_skills(f"{job.title}\n{job.description_text}", extra=profile.skills or [])
 
 
-def _llm_rewrite(job: Job, items: list[dict], keywords: list[str]) -> dict[str, str]:
+def _llm_rewrite(job: Job, items: list[dict], keywords: list[str], cfg=None) -> dict[str, str]:
     schema = llm.strict_schema({
         "bullets": {"type": "array", "items": llm.strict_schema({"id": {"type": "string"}, "text": {"type": "string"}})}
     })
@@ -67,12 +67,13 @@ def _llm_rewrite(job: Job, items: list[dict], keywords: list[str]) -> dict[str, 
     )
     payload = f"<candidate_facts>\n{facts}\n</candidate_facts>\n" + llm.untrusted(
         "job_description", f"{job.title} at {job.company}\n{job.description_text}", 8000)
-    out = llm.complete_json(task, payload, schema, name="bullets")
+    out = llm.complete_json(task, payload, schema, cfg=cfg, name="bullets")
     return {b["id"]: b["text"].strip() for b in out.get("bullets", []) if b.get("text")}
 
 
-def tailor_resume(profile: CandidateProfile, job: Job, resume_text: str = "", use_llm: Optional[bool] = None) -> tuple[dict, list[dict], str]:
+def tailor_resume(profile: CandidateProfile, job: Job, resume_text: str = "", use_llm: Optional[bool] = None, cfg=None) -> tuple[dict, list[dict], str]:
     """Return (content, flags, generator)."""
+    cfg = cfg or llm.env_config()
     keywords = job_keywords(job, profile)
     evidence = candidate_evidence_text(profile, resume_text)
     covered = [k for k in keywords if contains_term(evidence, k)]
@@ -96,11 +97,11 @@ def tailor_resume(profile: CandidateProfile, job: Job, resume_text: str = "", us
         experience.append({k: e.get(k, "") for k in ("company", "title", "location", "start", "end")} | {"bullets": bullets})
 
     generator = "deterministic"
-    want_llm = llm.available() if use_llm is None else (use_llm and llm.available())
+    want_llm = (cfg is not None) if use_llm is None else bool(use_llm and cfg is not None)
     if want_llm and rewrite_items:
         try:
-            rewrites = _llm_rewrite(job, rewrite_items[:60], keywords)
-            generator = "llm:" + llm.settings.openai_model
+            rewrites = _llm_rewrite(job, rewrite_items[:60], keywords, cfg)
+            generator = "llm:" + cfg.model
             for exp in experience:
                 for b in exp["bullets"]:
                     new = rewrites.get(b["id"])
@@ -173,7 +174,8 @@ def validate_resume_edit(original: dict, edited: dict) -> list[str]:
     return problems
 
 
-def cover_letter(profile: CandidateProfile, job: Job, assessment: Optional[dict], use_llm: Optional[bool] = None) -> tuple[dict, list[dict], str]:
+def cover_letter(profile: CandidateProfile, job: Job, assessment: Optional[dict], use_llm: Optional[bool] = None, cfg=None) -> tuple[dict, list[dict], str]:
+    cfg = cfg or llm.env_config()
     matched = (assessment or {}).get("matched_skills", [])[:5]
     relevant = (assessment or {}).get("relevant_experience", [])[:3]
     name = profile.full_name or "[[ADD: your name]]"
@@ -194,7 +196,7 @@ def cover_letter(profile: CandidateProfile, job: Job, assessment: Optional[dict]
         f"Sincerely,\n{name}",
     ] if x)
     generator = "deterministic"
-    want_llm = llm.available() if use_llm is None else (use_llm and llm.available())
+    want_llm = (cfg is not None) if use_llm is None else bool(use_llm and cfg is not None)
     if want_llm:
         try:
             schema = llm.strict_schema({"body": {"type": "string"}})
@@ -203,11 +205,11 @@ def cover_letter(profile: CandidateProfile, job: Job, assessment: Optional[dict]
                 "Polish this cover letter draft for the target job. Keep it under 300 words. Keep every "
                 "[[ADD: ...]] placeholder exactly as written. Do not add any fact not in candidate_facts.",
                 f"<candidate_facts>\n{facts}\n</candidate_facts>\n"
-                + llm.untrusted("job_description", job.description_text, 6000), schema, name="cover_letter")
+                + llm.untrusted("job_description", job.description_text, 6000), schema, cfg=cfg, name="cover_letter")
             new = out.get("body", "").strip()
             problems = fact_guard(body, new, candidate_evidence_text(profile))
             if new and not problems and PLACEHOLDER_RE.search(new):
-                body, generator = new, "llm:" + llm.settings.openai_model
+                body, generator = new, "llm:" + cfg.model
             elif new:
                 flags.append({"path": "generator", "message": "AI draft rejected by fact guard (" + "; ".join(problems or ["placeholder removed"]) + "). Using rule-based draft."})
         except llm.LLMError as e:

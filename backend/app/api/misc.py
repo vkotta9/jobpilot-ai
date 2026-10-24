@@ -30,7 +30,8 @@ def health(db: Session = Depends(get_db)):
         "status": "ok" if db_ok else "degraded",
         "database": "ok" if db_ok else "error",
         "database_backend": settings.database_url.split(":", 1)[0],
-        "llm": {"configured": llm.available(), "model": settings.openai_model if llm.available() else None},
+        "llm": {"configured": llm.available(), "model": settings.openai_model if llm.available() else None,
+                "note": "Users can also connect their own AI key in Settings → Connections."},
         "simulated_sources_allowed": settings.allow_mock_sources,
         "scheduler_enabled": settings.scheduler_enabled,
     }
@@ -49,7 +50,7 @@ def dashboard(user: M.User = Depends(current_user), db: Session = Depends(get_db
         "has_profile": bool(db.query(M.CandidateProfile).filter_by(user_id=user.id).one().experience),
         "has_resume": db.query(M.Resume).filter_by(user_id=user.id).count() > 0,
         "has_sources": db.query(M.JobSource).filter_by(user_id=user.id).count() > 0,
-        "llm_configured": llm.available(),
+        "llm_configured": llm.config_for(db, user.id) is not None,
     }
 
 
@@ -182,7 +183,7 @@ def audit_log(user: M.User = Depends(current_user), db: Session = Depends(get_db
 
 # ---------------------------------------------------------------- privacy
 
-_EXPORT_TABLES = [M.CandidateProfile, M.ProfileRevision, M.UserSettings, M.Resume, M.JobSource, M.SavedSearch, M.Job,
+_EXPORT_TABLES = [M.IntegrationSetting, M.CandidateProfile, M.ProfileRevision, M.UserSettings, M.Resume, M.JobSource, M.SavedSearch, M.Job,
                   M.MatchAssessment, M.Application, M.Document, M.ScreeningAnswer, M.Contact, M.OutreachMessage,
                   M.FollowUpTask, M.Interview, M.ApplicationEvent, M.AuditLog]
 
@@ -222,7 +223,7 @@ def delete_account(confirm_email: str, user: M.User = Depends(current_user), db:
         db.query(M.JobSnapshot).filter(M.JobSnapshot.job_id.in_(job_ids)).delete(synchronize_session=False)
         db.query(M.Job).filter_by(user_id=user.id).update({"duplicate_of_id": None}, synchronize_session=False)
     for model in [M.Job, M.SavedSearch, M.JobSource, M.Resume, M.ProfileRevision, M.CandidateProfile,
-                  M.AuthSession, M.AuditLog]:
+                  M.AuthSession, M.AuditLog, M.IntegrationSetting]:
         db.query(model).filter_by(user_id=user.id).delete(synchronize_session=False)
     db.query(M.UserSettings).filter_by(user_id=user.id).delete(synchronize_session=False)
     db.query(M.User).filter_by(id=user.id).delete(synchronize_session=False)

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import re
 from datetime import datetime
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
@@ -36,7 +37,8 @@ from ..schemas import (
 )
 from ..security import audit, current_user, owned, rate_limit
 from ..services import applications as appsvc
-from ..services import export
+from ..services import export, inplace_pdf, llm, tailor_inplace
+from ..services.inplace_pdf import FitError
 from ..services.insights import latest_scores, next_best_action
 from ..services.matching import assess
 from ..services.tailoring import cover_letter, tailor_resume, unresolved_placeholders, validate_resume_edit
@@ -47,7 +49,8 @@ router = APIRouter(prefix="/api", tags=["applications"])
 
 def _profile(db: Session, user: User) -> CandidateProfile:
     p = db.query(CandidateProfile).filter_by(user_id=user.id).one_or_none()
-    if not p or not (p.experience or p.skills):
+    has_file = db.query(Resume).filter_by(user_id=user.id, is_primary=True).count() > 0
+    if not p or not (p.experience or p.skills or has_file):
         raise HTTPException(400, "Complete your profile (experience and skills) before generating materials.")
     return p
 
@@ -71,7 +74,16 @@ def generate_resume(jid: int, user: User = Depends(current_user), db: Session = 
     job = owned(db, Job, jid, user)
     p = _profile(db, user)
     resume = db.query(Resume).filter_by(user_id=user.id, is_primary=True).one_or_none()
-    content, flags, generator = tailor_resume(p, job, resume.text if resume else "")
+    if resume is not None and resume.mime_type in ("pdf", "docx") and tailor_inplace.resume_bytes(resume) is not None:
+        # keep the user's own file and format; only re-word lines and add skills
+        try:
+            content, flags, generator = tailor_inplace.build_plan(db, user.id, job, resume)
+            out, _ = tailor_inplace.render(content, resume)
+            content["ats_after"] = tailor_inplace.ats_after(content, out, job)
+        except (ValueError, FitError) as e:
+            raise HTTPException(400, str(e))
+    else:
+        content, flags, generator = tailor_resume(p, job, resume.text if resume else "", cfg=llm.config_for(db, user.id))
     d = Document(user_id=user.id, job_id=job.id, kind="resume", version=_next_version(db, job.id, "resume"),
                  content=content, flags=flags, generator=generator)
     db.add(d)
@@ -91,7 +103,7 @@ def generate_letter(jid: int, user: User = Depends(current_user), db: Session = 
     p = _profile(db, user)
     resume = db.query(Resume).filter_by(user_id=user.id, is_primary=True).one_or_none()
     a = assess(job, p, resume.text if resume else "")
-    content, flags, generator = cover_letter(p, job, a)
+    content, flags, generator = cover_letter(p, job, a, cfg=llm.config_for(db, user.id))
     d = Document(user_id=user.id, job_id=job.id, kind="cover_letter", version=_next_version(db, job.id, "cover_letter"),
                  content=content, flags=flags, generator=generator)
     db.add(d)
@@ -108,6 +120,12 @@ def get_document(did: int, user: User = Depends(current_user), db: Session = Dep
     d = owned(db, Document, did, user)
     out = doc_out(d)
     out["placeholders"] = unresolved_placeholders(d.content)
+    if d.content.get("format") == "inplace":
+        r = db.get(Resume, d.content["resume_id"])
+        raw = tailor_inplace.resume_bytes(r) if r else None
+        out["pages"] = inplace_pdf.page_count(raw) if raw and d.content["file_kind"] == "pdf" else 1
+        out["resume_available"] = r is not None
+        return out
     if d.kind == "resume":
         p = db.query(CandidateProfile).filter_by(user_id=user.id).one()
         out["original"] = {"summary": p.summary, "skills": p.skills, "experience": p.experience}
@@ -117,6 +135,23 @@ def get_document(did: int, user: User = Depends(current_user), db: Session = Dep
 @router.put("/documents/{did}")
 def edit_document(did: int, body: DocumentEdit, user: User = Depends(current_user), db: Session = Depends(get_db)):
     d = owned(db, Document, did, user)
+    if d.content.get("format") == "inplace":
+        d.content = _merge_inplace_edit(d.content, body.content)
+        r = db.get(Resume, d.content["resume_id"])
+        job = db.get(Job, d.job_id)
+        try:
+            out, warnings = _render_inplace(d, r)
+        except FitError as e:
+            raise HTTPException(400, _fit_message(d.content, str(e)))
+        content = dict(d.content)
+        content["ats_after"] = tailor_inplace.ats_after(content, out, job)
+        content["warnings"] = warnings
+        d.content = content
+        d.status, d.approved_at = "draft", None
+        _invalidate_for_job(db, d.job_id, user.id, "resume edited")
+        audit(db, user.id, "document.edit", "document", d.id)
+        db.commit()
+        return doc_out(d)
     if d.kind == "resume":
         problems = validate_resume_edit(d.content, body.content)
         if problems:
@@ -145,6 +180,11 @@ def approve_document(did: int, body: ApproveIn, user: User = Depends(current_use
     ph = unresolved_placeholders(d.content)
     if ph:
         raise HTTPException(400, f"Fill or remove {len(ph)} [[ADD: …]] placeholder(s) before approving.")
+    if d.content.get("format") == "inplace":
+        try:
+            _render_inplace(d, db.get(Resume, d.content["resume_id"]))
+        except FitError as e:
+            raise HTTPException(400, _fit_message(d.content, str(e)))
     d.status, d.approved_at = "approved", utcnow()
     audit(db, user.id, "document.approve", "document", d.id)
     db.commit()
@@ -168,6 +208,22 @@ def download_document(did: int, format: str = "pdf", user: User = Depends(curren
     d = owned(db, Document, did, user)
     if format not in ("pdf", "docx"):
         raise HTTPException(400, "format must be pdf or docx")
+    if d.content.get("format") == "inplace":
+        kind = d.content["file_kind"]
+        if format != kind:
+            raise HTTPException(400, f"This resume keeps your original {kind.upper()} format — download it as {kind.upper()}.")
+        try:
+            data, _ = _render_inplace(d, db.get(Resume, d.content["resume_id"]))
+        except FitError as e:
+            raise HTTPException(400, _fit_message(d.content, str(e)))
+        stem = re.sub(r"\.(pdf|docx)$", "", d.content.get("resume_filename") or "resume", flags=re.I)
+        target = d.content.get("target", {})
+        base = re.sub(r"[^A-Za-z0-9]+", "_", f"{stem}_{target.get('company', '')}").strip("_")
+        if d.status != "approved":
+            base += "_DRAFT"
+        media = "application/pdf" if kind == "pdf" else \
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        return Response(data, media_type=media, headers={"Content-Disposition": f'attachment; filename="{base}.{kind}"'})
     fn = {("resume", "pdf"): export.resume_pdf, ("resume", "docx"): export.resume_docx,
           ("cover_letter", "pdf"): export.letter_pdf, ("cover_letter", "docx"): export.letter_docx}[(d.kind, format)]
     data = fn(d.content)
@@ -178,6 +234,72 @@ def download_document(did: int, format: str = "pdf", user: User = Depends(curren
     media = "application/pdf" if format == "pdf" else \
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     return Response(data, media_type=media, headers={"Content-Disposition": f'attachment; filename="{base}.{format}"'})
+
+
+@router.get("/documents/{did}/preview.png")
+def preview_document(did: int, page: int = 0, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    d = owned(db, Document, did, user)
+    if d.content.get("format") != "inplace":
+        raise HTTPException(400, "Preview is available for format-preserving resumes.")
+    r = db.get(Resume, d.content["resume_id"])
+    try:
+        data, _ = _render_inplace(d, r)
+    except FitError as e:
+        raise HTTPException(400, _fit_message(d.content, str(e)))
+    if d.content["file_kind"] == "pdf":
+        png = inplace_pdf.page_png(data, page)
+    else:
+        raise HTTPException(400, "Live preview is available for PDF resumes; download the DOCX to view it.")
+    return Response(png, media_type="image/png", headers={"Cache-Control": "no-store"})
+
+
+@router.get("/resumes/{rid}/preview.png")
+def preview_resume(rid: int, page: int = 0, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    r = owned(db, Resume, rid, user)
+    data = tailor_inplace.resume_bytes(r)
+    if not data or r.mime_type != "pdf":
+        raise HTTPException(400, "Preview is available for PDF resumes.")
+    return Response(inplace_pdf.page_png(data, page), media_type="image/png")
+
+
+def _render_inplace(d: Document, r: Optional[Resume]):
+    if r is None:
+        raise HTTPException(400, "The original resume for this document was deleted. Upload it again and re-tailor.")
+    try:
+        return tailor_inplace.render(d.content, r)
+    except ValueError as e:
+        if isinstance(e, FitError):
+            raise
+        raise HTTPException(400, str(e))
+
+
+def _fit_message(content: dict, msg: str) -> str:
+    uid = msg.split(":", 1)[0]
+    unit = next((u for u in content.get("units", []) if u["id"] == uid), None)
+    where = f"“{tailor_inplace.plain(unit['original'])[:60]}…”" if unit else "one line"
+    return f"The new text for {where} doesn't fit in the original space ({msg.split(':', 1)[-1].strip()}). Shorten it a little."
+
+
+def _merge_inplace_edit(old: dict, new: dict) -> dict:
+    """Only per-unit final text/accepted flags and skill selections can change; facts stay server-owned."""
+    out = dict(old)
+    incoming_units = {u.get("id"): u for u in new.get("units", []) if isinstance(u, dict)}
+    units = []
+    for u in old["units"]:
+        u = dict(u)
+        inc = incoming_units.get(u["id"])
+        if inc is not None and u["kind"] in ("bullet", "paragraph"):
+            final = str(inc.get("final", u["final"]))[:3000]
+            u["final"] = final if tailor_inplace.plain(final) else u["original"]
+            u["accepted"] = bool(inc.get("accepted", u["accepted"]))
+            if u["accepted"] and tailor_inplace.plain(u["final"]) != tailor_inplace.plain(u.get("proposed") or ""):
+                if tailor_inplace.plain(u["final"]) != tailor_inplace.plain(u["original"]):
+                    u["status"] = "edited"
+        units.append(u)
+    out["units"] = units
+    sel = {s.get("term"): bool(s.get("selected")) for s in new.get("skills", []) if isinstance(s, dict)}
+    out["skills"] = [dict(s, selected=sel.get(s["term"], s["selected"])) for s in old.get("skills", [])]
+    return out
 
 
 # ---------------------------------------------------------------- applications

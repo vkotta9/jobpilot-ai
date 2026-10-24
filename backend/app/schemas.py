@@ -69,11 +69,12 @@ class WorkAuthorization(BaseModel):
 
 
 class MatchWeights(BaseModel):
-    skills: float = Field(default=40, ge=0, le=100)
-    title: float = Field(default=20, ge=0, le=100)
-    seniority: float = Field(default=15, ge=0, le=100)
-    location: float = Field(default=15, ge=0, le=100)
-    compensation: float = Field(default=10, ge=0, le=100)
+    """Weights of the ATS match components (normalised; unknown legacy keys ignored)."""
+    keywords: float = Field(default=45, ge=0, le=100)
+    title: float = Field(default=15, ge=0, le=100)
+    experience: float = Field(default=15, ge=0, le=100)
+    education: float = Field(default=15, ge=0, le=100)
+    soft_skills: float = Field(default=10, ge=0, le=100)
 
 
 class ProfileIn(BaseModel):
@@ -120,7 +121,7 @@ class ProfilePatch(BaseModel):
 
 
 class SourceIn(BaseModel):
-    kind: Literal["greenhouse", "lever", "mock"]
+    kind: Literal["greenhouse", "lever", "mock", "adzuna", "remotive", "muse"]
     identifier: str = Field(min_length=1, max_length=200, pattern=r"^[A-Za-z0-9_.\-]+$")
     display_name: str = Field(default="", max_length=200)
 

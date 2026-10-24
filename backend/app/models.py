@@ -371,6 +371,18 @@ class ApplicationEvent(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
+class IntegrationSetting(Base):
+    """Per-user connection settings (API keys) — stored encrypted (services/secretbox.py)."""
+
+    __tablename__ = "integration_settings"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    provider: Mapped[str] = mapped_column(String(40))  # ai | adzuna | muse
+    data_encrypted: Mapped[str] = mapped_column(Text)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
+    __table_args__ = (UniqueConstraint("user_id", "provider", name="uq_integration_provider"),)
+
+
 class AuditLog(Base):
     __tablename__ = "audit_logs"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -394,7 +406,7 @@ class SchemaMigration(Base):
 def to_dict(obj: Any, exclude: tuple[str, ...] = ()) -> dict:
     out = {}
     for col in obj.__table__.columns:
-        if col.name in exclude or col.name == "file_data":
+        if col.name in exclude or col.name in ("file_data", "data_encrypted"):
             continue
         val = getattr(obj, col.name)
         if isinstance(val, datetime):

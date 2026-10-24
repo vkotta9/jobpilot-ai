@@ -9,7 +9,9 @@ export async function render(root) {
   const p = await api.get("/api/profile");
   const prefs = p.preferences || {};
   const auth = p.work_authorization || {};
-  const w = Object.assign({ skills: 40, title: 20, seniority: 15, location: 15, compensation: 10 }, p.match_weights || {});
+  const W0 = { keywords: 45, title: 15, experience: 15, education: 15, soft_skills: 10 };
+  const w = Object.fromEntries(Object.keys(W0).map((k) => [k, (p.match_weights || {})[k] ?? W0[k]]));
+  const WL = { keywords: "Skills & keywords", title: "Job title", experience: "Experience", education: "Education", soft_skills: "Soft skills" };
 
   const inp = (v, attrs = {}) => h("input", { value: v ?? "", ...attrs });
   const f = {
@@ -37,7 +39,7 @@ export async function render(root) {
     const out = h("strong", {}, String(w[k]));
     const r = h("input", { type: "range", min: 0, max: 100, step: 5, value: w[k], "aria-label": `${k} weight`, oninput: () => (out.textContent = r.value) });
     r.dataset.key = k;
-    return h("div", { class: "breakdown-row" }, h("span", { style: { textTransform: "capitalize" } }, k), r, out);
+    return h("div", { class: "breakdown-row" }, h("span", {}, WL[k]), r, out);
   });
 
   const exp = h("div", { class: "stack" });
@@ -108,7 +110,7 @@ export async function render(root) {
         h("div", { class: "full" }, field("Exclude jobs mentioning", f.exclude)))),
       section("Work authorization", "Used only to check eligibility statements in postings and to pre-fill matching screening questions. Never guessed.",
         h("div", { class: "form-grid" }, field("Authorized to work in", f.countries, "Comma-separated countries"), field("Visa sponsorship", f.sponsor))),
-      section("Match score weights", "How much each factor counts toward the 0–100 match score. Weights are normalized.", weights),
+      section("ATS score weights", "How much each part counts toward the 0–100 ATS match. Defaults mirror how applicant tracking systems rank resumes. Location and salary are checked separately.", weights),
       h("div", { class: "card row between" },
         h("label", { class: "check", for: "confirm" }, f.confirm, "I confirm this profile is accurate and may be used to generate my materials."),
         save2)));

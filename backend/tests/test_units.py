@@ -165,18 +165,21 @@ def test_years_of_experience_non_overlapping():
 def test_match_score_is_transparent_and_bounded():
     a = assess(job_obj(), profile_obj())
     assert 0 <= a["score"] <= 100
-    assert set(a["breakdown"]) == {"skills", "title", "seniority", "location", "compensation"}
-    total_points = sum(b["points"] for b in a["breakdown"].values())
+    comps = {k: v for k, v in a["breakdown"].items() if not k.startswith("_")}
+    assert set(comps) == {"keywords", "title", "experience", "education", "soft_skills"}
+    assert set(a["breakdown"]["_preferences"]) == {"location", "compensation", "seniority"}
+    total_points = sum(b["points"] for b in comps.values())
     assert abs(total_points - a["score"]) <= 1
     assert "kubernetes" in a["missing_skills"] and "python" in a["matched_skills"]
     assert a["recommendation"] in ("apply", "review", "skip")
 
 
 def test_weights_change_score():
-    p_skills = profile_obj(match_weights={"skills": 100, "title": 0, "seniority": 0, "location": 0, "compensation": 0})
-    p_title = profile_obj(match_weights={"skills": 0, "title": 100, "seniority": 0, "location": 0, "compensation": 0})
+    zero = {"keywords": 0, "title": 0, "experience": 0, "education": 0, "soft_skills": 0}
+    p_skills = profile_obj(match_weights={**zero, "keywords": 100})
+    p_title = profile_obj(match_weights={**zero, "title": 100})
     j = job_obj()
-    assert assess(j, p_title)["score"] == 100
+    assert assess(j, p_title, "Senior Backend Engineer at Acme")["score"] == 100
     assert assess(j, p_skills)["score"] < 100
 
 

@@ -30,7 +30,7 @@ router = APIRouter(prefix="/api", tags=["jobs"])
 def catalog(user: User = Depends(current_user)):
     out = []
     for kind, cls in ADAPTERS.items():
-        if cls.is_simulated and not settings.allow_mock_sources:
+        if (cls.is_simulated and not settings.allow_mock_sources) or cls.keyword:
             continue
         out.append({"kind": kind, "simulated": cls.is_simulated, "requires_credentials": cls.requires_credentials,
                     "docs_url": cls.docs_url,
@@ -38,6 +38,8 @@ def catalog(user: User = Depends(current_user)):
                         "greenhouse": "Board token from job-boards.greenhouse.io/<token> (e.g. 'anthropic', 'airbnb')",
                         "lever": "Site name from jobs.lever.co/<site> (e.g. 'palantir')",
                         "mock": "Any word — generates clearly-labelled SIMULATED demo listings",
+                        "adzuna": "Use 'Find jobs for me' above instead", "remotive": "Use 'Find jobs for me' above instead",
+                        "muse": "Use 'Find jobs for me' above instead",
                     }.get(kind, "")})
     return out
 

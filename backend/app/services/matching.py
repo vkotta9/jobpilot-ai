@@ -131,37 +131,31 @@ def _comp_score(job: Job, prefs: dict) -> tuple[float, str]:
 
 
 def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
+    """ATS match of the resume against the posting + preference checks.
+
+    `score` is the ATS-style match (see services/ats.py). Location, salary,
+    seniority and sponsorship are *preference checks*: they don't change the
+    ATS score but they do shape the recommendation and raise flags.
+    """
+    from . import ats
+
     prefs = profile.preferences or {}
     weights = MatchWeights(**(profile.match_weights or {})).model_dump()
-    evidence = candidate_evidence_text(profile, resume_text)
+    text = resume_text.strip() or candidate_evidence_text(profile)
     jd = f"{job.title}\n{job.description_text}".lower()
+    a = ats.score(text, job.title, job.description_text or "", job.company, weights, prefs.get("target_titles") or [])
+    score = a["score"]
+    matched, missing = a["matched"], a["missing"]
 
-    job_skills = find_skills(jd, extra=profile.skills or [])
-    matched = [s for s in job_skills if contains_term(evidence, s)]
-    missing = [s for s in job_skills if s not in matched]
-    if job_skills:
-        skills_score = len(matched) / len(job_skills)
-        skills_note = f"{len(matched)} of {len(job_skills)} skills found in the posting are evidenced in your profile."
-    else:
-        skills_score, skills_note = 0.5, "No recognisable skills in the posting (neutral)."
-
-    title_score, title_note = _title_score(job.title, prefs.get("target_titles") or [])
-    yoe = years_of_experience(profile.experience or [])
+    yoe = ats.resume_years(text) or years_of_experience(profile.experience or [])
     sen_score, sen_note, sen_flag = _seniority_score(job, prefs, yoe)
     loc_score, loc_note = _location_score(job, prefs)
     comp_score, comp_note = _comp_score(job, prefs)
-
-    comps = {
-        "skills": (skills_score, skills_note),
-        "title": (title_score, title_note),
-        "seniority": (sen_score, sen_note),
-        "location": (loc_score, loc_note),
-        "compensation": (comp_score, comp_note),
+    preferences = {
+        "location": {"score": loc_score, "note": loc_note},
+        "compensation": {"score": comp_score, "note": comp_note},
+        "seniority": {"score": sen_score, "note": sen_note},
     }
-    total_w = sum(weights.values()) or 1
-    score = round(100 * sum(weights[k] * comps[k][0] for k in comps) / total_w)
-    breakdown = {k: {"score": round(v[0], 2), "weight": weights[k],
-                     "points": round(100 * weights[k] * v[0] / total_w, 1), "note": v[1]} for k, v in comps.items()}
 
     flags: list[str] = []
     auth = profile.work_authorization or {}
@@ -175,29 +169,28 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
     excl = [k for k in prefs.get("exclude_keywords") or [] if k and contains_term(jd, k.lower())]
     if excl:
         flags.append("Contains excluded keyword(s): " + ", ".join(excl))
+    if loc_score <= 0.1:
+        flags.append("Location: " + loc_note)
     if job.listing_status != "active":
         flags.append("Listing is no longer active on its source.")
+    if len(job.description_text or "") < 600:
+        flags.append("Only a short job summary is available — open the posting and paste the full description for an accurate score.")
     if job.is_simulated:
         flags.append("SIMULATED listing (demo data) — not a real job.")
 
-    if score >= 70:
-        rec = "apply"
-    elif score >= 50:
-        rec = "review"
-    else:
-        rec = "skip"
-    hard = any(f.startswith(("Work authorization:", "Contains excluded", "Listing is no longer")) for f in flags)
+    rec = "apply" if score >= 70 else "review" if score >= 50 else "skip"
+    hard = any(f.startswith(("Work authorization:", "Contains excluded", "Listing is no longer", "Location:")) for f in flags)
     if hard and rec == "apply":
         rec = "review"
 
-    strengths = [k for k, v in comps.items() if v[0] >= 0.75]
-    weak = [k for k, v in comps.items() if v[0] < 0.4]
+    bd = a["breakdown"]
+    strengths = [k.replace("_", " ") for k, v in bd.items() if v["score"] >= 0.75]
+    weak = [k.replace("_", " ") for k, v in bd.items() if v["score"] < 0.4]
     explanation = (
-        f"Score {score}/100. "
+        f"ATS match {score}/100. "
         + (f"Strong on {', '.join(strengths)}. " if strengths else "")
         + (f"Weak on {', '.join(weak)}. " if weak else "")
-        + (f"Evidenced skills: {', '.join(matched[:8])}. " if matched else "")
-        + (f"Not evidenced: {', '.join(missing[:8])}." if missing else "")
+        + (f"Missing required keywords: {', '.join(a['missing_required'][:8])}." if a["missing_required"] else "")
     ).strip()
 
     relevant = []
@@ -205,9 +198,14 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
         for b in e.get("bullets", []):
             hits = [s for s in matched if contains_term(b.lower(), s)]
             if hits:
-                relevant.append({"company": e.get("company", ""), "title": e.get("title", ""),
-                                 "bullet": b, "skills": hits})
+                relevant.append({"company": e.get("company", ""), "title": e.get("title", ""), "bullet": b, "skills": hits})
     relevant.sort(key=lambda r: -len(r["skills"]))
+    breakdown = dict(bd)
+    breakdown["_preferences"] = preferences
+    breakdown["_keywords"] = a["keywords"]
+    breakdown["_soft"] = {"matched": a["soft_matched"], "missing": a["soft_missing"]}
+    breakdown["_missing_required"] = a["missing_required"]
+    breakdown["_resume_source"] = "uploaded resume" if resume_text.strip() else "profile"
 
     return {
         "score": score,

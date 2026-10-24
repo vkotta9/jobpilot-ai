@@ -42,6 +42,9 @@ def test_full_workflow(client):
 
     # tailor + letter
     rd = client.post(f"/api/jobs/{backend['id']}/resume/tailor", headers=h).json()
+    # an uploaded resume is tailored in place: same file format, header untouched
+    assert rd["content"]["format"] == "inplace" and rd["content"]["file_kind"] == "docx"
+    assert "ats_before" in rd["content"] and "ats_after" in rd["content"]
     ld = client.post(f"/api/jobs/{backend['id']}/cover-letter", headers=h).json()
     app_id = client.post(f"/api/jobs/{backend['id']}/shortlist", headers=h).json()["application_id"]
 
@@ -83,8 +86,9 @@ def test_full_workflow(client):
 
     # editing after approval invalidates it
     doc = client.get(f"/api/documents/{rd['id']}", headers=h).json()
-    doc["content"]["summary"] = doc["content"]["summary"] + " Edited."
-    client.put(f"/api/documents/{rd['id']}", json={"content": doc["content"]}, headers=h)
+    bullet = next(u for u in doc["content"]["units"] if u["kind"] == "bullet")
+    bullet["final"], bullet["accepted"] = "Delivered the payments API in **Python** and FastAPI", True
+    assert client.put(f"/api/documents/{rd['id']}", json={"content": doc["content"]}, headers=h).status_code == 200
     det = client.get(f"/api/applications/{app_id}", headers=h).json()
     assert det["approval_current"] is False and det["status"] == "preparing"
     assert client.post(f"/api/applications/{app_id}/submission", json={"confirm": True}, headers=h).status_code == 400
@@ -107,7 +111,14 @@ def test_full_workflow(client):
     assert client.patch(f"/api/applications/{app_id}", json={"follow_up_at": "2026-11-02", "notes": "Recruiter call"}, headers=h).status_code == 200
 
     # downloads are real files
-    pdf = client.get(f"/api/documents/{rd['id']}/download?format=pdf", headers=h)
+    assert client.get(f"/api/documents/{rd['id']}/download?format=pdf", headers=h).status_code == 400  # keeps DOCX
+    tailored = client.get(f"/api/documents/{rd['id']}/download?format=docx", headers=h)
+    assert tailored.status_code == 200 and tailored.content[:2] == b"PK"
+    import docx as _docx
+    paras = [p.text for p in _docx.Document(io.BytesIO(tailored.content)).paragraphs]
+    assert "Delivered the payments API in Python and FastAPI" in paras
+    assert "jordan@example.com | +1 555 010 2030 | github.com/jordan" in paras  # contact line untouched
+    pdf = client.get(f"/api/documents/{ld['id']}/download?format=pdf", headers=h)
     assert pdf.status_code == 200 and pdf.content[:4] == b"%PDF"
     docx = client.get(f"/api/documents/{ld['id']}/download?format=docx", headers=h)
     assert docx.content[:2] == b"PK"

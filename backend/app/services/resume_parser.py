@@ -21,8 +21,10 @@ SECTION_ALIASES = {
                    "employment history", "work history", "career history"],
     "education": ["education", "academic background", "education & training"],
     "skills": ["skills", "technical skills", "core skills", "core competencies", "competencies",
-               "technologies", "tools", "skills & tools"],
-    "projects": ["projects", "selected projects", "personal projects", "key projects"],
+               "technologies", "tools", "skills & tools", "technical proficiencies", "key skills"],
+    "projects": ["projects", "selected projects", "personal projects", "key projects", "academic projects"],
+    "publications": ["publications", "research publication", "research publications", "publication"],
+    "achievements": ["achievements", "awards", "honors", "awards & achievements", "leadership", "activities"],
     "certifications": ["certifications", "certificates", "licenses", "licenses & certifications",
                        "certifications & licenses"],
 }
@@ -35,6 +37,11 @@ BULLET_RE = re.compile(r"^\s*(?:[•●▪◦‣∙·\-\*–]|\d+[.)])\s+")
 EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
 PHONE_RE = re.compile(r"(\+?\d[\d\s().-]{7,}\d)")
 URL_RE = re.compile(r"(https?://\S+|(?:www\.)?(?:linkedin\.com|github\.com)/\S+)", re.I)
+
+
+COMPANY_HINT = re.compile(r"\b(inc|llc|ltd|limited|corp|corporation|pvt|plc|gmbh|co\.|company|solutions|technologies|"
+                          r"labs|group|university|college|institute|bank|consulting)\b", re.I)
+DATE_ONLY_RE = re.compile(r"^(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?\s+)?\d{4}$|^(?:present|current)$", re.I)
 
 
 class UploadError(ValueError):
@@ -152,7 +159,10 @@ def _parse_experience(lines: list[str]) -> list[dict]:
             title, company, location = "", "", ""
             parts: list[str] = []
             for h in header_bits:
-                parts.extend([p.strip() for p in re.split(r"\s+[|@·•]\s+|\s+at\s+|,\s+(?=[A-Z])", h) if p.strip()])
+                parts.extend([p.strip() for p in re.split(r"\s+[|@·•—–]\s+|\s+at\s+|,\s+(?=[A-Z])", h) if p.strip()])
+            # "Company — Title" vs "Title — Company": put the company-looking part second
+            if len(parts) >= 2 and COMPANY_HINT.search(parts[0]) and not COMPANY_HINT.search(parts[1]):
+                parts[0], parts[1] = parts[1], parts[0]
             if parts:
                 title = parts[0]
             if len(parts) > 1:
@@ -265,13 +275,20 @@ def parse_resume_text(text: str) -> dict:
         detected.append(m.group(0) if m else s)  # keep the casing used in the resume
     skills = list(dict.fromkeys(skills_listed + detected))
     projects = []
+    in_bullet = False
     for line in sections.get("projects", []):
         t = BULLET_RE.sub("", line).strip()
+        if DATE_ONLY_RE.match(t):
+            continue  # dates sit on the project's title line in most layouts
         if BULLET_RE.match(line) and projects:
             projects[-1]["description"] = (projects[-1]["description"] + " " + t).strip()
+            in_bullet = True
+        elif in_bullet and projects and (t[:1].islower() or not projects[-1]["description"].rstrip().endswith((".", "!", "?"))):
+            projects[-1]["description"] = (projects[-1]["description"] + " " + t).strip()  # wrapped bullet
         else:
             name_part, _, desc = t.partition(" - ")
             projects.append({"name": name_part.strip()[:200], "description": desc.strip(), "link": ""})
+            in_bullet = False
 
     warnings = []
     if not experience:

@@ -49,8 +49,12 @@ class JobSourceAdapter:
     requires_credentials: bool = False
     docs_url: str = ""
 
+    keyword = False
+    label = ""
+    min_interval_hours = 0
+
     def __init__(self, identifier: str, *, transport: Optional[httpx.BaseTransport] = None,
-                 sleep: Callable[[float], None] = time.sleep):
+                 sleep: Callable[[float], None] = time.sleep, context: Optional[dict] = None):
         self.identifier = identifier
         self._transport = transport
         self._sleep = sleep
@@ -87,6 +91,8 @@ class JobSourceAdapter:
                         if attempt < max_attempts:
                             self._sleep(wait)
                         continue
+                    if resp.status_code in (401, 403):
+                        raise SourceError(f"{self.kind}: access denied ({resp.status_code})", status=resp.status_code)
                     if resp.status_code >= 500:
                         last_err = SourceError(f"{self.kind}: server error {resp.status_code}", retryable=True,
                                                status=resp.status_code)

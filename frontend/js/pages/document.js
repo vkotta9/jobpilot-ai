@@ -1,9 +1,11 @@
 import { api } from "../api.js";
 import { h, mount, loading, busy, toast, fmtDate, modal } from "../ui.js";
+import { renderInplace } from "./document_inplace.js";
 
 export async function render(root, id) {
   mount(root, loading());
   const d = await api.get(`/api/documents/${id}`);
+  if (d.content.format === "inplace") return renderInplace(root, d);
   const c = d.content;
   const isResume = d.kind === "resume";
   const editors = [];

@@ -10,3 +10,4 @@ python-docx>=1.2
 reportlab>=4.0
 # PostgreSQL driver (only needed when DATABASE_URL points at Postgres)
 psycopg[binary]>=3.2
+cryptography>=42

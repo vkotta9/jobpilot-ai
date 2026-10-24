@@ -30,9 +30,14 @@ def _m002_resume_file_data(conn: Connection) -> None:
         conn.execute(text(f"ALTER TABLE resumes ADD COLUMN file_data {coltype}"))
 
 
+def _m003_integrations(conn: Connection) -> None:
+    models.IntegrationSetting.__table__.create(bind=conn, checkfirst=True)
+
+
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "initial schema", _m001_initial),
     (2, "store resume file bytes in database", _m002_resume_file_data),
+    (3, "integration settings", _m003_integrations),
 ]
 
 

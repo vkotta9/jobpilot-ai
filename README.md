@@ -56,6 +56,14 @@ API reference (OpenAPI): http://127.0.0.1:8000/api/docs
 
 ---
 
+## What's new in milestone 2
+
+- **Format-preserving tailoring.** JobPilot now edits *your uploaded file* (PDF or DOCX) instead of generating a new resume: it re-words relevant lines in the job's language and adds matching skills to your existing skills lines. Your name, contact details, layout, fonts, bold keywords and every other section stay exactly as they are. Each change is shown side by side with your original, with a live preview, and nothing is applied until you approve it.
+- **Honest skills.** Skills the posting asks for that already appear elsewhere in your resume are pre-ticked; skills that don't are listed unticked ("tick only if you really have it").
+- **ATS match score.** Jobs are scored like an applicant tracking system would: keywords (required items count double), job title, years of experience, education and soft skills, computed against your actual resume text, with a before → after score for every tailored version.
+- **Find jobs for me.** One button searches Adzuna (most US job boards, free key), Remotive (remote jobs) and The Muse using the target titles in your profile; it also runs on your schedule. Company boards (Greenhouse/Lever) moved under "Advanced".
+- **Connections.** Save an AI key (Google Gemini free plan or OpenAI) and an Adzuna key in Settings → Connections; they're stored encrypted.
+
 ## What works now (verified)
 
 | Area | Status | Notes |

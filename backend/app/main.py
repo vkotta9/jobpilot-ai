@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import __version__
-from .api import applications, auth, jobs, misc, network, profile
+from .api import applications, auth, integrations, jobs, misc, network, profile
 from .config import PROJECT_DIR, settings
 from .migrations import run_migrations
 
@@ -26,6 +26,10 @@ FRONTEND_DIR = PROJECT_DIR / "frontend"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     run_migrations()
+    try:
+        _rescore_legacy()
+    except Exception:  # never block startup
+        log.exception("Legacy rescore failed")
     stop = asyncio.Event()
     task = None
     if settings.scheduler_enabled:
@@ -38,6 +42,20 @@ async def lifespan(app: FastAPI):
     stop.set()
     if task:
         await task
+
+
+def _rescore_legacy() -> None:
+    """Scores saved before the ATS model lack keyword details; recompute them once."""
+    from .db import session_scope
+    from .models import MatchAssessment
+    from .services.matching import score_jobs
+
+    with session_scope() as db:
+        users = {m.user_id for m in db.query(MatchAssessment).all() if "_keywords" not in (m.breakdown or {})}
+    for uid in users:
+        with session_scope() as db:
+            n = score_jobs(db, uid)
+            log.info("Rescored %s jobs for user %s with the ATS model", n, uid)
 
 
 app = FastAPI(title="JobPilot AI", version=__version__, lifespan=lifespan,
@@ -75,7 +93,7 @@ async def unhandled(_: Request, exc: Exception):  # never leak internals or secr
     return JSONResponse({"detail": "Something went wrong on the server. Check the server log for details."}, status_code=500)
 
 
-for r in (auth.router, profile.router, jobs.router, applications.router, network.router, misc.router):
+for r in (auth.router, profile.router, jobs.router, applications.router, network.router, misc.router, integrations.router):
     app.include_router(r)
 
 if FRONTEND_DIR.exists():

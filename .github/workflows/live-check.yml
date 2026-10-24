@@ -1,0 +1,42 @@
+name: Live integration check
+
+# Verifies the real job sources (and the deployed site) from the internet.
+# Runs when source adapters change, or manually from the Actions tab.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "backend/app/services/sources/**"
+      - "backend/scripts/live_check.py"
+      - ".github/workflows/live-check.yml"
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r backend/requirements.txt
+      - name: Remotive (remote jobs, no key)
+        working-directory: backend
+        run: python scripts/live_check.py remotive
+        continue-on-error: true
+      - name: The Muse (no key)
+        working-directory: backend
+        run: python scripts/live_check.py muse
+        continue-on-error: true
+      - name: Greenhouse board (airbnb)
+        working-directory: backend
+        run: python scripts/live_check.py greenhouse airbnb
+        continue-on-error: true
+      - name: Lever board (palantir)
+        working-directory: backend
+        run: python scripts/live_check.py lever palantir
+        continue-on-error: true
+      - name: Deployed site health
+        working-directory: backend
+        run: python scripts/live_check.py site https://jobpilot-ai-45bq.onrender.com
+        continue-on-error: true

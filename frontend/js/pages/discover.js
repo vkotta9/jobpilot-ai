@@ -5,7 +5,9 @@ const filters = { q: "", location: "", company: "", remote: "", seniority: "", m
 
 export async function render(root) {
   mount(root, loading());
-  const [sources, catalog, saved] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"), api.get("/api/saved-searches")]);
+  const [allSources, catalog, saved, auto] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
+    api.get("/api/saved-searches"), api.get("/api/discovery/auto")]);
+  const sources = allSources.filter((s) => !["adzuna", "remotive", "muse"].includes(s.kind));
   const results = h("div", { class: "card", style: { padding: 0 } }, loading());
 
   const load = async () => {
@@ -47,9 +49,12 @@ export async function render(root) {
 
   mount(root,
     h("div", { class: "page-head" },
-      h("div", {}, h("h1", {}, "Discover jobs"), h("div", { class: "sub" }, "Listings come straight from official job-board APIs. Each shows its source and when it was last checked.")),
-      h("div", { class: "row" }, h("button", { onclick: () => manualJob(root) }, "+ Add job manually"), runAll)),
-    sourcesCard(sources, catalog, root),
+      h("div", {}, h("h1", {}, "Discover jobs"), h("div", { class: "sub" }, "New postings matching your target roles, scored against your resume like an ATS would.")),
+      h("div", { class: "row" }, h("button", { onclick: () => manualJob(root) }, "+ Add a job I found"), runAll)),
+    autoCard(auto, root),
+    h("details", { class: "card", style: { marginTop: "16px" } },
+      h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, `Advanced: follow specific companies' career boards (${sources.length})`),
+      h("div", { style: { marginTop: "12px" } }, sourcesCard(sources, catalog, root))),
     h("div", { class: "card", style: { margin: "16px 0" } },
       h("div", { class: "grid cols-4" },
         inp("q", "Keywords (title, description)"), inp("location", "Location"), inp("company", "Company"),
@@ -67,6 +72,36 @@ export async function render(root) {
           saveSearch))),
     results);
   load();
+}
+
+function autoCard(auto, root) {
+  const boxes = auto.sources.map((s) => {
+    const cb = h("input", { type: "checkbox", checked: s.source ? s.source.enabled : s.key_ok, value: s.kind });
+    return h("label", { class: "check small" }, cb, s.label,
+      !s.key_ok && h("a", { href: "#/settings", class: "small" }, " — connect free key"),
+      s.source && h("span", { class: "faint" }, ` · last run ${s.source.last_run_at ? new Date(s.source.last_run_at).toLocaleString() : "never"}${s.source.last_status === "error" ? " · error" : ""}`));
+  });
+  const go = h("button", { class: "btn-primary" }, "🔎 Find new jobs for me");
+  go.addEventListener("click", busy(go, async () => {
+    const kinds = boxes.map((l) => l.querySelector("input")).filter((i) => i.checked).map((i) => i.value);
+    const r = await api.post("/api/discovery/auto", { kinds });
+    const n = r.results.reduce((a, x) => a + (x.new || 0), 0);
+    const errs = r.results.filter((x) => x.error).map((x) => `${x.kind}: ${x.error}`);
+    const skipped = r.results.filter((x) => x.skipped).map((x) => x.skipped);
+    toast(`${n} new matching job${n === 1 ? "" : "s"} found.` + (errs.length ? " " + errs.join(" ") : "") + (skipped.length ? " " + skipped.join(" ") : ""), errs.length ? "bad" : "");
+    render(root);
+  }));
+  const errors = auto.sources.filter((s) => s.source && s.source.last_status === "error").map((s) => h("div", { class: "small", style: { color: "var(--bad)" } }, `${s.label}: ${s.source.last_error}`));
+  return h("div", { class: "card" },
+    h("div", { class: "card-head" }, h("h2", {}, "Find jobs for me"), h("span", { class: "faint" }, "Runs automatically on your schedule too (Settings)")),
+    auto.queries.length ? h("p", { class: "small" }, "Searching for ", auto.queries.map((q) => h("span", { class: "chip" }, q)),
+      auto.locations.length ? [" in ", auto.locations.map((l) => h("span", { class: "chip" }, l))] : " (any location)",
+      " · ", h("a", { href: "#/profile" }, auto.titles_from_profile ? "change" : "set your target titles"))
+      : h("div", { class: "alert warn" }, "Tell JobPilot what roles you want: ", h("a", { href: "#/profile" }, "Profile → Job preferences → Target job titles"), "."),
+    h("div", { class: "row", style: { gap: "18px", margin: "8px 0" } }, boxes),
+    errors,
+    h("div", { class: "row between", style: { marginTop: "8px" } },
+      h("span", { class: "faint" }, "Adzuna covers most US job boards (free key). Remotive = remote jobs. The Muse = curated companies."), go));
 }
 
 function summarize(results) {
