@@ -257,6 +257,8 @@ def _mock(payloads):
 def test_title_matching():
     assert title_matches("Senior Backend Software Engineer", ["Software Engineer"])
     assert not title_matches("Account Executive", ["Software Engineer"])
+    assert not title_matches("Staff Controls Engineer", ["Software Engineer"])
+    assert title_matches("Machine Learning Engineer, Platform", ["Senior Machine Learning Engineer"])
 
 
 def test_adzuna_adapter_and_predicted_salary():

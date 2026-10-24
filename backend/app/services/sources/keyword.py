@@ -29,7 +29,8 @@ def title_matches(title: str, queries: list[str]) -> bool:
     t = set(re.findall(r"[a-z0-9+#.]+", title.lower()))
     for q in queries:
         words = core_words(q)
-        if words and sum(w in t or (w.endswith("s") and w[:-1] in t) for w in words) >= max(1, len(words) - 1):
+        need = len(words) if len(words) <= 2 else len(words) - 1  # "software engineer" needs both words
+        if words and sum(w in t or (w.endswith("s") and w[:-1] in t) for w in words) >= need:
             return True
     return False
 
