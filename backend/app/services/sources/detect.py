@@ -199,25 +199,35 @@ def detect(entry: str, transport=None) -> Detection:
     hit = _probe_name(entry, transport)
     if hit:
         hit.input = entry
+        if hit.kind in ("ashby", "lever", "recruitee"):
+            hit.company = entry  # these feeds don't carry the company's display name
         return hit
     d.message = "Not found on Greenhouse, Lever, Ashby, Workable, Recruitee or SmartRecruiters. Try pasting the company's careers page link."
     return d
 
 
+AMBIGUOUS = {"workable", "recruitee", "smartrecruiters"}  # these answer for almost any slug
+
+
+def _same_company(query: str, found: str) -> bool:
+    q = set(re.findall(r"[a-z0-9]+", query.lower())) - {"inc", "llc", "ltd", "corp", "the", "co", "ai", "labs", "health", "hq"}
+    f = set(re.findall(r"[a-z0-9]+", found.lower()))
+    return bool(q) and q <= f
+
+
 def _probe_name(name: str, transport=None) -> Optional[Detection]:
-    best: Optional[Detection] = None
+    """Guess the board slug from a company name. Only boards with open roles count, and on platforms
+    that answer for any slug the company name returned must match the one typed."""
     for slug in slugs_for(name)[:4]:
         for kind in PROBE_ORDER:
-            if kind == "smartrecruiters":
-                ident = slug[:1].upper() + slug[1:]
-            else:
-                ident = slug
+            ident = slug[:1].upper() + slug[1:] if kind == "smartrecruiters" else slug
             hit = probe(kind, ident, transport)
-            if hit and (best is None or hit.jobs > best.jobs):
-                best = hit
-                if hit.jobs > 0:
-                    return best
-    return best
+            if not hit or hit.jobs == 0:
+                continue
+            if kind in AMBIGUOUS and not _same_company(name, hit.company):
+                continue
+            return hit
+    return None
 
 
 def detect_many(entries: list[str], transport=None) -> list[Detection]:

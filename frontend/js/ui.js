@@ -141,7 +141,9 @@ export function download(blob, filename) {
 }
 
 // Source attribution required by some providers (e.g. Adzuna: label linked to their site, min 116x23px).
-const ATTRIB = { adzuna: ["Adzuna", "https://www.adzuna.com"], remotive: ["Remotive", "https://remotive.com"], muse: ["The Muse", "https://www.themuse.com"] };
+const ATTRIB = { adzuna: ["Adzuna", "https://www.adzuna.com"], remotive: ["Remotive", "https://remotive.com"], muse: ["The Muse", "https://www.themuse.com"],
+  himalayas: ["Himalayas", "https://himalayas.app"], jobicy: ["Jobicy", "https://jobicy.com"], arbeitnow: ["Arbeitnow", "https://www.arbeitnow.com"],
+  jsearch: ["JSearch", "https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch"], usajobs: ["USAJOBS", "https://www.usajobs.gov"] };
 export function sourceCredit(kind) {
   const a = ATTRIB[kind];
   if (!a) return null;

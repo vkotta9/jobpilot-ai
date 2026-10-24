@@ -54,15 +54,54 @@ function connectionsCard(c, root) {
         field("Provider", prov), field("API key", key), field("Model (optional)", model), field("Base URL", base), help,
         h("div", { class: "row" }, saveAI, c.ai.configured && h("button", { onclick: test("ai") }, "Test"), c.ai.source === "app" && h("button", { class: "btn-danger", onclick: remove("ai") }, "Remove"))),
       h("div", { class: "stack" },
-        h("div", { class: "row between" }, h("h3", {}, "Adzuna — searches most US job boards"),
+        h("div", { class: "row between" }, h("h3", {}, "Adzuna — most US job boards (paid)"),
           h("span", { class: `badge ${c.adzuna.configured ? "good" : "warn"}` }, c.adzuna.configured ? "connected" : "not connected")),
-        h("p", { class: "small muted" }, "Free: sign up at ", h("a", { href: "https://developer.adzuna.com/signup", target: "_blank", rel: "noopener noreferrer" }, "developer.adzuna.com ↗"),
-          ", then copy the Application ID and Application Key from your dashboard."),
+        h("p", { class: "small muted" }, "Optional. After 25 free test calls Adzuna costs £8/month (", h("a", { href: "https://developer.adzuna.com/", target: "_blank", rel: "noopener noreferrer" }, "developer.adzuna.com ↗"),
+          "). Only connect it if you subscribe — each search uses up to 6 calls."),
         field("Application ID", appId), field("Application Key", appKey),
         h("div", { class: "row" }, saveAdz, c.adzuna.configured && h("button", { onclick: test("adzuna") }, "Test"), c.adzuna.configured && h("button", { class: "btn-danger", onclick: remove("adzuna") }, "Remove")),
-        h("p", { class: "faint" }, "Remotive (remote jobs) and The Muse work without any key."))));
+        h("p", { class: "faint" }, "Remotive, Himalayas, Jobicy, The Muse and Arbeitnow work without any key."))),
+    h("hr"),
+    h("div", { class: "grid cols-2" }, jsearchBox(c, root, test, remove), usajobsBox(c, root, test, remove)));
   setTimeout(setHelp, 0);
   return card;
+}
+
+function jsearchBox(c, root, test, remove) {
+  const key = h("input", { type: "password", autocomplete: "off", placeholder: c.jsearch.configured ? `saved ${c.jsearch.key_hint} — leave blank to keep` : "RapidAPI key" });
+  const save = h("button", { class: "btn-primary" }, "Save");
+  save.addEventListener("click", busy(save, async () => {
+    await api.put("/api/integrations/jsearch", { rapidapi_key: key.value });
+    toast("JSearch saved. Testing…");
+    try { const r = await api.post("/api/integrations/jsearch/test"); toast(r.message); } catch {}
+    render(root);
+  }));
+  return h("div", { class: "stack" },
+    h("div", { class: "row between" }, h("h3", {}, "JSearch — LinkedIn, Indeed, Glassdoor via Google Jobs (free plan)"),
+      h("span", { class: `badge ${c.jsearch.configured ? "good" : "warn"}` }, c.jsearch.configured ? "connected" : "not connected")),
+    h("p", { class: "small muted" }, "1) Create a free account at ", h("a", { href: "https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch", target: "_blank", rel: "noopener noreferrer" }, "rapidapi.com → JSearch ↗"),
+      ". 2) Subscribe to the free Basic plan (about 200 searches/month). 3) Copy the X-RapidAPI-Key shown in the code examples. JobPilot runs it at most twice a day to stay inside the free plan."),
+    field("RapidAPI key", key),
+    h("div", { class: "row" }, save, c.jsearch.configured && h("button", { onclick: test("jsearch") }, "Test"), c.jsearch.configured && h("button", { class: "btn-danger", onclick: remove("jsearch") }, "Remove")));
+}
+
+function usajobsBox(c, root, test, remove) {
+  const key = h("input", { type: "password", autocomplete: "off", placeholder: c.usajobs.configured ? `saved ${c.usajobs.key_hint} — leave blank to keep` : "Authorization key" });
+  const email = h("input", { type: "email", value: c.usajobs.email || "", placeholder: "email you registered with" });
+  const save = h("button", { class: "btn-primary" }, "Save");
+  save.addEventListener("click", busy(save, async () => {
+    await api.put("/api/integrations/usajobs", { usajobs_key: key.value, usajobs_email: email.value });
+    toast("USAJOBS saved. Testing…");
+    try { const r = await api.post("/api/integrations/usajobs/test"); toast(r.message); } catch {}
+    render(root);
+  }));
+  return h("div", { class: "stack" },
+    h("div", { class: "row between" }, h("h3", {}, "USAJOBS — US federal jobs (free)"),
+      h("span", { class: `badge ${c.usajobs.configured ? "good" : "warn"}` }, c.usajobs.configured ? "connected" : "not connected")),
+    h("p", { class: "small muted" }, "Request a free key at ", h("a", { href: "https://developer.usajobs.gov/apirequest/", target: "_blank", rel: "noopener noreferrer" }, "developer.usajobs.gov ↗"),
+      ". Note: most federal jobs require US citizenship."),
+    field("API key", key), field("Email", email),
+    h("div", { class: "row" }, save, c.usajobs.configured && h("button", { onclick: test("usajobs") }, "Test"), c.usajobs.configured && h("button", { class: "btn-danger", onclick: remove("usajobs") }, "Remove")));
 }
 
 export async function render(root) {
@@ -108,7 +147,9 @@ export async function render(root) {
     ["Simulated demo source", health.simulated_sources_allowed ? "Enabled (labelled SIMULATED)" : "Disabled", health.simulated_sources_allowed ? "sim" : "", null],
     ["AI model (sentence tailoring)", conns.ai.configured ? `Connected · ${conns.ai.model}` : "Not connected — see Connections above", conns.ai.configured ? "good" : "warn", null],
     ["Adzuna job search", conns.adzuna.configured ? "Connected" : "Not connected — see Connections above", conns.adzuna.configured ? "good" : "warn", "https://developer.adzuna.com/"],
-    ["Remotive · The Muse", "Real · public · no key needed", "good", null],
+    ["Remotive · Himalayas · Jobicy · The Muse · Arbeitnow", "Real · public · no key needed", "good", null],
+    ["JSearch (Google Jobs)", conns.jsearch.configured ? "Connected" : "Optional free key", conns.jsearch.configured ? "good" : "", null],
+    ["Company career boards", "Greenhouse · Lever · Ashby · SmartRecruiters · Workable · Recruitee — no key needed", "good", null],
     ["Automatic application submission", "Not available — employers' ATS APIs need employer keys; you submit manually", "", null],
     ["LinkedIn messaging", "Not integrated — drafts are copied and sent by you", "", null],
   ];

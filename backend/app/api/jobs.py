@@ -93,6 +93,26 @@ def run_one(sid: int, user: User = Depends(current_user), db: Session = Depends(
 
 @router.post("/discovery/run", dependencies=[Depends(rate_limit("discovery", 30, 3600))])
 def run_all(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    n = db.query(JobSource).filter_by(user_id=user.id, enabled=True).count()
+    if n > 12:  # many company boards: run in the background so the page doesn't hang
+        import threading
+
+        from ..db import session_scope
+        from ..scheduler import user_lock
+
+        lock = user_lock(user.id)
+        if not lock.acquire(blocking=False):
+            return {"started": False, "running": True, "results": [], "sources": n}
+
+        def work(uid=user.id):
+            try:
+                with session_scope() as bg:
+                    run_all_sources(bg, uid)
+            finally:
+                lock.release()
+
+        threading.Thread(target=work, daemon=True).start()
+        return {"started": True, "results": [], "sources": n}
     results = run_all_sources(db, user.id)
     for r in results:
         r.pop("changed_job_ids", None)

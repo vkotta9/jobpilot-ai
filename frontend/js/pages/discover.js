@@ -5,9 +5,9 @@ const filters = { q: "", location: "", company: "", remote: "", seniority: "", m
 
 export async function render(root) {
   mount(root, loading());
-  const [allSources, catalog, saved, auto] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
-    api.get("/api/saved-searches"), api.get("/api/discovery/auto")]);
-  const sources = allSources.filter((s) => !["adzuna", "remotive", "muse"].includes(s.kind));
+  const [allSources, catalog, saved, auto, following, popular] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
+    api.get("/api/saved-searches"), api.get("/api/discovery/auto"), api.get("/api/companies"), api.get("/api/companies/popular")]);
+  const sources = allSources.filter((s) => s.kind === "mock");
   const results = h("div", { class: "card", style: { padding: 0 } }, loading());
 
   const load = async () => {
@@ -43,6 +43,7 @@ export async function render(root) {
   const runAll = h("button", { class: "btn-primary" }, "↻ Search all sources");
   runAll.addEventListener("click", busy(runAll, async () => {
     const r = await api.post("/api/discovery/run");
+    if (r.started || r.running) { toast(`Checking ${r.sources} sources in the background — new jobs will appear here in a minute or two.`); setTimeout(() => render(root), 45000); return; }
     summarize(r.results);
     render(root);
   }));
@@ -52,9 +53,10 @@ export async function render(root) {
       h("div", {}, h("h1", {}, "Discover jobs"), h("div", { class: "sub" }, "New postings matching your target roles, scored against your resume like an ATS would.")),
       h("div", { class: "row" }, h("button", { onclick: () => manualJob(root) }, "+ Add a job I found"), runAll)),
     autoCard(auto, root),
-    h("details", { class: "card", style: { marginTop: "16px" } },
-      h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, `Advanced: follow specific companies' career boards (${sources.length})`),
-      h("div", { style: { marginTop: "12px" } }, sourcesCard(sources, catalog, root))),
+    companiesCard(following, popular, root),
+    catalog.some((c) => c.kind === "mock") && h("details", { class: "card", style: { marginTop: "16px" } },
+      h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Demo data (simulated listings for trying the app)"),
+      h("div", { style: { marginTop: "12px" } }, sourcesCard(sources, catalog.filter((c) => c.kind === "mock"), root))),
     h("div", { class: "card", style: { margin: "16px 0" } },
       h("div", { class: "grid cols-4" },
         inp("q", "Keywords (title, description)"), inp("location", "Location"), inp("company", "Company"),
@@ -76,32 +78,108 @@ export async function render(root) {
 
 function autoCard(auto, root) {
   const boxes = auto.sources.map((s) => {
-    const cb = h("input", { type: "checkbox", checked: s.source ? s.source.enabled : s.key_ok, value: s.kind });
-    return h("label", { class: "check small" }, cb, s.label,
-      !s.key_ok && h("a", { href: "#/settings", class: "small" }, " — connect free key"),
-      s.source && h("span", { class: "faint" }, ` · last run ${s.source.last_run_at ? new Date(s.source.last_run_at).toLocaleString() : "never"}${s.source.last_status === "error" ? " · error" : ""}`));
+    const on = s.source ? s.source.enabled : (s.default_on && s.key_ok);
+    const cb = h("input", { type: "checkbox", checked: on, value: s.kind, disabled: !s.key_ok });
+    return h("label", { class: "check small", style: { alignItems: "flex-start", opacity: s.key_ok ? 1 : 0.75 } }, cb,
+      h("span", {}, h("strong", {}, s.label.split(" (")[0]), h("span", { class: "faint" }, ` — ${s.note}`),
+        !s.key_ok && [" · ", h("a", { href: "#/settings" }, "add key")],
+        s.source && s.source.last_status === "error" && h("div", { class: "small", style: { color: "var(--bad)" } }, s.source.last_error)));
   });
   const go = h("button", { class: "btn-primary" }, "🔎 Find new jobs for me");
   go.addEventListener("click", busy(go, async () => {
-    const kinds = boxes.map((l) => l.querySelector("input")).filter((i) => i.checked).map((i) => i.value);
+    const kinds = boxes.map((l) => l.querySelector("input")).filter((i) => i.checked && !i.disabled).map((i) => i.value);
     const r = await api.post("/api/discovery/auto", { kinds });
     const n = r.results.reduce((a, x) => a + (x.new || 0), 0);
     const errs = r.results.filter((x) => x.error).map((x) => `${x.kind}: ${x.error}`);
-    const skipped = r.results.filter((x) => x.skipped).map((x) => x.skipped);
-    toast(`${n} new matching job${n === 1 ? "" : "s"} found.` + (errs.length ? " " + errs.join(" ") : "") + (skipped.length ? " " + skipped.join(" ") : ""), errs.length ? "bad" : "");
+    toast(`${n} new matching job${n === 1 ? "" : "s"} found.` + (errs.length ? " " + errs.join(" ") : ""), errs.length ? "bad" : "");
     render(root);
   }));
-  const errors = auto.sources.filter((s) => s.source && s.source.last_status === "error").map((s) => h("div", { class: "small", style: { color: "var(--bad)" } }, `${s.label}: ${s.source.last_error}`));
   return h("div", { class: "card" },
-    h("div", { class: "card-head" }, h("h2", {}, "Find jobs for me"), h("span", { class: "faint" }, "Runs automatically on your schedule too (Settings)")),
+    h("div", { class: "card-head" }, h("h2", {}, "Find jobs for me"), h("span", { class: "faint" }, "Also runs automatically every day (Settings)")),
     auto.queries.length ? h("p", { class: "small" }, "Searching for ", auto.queries.map((q) => h("span", { class: "chip" }, q)),
       auto.locations.length ? [" in ", auto.locations.map((l) => h("span", { class: "chip" }, l))] : " (any location)",
       " · ", h("a", { href: "#/profile" }, auto.titles_from_profile ? "change" : "set your target titles"))
       : h("div", { class: "alert warn" }, "Tell JobPilot what roles you want: ", h("a", { href: "#/profile" }, "Profile → Job preferences → Target job titles"), "."),
-    h("div", { class: "row", style: { gap: "18px", margin: "8px 0" } }, boxes),
-    errors,
-    h("div", { class: "row between", style: { marginTop: "8px" } },
-      h("span", { class: "faint" }, "Adzuna covers most US job boards (free key). Remotive = remote jobs. The Muse = curated companies."), go));
+    h("div", { class: "grid cols-2", style: { gap: "6px 20px", margin: "8px 0" } }, boxes),
+    h("div", { class: "row", style: { justifyContent: "flex-end" } }, go));
+}
+
+const PLATFORM = { greenhouse: "Greenhouse", lever: "Lever", ashby: "Ashby", smartrecruiters: "SmartRecruiters", workable: "Workable", recruitee: "Recruitee" };
+
+function companiesCard(following, popular, root) {
+  const ta = h("textarea", { rows: 4, placeholder: "One per line — a careers page link or just the company name, e.g.\nhttps://stripe.com/jobs\nDatabricks\nhttps://jobs.lever.co/palantir" });
+  const results = h("div");
+  const find = h("button", { class: "btn-primary" }, "Find these companies");
+  find.addEventListener("click", busy(find, async () => {
+    const entries = ta.value.split("\n").map((x) => x.trim()).filter(Boolean);
+    if (!entries.length) return toast("Paste at least one link or company name.", "bad");
+    const res = await api.post("/api/companies/detect", { entries });
+    const rows = res.map((r) => {
+      const cb = r.status === "found" ? h("input", { type: "checkbox", checked: true }) : null;
+      if (cb) cb._item = { kind: r.kind, identifier: r.identifier, company: r.company };
+      return { r, cb };
+    });
+    const follow = h("button", { class: "btn-primary" }, "Follow selected");
+    follow.addEventListener("click", busy(follow, async () => {
+      const items = rows.filter((x) => x.cb && x.cb.checked).map((x) => x.cb._item);
+      if (!items.length) return toast("Nothing selected.", "bad");
+      const out = await api.post("/api/companies/follow", { items });
+      const n = out.results.reduce((a, x) => a + (x.new || 0), 0);
+      toast(`Following ${out.added} new compan${out.added === 1 ? "y" : "ies"} · ${n} matching job${n === 1 ? "" : "s"} found.`);
+      render(root);
+    }));
+    mount(results, h("div", { class: "table-wrap", style: { marginTop: "10px" } }, h("table", {},
+      h("thead", {}, h("tr", {}, ["", "You entered", "Result", "Open roles"].map((t) => h("th", {}, t)))),
+      h("tbody", {}, rows.map(({ r, cb }) => h("tr", {},
+        h("td", {}, cb || ""),
+        h("td", { class: "small" }, r.input),
+        h("td", { class: "small" }, r.status === "found" ? [h("strong", {}, r.company), ` · ${PLATFORM[r.kind] || r.kind} (${r.identifier})`, r.message ? h("div", { class: "faint" }, r.message) : null]
+          : h("span", { style: { color: r.status === "unsupported" ? "var(--warn)" : "var(--bad)" } }, r.message)),
+        h("td", {}, r.status === "found" ? String(r.jobs) : "—")))))),
+      h("div", { class: "row", style: { justifyContent: "flex-end", marginTop: "8px" } }, follow));
+  }));
+
+  const list = following.length ? h("div", { class: "row", style: { gap: "6px" } }, following.map((s) => h("span", { class: "chip", title: `${PLATFORM[s.kind] || s.kind}: ${s.identifier} · last checked ${s.last_run_at ? new Date(s.last_run_at).toLocaleString() : "never"}${s.last_error ? " · " + s.last_error : ""}` },
+    s.last_status === "error" ? "⚠ " : "", s.display_name || s.identifier, h("span", { class: "faint" }, ` · ${s.last_job_count}`),
+    h("button", { class: "btn-ghost btn-sm", "aria-label": `Stop following ${s.display_name}`, style: { padding: "0 4px" }, onclick: async () => { await api.del(`/api/sources/${s.id}`); render(root); } }, "✕"))))
+    : h("p", { class: "muted small" }, "You aren't following any companies yet.");
+
+  // popular list grouped by category
+  const cats = {};
+  popular.forEach((c) => (cats[c.category] = cats[c.category] || []).push(c));
+  const picks = [];
+  const groups = Object.entries(cats).map(([cat, items]) => {
+    const boxes = items.map((c) => {
+      const cb = h("input", { type: "checkbox", checked: c.following, disabled: c.following });
+      cb._item = { kind: c.kind, identifier: c.identifier, company: c.company };
+      picks.push(cb);
+      return h("label", { class: "check small", style: { minWidth: "170px" } }, cb, c.company);
+    });
+    return h("div", { style: { marginBottom: "10px" } },
+      h("div", { class: "row between" }, h("h3", {}, cat),
+        h("button", { class: "btn-sm btn-ghost", onclick: () => boxes.forEach((b) => { const i = b.querySelector("input"); if (!i.disabled) i.checked = true; }) }, "Select all")),
+      h("div", { class: "row", style: { gap: "4px 12px" } }, boxes));
+  });
+  const followPopular = h("button", { class: "btn-primary" }, "Follow selected companies");
+  followPopular.addEventListener("click", busy(followPopular, async () => {
+    const items = picks.filter((b) => b.checked && !b.disabled).map((b) => b._item);
+    if (!items.length) return toast("Tick some companies first.", "bad");
+    const out = await api.post("/api/companies/follow", { items });
+    const n = out.results.reduce((a, x) => a + (x.new || 0), 0);
+    toast(`Following ${out.added} compan${out.added === 1 ? "y" : "ies"} · ${n} matching job${n === 1 ? "" : "s"} found.` + (out.pending ? ` ${out.pending} more will be checked on the next scheduled run.` : ""));
+    render(root);
+  }));
+
+  return h("div", { class: "card", style: { marginTop: "16px" } },
+    h("div", { class: "card-head" }, h("h2", {}, `Companies I follow (${following.length})`), h("span", { class: "faint" }, "Checked daily · only roles matching your target titles are added")),
+    list,
+    h("hr"),
+    h("h3", {}, "Add companies"),
+    h("p", { class: "small muted" }, "Paste careers-page links or company names. JobPilot finds the company's job board (Greenhouse, Lever, Ashby, SmartRecruiters, Workable or Recruitee). Companies on Workday or their own sites (Google, Amazon, Microsoft…) don't offer a public feed and can't be followed."),
+    ta, h("div", { class: "row", style: { justifyContent: "flex-end", marginTop: "8px" } }, find), results,
+    h("details", { style: { marginTop: "12px" } },
+      h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, `Popular companies (${popular.length}, verified to have open roles)`),
+      h("div", { style: { marginTop: "10px" } }, groups, h("div", { class: "row", style: { justifyContent: "flex-end" } }, followPopular))));
 }
 
 function summarize(results) {
