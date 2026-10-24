@@ -6,10 +6,10 @@ from typing import Optional
 from ..models import Application, Document, Job, MatchAssessment, to_dict
 
 
-def job_out(job: Job, m: Optional[MatchAssessment] = None, full: bool = False) -> dict:
+def job_out(job: Job, m: Optional[MatchAssessment] = None, full: bool = False, snippet: Optional[str] = None) -> dict:
     d = to_dict(job, exclude=() if full else ("description_text", "content_hash"))
     if not full:
-        d["snippet"] = (job.description_text or "")[:220]
+        d["snippet"] = snippet if snippet is not None else (job.description_text or "")[:220]
     d["match"] = match_out(m) if m else None
     d["application"] = (
         {"id": job.application.id, "status": job.application.status} if job.application is not None else None

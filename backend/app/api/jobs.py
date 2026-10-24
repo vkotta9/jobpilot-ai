@@ -14,7 +14,6 @@ from ..schemas import ManualJobIn, SavedSearchIn, SourceIn
 from ..security import audit, current_user, owned, rate_limit
 from ..services import applications as appsvc
 from ..services.discovery import run_all_sources, run_source, upsert_job
-from ..services.insights import latest_scores
 from ..services.matching import assess, latest_assessment, score_job, score_jobs
 from ..services.sources import ADAPTERS, NormalizedJob
 from ..services.textutil import seniority_of, sha256
@@ -130,7 +129,14 @@ def list_jobs(
     sort: str = "score", limit: int = Query(100, le=500), offset: int = 0,
     user: User = Depends(current_user), db: Session = Depends(get_db),
 ):
-    qry = db.query(Job).filter(Job.user_id == user.id)
+    from sqlalchemy import func
+    from sqlalchemy.orm import defer, selectinload
+
+    from ..models import MatchAssessment
+
+    # don't load every description (thousands of jobs × several KB) just to list 100 of them
+    qry = db.query(Job).options(defer(Job.description_text), defer(Job.content_hash), selectinload(Job.application)) \
+        .filter(Job.user_id == user.id)
     if status in ("active", "closed"):
         qry = qry.filter(Job.listing_status == status)
     if not include_duplicates:
@@ -154,7 +160,18 @@ def list_jobs(
     if salary_min:
         qry = qry.filter(or_(Job.salary_max >= salary_min, Job.salary_max.is_(None)))
     jobs = qry.all()
-    scores = latest_scores(db, user.id)
+    latest: dict[int, tuple[int, int]] = {}  # job_id -> (assessment id, score), newest wins
+    for jid_, aid, sc in db.query(MatchAssessment.job_id, MatchAssessment.id, MatchAssessment.score) \
+            .filter(MatchAssessment.user_id == user.id).order_by(MatchAssessment.id):
+        latest[jid_] = (aid, sc)
+
+    class _S:  # lightweight stand-in with .score for filtering/sorting
+        __slots__ = ("score",)
+
+        def __init__(self, score):
+            self.score = score
+
+    scores = {k: _S(v[1]) for k, v in latest.items()}
     if seniority:
         from ..services.textutil import SENIORITY_LEVELS
 
@@ -174,7 +191,12 @@ def list_jobs(
     }.get(sort, lambda j: -j.discovered_at.timestamp())
     jobs.sort(key=keyf)
     total = len(jobs)
-    return {"total": total, "items": [job_out(j, scores.get(j.id)) for j in jobs[offset: offset + limit]]}
+    page = jobs[offset: offset + limit]
+    ids = [j.id for j in page]
+    full = {m.job_id: m for m in db.query(MatchAssessment).filter(
+        MatchAssessment.id.in_([latest[i][0] for i in ids if i in latest]))} if ids else {}
+    snips = dict(db.query(Job.id, func.substr(Job.description_text, 1, 220)).filter(Job.id.in_(ids)).all()) if ids else {}
+    return {"total": total, "items": [job_out(j, full.get(j.id), snippet=snips.get(j.id) or "") for j in page]}
 
 
 @router.get("/jobs/{jid}")

@@ -62,6 +62,12 @@ def tick() -> list[int]:
 
 async def loop(stop: asyncio.Event) -> None:
     log.info("Scheduler started (tick=%ss)", settings.scheduler_tick_s)
+    # let the site finish waking up and serve the first page loads before any searching starts
+    try:
+        await asyncio.wait_for(stop.wait(), timeout=settings.scheduler_start_delay_s)
+        return
+    except asyncio.TimeoutError:
+        pass
     while not stop.is_set():
         try:
             await asyncio.to_thread(tick)
