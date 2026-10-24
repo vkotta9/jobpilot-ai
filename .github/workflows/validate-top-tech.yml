@@ -1,0 +1,27 @@
+name: Validate top tech companies
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "backend/scripts/validate_top_tech.py"
+      - "backend/app/services/sources/bigtech.py"
+      - "backend/app/services/sources/workday.py"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r backend/requirements.txt
+      - name: Detect feeds
+        working-directory: backend
+        run: python scripts/validate_top_tech.py ${{ matrix.chunk }} 6

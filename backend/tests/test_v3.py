@@ -171,7 +171,8 @@ def test_detect_by_name_requires_open_roles_and_matching_company():
         "https://apply.workable.com/api/v1/widget/accounts/zorbo": (200, {"name": "Some Other Firm", "jobs": [{"shortcode": "x", "title": "T"}]}),
         "https://api.lever.co/v0/postings/zorbo": (200, []),  # exists but no openings → keep looking
     }
-    assert det.detect("Zorbo", transport=mock(routes)).status == "not_found"
+    fallback = det.detect("Zorbo", transport=mock(routes))
+    assert fallback.kind == "jsearch" and fallback.jobs == 0  # nothing direct → offered via Google Jobs
     routes["https://apply.workable.com/api/v1/widget/accounts/zorbo"] = (200, {"name": "Zorbo", "jobs": [{"shortcode": "x", "title": "T"}]})
     d = det.detect("Zorbo", transport=mock(routes))
     assert d.status == "found" and d.kind == "workable"

@@ -24,6 +24,8 @@ import httpx
 from ...config import settings
 from .base import SourceError
 from .workday import parse_url as workday_parse
+from .workday import discover as workday_discover
+from .bigtech import parse_link as careers_link
 
 PATTERNS: list[tuple[str, re.Pattern]] = [
     ("greenhouse", re.compile(r"(?:job-boards|boards)(?:\.eu)?\.greenhouse\.io/(?:embed/job_board(?:/js)?\?for=)?([A-Za-z0-9_-]+)", re.I)),
@@ -51,6 +53,16 @@ IN_HOUSE = {"google": "Google", "alphabet": "Google", "amazon": "Amazon", "aws":
             "tesla": "Tesla", "uber": "Uber", "linkedin": "LinkedIn", "bytedance": "ByteDance", "tiktok": "TikTok",
             "jpmorgan": "JPMorgan Chase", "jpmorganchase": "JPMorgan Chase", "goldmansachs": "Goldman Sachs",
             "bloomberg": "Bloomberg", "qualcomm": "Qualcomm", "cisco": "Cisco", "x": "X", "twitter": "X"}
+# Companies with their own careers sites that JobPilot has a direct connector for
+CUSTOM_BY_NAME = {
+    "amazon": ("amazon", "amazon", "Amazon"), "aws": ("amazon", "amazon", "Amazon"), "amazonwebservices": ("amazon", "amazon", "Amazon"),
+    "google": ("google", "google", "Google"), "alphabet": ("google", "google", "Google"),
+    "microsoft": ("eightfold", "apply.careers.microsoft.com|microsoft.com", "Microsoft"),
+    "netflix": ("eightfold", "explore.jobs.netflix.net|netflix.com", "Netflix"),
+    "oracle": ("oraclehcm", "eeho.fa.us2.oraclecloud.com|CX_45001", "Oracle"),
+    "jpmorgan": ("oraclehcm", "jpmc.fa.oraclecloud.com|CX_1001", "JPMorgan Chase"),
+    "jpmorganchase": ("oraclehcm", "jpmc.fa.oraclecloud.com|CX_1001", "JPMorgan Chase"),
+}
 # Well-known companies on Workday (verified live — see scripts/validate_companies.py)
 KNOWN_WORKDAY = {"nvidia": "nvidia|wd5|NVIDIAExternalCareerSite", "salesforce": "salesforce|wd12|External_Career_Site", "intel": "intel|wd1|External", "adobe": "adobe|wd5|external_experienced", "hp": "hp|wd5|ExternalCareerSite", "hpinc": "hp|wd5|ExternalCareerSite", "paypal": "paypal|wd1|jobs", "capitalone": "capitalone|wd12|Capital_One", "mastercard": "mastercard|wd1|CorporateCareers", "boeing": "boeing|wd1|EXTERNAL_CAREERS", "target": "target|wd5|targetcareers", "disney": "disney|wd5|disneycareer", "waltdisney": "disney|wd5|disneycareer", "thewaltdisneycompany": "disney|wd5|disneycareer", "workday": "workday|wd5|Workday", "snap": "snapchat|wd1|snap", "snapchat": "snapchat|wd1|snap", "snapinc": "snapchat|wd1|snap", "autodesk": "autodesk|wd1|Ext"}
 IGNORE_SLUGS = {"embed", "api", "jobs", "careers", "www", "apply", "job_board", "v1", "boards", "js"}
@@ -155,6 +167,12 @@ def detect(entry: str, transport=None) -> Detection:
         wd = workday_parse(url)
         if wd:
             return _workday_hit(entry, wd, transport) or Detection(entry, "not_found", message="That Workday site didn't respond with any jobs.")
+        cl = careers_link(url)
+        if cl:
+            name = next((v[2] for v in CUSTOM_BY_NAME.values() if v[0] == cl[0] and v[1] == cl[1]), "")
+            hit = _connector_hit(entry, cl[0], cl[1], name, transport)
+            if hit:
+                return hit
         for name, rx in UNSUPPORTED:
             if rx.search(url):
                 d.status, d.message = "unsupported", f"{name} career sites have no public job feed — not supported."
@@ -171,6 +189,11 @@ def detect(entry: str, transport=None) -> Detection:
                 wd = workday_parse(final) or workday_parse(html)
                 if wd:
                     hit = _workday_hit(entry, wd, transport)
+                    if hit:
+                        return hit
+                cl = careers_link(final) or careers_link(html)
+                if cl:
+                    hit = _connector_hit(entry, cl[0], cl[1], "", transport)
                     if hit:
                         return hit
                 cands = from_text(final + "\n" + html)
@@ -205,6 +228,11 @@ def detect(entry: str, transport=None) -> Detection:
                      "Or type just the company name.")
         return d
     key = re.sub(r"[^a-z]", "", entry.lower())
+    if key in CUSTOM_BY_NAME:
+        kind, ident, company = CUSTOM_BY_NAME[key]
+        hit = _connector_hit(entry, kind, ident, company, transport)
+        if hit:
+            return hit
     if key in KNOWN_WORKDAY:
         hit = _workday_hit(entry, KNOWN_WORKDAY[key], transport)
         if hit:
@@ -219,9 +247,15 @@ def detect(entry: str, transport=None) -> Detection:
         if hit.kind in ("ashby", "lever", "recruitee"):
             hit.company = entry  # these feeds don't carry the company's display name
         return hit
-    d.message = ("Not found on Greenhouse, Lever, Ashby, Workable, Recruitee or SmartRecruiters. If the company uses Workday, "
-                 "paste its job-search link (…myworkdayjobs.com/…).")
-    return d
+    for ident in workday_discover(entry, transport)[:2]:
+        hit = _workday_hit(entry, ident, transport)
+        if hit:
+            hit.company = entry
+            return hit
+    # last resort: Google Jobs lists postings from almost every employer
+    return Detection(entry, "found", kind="jsearch", identifier=entry.strip()[:120], company=entry.strip()[:120], jobs=0,
+                     message="No public job feed found for this name — JobPilot will follow it through Google Jobs (needs your "
+                             "free JSearch key). Pasting the company's job-search link may find a direct feed instead.")
 
 
 AMBIGUOUS = {"workable", "recruitee", "smartrecruiters"}  # these answer for almost any slug
@@ -231,6 +265,22 @@ def _same_company(query: str, found: str) -> bool:
     q = set(re.findall(r"[a-z0-9]+", query.lower())) - {"inc", "llc", "ltd", "corp", "the", "co", "ai", "labs", "health", "hq"}
     f = set(re.findall(r"[a-z0-9]+", found.lower()))
     return bool(q) and q <= f
+
+
+def _connector_hit(entry: str, kind: str, ident: str, company: str, transport=None) -> Optional[Detection]:
+    from . import ADAPTERS
+
+    try:
+        a = ADAPTERS[kind](ident, transport=transport, sleep=lambda s: None)
+        a.timeout_s, a.detail_limit, a.queries = 12, 0, ["software engineer"]
+        a.display = company
+        jobs = a.fetch()
+    except Exception:
+        return None
+    if not jobs:
+        return None
+    return Detection(entry, "found", kind=kind, identifier=ident, company=company or a.company_name(), jobs=len(jobs),
+                     message="Company careers site — JobPilot searches it for your target titles once a day.")
 
 
 def _workday_hit(entry: str, ident: str, transport=None) -> Optional[Detection]:

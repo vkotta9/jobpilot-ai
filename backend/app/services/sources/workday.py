@@ -120,3 +120,33 @@ class WorkdayAdapter(JobSourceAdapter):
                 employment_type=extra.get("timeType", "") or "", description_text=desc,
                 posted_at=posted or _posted(it.get("postedOn", "")), url=url, apply_url=url))
         return out
+
+
+WD_INSTANCES = ("wd1", "wd5", "wd3", "wd12", "wd10", "wd2", "wd103", "wd501")
+SITEMAP_RE = re.compile(r"Sitemap:\s*https?://([A-Za-z0-9-]+)\.(wd\d+)\.myworkdayjobs\.com/(?:[a-z]{2}-[A-Z]{2}/)?([A-Za-z0-9_-]+)/siteMap\.xml", re.I)
+
+
+def discover(name: str, transport=None) -> list[str]:
+    """Find a company's Workday career site(s) by name. Each Workday tenant's robots.txt lists its
+    public career sites as sitemaps, so this needs only a few small GETs."""
+    words = re.findall(r"[a-z0-9]+", name.lower())
+    tenants = list(dict.fromkeys(["".join(words), "-".join(words)] + ([words[0]] if words else [])))
+    found: list[str] = []
+    with httpx.Client(timeout=6, transport=transport, follow_redirects=False,
+                      headers={"User-Agent": settings.user_agent}) as c:
+        for tenant in tenants[:3]:
+            for wd in WD_INSTANCES:
+                try:
+                    r = c.get(f"https://{tenant}.{wd}.myworkdayjobs.com/robots.txt")
+                except httpx.HTTPError:
+                    continue
+                if r.status_code != 200:
+                    continue
+                for m in SITEMAP_RE.finditer(r.text):
+                    if m.group(1).lower() == tenant:
+                        ident = f"{tenant}|{m.group(2).lower()}|{m.group(3)}"
+                        if ident not in found:
+                            found.append(ident)
+                if found:
+                    return found
+    return found

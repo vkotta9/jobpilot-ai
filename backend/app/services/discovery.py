@@ -108,7 +108,7 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
         audit(db, source.user_id, "discovery.error", "job_source", source.id, error=str(e))
         db.commit()
         return stats
-    if source.kind in ("ashby", "lever", "recruitee", "workday") and source.display_name and source.display_name != source.identifier:
+    if source.kind in ("ashby", "lever", "recruitee", "workday", "eightfold", "oraclehcm") and source.display_name and source.display_name != source.identifier:
         for n in listings:  # these feeds don't carry a proper company name
             n.company = source.display_name
     seen: set[str] = {n.external_id for n in listings}  # everything still on the board (for closed detection)
