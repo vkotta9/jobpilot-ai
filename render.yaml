@@ -1,0 +1,34 @@
+# Render Blueprint — one-click deploy: Dashboard → New → Blueprint → pick this repo.
+# Free plan notes: the web service sleeps after 15 min idle (~1 min to wake, scheduled
+# searches don't run while asleep) and the free Postgres DB expires after 30 days
+# unless upgraded. Uploaded resumes are stored in Postgres, so the ephemeral disk is fine.
+services:
+  - type: web
+    name: jobpilot-ai
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: jobpilot-db
+          property: connectionString
+      - key: JOBPILOT_DATA_DIR
+        value: /data
+      - key: JOBPILOT_ALLOW_REGISTRATION
+        value: "1"          # set to 0 after you create your account
+      - key: JOBPILOT_ALLOW_MOCK_SOURCES
+        value: "1"          # labelled demo listings; set to 0 once you use real sources
+      - key: OPENAI_API_KEY
+        sync: false         # optional — leave blank for rule-based generation
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+
+databases:
+  - name: jobpilot-db
+    plan: free
+    databaseName: jobpilot
+    user: jobpilot

@@ -1,0 +1,387 @@
+"""Materials (resume / cover letter), application package, approval and tracker."""
+from __future__ import annotations
+
+import re
+from datetime import datetime
+
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
+from sqlalchemy.orm import Session
+
+from ..db import get_db
+from ..models import (
+    Application,
+    ApplicationEvent,
+    CandidateProfile,
+    Contact,
+    Document,
+    FollowUpTask,
+    Interview,
+    Job,
+    Resume,
+    ScreeningAnswer,
+    User,
+    to_dict,
+    utcnow,
+)
+from ..schemas import (
+    AnswerEdit,
+    ApplicationPatch,
+    ApproveIn,
+    DocumentEdit,
+    InterviewIn,
+    QuestionsIn,
+    StatusChange,
+    SubmissionRecord,
+)
+from ..security import audit, current_user, owned, rate_limit
+from ..services import applications as appsvc
+from ..services import export
+from ..services.insights import latest_scores, next_best_action
+from ..services.matching import assess
+from ..services.tailoring import cover_letter, tailor_resume, unresolved_placeholders, validate_resume_edit
+from .serialize import app_out, doc_out
+
+router = APIRouter(prefix="/api", tags=["applications"])
+
+
+def _profile(db: Session, user: User) -> CandidateProfile:
+    p = db.query(CandidateProfile).filter_by(user_id=user.id).one_or_none()
+    if not p or not (p.experience or p.skills):
+        raise HTTPException(400, "Complete your profile (experience and skills) before generating materials.")
+    return p
+
+
+def _next_version(db: Session, job_id: int, kind: str) -> int:
+    last = appsvc.latest_doc(db, job_id, kind)
+    return (last.version + 1) if last else 1
+
+
+def _invalidate_for_job(db: Session, job_id: int, user_id: int, reason: str) -> None:
+    app = db.query(Application).filter_by(user_id=user_id, job_id=job_id).one_or_none()
+    if app:
+        appsvc.invalidate_approval(db, app, reason)
+
+
+# ---------------------------------------------------------------- documents
+
+
+@router.post("/jobs/{jid}/resume/tailor", dependencies=[Depends(rate_limit("generate", 60, 3600))])
+def generate_resume(jid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    job = owned(db, Job, jid, user)
+    p = _profile(db, user)
+    resume = db.query(Resume).filter_by(user_id=user.id, is_primary=True).one_or_none()
+    content, flags, generator = tailor_resume(p, job, resume.text if resume else "")
+    d = Document(user_id=user.id, job_id=job.id, kind="resume", version=_next_version(db, job.id, "resume"),
+                 content=content, flags=flags, generator=generator)
+    db.add(d)
+    app = appsvc.get_or_create(db, job)
+    if app.status == "shortlisted":
+        app.status = "preparing"
+        appsvc.event(db, app, "status", "shortlisted", "preparing", "Tailored resume generated")
+    appsvc.invalidate_approval(db, app, "New resume version generated")
+    audit(db, user.id, "document.generate", "document", None, kind="resume", job_id=job.id)
+    db.commit()
+    return doc_out(d)
+
+
+@router.post("/jobs/{jid}/cover-letter", dependencies=[Depends(rate_limit("generate", 60, 3600))])
+def generate_letter(jid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    job = owned(db, Job, jid, user)
+    p = _profile(db, user)
+    resume = db.query(Resume).filter_by(user_id=user.id, is_primary=True).one_or_none()
+    a = assess(job, p, resume.text if resume else "")
+    content, flags, generator = cover_letter(p, job, a)
+    d = Document(user_id=user.id, job_id=job.id, kind="cover_letter", version=_next_version(db, job.id, "cover_letter"),
+                 content=content, flags=flags, generator=generator)
+    db.add(d)
+    app = appsvc.get_or_create(db, job)
+    if app.status == "shortlisted":
+        app.status = "preparing"
+    appsvc.invalidate_approval(db, app, "New cover letter generated")
+    db.commit()
+    return doc_out(d)
+
+
+@router.get("/documents/{did}")
+def get_document(did: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    d = owned(db, Document, did, user)
+    out = doc_out(d)
+    out["placeholders"] = unresolved_placeholders(d.content)
+    if d.kind == "resume":
+        p = db.query(CandidateProfile).filter_by(user_id=user.id).one()
+        out["original"] = {"summary": p.summary, "skills": p.skills, "experience": p.experience}
+    return out
+
+
+@router.put("/documents/{did}")
+def edit_document(did: int, body: DocumentEdit, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    d = owned(db, Document, did, user)
+    if d.kind == "resume":
+        problems = validate_resume_edit(d.content, body.content)
+        if problems:
+            raise HTTPException(400, " ".join(problems))
+        # keep server-owned keys
+        body.content["keywords"] = d.content.get("keywords")
+        body.content["target"] = d.content.get("target")
+        body.content["header"] = d.content.get("header")
+    else:
+        if not isinstance(body.content.get("body"), str):
+            raise HTTPException(400, "Cover letter content must include 'body'.")
+        body.content = {"body": body.content["body"][:20000], "target": d.content.get("target")}
+    d.content = body.content
+    d.status, d.approved_at = "draft", None
+    _invalidate_for_job(db, d.job_id, user.id, f"{d.kind} edited")
+    audit(db, user.id, "document.edit", "document", d.id)
+    db.commit()
+    return doc_out(d)
+
+
+@router.post("/documents/{did}/approve")
+def approve_document(did: int, body: ApproveIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    d = owned(db, Document, did, user)
+    if not body.confirm:
+        raise HTTPException(400, "Confirm that you reviewed this document.")
+    ph = unresolved_placeholders(d.content)
+    if ph:
+        raise HTTPException(400, f"Fill or remove {len(ph)} [[ADD: …]] placeholder(s) before approving.")
+    d.status, d.approved_at = "approved", utcnow()
+    audit(db, user.id, "document.approve", "document", d.id)
+    db.commit()
+    return doc_out(d)
+
+
+@router.delete("/documents/{did}")
+def delete_document(did: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    d = owned(db, Document, did, user)
+    app = db.query(Application).filter_by(user_id=user.id, job_id=d.job_id).one_or_none()
+    if app and app.submitted_at and did in (app.resume_doc_id, app.cover_letter_doc_id):
+        raise HTTPException(400, "This document was part of a submitted application and is kept for your records.")
+    _invalidate_for_job(db, d.job_id, user.id, f"{d.kind} deleted")
+    db.delete(d)
+    db.commit()
+    return {"ok": True}
+
+
+@router.get("/documents/{did}/download")
+def download_document(did: int, format: str = "pdf", user: User = Depends(current_user), db: Session = Depends(get_db)):
+    d = owned(db, Document, did, user)
+    if format not in ("pdf", "docx"):
+        raise HTTPException(400, "format must be pdf or docx")
+    fn = {("resume", "pdf"): export.resume_pdf, ("resume", "docx"): export.resume_docx,
+          ("cover_letter", "pdf"): export.letter_pdf, ("cover_letter", "docx"): export.letter_docx}[(d.kind, format)]
+    data = fn(d.content)
+    target = d.content.get("target", {})
+    base = re.sub(r"[^A-Za-z0-9]+", "_", f"{d.kind}_{target.get('company', '')}_{target.get('title', '')}_v{d.version}").strip("_")
+    if d.status != "approved":
+        base += "_DRAFT"
+    media = "application/pdf" if format == "pdf" else \
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    return Response(data, media_type=media, headers={"Content-Disposition": f'attachment; filename="{base}.{format}"'})
+
+
+# ---------------------------------------------------------------- applications
+
+
+@router.get("/applications")
+def list_applications(status: str = "", q: str = "", user: User = Depends(current_user), db: Session = Depends(get_db)):
+    qry = db.query(Application).filter_by(user_id=user.id)
+    if status:
+        qry = qry.filter(Application.status.in_(status.split(",")))
+    scores = latest_scores(db, user.id)
+    apps = qry.order_by(Application.updated_at.desc()).all()
+    if q:
+        ql = q.lower()
+        apps = [a for a in apps if ql in a.job.title.lower() or ql in a.job.company.lower()]
+    out = []
+    for a in apps:
+        d = app_out(a, scores.get(a.job_id))
+        d["next_best_action"] = next_best_action(db, a)
+        d["contacts"] = db.query(Contact).filter_by(user_id=user.id, job_id=a.job_id).count()
+        out.append(d)
+    return out
+
+
+@router.get("/applications/export.csv")
+def export_csv(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    scores = latest_scores(db, user.id)
+    rows = []
+    for a in db.query(Application).filter_by(user_id=user.id).order_by(Application.id).all():
+        j = a.job
+        contacts = db.query(Contact).filter_by(user_id=user.id, job_id=j.id).all()
+        interviews = db.query(Interview).filter_by(application_id=a.id).all()
+        rows.append({
+            "company": j.company, "title": j.title, "location": j.location, "remote_type": j.remote_type,
+            "salary": f"{j.salary_min or ''}-{j.salary_max or ''} {j.salary_currency}".strip(" -"),
+            "source": j.source_kind, "simulated": j.is_simulated, "job_url": j.url, "listing_status": j.listing_status,
+            "match_score": scores[j.id].score if j.id in scores else "",
+            "status": a.status, "discovered_at": j.discovered_at.isoformat(), "last_checked_at": j.last_checked_at.isoformat(),
+            "submitted_at": a.submitted_at.isoformat() if a.submitted_at else "",
+            "submission_verified": a.submission_verified, "confirmation": a.confirmation_detail,
+            "resume_version": (db.get(Document, a.resume_doc_id).version if a.resume_doc_id and db.get(Document, a.resume_doc_id) else ""),
+            "cover_letter_version": (db.get(Document, a.cover_letter_doc_id).version if a.cover_letter_doc_id and db.get(Document, a.cover_letter_doc_id) else ""),
+            "follow_up_at": a.follow_up_at.isoformat() if a.follow_up_at else "",
+            "last_contact_at": a.last_contact_at.isoformat() if a.last_contact_at else "",
+            "contacts": "; ".join(f"{c.name} ({c.role})" for c in contacts),
+            "interviews": "; ".join(f"{i.stage} {i.scheduled_at.date() if i.scheduled_at else ''}" for i in interviews),
+            "next_action": a.next_action or next_best_action(db, a), "notes": a.notes, "outcome": a.outcome_detail,
+        })
+    cols = list(rows[0].keys()) if rows else ["company", "title", "status"]
+    return Response(export.to_csv(rows, cols), media_type="text/csv",
+                    headers={"Content-Disposition": 'attachment; filename="jobpilot_tracker.csv"'})
+
+
+@router.get("/applications/{aid}")
+def application_detail(aid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    a = owned(db, Application, aid, user)
+    scores = latest_scores(db, user.id)
+    out = app_out(a, scores.get(a.job_id))
+    resume = appsvc.latest_doc(db, a.job_id, "resume")
+    letter = appsvc.latest_doc(db, a.job_id, "cover_letter")
+    out["resume"] = doc_out(resume) if resume else None
+    out["cover_letter"] = doc_out(letter) if letter else None
+    out["answers"] = [to_dict(x) for x in db.query(ScreeningAnswer).filter_by(application_id=a.id).order_by(ScreeningAnswer.id).all()]
+    out["events"] = [to_dict(e) for e in db.query(ApplicationEvent).filter_by(application_id=a.id).order_by(ApplicationEvent.id).all()]
+    out["interviews"] = [to_dict(i) for i in db.query(Interview).filter_by(application_id=a.id).order_by(Interview.id).all()]
+    out["tasks"] = [to_dict(t) for t in db.query(FollowUpTask).filter_by(application_id=a.id).order_by(FollowUpTask.due_at).all()]
+    out["problems"] = appsvc.package_problems(db, a)
+    out["approval_current"] = appsvc.approval_is_current(db, a)
+    out["next_best_action"] = next_best_action(db, a)
+    out["allowed_transitions"] = sorted(appsvc.MANUAL_TRANSITIONS.get(a.status, set()))
+    return out
+
+
+def _parse_dt(s: str | None):
+    if not s:
+        return None
+    try:
+        return datetime.fromisoformat(s.replace("Z", "")[:19]) if "T" in s else datetime.fromisoformat(s[:10])
+    except ValueError:
+        raise HTTPException(400, f"Invalid date: {s}")
+
+
+@router.patch("/applications/{aid}")
+def patch_application(aid: int, body: ApplicationPatch, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    a = owned(db, Application, aid, user)
+    if body.notes is not None:
+        a.notes = body.notes[:20000]
+    if body.next_action is not None:
+        a.next_action = body.next_action[:300]
+    if body.outcome_detail is not None:
+        a.outcome_detail = body.outcome_detail[:5000]
+    if body.follow_up_at is not None:
+        a.follow_up_at = _parse_dt(body.follow_up_at)
+        if a.follow_up_at:
+            key = f"app:{a.id}:manual_follow_up"
+            t = db.query(FollowUpTask).filter_by(user_id=user.id, dedupe_key=key).first()
+            if t:
+                t.due_at, t.done = a.follow_up_at, False
+            else:
+                db.add(FollowUpTask(user_id=user.id, application_id=a.id, kind="application_follow_up", dedupe_key=key,
+                                    title=f"Follow up — {a.job.title} @ {a.job.company}", due_at=a.follow_up_at))
+    if body.last_contact_at is not None:
+        a.last_contact_at = _parse_dt(body.last_contact_at)
+    a.updated_at = utcnow()
+    db.commit()
+    return app_out(a)
+
+
+@router.post("/applications/{aid}/status")
+def set_status(aid: int, body: StatusChange, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    a = owned(db, Application, aid, user)
+    appsvc.change_status(db, a, body.status, body.detail)
+    a.updated_at = utcnow()
+    db.commit()
+    return app_out(a)
+
+
+@router.post("/applications/{aid}/request-approval")
+def request_approval(aid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    a = owned(db, Application, aid, user)
+    res = appsvc.request_approval(db, a)
+    db.commit()
+    return res
+
+
+@router.post("/applications/{aid}/approve")
+def approve(aid: int, body: ApproveIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    a = owned(db, Application, aid, user)
+    res = appsvc.approve(db, a, body.confirm)
+    db.commit()
+    return res
+
+
+@router.post("/applications/{aid}/submission")
+def record_submission(aid: int, body: SubmissionRecord, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    a = owned(db, Application, aid, user)
+    res = appsvc.record_submission(db, a, body.confirm, body.method, body.confirmation_detail)
+    db.commit()
+    return res
+
+
+@router.post("/applications/{aid}/questions")
+def add_questions(aid: int, body: QuestionsIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    a = owned(db, Application, aid, user)
+    p = db.query(CandidateProfile).filter_by(user_id=user.id).one()
+    created = []
+    for q in body.questions:
+        q = q.strip()[:2000]
+        if not q:
+            continue
+        if db.query(ScreeningAnswer).filter_by(application_id=a.id, question_key=appsvc.question_key(q)).first():
+            continue
+        ans, status, cat, src = appsvc.draft_answer(db, p, q)
+        sa = ScreeningAnswer(user_id=user.id, application_id=a.id, question=q, question_key=appsvc.question_key(q),
+                             category=cat, answer=ans, status=status, source=src)
+        db.add(sa)
+        created.append(sa)
+    appsvc.invalidate_approval(db, a, "Screening questions added")
+    db.commit()
+    return [to_dict(x) for x in created]
+
+
+@router.put("/answers/{ans_id}")
+def edit_answer(ans_id: int, body: AnswerEdit, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    sa = owned(db, ScreeningAnswer, ans_id, user)
+    if body.approve and not body.answer.strip():
+        raise HTTPException(400, "An empty answer cannot be approved.")
+    sa.answer = body.answer
+    sa.status = "approved" if body.approve else ("draft" if body.answer.strip() else "needs_input")
+    sa.reusable = body.reusable
+    sa.source = "Your answer"
+    if sa.application_id:
+        a = db.get(Application, sa.application_id)
+        appsvc.invalidate_approval(db, a, "Screening answer changed")
+    db.commit()
+    return to_dict(sa)
+
+
+@router.delete("/answers/{ans_id}")
+def delete_answer(ans_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    sa = owned(db, ScreeningAnswer, ans_id, user)
+    if sa.application_id:
+        appsvc.invalidate_approval(db, db.get(Application, sa.application_id), "Screening answer removed")
+    db.delete(sa)
+    db.commit()
+    return {"ok": True}
+
+
+@router.get("/answers/library")
+def answer_library(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    rows = db.query(ScreeningAnswer).filter_by(user_id=user.id, reusable=True, status="approved").all()
+    return [to_dict(r) for r in rows]
+
+
+@router.post("/applications/{aid}/interviews")
+def add_interview(aid: int, body: InterviewIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    a = owned(db, Application, aid, user)
+    iv = Interview(user_id=user.id, application_id=a.id, stage=body.stage, scheduled_at=_parse_dt(body.scheduled_at),
+                   notes=body.notes, outcome=body.outcome)
+    db.add(iv)
+    if a.status in ("applied", "assessment"):
+        appsvc.change_status(db, a, "interview", f"Interview scheduled: {body.stage}")
+    if iv.scheduled_at:
+        db.add(FollowUpTask(user_id=user.id, application_id=a.id, kind="interview", title=f"{body.stage} — {a.job.company}",
+                            due_at=iv.scheduled_at, dedupe_key=f"interview:{a.id}:{body.stage}:{iv.scheduled_at}"))
+    db.commit()
+    return to_dict(iv)
