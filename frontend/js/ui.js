@@ -139,3 +139,12 @@ export function download(blob, filename) {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
+
+// Source attribution required by some providers (e.g. Adzuna: label linked to their site, min 116x23px).
+const ATTRIB = { adzuna: ["Adzuna", "https://www.adzuna.com"], remotive: ["Remotive", "https://remotive.com"], muse: ["The Muse", "https://www.themuse.com"] };
+export function sourceCredit(kind) {
+  const a = ATTRIB[kind];
+  if (!a) return null;
+  return h("a", { class: "credit", href: a[1], target: "_blank", rel: "noopener noreferrer", onclick: (e) => e.stopPropagation(),
+    title: `Job listing provided by ${a[0]}` }, `Jobs by ${a[0]}`);
+}

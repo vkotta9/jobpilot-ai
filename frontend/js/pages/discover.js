@@ -1,5 +1,5 @@
 import { api, qs } from "../api.js";
-import { h, mount, loading, empty, scoreRing, simBadge, statusBadge, money, ago, field, toast, busy, modal, confirmDialog } from "../ui.js";
+import { h, mount, loading, empty, scoreRing, simBadge, statusBadge, money, ago, field, toast, busy, modal, confirmDialog, sourceCredit } from "../ui.js";
 
 const filters = { q: "", location: "", company: "", remote: "", seniority: "", min_score: "", sort: "score", status: "active", include_simulated: true };
 
@@ -122,7 +122,7 @@ function jobRow(j) {
         j.remote_type !== "unknown" && h("span", { class: "badge" }, j.remote_type), sal && h("span", { class: "badge good" }, sal),
         j.is_simulated && simBadge(), j.listing_status === "closed" && h("span", { class: "badge bad" }, "Closed"),
         m && (m.flags || []).some((f) => f.startsWith("Work authorization")) && h("span", { class: "badge warn" }, "Sponsorship conflict")),
-      h("div", { class: "faint", style: { marginTop: "3px" } }, `${j.source_kind} · checked ${ago(j.last_checked_at)}`, j.posted_at ? ` · posted ${ago(j.posted_at)}` : "")),
+      h("div", { class: "faint row", style: { marginTop: "3px", gap: "6px" } }, sourceCredit(j.source_kind) || j.source_kind, `checked ${ago(j.last_checked_at)}`, j.posted_at ? ` · posted ${ago(j.posted_at)}` : "")),
     h("div", { style: { textAlign: "right" } }, j.application ? statusBadge(j.application.status) : m && h("span", { class: `badge ${m.recommendation === "apply" ? "good" : m.recommendation === "review" ? "warn" : ""}` }, m.recommendation)));
 }
 

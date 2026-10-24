@@ -1,5 +1,5 @@
 import { api } from "../api.js";
-import { h, mount, loading, scoreRing, recBadge, simBadge, statusBadge, money, fmtDate, ago, busy, toast, confirmDialog, modal } from "../ui.js";
+import { h, mount, loading, scoreRing, recBadge, simBadge, statusBadge, money, fmtDate, ago, busy, toast, confirmDialog, modal, sourceCredit } from "../ui.js";
 
 export async function render(root, id) {
   mount(root, loading());
@@ -61,7 +61,7 @@ export async function render(root, id) {
             h("span", { class: `badge ${d.status === "approved" ? "good" : "warn"}` }, d.status)))
             : h("p", { class: "muted small" }, "No tailored materials yet. Your master resume is never changed.")),
         h("div", { class: "card" }, h("h2", {}, "Listing details"),
-          kv("Source", j.source_kind + (j.source ? ` · ${j.source.display_name || j.source.identifier}` : "")),
+          kv("Source", sourceCredit(j.source_kind) || (j.source_kind + (j.source ? ` · ${j.source.display_name || j.source.identifier}` : ""))),
           kv("External ID", j.external_id), kv("Posted", fmtDate(j.posted_at)), kv("Discovered", fmtDate(j.discovered_at, true)),
           kv("Last checked", fmtDate(j.last_checked_at, true)),
           kv("Application URL", j.apply_url ? h("a", { href: j.apply_url, target: "_blank", rel: "noopener noreferrer" }, "official form ↗") : "—"),
