@@ -76,6 +76,13 @@ class JobSourceAdapter:
         finally:
             self._extra_headers = {}
 
+    def _post_json(self, url: str, body: dict, max_attempts: int = 2) -> Any:
+        self._post_body = body
+        try:
+            return self._get_json(url, max_attempts=max_attempts)
+        finally:
+            self._post_body = None
+
     def _get_json(self, url: str, params: Optional[dict] = None, max_attempts: int = 3) -> Any:
         last_err: Optional[SourceError] = None
         headers = {"User-Agent": settings.user_agent, "Accept": "application/json"}
@@ -84,7 +91,8 @@ class JobSourceAdapter:
                           headers=headers, follow_redirects=True) as client:
             for attempt in range(1, max_attempts + 1):
                 try:
-                    resp = client.get(url, params=params)
+                    body = getattr(self, "_post_body", None)
+                    resp = client.post(url, json=body) if body is not None else client.get(url, params=params)
                 except httpx.TimeoutException:
                     last_err = SourceError(f"{self.kind}: request timed out", retryable=True)
                 except httpx.HTTPError as e:

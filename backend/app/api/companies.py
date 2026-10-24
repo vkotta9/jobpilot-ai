@@ -23,7 +23,7 @@ class DetectIn(BaseModel):
 
 class FollowItem(BaseModel):
     kind: str
-    identifier: str = Field(min_length=1, max_length=200, pattern=r"^[A-Za-z0-9_.%\-]+$")
+    identifier: str = Field(min_length=1, max_length=200, pattern=r"^[A-Za-z0-9_.%&|' \-]+$")
     company: str = Field(default="", max_length=200)
 
 
@@ -40,9 +40,11 @@ def detect(body: DetectIn, user: User = Depends(current_user)):
 def _follow(db: Session, user: User, items: list[FollowItem], run_now: bool) -> dict:
     added, existing, results = [], 0, []
     for it in items:
-        if it.kind not in COMPANY_KINDS:
+        if it.kind not in COMPANY_KINDS and it.kind != "jsearch":
             raise HTTPException(400, f"Unsupported board type: {it.kind}")
-        ident = it.identifier if it.kind in ("smartrecruiters", "ashby") else it.identifier.lower()
+        if it.kind == "jsearch" and it.identifier.lower() == "auto":
+            raise HTTPException(400, "Invalid company.")
+        ident = it.identifier if it.kind in ("smartrecruiters", "ashby", "workday", "jsearch") else it.identifier.lower()
         src = db.query(JobSource).filter_by(user_id=user.id, kind=it.kind, identifier=ident).one_or_none()
         if src:
             existing += 1
@@ -73,7 +75,10 @@ def follow(body: FollowIn, user: User = Depends(current_user), db: Session = Dep
 
 @router.get("")
 def following(user: User = Depends(current_user), db: Session = Depends(get_db)):
-    rows = db.query(JobSource).filter(JobSource.user_id == user.id, JobSource.kind.in_(COMPANY_KINDS)).order_by(JobSource.display_name).all()
+    from sqlalchemy import and_, or_
+
+    rows = db.query(JobSource).filter(JobSource.user_id == user.id, or_(
+        JobSource.kind.in_(COMPANY_KINDS), and_(JobSource.kind == "jsearch", JobSource.identifier != "auto"))).order_by(JobSource.display_name).all()
     return [to_dict(s) for s in rows]
 
 

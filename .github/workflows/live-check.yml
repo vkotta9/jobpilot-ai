@@ -60,6 +60,14 @@ jobs:
         working-directory: backend
         run: python scripts/live_check.py detect "https://stripe.com/jobs|Databricks|https://jobs.ashbyhq.com/openai|Google"
         continue-on-error: true
+      - name: Workday career sites
+        working-directory: backend
+        run: python scripts/live_check.py workday "nvidia|wd5|NVIDIAExternalCareerSite,salesforce|wd12|External_Career_Site,intel|wd1|External,adobe|wd5|external_experienced,walmart|wd5|WalmartExternal,dell|wd1|External,hp|wd5|ExternalCareerSite,paypal|wd1|jobs,capitalone|wd12|Capital_One,mastercard|wd1|CorporateCareers,boeing|wd1|EXTERNAL_CAREERS,target|wd5|targetcareers,disney|wd5|disneycareer,workday|wd5|Workday,snapchat|wd1|snap,autodesk|wd1|Ext"
+        continue-on-error: true
+      - name: Detect Workday by name and link
+        working-directory: backend
+        run: python scripts/live_check.py detect "NVIDIA|https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite|Amazon"
+        continue-on-error: true
       - name: Deployed site health
         working-directory: backend
         run: python scripts/live_check.py site https://jobpilot-ai-45bq.onrender.com

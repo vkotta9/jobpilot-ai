@@ -97,6 +97,8 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
     keep = (lambda t: title_matches(t, queries)) if queries else None
     if keep and hasattr(adapter, "title_filter"):
         adapter.title_filter = keep
+    if hasattr(adapter, "queries") and not adapter_cls.keyword:
+        adapter.queries = queries  # Workday: search the site for the target titles
     source.last_run_at = utcnow()
     try:
         listings = adapter.fetch()
@@ -106,7 +108,7 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
         audit(db, source.user_id, "discovery.error", "job_source", source.id, error=str(e))
         db.commit()
         return stats
-    if source.kind in ("ashby", "lever", "recruitee") and source.display_name and source.display_name != source.identifier:
+    if source.kind in ("ashby", "lever", "recruitee", "workday") and source.display_name and source.display_name != source.identifier:
         for n in listings:  # these feeds don't carry a proper company name
             n.company = source.display_name
     seen: set[str] = {n.external_id for n in listings}  # everything still on the board (for closed detection)
@@ -122,7 +124,7 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
             new_ids.append(job.id)
     # A company board's own listing is authoritative: anything missing is no longer posted.
     # (Keyword searches return a changing subset, so absence there means nothing.)
-    closable = [] if adapter_cls.keyword else db.query(Job).filter(
+    closable = [] if (adapter_cls.keyword or getattr(adapter_cls, "partial", False)) else db.query(Job).filter(
         Job.user_id == source.user_id, Job.source_id == source.id, Job.listing_status == "active").all()
     for job in closable:
         if job.external_id not in seen:

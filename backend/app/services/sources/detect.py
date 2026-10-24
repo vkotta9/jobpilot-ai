@@ -23,6 +23,7 @@ import httpx
 
 from ...config import settings
 from .base import SourceError
+from .workday import parse_url as workday_parse
 
 PATTERNS: list[tuple[str, re.Pattern]] = [
     ("greenhouse", re.compile(r"(?:job-boards|boards)(?:\.eu)?\.greenhouse\.io/(?:embed/job_board(?:/js)?\?for=)?([A-Za-z0-9_-]+)", re.I)),
@@ -37,7 +38,6 @@ PATTERNS: list[tuple[str, re.Pattern]] = [
     ("recruitee", re.compile(r"(?<![\w.-])([A-Za-z0-9-]+)\.recruitee\.com", re.I)),
 ]
 UNSUPPORTED = [
-    ("Workday", re.compile(r"myworkdayjobs\.com|workdayjobs|wd\d+\.myworkday", re.I)),
     ("iCIMS", re.compile(r"icims\.com", re.I)),
     ("Taleo", re.compile(r"taleo\.net", re.I)),
     ("SuccessFactors", re.compile(r"successfactors|sapsf\.", re.I)),
@@ -45,10 +45,14 @@ UNSUPPORTED = [
     ("Jobvite", re.compile(r"jobvite\.com", re.I)),
     ("BambooHR", re.compile(r"bamboohr\.com/careers", re.I)),
 ]
+# Companies with their own careers sites (no public feed): followed through Google Jobs (JSearch) instead
 IN_HOUSE = {"google": "Google", "alphabet": "Google", "amazon": "Amazon", "aws": "Amazon", "microsoft": "Microsoft",
             "apple": "Apple", "meta": "Meta", "facebook": "Meta", "netflix": "Netflix", "ibm": "IBM", "oracle": "Oracle",
-            "tesla": "Tesla", "nvidia": "NVIDIA (Workday)", "salesforce": "Salesforce (Workday)", "intel": "Intel (Workday)",
-            "adobe": "Adobe (Workday)", "uber": "Uber", "linkedin": "LinkedIn", "walmart": "Walmart (Workday)"}
+            "tesla": "Tesla", "uber": "Uber", "linkedin": "LinkedIn", "bytedance": "ByteDance", "tiktok": "TikTok",
+            "jpmorgan": "JPMorgan Chase", "jpmorganchase": "JPMorgan Chase", "goldmansachs": "Goldman Sachs",
+            "bloomberg": "Bloomberg", "qualcomm": "Qualcomm", "cisco": "Cisco", "x": "X", "twitter": "X"}
+# Well-known companies on Workday (verified live — see scripts/validate_companies.py)
+KNOWN_WORKDAY = {"nvidia": "nvidia|wd5|NVIDIAExternalCareerSite"}
 IGNORE_SLUGS = {"embed", "api", "jobs", "careers", "www", "apply", "job_board", "v1", "boards", "js"}
 PROBE_ORDER = ("greenhouse", "lever", "ashby", "workable", "recruitee", "smartrecruiters")
 
@@ -148,6 +152,9 @@ def detect(entry: str, transport=None) -> Detection:
     is_url = bool(re.match(r"^(https?://|www\.)", entry, re.I)) or bool(re.search(r"\.[a-z]{2,}(/|$)", entry, re.I)) and " " not in entry
     if is_url:
         url = entry if entry.lower().startswith("http") else "https://" + entry
+        wd = workday_parse(url)
+        if wd:
+            return _workday_hit(entry, wd, transport) or Detection(entry, "not_found", message="That Workday site didn't respond with any jobs.")
         for name, rx in UNSUPPORTED:
             if rx.search(url):
                 d.status, d.message = "unsupported", f"{name} career sites have no public job feed — not supported."
@@ -161,6 +168,11 @@ def detect(entry: str, transport=None) -> Detection:
                     if rx.search(final) or rx.search(html[:400_000]):
                         d.status, d.message = "unsupported", f"This company uses {name}, which has no public job feed — not supported."
                         return d
+                wd = workday_parse(final) or workday_parse(html)
+                if wd:
+                    hit = _workday_hit(entry, wd, transport)
+                    if hit:
+                        return hit
                 cands = from_text(final + "\n" + html)
                 if not cands:
                     # follow one level of "careers"/"jobs" links on the page
@@ -188,21 +200,27 @@ def detect(entry: str, transport=None) -> Detection:
                 hit.input = entry
                 hit.message = "Found by company name (the page itself didn't link a job board)."
                 return hit
-        d.message = ("No supported job board found on that page" + page_note +
-                     ". If the company uses Workday or its own site, it can't be followed automatically.")
+        d.message = ("Couldn't find this company's job list on that page" + page_note + ". Open the company's careers page, "
+                     "click into its job search, and paste that page's link (e.g. a …myworkdayjobs.com or jobs.lever.co address). "
+                     "Or type just the company name.")
         return d
     key = re.sub(r"[^a-z]", "", entry.lower())
+    if key in KNOWN_WORKDAY:
+        hit = _workday_hit(entry, KNOWN_WORKDAY[key], transport)
+        if hit:
+            return hit
     if key in IN_HOUSE:
-        d.status = "unsupported"
-        d.message = f"{IN_HOUSE[key]} runs its own careers site without a public job feed — not supported."
-        return d
+        return Detection(entry, "found", kind="jsearch", identifier=IN_HOUSE[key], company=IN_HOUSE[key], jobs=0,
+                         message="Has its own careers site with no public feed — JobPilot follows it through Google Jobs "
+                                 "(needs your free JSearch key in Settings → Connections).")
     hit = _probe_name(entry, transport)
     if hit:
         hit.input = entry
         if hit.kind in ("ashby", "lever", "recruitee"):
             hit.company = entry  # these feeds don't carry the company's display name
         return hit
-    d.message = "Not found on Greenhouse, Lever, Ashby, Workable, Recruitee or SmartRecruiters. Try pasting the company's careers page link."
+    d.message = ("Not found on Greenhouse, Lever, Ashby, Workable, Recruitee or SmartRecruiters. If the company uses Workday, "
+                 "paste its job-search link (…myworkdayjobs.com/…).")
     return d
 
 
@@ -213,6 +231,22 @@ def _same_company(query: str, found: str) -> bool:
     q = set(re.findall(r"[a-z0-9]+", query.lower())) - {"inc", "llc", "ltd", "corp", "the", "co", "ai", "labs", "health", "hq"}
     f = set(re.findall(r"[a-z0-9]+", found.lower()))
     return bool(q) and q <= f
+
+
+def _workday_hit(entry: str, ident: str, transport=None) -> Optional[Detection]:
+    from .workday import WorkdayAdapter
+
+    try:
+        a = WorkdayAdapter(ident, transport=transport, sleep=lambda s: None)
+        a.timeout_s, a.detail_limit = 10, 0
+        jobs = a.fetch()
+    except Exception:
+        return None
+    if not jobs:
+        return None
+    name = entry if not re.match(r"^(https?://|www\.)", entry, re.I) else a.company_name()
+    return Detection(entry, "found", kind="workday", identifier=ident, company=name, jobs=len(jobs),
+                     message="Workday careers site — JobPilot searches it for your target titles once a day.")
 
 
 def _probe_name(name: str, transport=None) -> Optional[Detection]:

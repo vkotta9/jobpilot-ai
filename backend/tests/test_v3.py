@@ -105,8 +105,50 @@ def test_detect_parses_links_and_rejects_unsupported():
     assert det.from_text("https://job-boards.greenhouse.io/stripe/jobs/1") == [("greenhouse", "stripe")]
     assert det.from_text("https://jobs.lever.co/palantir") == [("lever", "palantir")]
     assert ("ashby", "openai") in det.from_text("<a href='https://jobs.ashbyhq.com/openai'>")
-    assert det.detect("https://acme.wd1.myworkdayjobs.com/careers").status == "unsupported"
-    assert det.detect("Google").status == "unsupported"
+    assert det.detect("https://acme.taleo.net/careersection/jobs").status == "unsupported"
+    g = det.detect("Google")
+    assert g.status == "found" and g.kind == "jsearch" and g.identifier == "Google" and "JSearch" in g.message
+
+
+WD = "https://acme.wd5.myworkdayjobs.com"
+
+
+def wd_routes(robots="User-agent: *\nAllow: /\n"):
+    return {
+        f"{WD}/robots.txt": (200, robots),
+        f"{WD}/wday/cxs/acme/AcmeCareers/jobs": (200, {"total": 2, "jobPostings": [
+            {"title": "Senior Software Engineer", "externalPath": "/job/US-NY/Senior-Software-Engineer_JR1", "locationsText": "New York, NY", "postedOn": "Posted 3 Days Ago"},
+            {"title": "Payroll Specialist", "externalPath": "/job/US-NY/Payroll_JR2", "locationsText": "New York, NY", "postedOn": "Posted Today"}]}),
+        f"{WD}/wday/cxs/acme/AcmeCareers/job/US-NY/Senior-Software-Engineer_JR1": (200, {"jobPostingInfo": {
+            "jobReqId": "JR1", "title": "Senior Software Engineer", "jobDescription": "<p>Build Java services</p>",
+            "location": "New York, NY", "timeType": "Full time", "startDate": "2026-10-20",
+            "externalUrl": f"{WD}/AcmeCareers/job/US-NY/Senior-Software-Engineer_JR1"}}),
+    }
+
+
+def test_workday_adapter_and_detection():
+    from app.services.sources.workday import WorkdayAdapter, parse_url
+
+    assert parse_url(f"{WD}/en-US/AcmeCareers/job/x") == "acme|wd5|AcmeCareers"
+    calls = []
+    a = WorkdayAdapter("acme|wd5|AcmeCareers", transport=mock(wd_routes(), calls), sleep=lambda s: None)
+    a.queries = ["Software Engineer"]
+    a.title_filter = lambda t: "engineer" in t.lower()
+    jobs = a.fetch()
+    se = next(j for j in jobs if j.external_id == "JR1")
+    assert "Build Java services" in se.description_text and se.url.endswith("_JR1") and se.posted_at.year == 2026
+    pay = next(j for j in jobs if "Payroll" in j.title)
+    assert pay.description_text == ""  # details only fetched for matching titles
+    posts = [c for c in calls if c.method == "POST"]
+    assert posts and b'"searchText":"Software Engineer"' in posts[0].content
+    d = det.detect(f"{WD}/AcmeCareers", transport=mock(wd_routes()))
+    assert d.status == "found" and d.kind == "workday" and d.identifier == "acme|wd5|AcmeCareers"
+    import pytest
+    from app.services.sources import SourceError
+
+    blocked = WorkdayAdapter("acme|wd5|AcmeCareers", transport=mock(wd_routes("User-agent: *\nDisallow: /")), sleep=lambda s: None)
+    with pytest.raises(SourceError, match="robots"):
+        blocked.fetch()
 
 
 def test_detect_from_careers_page_and_robots():

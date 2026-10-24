@@ -22,6 +22,22 @@ def main() -> int:
         print(r.status_code, r.text[:300])
         print(f"::notice title=site::HTTP {r.status_code} {r.text[:120]}")
         return 0 if r.status_code == 200 and '"status":"ok"' in r.text.replace(" ", "") else 1
+    if kind == "workday":
+        from app.services.sources.workday import WorkdayAdapter
+
+        rows = []
+        for ident in arg.split(","):
+            try:
+                a = WorkdayAdapter(ident)
+                a.queries, a.detail_limit = ["Software Engineer"], 2
+                jobs = a.fetch()
+                withdesc = sum(1 for j in jobs if len(j.description_text) > 200)
+                rows.append(f"{ident}={len(jobs)} jobs/{withdesc} desc")
+            except Exception as e:  # noqa: BLE001
+                rows.append(f"{ident}=ERR {str(e)[:60]}")
+        for i in range(0, len(rows), 8):
+            print("::notice title=workday::" + " | ".join(rows[i:i + 8]))
+        return 0
     if kind == "detect":
         from app.services.sources.detect import detect
 

@@ -7,6 +7,7 @@ from .keyword import (AdzunaAdapter, ArbeitnowAdapter, HimalayasAdapter, JobicyA
                       RemotiveAdapter, USAJobsAdapter)
 from .lever import LeverAdapter
 from .mock import MockAdapter
+from .workday import WorkdayAdapter
 
 ADAPTERS: dict[str, type[JobSourceAdapter]] = {
     # company career portals (identifier = the company's board slug)
@@ -16,6 +17,7 @@ ADAPTERS: dict[str, type[JobSourceAdapter]] = {
     "smartrecruiters": SmartRecruitersAdapter,
     "workable": WorkableAdapter,
     "recruitee": RecruiteeAdapter,
+    "workday": WorkdayAdapter,
     # keyword job search (identifier = "auto"; queries come from the profile)
     "remotive": RemotiveAdapter,
     "muse": MuseAdapter,
@@ -28,7 +30,7 @@ ADAPTERS: dict[str, type[JobSourceAdapter]] = {
     # development only
     "mock": MockAdapter,
 }
-COMPANY_KINDS = ("greenhouse", "lever", "ashby", "smartrecruiters", "workable", "recruitee")
+COMPANY_KINDS = ("greenhouse", "lever", "ashby", "smartrecruiters", "workable", "recruitee", "workday")
 KEYWORD_KINDS = ("remotive", "muse", "himalayas", "jobicy", "arbeitnow", "jsearch", "usajobs", "adzuna")
 FREE_DEFAULT_KINDS = ("remotive", "muse", "himalayas", "jobicy")
 

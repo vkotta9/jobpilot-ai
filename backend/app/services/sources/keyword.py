@@ -320,6 +320,20 @@ class JSearchAdapter(KeywordAdapter):
             raise SourceError("jsearch: connect your free RapidAPI key in Settings → Connections.")
         out: dict[str, NormalizedJob] = {}
         loc = next((l for l in self.locations if l.lower() not in ("remote", "anywhere")), "")
+        company = "" if self.identifier == "auto" else self.identifier
+        if company:  # following one company through Google Jobs: one request per run
+            q = self.queries[0]
+            data = self._get_json_headers("https://jsearch.p.rapidapi.com/search",
+                                          {"query": f"{q} at {company}", "page": 1, "num_pages": 1, "date_posted": "month", "country": "us"},
+                                          {"X-RapidAPI-Key": key, "X-RapidAPI-Host": "jsearch.p.rapidapi.com"})
+            want = set(re.findall(r"[a-z0-9]+", company.lower()))
+            for j in (data or {}).get("data", []) or []:
+                emp = set(re.findall(r"[a-z0-9]+", (j.get("employer_name") or "").lower()))
+                if want and want <= emp:
+                    n = self.normalize(j)
+                    if n:
+                        out[n.external_id] = n
+            return list(out.values())
         for q in self.queries[:2]:
             query = f"{q} in {loc}" if loc else f"{q} in USA"
             data = self._get_json_headers("https://jsearch.p.rapidapi.com/search",
