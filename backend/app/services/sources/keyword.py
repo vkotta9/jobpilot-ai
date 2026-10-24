@@ -328,11 +328,9 @@ class JSearchAdapter(KeywordAdapter):
         company = "" if self.identifier == "auto" else self.identifier
         if company:  # following one company through Google Jobs: one request per run
             q = self.queries[0]
-            data = self._get_json_headers("https://jsearch.p.rapidapi.com/search",
-                                          {"query": f"{q} at {company}", "page": 1, "num_pages": 1, "date_posted": "month", "country": "us"},
-                                          {"X-RapidAPI-Key": key, "X-RapidAPI-Host": "jsearch.p.rapidapi.com"})
+            data = self._search(key, {"query": f"{q} at {company}", "date_posted": "month", "country": "us"})
             want = set(re.findall(r"[a-z0-9]+", company.lower()))
-            for j in (data or {}).get("data", []) or []:
+            for j in self._jobs(data):
                 emp = set(re.findall(r"[a-z0-9]+", (j.get("employer_name") or "").lower()))
                 if want and want <= emp:
                     n = self.normalize(j)
@@ -341,14 +339,42 @@ class JSearchAdapter(KeywordAdapter):
             return list(out.values())
         for q in self.queries[:2]:
             query = f"{q} in {loc}" if loc else f"{q} in USA"
-            data = self._get_json_headers("https://jsearch.p.rapidapi.com/search",
-                                          {"query": query, "page": 1, "num_pages": 1, "date_posted": "week", "country": "us"},
-                                          {"X-RapidAPI-Key": key, "X-RapidAPI-Host": "jsearch.p.rapidapi.com"})
-            for j in (data or {}).get("data", []) or []:
+            data = self._search(key, {"query": query, "date_posted": "week", "country": "us"})
+            for j in self._jobs(data):
                 n = self.normalize(j)
                 if n:
                     out[n.external_id] = n
         return list(out.values())
+
+    HOST = "jsearch.p.rapidapi.com"
+
+    def _search(self, key: str, params: dict):
+        """JSearch moved job search to /search-v2 (cursor paging); fall back to the older /search."""
+        headers = {"X-RapidAPI-Key": key, "X-RapidAPI-Host": self.HOST}
+        try:
+            return self._get_json_headers(f"https://{self.HOST}/search-v2", params, headers)
+        except SourceError as e:
+            if e.status != 404:
+                raise self._explain(e)
+        try:
+            return self._get_json_headers(f"https://{self.HOST}/search", {**params, "page": 1, "num_pages": 1}, headers)
+        except SourceError as e:
+            raise self._explain(e)
+
+    @staticmethod
+    def _explain(e: SourceError) -> SourceError:
+        msg = {401: "jsearch: RapidAPI rejected the key — copy X-RapidAPI-Key again from JSearch → Playground → Authorization.",
+               403: "jsearch: you're not subscribed to JSearch yet — on RapidAPI open JSearch → Pricing and subscribe to the free Basic plan.",
+               404: "jsearch: RapidAPI couldn't find the JSearch search endpoint (it may have changed).",
+               429: "jsearch: this month's free JSearch requests are used up (or too many at once) — try again later."}.get(e.status)
+        return SourceError(msg, status=e.status) if msg else e
+
+    @staticmethod
+    def _jobs(data) -> list:
+        d = (data or {}).get("data", []) if isinstance(data, dict) else []
+        if isinstance(d, dict):  # newer responses: {"data": {"jobs": [...], "cursor": ...}}
+            d = d.get("jobs") or d.get("data") or d.get("results") or []
+        return d if isinstance(d, list) else []
 
     @staticmethod
     def normalize(j: dict) -> Optional[NormalizedJob]:

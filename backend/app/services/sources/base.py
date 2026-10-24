@@ -105,7 +105,8 @@ class JobSourceAdapter:
                 else:
                     if resp.status_code == 404:
                         raise SourceError(
-                            f"{self.kind}: board '{self.identifier}' not found (404). Check the board token / site name.",
+                            (f"{self.kind}: the service's search address wasn't found (404)." if self.keyword else
+                             f"{self.kind}: board '{self.identifier}' not found (404). Check the board token / site name."),
                             status=404,
                         )
                     if resp.status_code == 429:

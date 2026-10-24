@@ -145,3 +145,24 @@ def _offline():
     import httpx
 
     return httpx.MockTransport(lambda req: httpx.Response(404, json={}))
+
+
+def test_jsearch_uses_search_v2_and_explains_errors():
+    import pytest
+
+    from app.services.sources import SourceError
+
+    from .test_v3 import mock
+
+    ctx = {"queries": ["Software Engineer"], "locations": [], "credentials": {"rapidapi_key": "rk"}}
+    seen = []
+    job = {"job_id": "j1", "job_title": "Software Engineer", "employer_name": "Meta", "job_city": "Menlo Park"}
+    a = ADAPTERS["jsearch"]("auto", context=ctx, transport=mock({"https://jsearch.p.rapidapi.com/search-v2": (200, {"data": {"jobs": [job], "cursor": "x"}})}, seen), sleep=lambda s: None)
+    jobs = a.fetch()
+    assert len(jobs) == 1 and "/search-v2" in str(seen[0].url) and seen[0].headers["x-rapidapi-key"] == "rk"
+    # old endpoint still works if v2 is missing
+    a = ADAPTERS["jsearch"]("Meta", context=ctx, transport=mock({"https://jsearch.p.rapidapi.com/search?": (200, {"data": [job]})}), sleep=lambda s: None)
+    assert len(a.fetch()) == 1
+    a = ADAPTERS["jsearch"]("auto", context=ctx, transport=mock({"https://jsearch.p.rapidapi.com/": (403, {})}), sleep=lambda s: None)
+    with pytest.raises(SourceError, match="subscribe to the free Basic plan"):
+        a.fetch()
