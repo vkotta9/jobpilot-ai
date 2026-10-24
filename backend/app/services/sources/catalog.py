@@ -130,5 +130,5 @@ Health & education|Khan Academy|greenhouse|khanacademy
 
 POPULAR: list[dict] = [
     {"category": c, "company": n, "kind": k, "identifier": i}
-    for c, n, k, i in (line.split("|") for line in _RAW.strip().splitlines())
+    for c, n, k, i in (line.split("|", 3) for line in _RAW.strip().splitlines())
 ]
