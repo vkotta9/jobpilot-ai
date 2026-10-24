@@ -61,8 +61,9 @@ API reference (OpenAPI): http://127.0.0.1:8000/api/docs
 - **Format-preserving tailoring.** JobPilot now edits *your uploaded file* (PDF or DOCX) instead of generating a new resume: it re-words relevant lines in the job's language and adds matching skills to your existing skills lines. Your name, contact details, layout, fonts, bold keywords and every other section stay exactly as they are. Each change is shown side by side with your original, with a live preview, and nothing is applied until you approve it.
 - **Honest skills.** Skills the posting asks for that already appear elsewhere in your resume are pre-ticked; skills that don't are listed unticked ("tick only if you really have it").
 - **ATS match score.** Jobs are scored like an applicant tracking system would: keywords (required items count double), job title, years of experience, education and soft skills, computed against your actual resume text, with a before → after score for every tailored version.
-- **Find jobs for me.** One button searches Adzuna (most US job boards, free key), Remotive (remote jobs) and The Muse using the target titles in your profile; it also runs on your schedule. Company boards (Greenhouse/Lever) moved under "Advanced".
-- **Connections.** Save an AI key (Google Gemini free plan or OpenAI) and an Adzuna key in Settings → Connections; they're stored encrypted.
+- **Find jobs for me.** One button searches the free sources — Remotive, Himalayas, Jobicy (remote), The Muse, Arbeitnow (Europe) — plus JSearch (Google Jobs: LinkedIn/Indeed/Glassdoor, free RapidAPI key, ~200 searches/month) and USAJOBS (free key) if connected; Adzuna is optional and paid (£8/month after 25 test calls). Runs daily on your schedule.
+- **Companies I follow.** Paste careers-page links or company names; JobPilot detects the company's Greenhouse, Lever, Ashby, SmartRecruiters, Workable or Recruitee board and checks it daily, keeping only roles that match your target titles. 107 popular companies are pre-verified. Workday and in-house career sites (Google, Amazon, Microsoft…) have no public feed and aren't supported.
+- **Connections.** Save an AI key (Google Gemini free plan or OpenAI), JSearch, USAJOBS or Adzuna keys in Settings → Connections; they're stored encrypted.
 
 ## What works now (verified)
 
