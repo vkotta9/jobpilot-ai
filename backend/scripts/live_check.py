@@ -20,6 +20,7 @@ def main() -> int:
     if kind == "site":
         r = httpx.get(arg.rstrip("/") + "/api/health", timeout=120, follow_redirects=True)
         print(r.status_code, r.text[:300])
+        print(f"::notice title=site::HTTP {r.status_code} {r.text[:120]}")
         return 0 if r.status_code == 200 and '"status":"ok"' in r.text.replace(" ", "") else 1
     ctx = {"queries": ["Software Engineer"], "locations": [], "credentials": {}}
     try:
@@ -29,6 +30,8 @@ def main() -> int:
         print(f"::error::{kind}: {e}")
         return 1
     print(f"{kind}: {len(jobs)} jobs")
+    sample = "; ".join(f"{j.title} @ {j.company} ({len(j.description_text)} chars)" for j in jobs[:2])
+    print(f"::notice title={kind}::{len(jobs)} jobs. {sample}")
     for j in jobs[:3]:
         print(f"  - {j.title} @ {j.company} [{j.location}] desc={len(j.description_text)} chars url={j.url[:80]}")
     return 0 if jobs else 1
