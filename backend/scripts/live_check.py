@@ -123,7 +123,14 @@ def main() -> int:
                 a = A[k](ident or k)
                 a.queries, a.detail_limit = ["software engineer"], 1
                 jobs = a.fetch()
-                rows.append(f"{k}: {len(jobs)} jobs; first: {jobs[0].title if jobs else '-'} desc={len(jobs[0].description_text) if jobs else 0}")
+                d2 = ""
+                if len(jobs) > 1:
+                    try:
+                        d2 = a.describe(jobs[-1].external_id, jobs[-1].url) or ""
+                    except Exception as e:  # noqa: BLE001
+                        d2 = f"ERR {e}"[:80]
+                rows.append(f"{k}: {len(jobs)} jobs; first: {jobs[0].title if jobs else '-'} desc={len(jobs[0].description_text) if jobs else 0}; "
+                            f"on-demand describe(last)={len(d2) if not d2.startswith('ERR') else d2}")
             except Exception as e:  # noqa: BLE001
                 rows.append(f"{k}: ERROR {type(e).__name__}: {str(e)[:200]}")
         print("::notice title=debug::" + " || ".join(rows))
