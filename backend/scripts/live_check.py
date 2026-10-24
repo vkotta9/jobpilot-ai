@@ -38,6 +38,21 @@ def main() -> int:
         for i in range(0, len(rows), 8):
             print("::notice title=workday::" + " | ".join(rows[i:i + 8]))
         return 0
+    if kind == "debug":
+        from app.services.sources import ADAPTERS as A
+
+        rows = []
+        for spec in arg.split(","):
+            k, _, ident = spec.partition("=")
+            try:
+                a = A[k](ident or k)
+                a.queries, a.detail_limit = ["software engineer"], 1
+                jobs = a.fetch()
+                rows.append(f"{k}: {len(jobs)} jobs; first: {jobs[0].title if jobs else '-'} desc={len(jobs[0].description_text) if jobs else 0}")
+            except Exception as e:  # noqa: BLE001
+                rows.append(f"{k}: ERROR {type(e).__name__}: {str(e)[:200]}")
+        print("::notice title=debug::" + " || ".join(rows))
+        return 0
     if kind == "detect":
         from app.services.sources.detect import detect
 

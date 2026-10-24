@@ -68,6 +68,10 @@ jobs:
         working-directory: backend
         run: python scripts/live_check.py detect "NVIDIA|https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite|Amazon"
         continue-on-error: true
+      - name: Big-tech connectors
+        working-directory: backend
+        run: python scripts/live_check.py debug "google,microsoft,amazon,eightfold=explore.jobs.netflix.net|netflix.com,oraclehcm=eeho.fa.us2.oraclecloud.com|CX_45001"
+        continue-on-error: true
       - name: Deployed site health
         working-directory: backend
         run: python scripts/live_check.py site https://jobpilot-ai-45bq.onrender.com

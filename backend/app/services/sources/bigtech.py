@@ -258,6 +258,44 @@ class OracleHCMAdapter(_CareersSiteAdapter):
         return [n for n in out if n.title]
 
 
+class MicrosoftAdapter(_CareersSiteAdapter):
+    """Microsoft careers: Eightfold-powered site, with the older careers search API as a fallback."""
+
+    kind = "microsoft"
+    docs_url = "https://careers.microsoft.com/"
+
+    def company_name(self) -> str:
+        return "Microsoft"
+
+    def fetch(self) -> list[NormalizedJob]:
+        try:
+            ef = EightfoldAdapter("apply.careers.microsoft.com|microsoft.com", transport=self._transport, sleep=self._sleep)
+            ef.queries, ef.title_filter, ef.detail_limit, ef.display, ef.timeout_s = self.queries, self.title_filter, self.detail_limit, "Microsoft", self.timeout_s
+            jobs = ef.fetch()
+            if jobs:
+                return jobs
+        except SourceError:
+            pass
+        base = "https://gcsservices.careers.microsoft.com/search/api/v1/search"
+        self._allowed(base)
+        out: dict[str, NormalizedJob] = {}
+        for q in self._searches():
+            data = self._get_json(base, params={"q": q, "lc": "United States", "l": "en_us", "pg": 1, "pgSz": 20, "o": "Recent", "flt": "true"})
+            for j in (((data or {}).get("operationResult") or {}).get("result") or {}).get("jobs") or []:
+                props = j.get("properties") or {}
+                loc = props.get("primaryLocation") or "; ".join(props.get("locations") or [])
+                url = f"https://jobs.careers.microsoft.com/global/en/job/{j.get('jobId')}"
+                if j.get("jobId") and j.get("title"):
+                    out[str(j["jobId"])] = NormalizedJob(
+                        external_id=str(j["jobId"]), title=j["title"].strip(), company="Microsoft", location=loc,
+                        remote_type=infer_remote_type(loc, props.get("workSiteFlexibility", "") or ""),
+                        description_text=strip_html(props.get("description", "") or ""), posted_at=_dt(j.get("postingDate")),
+                        url=url, apply_url=url)
+        if not out:
+            raise SourceError("microsoft: careers search returned no jobs")
+        return list(out.values())
+
+
 # link patterns for detection
 EIGHTFOLD_RE = re.compile(r"https?://([A-Za-z0-9.-]+)/(?:careers|api/apply/v2)[^\s\"'<>]*?domain=([A-Za-z0-9.-]+)", re.I)
 ORACLE_RE = re.compile(r"https?://([A-Za-z0-9.-]+\.oraclecloud\.com)/hcmUI/CandidateExperience/[a-z-]+/sites/(CX_?\w+)", re.I)
@@ -269,8 +307,8 @@ def parse_link(text: str) -> Optional[tuple[str, str]]:
         return ("amazon", "amazon")
     if re.search(r"careers\.google\.com|google\.com/about/careers", t, re.I):
         return ("google", "google")
-    if re.search(r"(apply\.)?careers\.microsoft\.com|jobs\.careers\.microsoft\.com", t, re.I):
-        return ("eightfold", "apply.careers.microsoft.com|microsoft.com")
+    if re.search(r"careers\.microsoft\.com", t, re.I):
+        return ("microsoft", "microsoft")
     if re.search(r"jobs\.netflix\.(com|net)|explore\.jobs\.netflix\.net", t, re.I):
         return ("eightfold", "explore.jobs.netflix.net|netflix.com")
     m = ORACLE_RE.search(t)

@@ -1,7 +1,7 @@
 """Job source adapters. Add a new source by subclassing `JobSourceAdapter`
 and registering it in `ADAPTERS` — nothing else in the platform changes."""
 from .base import JobSourceAdapter, NormalizedJob, SourceError
-from .bigtech import AmazonAdapter, EightfoldAdapter, GoogleAdapter, OracleHCMAdapter
+from .bigtech import AmazonAdapter, EightfoldAdapter, GoogleAdapter, MicrosoftAdapter, OracleHCMAdapter
 from .companies import AshbyAdapter, RecruiteeAdapter, SmartRecruitersAdapter, WorkableAdapter
 from .greenhouse import GreenhouseAdapter
 from .keyword import (AdzunaAdapter, ArbeitnowAdapter, HimalayasAdapter, JobicyAdapter, JSearchAdapter, MuseAdapter,
@@ -23,6 +23,7 @@ ADAPTERS: dict[str, type[JobSourceAdapter]] = {
     "oraclehcm": OracleHCMAdapter,
     "amazon": AmazonAdapter,
     "google": GoogleAdapter,
+    "microsoft": MicrosoftAdapter,
     # keyword job search (identifier = "auto"; queries come from the profile)
     "remotive": RemotiveAdapter,
     "muse": MuseAdapter,
@@ -35,7 +36,7 @@ ADAPTERS: dict[str, type[JobSourceAdapter]] = {
     # development only
     "mock": MockAdapter,
 }
-COMPANY_KINDS = ("greenhouse", "lever", "ashby", "smartrecruiters", "workable", "recruitee", "workday", "eightfold", "oraclehcm", "amazon", "google")
+COMPANY_KINDS = ("greenhouse", "lever", "ashby", "smartrecruiters", "workable", "recruitee", "workday", "eightfold", "oraclehcm", "amazon", "google", "microsoft")
 KEYWORD_KINDS = ("remotive", "muse", "himalayas", "jobicy", "arbeitnow", "jsearch", "usajobs", "adzuna")
 FREE_DEFAULT_KINDS = ("remotive", "muse", "himalayas", "jobicy")
 

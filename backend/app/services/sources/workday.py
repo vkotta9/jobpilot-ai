@@ -130,7 +130,7 @@ def discover(name: str, transport=None) -> list[str]:
     """Find a company's Workday career site(s) by name. Each Workday tenant's robots.txt lists its
     public career sites as sitemaps, so this needs only a few small GETs."""
     words = re.findall(r"[a-z0-9]+", name.lower())
-    tenants = list(dict.fromkeys(["".join(words), "-".join(words)] + ([words[0]] if words else [])))
+    tenants = list(dict.fromkeys(["".join(words), "-".join(words)]))  # never just the first word ("american" ≠ American Express)
     found: list[str] = []
     with httpx.Client(timeout=6, transport=transport, follow_redirects=False,
                       headers={"User-Agent": settings.user_agent}) as c:
@@ -148,5 +148,20 @@ def discover(name: str, transport=None) -> list[str]:
                         if ident not in found:
                             found.append(ident)
                 if found:
-                    return found
+                    return _rank_sites(found, words)
     return found
+
+
+def _rank_sites(idents: list[str], words: list[str]) -> list[str]:
+    """Prefer the main external site over subsidiaries' sites (e.g. Etsy over Depop)."""
+    def score(ident: str) -> int:
+        site = ident.split("|")[2].lower()
+        sc = 0
+        if any(w in site for w in words if len(w) > 2):
+            sc += 2
+        if re.search(r"extern|career|jobs|^ext$|search", site):
+            sc += 1
+        if re.search(r"intern(al)?$|internal|alumni|university|campus|talent_?community", site):
+            sc -= 3
+        return sc
+    return sorted(idents, key=score, reverse=True)

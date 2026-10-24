@@ -57,7 +57,7 @@ IN_HOUSE = {"google": "Google", "alphabet": "Google", "amazon": "Amazon", "aws":
 CUSTOM_BY_NAME = {
     "amazon": ("amazon", "amazon", "Amazon"), "aws": ("amazon", "amazon", "Amazon"), "amazonwebservices": ("amazon", "amazon", "Amazon"),
     "google": ("google", "google", "Google"), "alphabet": ("google", "google", "Google"),
-    "microsoft": ("eightfold", "apply.careers.microsoft.com|microsoft.com", "Microsoft"),
+    "microsoft": ("microsoft", "microsoft", "Microsoft"),
     "netflix": ("eightfold", "explore.jobs.netflix.net|netflix.com", "Netflix"),
     "oracle": ("oraclehcm", "eeho.fa.us2.oraclecloud.com|CX_45001", "Oracle"),
     "jpmorgan": ("oraclehcm", "jpmc.fa.oraclecloud.com|CX_1001", "JPMorgan Chase"),
@@ -150,8 +150,6 @@ def slugs_for(name: str) -> list[str]:
     words = re.findall(r"[a-z0-9]+", base) or re.findall(r"[a-z0-9]+", name.lower())
     full = re.findall(r"[a-z0-9]+", name.lower())
     out = ["".join(words), "-".join(words), "".join(full), "-".join(full)]
-    if words:
-        out.append(words[0])
     return [s for s in dict.fromkeys(out) if len(s) >= 2]
 
 
@@ -247,18 +245,21 @@ def detect(entry: str, transport=None) -> Detection:
         if hit.kind in ("ashby", "lever", "recruitee"):
             hit.company = entry  # these feeds don't carry the company's display name
         return hit
-    for ident in workday_discover(entry, transport)[:2]:
+    best = None
+    for ident in workday_discover(entry, transport)[:3]:
         hit = _workday_hit(entry, ident, transport)
-        if hit:
-            hit.company = entry
-            return hit
+        if hit and (best is None or hit.jobs > best.jobs):
+            best = hit
+    if best:
+        best.company = entry
+        return best
     # last resort: Google Jobs lists postings from almost every employer
     return Detection(entry, "found", kind="jsearch", identifier=entry.strip()[:120], company=entry.strip()[:120], jobs=0,
                      message="No public job feed found for this name — JobPilot will follow it through Google Jobs (needs your "
                              "free JSearch key). Pasting the company's job-search link may find a direct feed instead.")
 
 
-AMBIGUOUS = {"workable", "recruitee", "smartrecruiters"}  # these answer for almost any slug
+AMBIGUOUS = {"workable", "recruitee", "smartrecruiters", "greenhouse"}  # feeds that report a company name we can check
 
 
 def _same_company(query: str, found: str) -> bool:
