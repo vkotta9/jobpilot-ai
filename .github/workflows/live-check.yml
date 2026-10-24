@@ -70,7 +70,7 @@ jobs:
         continue-on-error: true
       - name: Big-tech connectors
         working-directory: backend
-        run: python scripts/live_check.py debug "google,microsoft,amazon,eightfold=explore.jobs.netflix.net|netflix.com,oraclehcm=eeho.fa.us2.oraclecloud.com|CX_45001"
+        run: python scripts/live_check.py debug "google,microsoft,apple,amazon,eightfold=explore.jobs.netflix.net|netflix.com,oraclehcm=eeho.fa.us2.oraclecloud.com|CX_45001"
         continue-on-error: true
       - name: Robots rules for big-tech careers
         working-directory: backend

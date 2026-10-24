@@ -113,43 +113,6 @@ class AmazonAdapter(_CareersSiteAdapter):
             posted_at=_dt(j.get("posted_date")), url=url, apply_url=url)
 
 
-class GoogleAdapter(_CareersSiteAdapter):
-    kind = "google"
-    docs_url = "https://careers.google.com/"
-
-    def company_name(self) -> str:
-        return "Google"
-
-    def fetch(self) -> list[NormalizedJob]:
-        base = "https://careers.google.com/api/v3/search/"
-        self._allowed(base)
-        out: dict[str, NormalizedJob] = {}
-        for q in self._searches():
-            for page in (1, 2):
-                data = self._get_json(base, params={"q": q, "page": page, "distance": 50, "location": "United States"})
-                items = (data or {}).get("jobs") or []
-                for j in items:
-                    n = self.normalize(j)
-                    if n:
-                        out[n.external_id] = n
-                if not (data or {}).get("next_page"):
-                    break
-        return list(out.values())
-
-    @staticmethod
-    def normalize(j: dict) -> Optional[NormalizedJob]:
-        if not j.get("id") or not j.get("title"):
-            return None
-        jid = str(j["id"]).split("/")[-1]
-        locs = "; ".join(l.get("display", "") for l in j.get("locations") or [] if l.get("display"))
-        desc = "\n\n".join(strip_html(j.get(k, "")) for k in ("description", "responsibilities", "qualifications") if j.get(k))
-        url = j.get("apply_url") or f"https://www.google.com/about/careers/applications/jobs/results/{jid}"
-        return NormalizedJob(
-            external_id=jid, title=j["title"].strip(), company=j.get("company_name") or "Google", location=locs,
-            remote_type=infer_remote_type(locs), description_text=desc, posted_at=_dt(j.get("publish_date") or j.get("created")),
-            url=url, apply_url=url)
-
-
 class EightfoldAdapter(_CareersSiteAdapter):
     """Eightfold AI careers sites (Microsoft, Netflix, Qualcomm, …)."""
 
@@ -169,6 +132,51 @@ class EightfoldAdapter(_CareersSiteAdapter):
     def fetch(self) -> list[NormalizedJob]:
         base = f"https://{self.host}/api/apply/v2/jobs"
         self._allowed(base)
+        try:
+            return self._fetch_v2(base)
+        except SourceError as e:
+            if e.status not in (401, 403):
+                raise
+        return self._fetch_pcsx()
+
+    def _fetch_pcsx(self) -> list[NormalizedJob]:
+        base = f"https://{self.host}/api/pcsx"
+        self._allowed(base + "/search")
+        positions: dict[str, dict] = {}
+        for q in self._searches():
+            for start in (0, 10, 20):
+                data = self._get_json(base + "/search", params={"domain": self.domain, "query": q, "location": "United States",
+                                                                "start": start, "sort_by": "timestamp"})
+                items = ((data or {}).get("data") or {}).get("positions") or []
+                for p in items:
+                    if p.get("id"):
+                        positions[str(p["id"])] = p
+                if len(items) < 10:
+                    break
+        out, done = [], 0
+        for pid, p in positions.items():
+            desc, url = "", ""
+            if self._want_detail(p.get("name", ""), done):
+                try:
+                    d = ((self._get_json(base + "/position_details", params={"position_id": pid, "domain": self.domain, "hl": "en"},
+                                         max_attempts=1) or {}).get("data") or {})
+                    desc, url = strip_html(d.get("jobDescription", "") or ""), d.get("publicUrl") or ""
+                    done += 1
+                except SourceError:
+                    pass
+            if not p.get("name"):
+                continue
+            loc = "; ".join(p.get("standardizedLocations") or p.get("locations") or [])
+            url = url or (f"https://{self.host}{p['positionUrl']}" if str(p.get("positionUrl", "")).startswith("/") else p.get("positionUrl") or
+                          f"https://{self.host}/careers?pid={pid}&domain={self.domain}")
+            out.append(NormalizedJob(
+                external_id=str(pid), title=p["name"].strip(), company=self.company_name(), location=loc,
+                remote_type={"remote": "remote", "hybrid": "hybrid", "onsite": "onsite"}.get(str(p.get("workLocationOption", "")).lower(), infer_remote_type(loc)),
+                department=p.get("department", "") or "", description_text=desc, posted_at=_dt(p.get("postedTs") or p.get("creationTs")),
+                url=url, apply_url=url))
+        return out
+
+    def _fetch_v2(self, base: str) -> list[NormalizedJob]:
         positions: dict[str, dict] = {}
         for q in self._searches():
             for start in (0, 10, 20):
@@ -259,7 +267,7 @@ class OracleHCMAdapter(_CareersSiteAdapter):
 
 
 class MicrosoftAdapter(_CareersSiteAdapter):
-    """Microsoft careers: Eightfold-powered site, with the older careers search API as a fallback."""
+    """Microsoft careers (apply.careers.microsoft.com, Eightfold)."""
 
     kind = "microsoft"
     docs_url = "https://careers.microsoft.com/"
@@ -268,32 +276,133 @@ class MicrosoftAdapter(_CareersSiteAdapter):
         return "Microsoft"
 
     def fetch(self) -> list[NormalizedJob]:
-        try:
-            ef = EightfoldAdapter("apply.careers.microsoft.com|microsoft.com", transport=self._transport, sleep=self._sleep)
-            ef.queries, ef.title_filter, ef.detail_limit, ef.display, ef.timeout_s = self.queries, self.title_filter, self.detail_limit, "Microsoft", self.timeout_s
-            jobs = ef.fetch()
-            if jobs:
-                return jobs
-        except SourceError:
-            pass
-        base = "https://gcsservices.careers.microsoft.com/search/api/v1/search"
-        self._allowed(base)
-        out: dict[str, NormalizedJob] = {}
+        ef = EightfoldAdapter("apply.careers.microsoft.com|microsoft.com", transport=self._transport, sleep=self._sleep)
+        ef.queries, ef.title_filter, ef.detail_limit, ef.display, ef.timeout_s = self.queries, self.title_filter, self.detail_limit, "Microsoft", self.timeout_s
+        return ef.fetch()
+
+
+class GoogleAdapter(_CareersSiteAdapter):
+    """Google Careers: the results page lists job links; each job page has the full description."""
+
+    kind = "google"
+    docs_url = "https://www.google.com/about/careers/applications/jobs/results"
+    BASE = "https://www.google.com/about/careers/applications/jobs/results"
+
+    def company_name(self) -> str:
+        return "Google"
+
+    def _html(self, url: str, params: Optional[dict] = None) -> str:
+        with httpx.Client(timeout=self.timeout_s or 20, transport=self._transport, follow_redirects=True,
+                          headers={"User-Agent": settings.user_agent, "Accept": "text/html"}) as c:
+            r = c.get(url, params=params)
+        if r.status_code >= 400:
+            raise SourceError(f"google: careers page returned HTTP {r.status_code}", status=r.status_code)
+        return r.text
+
+    def fetch(self) -> list[NormalizedJob]:
+        self._allowed(self.BASE)
+        found: dict[str, str] = {}
         for q in self._searches():
-            data = self._get_json(base, params={"q": q, "lc": "United States", "l": "en_us", "pg": 1, "pgSz": 20, "o": "Recent", "flt": "true"})
-            for j in (((data or {}).get("operationResult") or {}).get("result") or {}).get("jobs") or []:
-                props = j.get("properties") or {}
-                loc = props.get("primaryLocation") or "; ".join(props.get("locations") or [])
-                url = f"https://jobs.careers.microsoft.com/global/en/job/{j.get('jobId')}"
-                if j.get("jobId") and j.get("title"):
-                    out[str(j["jobId"])] = NormalizedJob(
-                        external_id=str(j["jobId"]), title=j["title"].strip(), company="Microsoft", location=loc,
-                        remote_type=infer_remote_type(loc, props.get("workSiteFlexibility", "") or ""),
-                        description_text=strip_html(props.get("description", "") or ""), posted_at=_dt(j.get("postingDate")),
-                        url=url, apply_url=url)
-        if not out:
-            raise SourceError("microsoft: careers search returned no jobs")
-        return list(out.values())
+            html = self._html(self.BASE, {"q": q, "location": "United States", "sort_by": "date"})
+            for jid, slug in re.findall(r"jobs/results/(\d{6,})-([a-z0-9-]+)", html):
+                found.setdefault(jid, slug)
+        out, done = [], 0
+        for jid, slug in list(found.items())[:60]:
+            title = slug.replace("-", " ").title()
+            desc, loc = "", ""
+            if self._want_detail(title, done):
+                try:
+                    page = self._html(f"{self.BASE}/{jid}-{slug}")
+                    m = re.search(r"<title>([^<|–—]+)", page)
+                    if m and "google" not in m.group(1).lower()[:8]:
+                        title = re.sub(r"\s*[—–-]\s*Google Careers.*$", "", m.group(1)).strip() or title
+                    text = strip_html(page)
+                    i = text.find("Minimum qualifications")
+                    if i >= 0:
+                        end = min([k for k in (text.find("Google is proud to be", i), text.find("Information collected and processed", i)) if k > 0] or [i + 8000])
+                        desc = text[i:end].strip()
+                    lm = re.search(r"place\s*([^\n]{3,160})", text)
+                    loc = lm.group(1).strip() if lm else ""
+                    done += 1
+                except SourceError:
+                    pass
+            url = f"{self.BASE}/{jid}-{slug}"
+            out.append(NormalizedJob(external_id=jid, title=title, company="Google", location=loc, remote_type=infer_remote_type(loc),
+                                     description_text=desc, url=url, apply_url=url))
+        return out
+
+
+class AppleAdapter(_CareersSiteAdapter):
+    """Apple Jobs: search results and job details are embedded as data in the pages."""
+
+    kind = "apple"
+    docs_url = "https://jobs.apple.com/"
+    BASE = "https://jobs.apple.com/en-us"
+
+    def company_name(self) -> str:
+        return "Apple"
+
+    def _page_data(self, url: str, params: Optional[dict] = None) -> dict:
+        with httpx.Client(timeout=self.timeout_s or 20, transport=self._transport, follow_redirects=True,
+                          headers={"User-Agent": settings.user_agent, "Accept": "text/html"}) as c:
+            r = c.get(url, params=params)
+        if r.status_code >= 400:
+            raise SourceError(f"apple: page returned HTTP {r.status_code}", status=r.status_code)
+        m = re.search(r'__staticRouterHydrationData\s*=\s*JSON\.parse\((".*?")\);', r.text, re.S)
+        if not m:
+            raise SourceError("apple: page data not found")
+        import json as _json
+
+        return _json.loads(_json.loads(m.group(1)))
+
+    @staticmethod
+    def _find(obj, key: str):
+        """Depth-first search for the first list of dicts containing `key` (or a dict with `key`)."""
+        stack = [obj]
+        while stack:
+            o = stack.pop()
+            if isinstance(o, list):
+                if o and all(isinstance(x, dict) for x in o) and key in o[0]:
+                    return o
+                stack.extend(o)
+            elif isinstance(o, dict):
+                if key in o and not isinstance(o[key], (dict, list)):
+                    return o
+                stack.extend(o.values())
+        return None
+
+    def fetch(self) -> list[NormalizedJob]:
+        self._allowed(f"{self.BASE}/search")
+        rows: dict[str, dict] = {}
+        for q in self._searches():
+            data = self._page_data(f"{self.BASE}/search", {"search": q, "sort": "newest", "location": "united-states-USA"})
+            for r in self._find(data, "postingTitle") or []:
+                pid = str(r.get("positionId") or r.get("id") or "")
+                if pid:
+                    rows[pid] = r
+        out, done = [], 0
+        for pid, r in rows.items():
+            title = (r.get("postingTitle") or "").strip()
+            slug = r.get("transformedPostingTitle") or re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+            url = f"{self.BASE}/details/{pid}/{slug}"
+            desc = r.get("jobSummary", "") or ""
+            if self._want_detail(title, done):
+                try:
+                    d = self._find(self._page_data(url), "description") or self._find(self._page_data(url), "jobSummary") or {}
+                    if isinstance(d, dict):
+                        parts = [d.get(k) for k in ("jobSummary", "description", "responsibilities", "minimumQualifications",
+                                                     "preferredQualifications") if isinstance(d.get(k), str)]
+                        desc = "\n\n".join(strip_html(x) for x in parts if x) or desc
+                    done += 1
+                except SourceError:
+                    pass
+            locs = r.get("locations") or []
+            loc = "; ".join(", ".join(x for x in [l.get("name"), l.get("countryName")] if x) for l in locs if isinstance(l, dict))
+            out.append(NormalizedJob(external_id=pid, title=title, company="Apple", location=loc, remote_type=infer_remote_type(loc),
+                                     department=((r.get("team") or {}).get("teamName") if isinstance(r.get("team"), dict) else "") or "",
+                                     description_text=strip_html(desc), posted_at=_dt(r.get("postDateInGMT") or r.get("postingDate")),
+                                     url=url, apply_url=url))
+        return [n for n in out if n.title]
 
 
 # link patterns for detection
@@ -307,6 +416,8 @@ def parse_link(text: str) -> Optional[tuple[str, str]]:
         return ("amazon", "amazon")
     if re.search(r"careers\.google\.com|google\.com/about/careers", t, re.I):
         return ("google", "google")
+    if re.search(r"jobs\.apple\.com", t, re.I):
+        return ("apple", "apple")
     if re.search(r"careers\.microsoft\.com", t, re.I):
         return ("microsoft", "microsoft")
     if re.search(r"jobs\.netflix\.(com|net)|explore\.jobs\.netflix\.net", t, re.I):

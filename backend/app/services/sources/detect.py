@@ -58,6 +58,7 @@ CUSTOM_BY_NAME = {
     "amazon": ("amazon", "amazon", "Amazon"), "aws": ("amazon", "amazon", "Amazon"), "amazonwebservices": ("amazon", "amazon", "Amazon"),
     "google": ("google", "google", "Google"), "alphabet": ("google", "google", "Google"),
     "microsoft": ("microsoft", "microsoft", "Microsoft"),
+    "apple": ("apple", "apple", "Apple"),
     "netflix": ("eightfold", "explore.jobs.netflix.net|netflix.com", "Netflix"),
     "oracle": ("oraclehcm", "eeho.fa.us2.oraclecloud.com|CX_45001", "Oracle"),
     "jpmorgan": ("oraclehcm", "jpmc.fa.oraclecloud.com|CX_1001", "JPMorgan Chase"),
