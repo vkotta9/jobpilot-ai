@@ -92,3 +92,7 @@ jobs:
         working-directory: backend
         run: python scripts/live_check.py site https://jobpilot-ai-45bq.onrender.com
         continue-on-error: true
+      - name: Deployed site serves the top-tech list (expects 401 without login)
+        working-directory: backend
+        run: python scripts/live_check.py probe "https://jobpilot-ai-45bq.onrender.com/api/companies/top-tech,https://jobpilot-ai-45bq.onrender.com/js/pages/discover.js"
+        continue-on-error: true
