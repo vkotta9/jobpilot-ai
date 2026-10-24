@@ -11,7 +11,7 @@ from ..security import audit, current_user, rate_limit
 from ..services.discovery import run_source
 from ..services.matching import score_jobs
 from ..services.sources import COMPANY_KINDS
-from ..services.sources.catalog import POPULAR
+from ..services.sources.catalog import POPULAR, TOP_TECH
 from ..services.sources.detect import detect_many
 
 router = APIRouter(prefix="/api/companies", tags=["companies"])
@@ -44,7 +44,7 @@ def _follow(db: Session, user: User, items: list[FollowItem], run_now: bool) -> 
             raise HTTPException(400, f"Unsupported board type: {it.kind}")
         if it.kind == "jsearch" and it.identifier.lower() == "auto":
             raise HTTPException(400, "Invalid company.")
-        ident = it.identifier if it.kind in ("smartrecruiters", "ashby", "workday", "jsearch") else it.identifier.lower()
+        ident = it.identifier if it.kind in ("smartrecruiters", "ashby", "workday", "jsearch", "eightfold", "oraclehcm") else it.identifier.lower()
         src = db.query(JobSource).filter_by(user_id=user.id, kind=it.kind, identifier=ident).one_or_none()
         if src:
             existing += 1
@@ -57,6 +57,35 @@ def _follow(db: Session, user: User, items: list[FollowItem], run_now: bool) -> 
     audit(db, user.id, "companies.follow", "job_source", None, added=len(added))
     db.commit()
     changed: list[int] = []
+    if run_now and len(added) > 8:
+        # many companies: search them in the background so the request returns right away
+        import threading
+
+        from ..db import session_scope
+        from ..scheduler import user_lock
+
+        ids, lock = [s.id for s in added], user_lock(user.id)
+        if lock.acquire(blocking=False):
+            def work(uid=user.id, ids=ids):
+                try:
+                    with session_scope() as bg:
+                        ch: list[int] = []
+                        for sid in ids:
+                            src = bg.get(JobSource, sid)
+                            if src is None:
+                                continue
+                            try:
+                                ch += run_source(bg, src).pop("changed_job_ids", []) or []
+                            except Exception:  # noqa: BLE001 - one bad source mustn't stop the rest
+                                bg.rollback()
+                        if ch:
+                            score_jobs(bg, uid, ch)
+                finally:
+                    lock.release()
+
+            threading.Thread(target=work, daemon=True).start()
+            return {"added": len(added), "already_following": existing, "results": [], "background": True, "pending": 0}
+        return {"added": len(added), "already_following": existing, "results": [], "pending": len(added)}
     if run_now:
         for src in added[:40]:  # big lists finish on the next scheduled run
             r = run_source(db, src)
@@ -86,3 +115,14 @@ def following(user: User = Depends(current_user), db: Session = Depends(get_db))
 def popular(user: User = Depends(current_user), db: Session = Depends(get_db)):
     followed = {(s.kind, s.identifier.lower()) for s in db.query(JobSource).filter(JobSource.user_id == user.id).all()}
     return [dict(c, following=(c["kind"], c["identifier"].lower()) in followed) for c in POPULAR]
+
+
+@router.get("/top-tech")
+def top_tech(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """The top-100 tech companies: direct careers feeds where available, Google Jobs (JSearch) for the rest."""
+    from ..models import IntegrationSetting
+
+    followed = {(s.kind, s.identifier.lower()) for s in db.query(JobSource).filter(JobSource.user_id == user.id).all()}
+    has_jsearch = db.query(IntegrationSetting).filter_by(user_id=user.id, provider="jsearch").count() > 0
+    return {"jsearch_connected": has_jsearch,
+            "companies": [dict(c, following=(c["kind"], c["identifier"].lower()) in followed) for c in TOP_TECH]}

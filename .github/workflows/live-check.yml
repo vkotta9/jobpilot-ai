@@ -62,7 +62,19 @@ jobs:
         continue-on-error: true
       - name: Workday career sites
         working-directory: backend
-        run: python scripts/live_check.py workday "nvidia|wd5|NVIDIAExternalCareerSite,salesforce|wd12|External_Career_Site,intel|wd1|External,adobe|wd5|external_experienced,walmart|wd5|WalmartExternal,dell|wd1|External,hp|wd5|ExternalCareerSite,paypal|wd1|jobs,capitalone|wd12|Capital_One,mastercard|wd1|CorporateCareers,boeing|wd1|EXTERNAL_CAREERS,target|wd5|targetcareers,disney|wd5|disneycareer,workday|wd5|Workday,snapchat|wd1|snap,autodesk|wd1|Ext"
+        run: python scripts/live_check.py workday "nvidia|wd5|NVIDIAExternalCareerSite,salesforce|wd12|External_Career_Site,intel|wd1|External,adobe|wd5|external_experienced,hp|wd5|ExternalCareerSite,paypal|wd1|jobs,capitalone|wd12|Capital_One,mastercard|wd1|CorporateCareers,boeing|wd1|EXTERNAL_CAREERS,target|wd5|targetcareers,disney|wd5|disneycareer,workday|wd5|Workday,snapchat|wd1|snap,autodesk|wd1|Ext"
+        continue-on-error: true
+      - name: Workday sites in the top-tech list
+        working-directory: backend
+        run: python scripts/live_check.py workday "broadcom|wd1|External_Career,micron|wd1|External,kla|wd1|Search,analogdevices|wd1|External,marvell|wd1|MarvellCareers,cadence|wd1|External_Careers,motorolasolutions|wd5|Careers,redhat|wd5|Jobs,crowdstrike|wd5|crowdstrikecareers,etsy|wd5|Etsy_Careers,zillow|wd5|Zillow_Group_External,visa|wd5|Visa,generalmotors|wd5|Careers_GM"
+        continue-on-error: true
+      - name: Greenhouse board (xai)
+        working-directory: backend
+        run: python scripts/live_check.py greenhouse xai
+        continue-on-error: true
+      - name: Detect top-tech names
+        working-directory: backend
+        run: python scripts/live_check.py detect "xAI|Analog Devices|General Motors|Meta|eBay|Western Digital"
         continue-on-error: true
       - name: Detect Workday by name and link
         working-directory: backend
@@ -75,14 +87,6 @@ jobs:
       - name: Robots rules for big-tech careers
         working-directory: backend
         run: python scripts/live_check.py robots "https://www.google.com/about/careers/applications/jobs/results?q=software,https://apply.careers.microsoft.com/api/apply/v2/jobs?domain=microsoft.com,https://apply.careers.microsoft.com/api/pcsx/search?domain=microsoft.com,https://www.metacareers.com/jobs,https://www.tesla.com/careers/search,https://jobs.apple.com/en-us/search,https://www.uber.com/us/en/careers/list/,https://jobs.careers.microsoft.com/global/en/search"
-        continue-on-error: true
-      - name: Probe Microsoft endpoints
-        working-directory: backend
-        run: python scripts/live_check.py probe "https://apply.careers.microsoft.com/api/apply/v2/jobs?domain=microsoft.com&query=software%20engineer&start=0&num=10,https://apply.careers.microsoft.com/api/pcsx/search?domain=microsoft.com&query=software%20engineer&start=0"
-        continue-on-error: true
-      - name: Data shapes (Microsoft, Google, Apple)
-        working-directory: backend
-        run: python scripts/live_check.py shape
         continue-on-error: true
       - name: Deployed site health
         working-directory: backend

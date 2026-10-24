@@ -132,3 +132,115 @@ POPULAR: list[dict] = [
     {"category": c, "company": n, "kind": k, "identifier": i}
     for c, n, k, i in (line.split("|", 3) for line in _RAW.strip().splitlines())
 ]
+
+
+# Top 100 tech companies (software, AI, cloud, chips, internet). Direct feeds were verified from
+# GitHub Actions with scripts/validate_top_tech.py and scripts/live_check.py (Oct 2026). Companies
+# without a public feed we can use (Meta, Tesla, Uber, …) are followed through Google Jobs (JSearch).
+_TOP = """
+Big tech|Apple|apple|apple
+Big tech|Microsoft|microsoft|microsoft
+Big tech|Google|google|google
+Big tech|Amazon|amazon|amazon
+Big tech|Meta|jsearch|Meta
+Big tech|Netflix|eightfold|explore.jobs.netflix.net|netflix.com
+Big tech|Oracle|oraclehcm|eeho.fa.us2.oraclecloud.com|CX_45001
+Big tech|Tesla|jsearch|Tesla
+Big tech|IBM|jsearch|IBM
+Big tech|Cisco|jsearch|Cisco
+Big tech|LinkedIn|jsearch|LinkedIn
+Big tech|TikTok|jsearch|TikTok
+Big tech|Samsung|jsearch|Samsung
+AI|OpenAI|ashby|openai
+AI|Anthropic|greenhouse|anthropic
+AI|xAI|greenhouse|xai
+AI|Scale AI|greenhouse|scaleai
+AI|Cohere|ashby|cohere
+AI|Perplexity|ashby|perplexity
+AI|Hugging Face|workable|huggingface
+AI|Databricks|greenhouse|databricks
+AI|Palantir|lever|palantir
+AI|Mistral AI|jsearch|Mistral AI
+Chips & hardware|NVIDIA|workday|nvidia|wd5|NVIDIAExternalCareerSite
+Chips & hardware|Intel|workday|intel|wd1|External
+Chips & hardware|AMD|jsearch|AMD
+Chips & hardware|Qualcomm|jsearch|Qualcomm
+Chips & hardware|Broadcom|workday|broadcom|wd1|External_Career
+Chips & hardware|Micron|workday|micron|wd1|External
+Chips & hardware|Texas Instruments|jsearch|Texas Instruments
+Chips & hardware|Applied Materials|jsearch|Applied Materials
+Chips & hardware|Lam Research|jsearch|Lam Research
+Chips & hardware|KLA|workday|kla|wd1|Search
+Chips & hardware|Analog Devices|workday|analogdevices|wd1|External
+Chips & hardware|Marvell|workday|marvell|wd1|MarvellCareers
+Chips & hardware|Arm|jsearch|Arm
+Chips & hardware|Synopsys|jsearch|Synopsys
+Chips & hardware|Cadence|workday|cadence|wd1|External_Careers
+Chips & hardware|Western Digital|smartrecruiters|Westerndigital
+Chips & hardware|Dell|jsearch|Dell
+Chips & hardware|HP|workday|hp|wd5|ExternalCareerSite
+Chips & hardware|Hewlett Packard Enterprise|jsearch|Hewlett Packard Enterprise
+Chips & hardware|Motorola Solutions|workday|motorolasolutions|wd5|Careers
+Enterprise software & cloud|Salesforce|workday|salesforce|wd12|External_Career_Site
+Enterprise software & cloud|Adobe|workday|adobe|wd5|external_experienced
+Enterprise software & cloud|ServiceNow|smartrecruiters|Servicenow
+Enterprise software & cloud|Workday|workday|workday|wd5|Workday
+Enterprise software & cloud|Intuit|jsearch|Intuit
+Enterprise software & cloud|Autodesk|workday|autodesk|wd1|Ext
+Enterprise software & cloud|Snowflake|ashby|snowflake
+Enterprise software & cloud|Atlassian|jsearch|Atlassian
+Enterprise software & cloud|Red Hat|workday|redhat|wd5|Jobs
+Enterprise software & cloud|VMware|jsearch|VMware
+Enterprise software & cloud|Splunk|jsearch|Splunk
+Enterprise software & cloud|Zoom|jsearch|Zoom
+Enterprise software & cloud|Twilio|greenhouse|twilio
+Enterprise software & cloud|Dropbox|greenhouse|dropbox
+Enterprise software & cloud|Datadog|greenhouse|datadog
+Enterprise software & cloud|MongoDB|greenhouse|mongodb
+Enterprise software & cloud|Elastic|greenhouse|elastic
+Enterprise software & cloud|Confluent|jsearch|Confluent
+Enterprise software & cloud|GitLab|greenhouse|gitlab
+Enterprise software & cloud|GitHub|jsearch|GitHub
+Enterprise software & cloud|Cloudflare|greenhouse|cloudflare
+Enterprise software & cloud|Akamai|jsearch|Akamai
+Security|Palo Alto Networks|jsearch|Palo Alto Networks
+Security|CrowdStrike|workday|crowdstrike|wd5|crowdstrikecareers
+Security|Fortinet|jsearch|Fortinet
+Security|Zscaler|greenhouse|zscaler
+Security|Okta|greenhouse|okta
+Security|SentinelOne|jsearch|SentinelOne
+Internet & consumer|Uber|jsearch|Uber
+Internet & consumer|Airbnb|greenhouse|airbnb
+Internet & consumer|DoorDash|jsearch|DoorDash
+Internet & consumer|Lyft|greenhouse|lyft
+Internet & consumer|Instacart|greenhouse|instacart
+Internet & consumer|Shopify|jsearch|Shopify
+Internet & consumer|Spotify|lever|spotify
+Internet & consumer|Pinterest|greenhouse|pinterest
+Internet & consumer|Snap|workday|snapchat|wd1|snap
+Internet & consumer|Reddit|greenhouse|reddit
+Internet & consumer|Discord|greenhouse|discord
+Internet & consumer|eBay|jsearch|eBay
+Internet & consumer|Etsy|workday|etsy|wd5|Etsy_Careers
+Internet & consumer|Zillow|workday|zillow|wd5|Zillow_Group_External
+Internet & consumer|Roblox|greenhouse|roblox
+Internet & consumer|Electronic Arts|jsearch|Electronic Arts
+Internet & consumer|Epic Games|greenhouse|epicgames
+Fintech|Stripe|greenhouse|stripe
+Fintech|PayPal|workday|paypal|wd1|jobs
+Fintech|Block|greenhouse|block
+Fintech|Coinbase|greenhouse|coinbase
+Fintech|Robinhood|greenhouse|robinhood
+Fintech|Visa|workday|visa|wd5|Visa
+Fintech|Mastercard|workday|mastercard|wd1|CorporateCareers
+Fintech|Capital One|workday|capitalone|wd12|Capital_One
+Fintech|Bloomberg|jsearch|Bloomberg
+Autonomy & space|Waymo|greenhouse|waymo
+Autonomy & space|SpaceX|greenhouse|spacex
+Autonomy & space|General Motors|workday|generalmotors|wd5|Careers_GM
+"""
+
+TOP_TECH: list[dict] = [
+    {"category": c, "company": n, "kind": k, "identifier": i, "via": "google_jobs" if k == "jsearch" else "direct"}
+    for c, n, k, i in (line.split("|", 3) for line in _TOP.strip().splitlines())
+]

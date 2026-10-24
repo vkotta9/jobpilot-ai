@@ -52,7 +52,8 @@ IN_HOUSE = {"google": "Google", "alphabet": "Google", "amazon": "Amazon", "aws":
             "apple": "Apple", "meta": "Meta", "facebook": "Meta", "netflix": "Netflix", "ibm": "IBM", "oracle": "Oracle",
             "tesla": "Tesla", "uber": "Uber", "linkedin": "LinkedIn", "bytedance": "ByteDance", "tiktok": "TikTok",
             "jpmorgan": "JPMorgan Chase", "jpmorganchase": "JPMorgan Chase", "goldmansachs": "Goldman Sachs",
-            "bloomberg": "Bloomberg", "qualcomm": "Qualcomm", "cisco": "Cisco", "x": "X", "twitter": "X"}
+            "bloomberg": "Bloomberg", "qualcomm": "Qualcomm", "cisco": "Cisco", "x": "X", "twitter": "X", "ebay": "eBay", "americanexpress": "American Express", "amex": "American Express",
+            "accenture": "Accenture"}
 # Companies with their own careers sites that JobPilot has a direct connector for
 CUSTOM_BY_NAME = {
     "amazon": ("amazon", "amazon", "Amazon"), "aws": ("amazon", "amazon", "Amazon"), "amazonwebservices": ("amazon", "amazon", "Amazon"),
@@ -236,6 +237,21 @@ def detect(entry: str, transport=None) -> Detection:
         hit = _workday_hit(entry, KNOWN_WORKDAY[key], transport)
         if hit:
             return hit
+    top = _top_tech().get(key)
+    if top and top["kind"] == "workday":
+        hit = _workday_hit(entry, top["identifier"], transport)
+        if hit:
+            hit.company = top["company"]
+            return hit
+    elif top and top["kind"] in PROBE_ORDER:
+        hit = probe(top["kind"], top["identifier"], transport)
+        if hit and hit.jobs:
+            hit.input, hit.company = entry, top["company"]
+            return hit
+    elif top and top["kind"] == "jsearch" and key not in IN_HOUSE:
+        return Detection(entry, "found", kind="jsearch", identifier=top["identifier"], company=top["company"], jobs=0,
+                         message="Has its own careers site with no public feed — JobPilot follows it through Google Jobs "
+                                 "(needs your free JSearch key in Settings → Connections).")
     if key in IN_HOUSE:
         return Detection(entry, "found", kind="jsearch", identifier=IN_HOUSE[key], company=IN_HOUSE[key], jobs=0,
                          message="Has its own careers site with no public feed — JobPilot follows it through Google Jobs "
@@ -261,6 +277,19 @@ def detect(entry: str, transport=None) -> Detection:
 
 
 AMBIGUOUS = {"workable", "recruitee", "smartrecruiters", "greenhouse"}  # feeds that report a company name we can check
+
+
+_TOP_INDEX: dict = {}
+
+
+def _top_tech() -> dict:
+    """Verified top-tech companies keyed by normalized name (see catalog.TOP_TECH)."""
+    if not _TOP_INDEX:
+        from .catalog import TOP_TECH
+
+        for t in TOP_TECH:
+            _TOP_INDEX[re.sub(r"[^a-z]", "", t["company"].lower())] = t
+    return _TOP_INDEX
 
 
 def _same_company(query: str, found: str) -> bool:

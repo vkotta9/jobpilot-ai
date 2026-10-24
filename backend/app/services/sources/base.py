@@ -53,6 +53,11 @@ class JobSourceAdapter:
     label = ""
     min_interval_hours = 0
 
+    @classmethod
+    def interval_for(cls, identifier: str) -> int:
+        '''Minimum hours between runs for this source (some free plans allow few requests).'''
+        return cls.min_interval_hours
+
     def __init__(self, identifier: str, *, transport: Optional[httpx.BaseTransport] = None,
                  sleep: Callable[[float], None] = time.sleep, context: Optional[dict] = None):
         self.identifier = identifier

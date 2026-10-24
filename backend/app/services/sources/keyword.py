@@ -312,6 +312,11 @@ class JSearchAdapter(KeywordAdapter):
     docs_url = "https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch"
     label = "JSearch (LinkedIn, Indeed, Glassdoor via Google Jobs)"
     min_interval_hours = 12  # keep within the free monthly allowance
+    company_interval_hours = 168  # a followed company is checked weekly: ~30 companies fit the free plan
+
+    @classmethod
+    def interval_for(cls, identifier: str) -> int:
+        return cls.min_interval_hours if identifier == "auto" else cls.company_interval_hours
 
     def fetch(self) -> list[NormalizedJob]:
         self._need_queries()

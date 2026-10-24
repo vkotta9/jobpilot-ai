@@ -85,10 +85,10 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
         raise SourceError("Simulated sources are disabled (JOBPILOT_ALLOW_MOCK_SOURCES=0).")
     stats = {"source_id": source.id, "kind": source.kind, "new": 0, "updated": 0, "unchanged": 0,
              "closed": 0, "error": None, "simulated": adapter_cls.is_simulated}
-    if adapter_cls.min_interval_hours and source.last_run_at and source.last_status == "ok" and \
-            utcnow() - source.last_run_at < timedelta(hours=adapter_cls.min_interval_hours):
-        stats["skipped"] = f"{source.kind}: searched recently — its terms allow one run every " \
-                           f"{adapter_cls.min_interval_hours}h."
+    interval = adapter_cls.interval_for(source.identifier)
+    if interval and source.last_run_at and source.last_status == "ok" and \
+            utcnow() - source.last_run_at < timedelta(hours=interval):
+        stats["skipped"] = f"{source.kind}: searched recently — it's checked at most once every {interval}h."
         return stats
     context = search_context(db, source.user_id) if (adapter_cls.keyword or source.kind in COMPANY_KINDS) else None
     adapter = adapter_cls(source.identifier, transport=transport, context=context if adapter_cls.keyword else None)

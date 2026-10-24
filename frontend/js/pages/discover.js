@@ -5,8 +5,9 @@ const filters = { q: "", location: "", company: "", remote: "", seniority: "", m
 
 export async function render(root) {
   mount(root, loading());
-  const [allSources, catalog, saved, auto, following, popular] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
-    api.get("/api/saved-searches"), api.get("/api/discovery/auto"), api.get("/api/companies"), api.get("/api/companies/popular")]);
+  const [allSources, catalog, saved, auto, following, popular, top] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
+    api.get("/api/saved-searches"), api.get("/api/discovery/auto"), api.get("/api/companies"), api.get("/api/companies/popular"),
+    api.get("/api/companies/top-tech")]);
   const sources = allSources.filter((s) => s.kind === "mock");
   const results = h("div", { class: "card", style: { padding: 0 } }, loading());
 
@@ -53,6 +54,7 @@ export async function render(root) {
       h("div", {}, h("h1", {}, "Discover jobs"), h("div", { class: "sub" }, "New postings matching your target roles, scored against your resume like an ATS would.")),
       h("div", { class: "row" }, h("button", { onclick: () => manualJob(root) }, "+ Add a job I found"), runAll)),
     autoCard(auto, root),
+    topTechCard(top, root),
     companiesCard(following, popular, root),
     catalog.some((c) => c.kind === "mock") && h("details", { class: "card", style: { marginTop: "16px" } },
       h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Demo data (simulated listings for trying the app)"),
@@ -104,7 +106,55 @@ function autoCard(auto, root) {
     h("div", { class: "row", style: { justifyContent: "flex-end" } }, go));
 }
 
-const PLATFORM = { greenhouse: "Greenhouse", lever: "Lever", ashby: "Ashby", smartrecruiters: "SmartRecruiters", workable: "Workable", recruitee: "Recruitee" };
+const PLATFORM = { greenhouse: "Greenhouse", lever: "Lever", ashby: "Ashby", smartrecruiters: "SmartRecruiters", workable: "Workable", recruitee: "Recruitee",
+  workday: "Workday", amazon: "Amazon careers site", google: "Google careers site", microsoft: "Microsoft careers site", apple: "Apple careers site",
+  eightfold: "Eightfold careers site", oraclehcm: "Oracle careers site", jsearch: "Google Jobs (JSearch)" };
+
+function followToast(out) {
+  if (out.background) return toast(`Following ${out.added} new compan${out.added === 1 ? "y" : "ies"} — their jobs are being searched in the background and will appear here in a few minutes.`);
+  const n = out.results.reduce((a, x) => a + (x.new || 0), 0);
+  toast(`Following ${out.added} new compan${out.added === 1 ? "y" : "ies"} · ${n} matching job${n === 1 ? "" : "s"} found.` + (out.pending ? ` ${out.pending} more will be checked on the next scheduled run.` : ""));
+}
+
+function topTechCard(top, root) {
+  const all = top.companies;
+  const direct = all.filter((c) => c.via === "direct");
+  const followingN = all.filter((c) => c.following).length;
+  const cats = {};
+  all.forEach((c) => (cats[c.category] = cats[c.category] || []).push(c));
+  const picks = [];
+  const groups = Object.entries(cats).map(([cat, items]) => h("div", { style: { marginBottom: "10px" } },
+    h("h3", {}, cat),
+    h("div", { class: "row", style: { gap: "4px 12px" } }, items.map((c) => {
+      const cb = h("input", { type: "checkbox", checked: c.following, disabled: c.following });
+      cb._c = c;
+      picks.push(cb);
+      return h("label", { class: "check small", style: { minWidth: "190px" }, title: `${PLATFORM[c.kind] || c.kind}` }, cb, c.company,
+        c.via === "google_jobs" ? h("span", { class: "faint" }, " · Google Jobs") : null);
+    }))));
+  const follow = async (items) => {
+    if (!items.length) return toast("Nothing new to follow.", "bad");
+    const out = await api.post("/api/companies/follow", { items: items.map((c) => ({ kind: c.kind, identifier: c.identifier, company: c.company })) });
+    followToast(out);
+    render(root);
+    if (out.background) setTimeout(() => render(root), 90000);
+  };
+  const bDirect = h("button", {}, `Follow all ${direct.length} direct feeds`);
+  bDirect.addEventListener("click", busy(bDirect, () => follow(direct.filter((c) => !c.following))));
+  const bAll = h("button", { class: "btn-primary" }, `Follow all ${all.length}`);
+  bAll.addEventListener("click", busy(bAll, () => follow(all.filter((c) => !c.following && (c.via === "direct" || top.jsearch_connected)))));
+  const bSel = h("button", {}, "Follow selected");
+  bSel.addEventListener("click", busy(bSel, () => follow(picks.filter((b) => b.checked && !b.disabled).map((b) => b._c))));
+  return h("div", { class: "card", style: { marginTop: "16px" } },
+    h("div", { class: "card-head" }, h("h2", {}, "Top 100 tech companies"), h("span", { class: "faint" }, `Following ${followingN} of ${all.length}`)),
+    h("p", { class: "small muted" }, `${direct.length} are searched directly on the company's own careers site or job board (Amazon, Microsoft, Google, Apple, NVIDIA, Salesforce, OpenAI, Stripe…). `,
+      `The other ${all.length - direct.length} (Meta, Tesla, Uber, Cisco…) don't offer a feed JobPilot may use, so they're followed through Google Jobs, which is checked weekly per company to stay within JSearch's free plan.`),
+    top.jsearch_connected ? null : h("div", { class: "alert warn small" }, "Google Jobs companies need your free JSearch key — ", h("a", { href: "#/settings" }, "Settings → Connections"),
+      ". Until then, “Follow all” follows the direct feeds only."),
+    h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px", margin: "8px 0" } }, bDirect, bAll),
+    h("details", {}, h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Choose individual companies"),
+      h("div", { style: { marginTop: "10px" } }, groups, h("div", { class: "row", style: { justifyContent: "flex-end" } }, bSel))));
+}
 
 function companiesCard(following, popular, root) {
   const ta = h("textarea", { rows: 4, placeholder: "One per line — a careers page link or just the company name, e.g.\nhttps://stripe.com/jobs\nDatabricks\nhttps://jobs.lever.co/palantir" });
@@ -124,8 +174,7 @@ function companiesCard(following, popular, root) {
       const items = rows.filter((x) => x.cb && x.cb.checked).map((x) => x.cb._item);
       if (!items.length) return toast("Nothing selected.", "bad");
       const out = await api.post("/api/companies/follow", { items });
-      const n = out.results.reduce((a, x) => a + (x.new || 0), 0);
-      toast(`Following ${out.added} new compan${out.added === 1 ? "y" : "ies"} · ${n} matching job${n === 1 ? "" : "s"} found.`);
+      followToast(out);
       render(root);
     }));
     mount(results, h("div", { class: "table-wrap", style: { marginTop: "10px" } }, h("table", {},
@@ -165,8 +214,7 @@ function companiesCard(following, popular, root) {
     const items = picks.filter((b) => b.checked && !b.disabled).map((b) => b._item);
     if (!items.length) return toast("Tick some companies first.", "bad");
     const out = await api.post("/api/companies/follow", { items });
-    const n = out.results.reduce((a, x) => a + (x.new || 0), 0);
-    toast(`Following ${out.added} compan${out.added === 1 ? "y" : "ies"} · ${n} matching job${n === 1 ? "" : "s"} found.` + (out.pending ? ` ${out.pending} more will be checked on the next scheduled run.` : ""));
+    followToast(out);
     render(root);
   }));
 
@@ -175,7 +223,7 @@ function companiesCard(following, popular, root) {
     list,
     h("hr"),
     h("h3", {}, "Add companies"),
-    h("p", { class: "small muted" }, "Paste careers-page links or company names. JobPilot finds the company's job board (Greenhouse, Lever, Ashby, SmartRecruiters, Workable or Recruitee). Companies on Workday or their own sites (Google, Amazon, Microsoft…) don't offer a public feed and can't be followed."),
+    h("p", { class: "small muted" }, "Paste careers-page links or company names. JobPilot finds the company's job board — Greenhouse, Lever, Ashby, SmartRecruiters, Workable, Recruitee, Workday, or its own careers site (Amazon, Microsoft, Google, Apple, Netflix, Oracle). Companies without a usable feed are followed through Google Jobs (needs your free JSearch key)."),
     ta, h("div", { class: "row", style: { justifyContent: "flex-end", marginTop: "8px" } }, find), results,
     h("details", { style: { marginTop: "12px" } },
       h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, `Popular companies (${popular.length}, verified to have open roles)`),

@@ -157,9 +157,11 @@ class EightfoldAdapter(_CareersSiteAdapter):
         for pid, p in positions.items():
             desc, url = "", ""
             if self._want_detail(p.get("name", ""), done):
+                if done:
+                    self._sleep(1.5)  # the site rate-limits bursts of detail requests
                 try:
                     d = ((self._get_json(base + "/position_details", params={"position_id": pid, "domain": self.domain, "hl": "en"},
-                                         max_attempts=1) or {}).get("data") or {})
+                                         max_attempts=2) or {}).get("data") or {})
                     desc, url = strip_html(d.get("jobDescription", "") or ""), d.get("publicUrl") or ""
                     done += 1
                 except SourceError:
@@ -278,7 +280,8 @@ class MicrosoftAdapter(_CareersSiteAdapter):
     def fetch(self) -> list[NormalizedJob]:
         ef = EightfoldAdapter("apply.careers.microsoft.com|microsoft.com", transport=self._transport, sleep=self._sleep)
         ef.queries, ef.title_filter, ef.detail_limit, ef.display, ef.timeout_s = self.queries, self.title_filter, self.detail_limit, "Microsoft", self.timeout_s
-        return ef.fetch()
+        ef.detail_limit = min(self.detail_limit, 15)
+        return ef._fetch_pcsx()
 
 
 class GoogleAdapter(_CareersSiteAdapter):

@@ -8,6 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         db: [sqlite, postgres]
     services:
@@ -30,4 +31,11 @@ jobs:
         working-directory: backend
         env:
           TEST_DATABASE_URL: ${{ matrix.db == 'postgres' && 'postgresql://jobpilot:jobpilot@localhost:5432/jobpilot_test' || '' }}
-        run: python -m pytest -q
+        shell: bash
+        run: |
+          set +e
+          python -m pytest -q -rfE 2>&1 | tee pytest.out
+          status=${PIPESTATUS[0]}
+          # surface failures as annotations (readable without log access)
+          grep -E "^(FAILED|ERROR) |^E   " pytest.out | head -40 | sed 's/^/::error title=pytest::/'
+          exit $status
