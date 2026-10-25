@@ -3,9 +3,10 @@
 Rules enforced here (not in the UI, so they cannot be bypassed by API calls):
 * An application can only reach `applied` through `record_submission`, which
   requires (a) a current approval and (b) explicit confirmation.
-* Approval requires an approved resume, an approved cover letter (if one
-  exists), no unresolved [[ADD: ...]] placeholders and no screening answers
-  still needing the user's input.
+* Approval requires a resume — an approved tailored version for this job, or
+  otherwise the user's own uploaded (master) resume as-is — an approved cover
+  letter (if one exists), no unresolved [[ADD: ...]] placeholders and no
+  screening answers still needing the user's input. Tailoring is optional.
 * Approval is bound to a hash of the exact materials; editing anything after
   approval invalidates it.
 * A job can only have one application (unique constraint) and one submission.
@@ -103,12 +104,36 @@ def latest_doc(db: Session, job_id: int, kind: str) -> Optional[Document]:
     return db.query(Document).filter_by(job_id=job_id, kind=kind).order_by(Document.version.desc()).first()
 
 
+def approved_tailored(db: Session, job_id: int) -> Optional[Document]:
+    return (db.query(Document).filter_by(job_id=job_id, kind="resume", status="approved")
+            .order_by(Document.version.desc()).first())
+
+
+def master_resume(db: Session, user_id: int):
+    from ..models import Resume
+
+    return db.query(Resume).filter_by(user_id=user_id, is_primary=True).one_or_none()
+
+
+def resume_choice(db: Session, app: Application) -> dict:
+    """Which resume this application uses: the approved tailored version, else the master resume."""
+    doc = approved_tailored(db, app.job_id)
+    if doc is not None:
+        return {"type": "tailored", "doc_id": doc.id, "version": doc.version}
+    r = master_resume(db, app.user_id)
+    if r is not None:
+        return {"type": "master", "resume_id": r.id, "filename": r.original_filename}
+    return {"type": "none"}
+
+
 def package_hash(db: Session, app: Application) -> str:
     resume = db.get(Document, app.resume_doc_id) if app.resume_doc_id else None
+    master = master_resume(db, app.user_id) if resume is None else None
     letter = db.get(Document, app.cover_letter_doc_id) if app.cover_letter_doc_id else None
     answers = db.query(ScreeningAnswer).filter_by(application_id=app.id).order_by(ScreeningAnswer.id).all()
     return sha256(
         repr(resume.content) if resume else "", resume.status if resume else "",
+        f"master:{master.id}:{master.sha256}" if master else "",
         repr(letter.content) if letter else "", letter.status if letter else "",
         *[f"{a.id}:{a.answer}:{a.status}" for a in answers],
     )
@@ -116,12 +141,10 @@ def package_hash(db: Session, app: Application) -> str:
 
 def package_problems(db: Session, app: Application) -> list[str]:
     problems = []
-    resume = latest_doc(db, app.job_id, "resume")
+    resume = approved_tailored(db, app.job_id)  # a tailored resume is optional; drafts don't block approval
     letter = latest_doc(db, app.job_id, "cover_letter")
-    if not resume:
-        problems.append("Generate a tailored resume.")
-    elif resume.status != "approved":
-        problems.append("Approve the latest tailored resume.")
+    if resume is None and master_resume(db, app.user_id) is None:
+        problems.append("Upload your resume in the Resume library (or tailor one for this job).")
     if letter and letter.status != "approved":
         problems.append("Approve the latest cover letter (or delete it).")
     for d in (resume, letter):
@@ -139,8 +162,8 @@ def package_problems(db: Session, app: Application) -> list[str]:
 def request_approval(db: Session, app: Application) -> dict:
     if app.status in ("applied", "assessment", "interview", "offer", "rejected"):
         raise HTTPException(400, "This application has already been submitted or closed.")
-    resume = latest_doc(db, app.job_id, "resume")
-    app.resume_doc_id = resume.id if resume else None
+    resume = approved_tailored(db, app.job_id)
+    app.resume_doc_id = resume.id if resume else None  # None = the master resume
     letter = latest_doc(db, app.job_id, "cover_letter")
     app.cover_letter_doc_id = letter.id if letter else None
     problems = package_problems(db, app)

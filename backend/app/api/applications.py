@@ -363,6 +363,7 @@ def application_detail(aid: int, user: User = Depends(current_user), db: Session
     resume = appsvc.latest_doc(db, a.job_id, "resume")
     letter = appsvc.latest_doc(db, a.job_id, "cover_letter")
     out["resume"] = doc_out(resume) if resume else None
+    out["resume_used"] = appsvc.resume_choice(db, a)
     out["cover_letter"] = doc_out(letter) if letter else None
     out["answers"] = [to_dict(x) for x in db.query(ScreeningAnswer).filter_by(application_id=a.id).order_by(ScreeningAnswer.id).all()]
     out["events"] = [to_dict(e) for e in db.query(ApplicationEvent).filter_by(application_id=a.id).order_by(ApplicationEvent.id).all()]

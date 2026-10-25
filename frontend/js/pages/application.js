@@ -19,7 +19,7 @@ export async function render(root, id) {
   const approveBtn = btn("✓ Approve package", async () => {
     const ok = await modal("Approve application package", h("div", {},
       h("p", {}, `You're approving the materials for ${j.title} at ${j.company}.`),
-      h("ul", { class: "small" }, h("li", {}, `Resume v${a.resume?.version}`), a.cover_letter && h("li", {}, `Cover letter v${a.cover_letter.version}`),
+      h("ul", { class: "small" }, h("li", {}, a.resume_used?.type === "tailored" ? `Tailored resume v${a.resume_used.version}` : `Your resume “${a.resume_used?.filename || ""}” (as uploaded)`), a.cover_letter && h("li", {}, `Cover letter v${a.cover_letter.version}`),
         h("li", {}, `${a.answers.length} screening answer(s)`)),
       h("p", { class: "small muted" }, "JobPilot will not submit anything for you. After approving, you submit on the official site and record it here.")),
       [{ label: "Cancel", value: () => null }, { label: "I reviewed everything — approve", primary: true, value: () => true }]);
@@ -81,6 +81,32 @@ export async function render(root, id) {
     d ? h("div", { class: "row" }, h("span", { class: `badge ${d.status === "approved" ? "good" : "warn"}` }, d.status), h("a", { class: "btn btn-sm", href: `#/documents/${d.id}` }, "Review"))
       : btn(`Generate`, async () => { const nd = await api.post(`/api/jobs/${j.id}/${kind === "resume" ? "resume/tailor" : "cover-letter"}`); location.hash = `#/documents/${nd.id}`; }, "btn-sm"));
 
+  // resume: the approved tailored version if there is one, otherwise the user's own resume as uploaded
+  const resumeLine = () => {
+    const u = a.resume_used || {};
+    const draft = a.resume && a.resume.status !== "approved";
+    const tailorBtn = btn(a.resume ? "Tailor again" : "Tailor for this job (optional)", async () => {
+      const nd = await api.post(`/api/jobs/${j.id}/resume/tailor`); location.hash = `#/documents/${nd.id}`; }, "btn-sm");
+    if (u.type === "tailored") {
+      return h("div", { class: "list-item" }, h("div", {}, h("strong", {}, "Resume"), ` · tailored v${u.version}`, h("div", { class: "faint" }, "Approved tailored version for this job")),
+        h("div", { class: "row" }, h("span", { class: "badge good" }, "approved"), h("a", { class: "btn btn-sm", href: `#/documents/${u.doc_id}` }, "Review")));
+    }
+    if (u.type === "master") {
+      return h("div", { class: "list-item" },
+        h("div", {}, h("strong", {}, "Resume"), ` · ${u.filename}`,
+          h("div", { class: "faint" }, draft ? `Using your resume as uploaded. A tailored draft (v${a.resume.version}) exists — approve it to use it instead.` : "Using your resume as uploaded — tailoring is optional.")),
+        h("div", { class: "row" }, draft && h("a", { class: "btn btn-sm", href: `#/documents/${a.resume.id}` }, "Review draft"), tailorBtn));
+    }
+    return h("div", { class: "list-item" }, h("div", {}, h("strong", {}, "Resume"), h("div", { class: "faint" }, "Upload your resume in the Resume library.")),
+      h("a", { class: "btn btn-sm", href: "#/resumes" }, "Resume library"));
+  };
+  const resumeDownload = () => {
+    const u = a.resume_used || {};
+    if (u.type === "tailored") return h("button", { onclick: () => api.file(`/api/documents/${u.doc_id}/download?format=pdf`, "resume.pdf") }, "⬇ Resume");
+    if (u.type === "master") return h("button", { onclick: () => api.file(`/api/resumes/${u.resume_id}/file`, u.filename) }, "⬇ Resume");
+    return null;
+  };
+
   mount(root,
     h("div", { class: "faint", style: { marginBottom: "8px" } }, h("a", { href: "#/tracker" }, "← Tracker")),
     j.is_simulated && h("div", { class: "alert sim", style: { marginBottom: "12px" } }, "This is a SIMULATED demo listing. Its official URL points to example.com — there is nothing real to submit."),
@@ -95,7 +121,7 @@ export async function render(root, id) {
       h("div", { class: "stack" },
         h("div", { class: "card" },
           h("div", { class: "card-head" }, h("h2", {}, "1 · Application package"), a.approval_current ? h("span", { class: "badge good" }, `Approved ${fmtDate(a.approved_at)}`) : h("span", { class: "badge warn" }, "Not approved")),
-          docLine(a.resume, "Tailored resume", "resume"), docLine(a.cover_letter, "Cover letter", "cover_letter"),
+          resumeLine(), docLine(a.cover_letter, "Cover letter (optional)", "cover_letter"),
           a.problems.length > 0 && !submitted && h("div", { class: "alert warn", style: { marginTop: "10px" } }, h("strong", {}, "Before approval:"), h("ul", {}, a.problems.map((p) => h("li", {}, p)))),
           !submitted && h("div", { class: "row", style: { marginTop: "12px" } },
             a.status !== "awaiting_approval" ? reqApproval : !a.approval_current ? approveBtn : h("span", { class: "badge good" }, "Ready to submit"))),
@@ -110,7 +136,7 @@ export async function render(root, id) {
               h("p", { class: "small muted" }, "JobPilot never submits applications automatically. Open the official form, attach your downloaded resume/letter, paste your approved answers, and submit it yourself."),
               h("div", { class: "row" },
                 j.apply_url && h("a", { class: "btn", href: j.apply_url, target: "_blank", rel: "noopener noreferrer" }, "Open official application ↗"),
-                a.resume && h("button", { onclick: () => api.file(`/api/documents/${a.resume.id}/download?format=pdf`, "resume.pdf") }, "⬇ Resume PDF"),
+                resumeDownload(),
                 a.cover_letter && h("button", { onclick: () => api.file(`/api/documents/${a.cover_letter.id}/download?format=pdf`, "cover_letter.pdf") }, "⬇ Letter PDF")),
               a.approval_current ? [field("Confirmation (recommended)", confirmation), h("div", {}, record)]
                 : h("div", { class: "alert warn" }, "Approve the package first — submissions can only be recorded for an approved package."))),

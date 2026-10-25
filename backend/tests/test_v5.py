@@ -190,3 +190,36 @@ def test_full_skills_line_makes_room_and_uses_summary(monkeypatch):
     for s in content["skills"]:
         if s.get("placed") == "summary":
             assert s["display"] in text  # moved into the summary
+
+
+def test_approval_works_with_master_resume_without_tailoring(client):
+    from .conftest import sample_docx_bytes
+    from .test_api import _mock_jobs
+
+    h, _ = make_user(client)
+    setup_profile(client, h)
+    up = client.post("/api/resumes", headers=h, files={"file": ("cv.docx", sample_docx_bytes(), "application/octet-stream")}).json()
+    job = _mock_jobs(client, h)[0]
+    app_id = client.post(f"/api/jobs/{job['id']}/shortlist", headers=h).json()["application_id"]
+    r = client.post(f"/api/applications/{app_id}/request-approval", headers=h).json()
+    assert r["ok"] is True, r  # no tailored resume needed
+    det = client.get(f"/api/applications/{app_id}", headers=h).json()
+    assert det["resume_used"] == {"type": "master", "resume_id": up["resume"]["id"], "filename": "cv.docx"}
+    assert client.post(f"/api/applications/{app_id}/approve", json={"confirm": True}, headers=h).status_code == 200
+    # a tailored draft doesn't block; once approved it's used instead
+    rd = client.post(f"/api/jobs/{job['id']}/resume/tailor", headers=h).json()
+    assert client.get(f"/api/applications/{app_id}", headers=h).json()["approval_current"] is False
+    assert client.post(f"/api/applications/{app_id}/request-approval", headers=h).json()["ok"] is True
+    client.post(f"/api/documents/{rd['id']}/approve", json={"confirm": True}, headers=h)
+    assert client.get(f"/api/applications/{app_id}", headers=h).json()["resume_used"]["type"] == "tailored"
+
+
+def test_approval_needs_some_resume(client):
+    from .test_api import _mock_jobs
+
+    h, _ = make_user(client)
+    setup_profile(client, h)
+    job = _mock_jobs(client, h)[0]
+    app_id = client.post(f"/api/jobs/{job['id']}/shortlist", headers=h).json()["application_id"]
+    r = client.post(f"/api/applications/{app_id}/request-approval", headers=h).json()
+    assert r["ok"] is False and any("Resume library" in p for p in r["problems"])
