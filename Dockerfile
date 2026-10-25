@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 
 COPY backend backend
 COPY frontend frontend
+COPY extension extension
 
 RUN useradd --create-home --uid 1000 jobpilot && mkdir -p /data && chown jobpilot /data
 USER jobpilot

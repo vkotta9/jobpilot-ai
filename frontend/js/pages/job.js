@@ -15,7 +15,7 @@ export async function render(root, id) {
   const tailor = act("✎ Tailor resume", async () => {
     const d = await api.post(`/api/jobs/${id}/resume/tailor`);
     location.hash = `#/documents/${d.id}`;
-  }, true);
+  });
   const letter = act("✉ Draft cover letter", async () => {
     const d = await api.post(`/api/jobs/${id}/cover-letter`);
     location.hash = `#/documents/${d.id}`;
@@ -25,6 +25,11 @@ export async function render(root, id) {
     toast("Added to your tracker.");
     location.hash = `#/applications/${r.application_id}`;
   });
+  const applyNow = act("⚡ Apply with JobPilot", async () => {
+    const appId = j.application ? j.application.id : (await api.post(`/api/jobs/${id}/shortlist`)).application_id;
+    sessionStorage.setItem("jp_autoapply", String(appId));
+    location.hash = `#/applications/${appId}`;
+  }, true);
   const rescore = act("Recalculate", async () => { await api.post(`/api/jobs/${id}/rescore`); render(root, id); });
 
   mount(root,
@@ -41,7 +46,7 @@ export async function render(root, id) {
       h("div", { class: "row" },
         (j.apply_url || j.url) && h("a", { class: "btn", href: j.url || j.apply_url, target: "_blank", rel: "noopener noreferrer" }, "Open official posting ↗"),
         j.application ? h("a", { class: "btn", href: `#/applications/${j.application.id}` }, "Application →") : shortlist,
-        letter, tailor)),
+        letter, tailor, !(j.application && ["applied", "assessment", "interview", "offer", "rejected"].includes(j.application.status)) && applyNow)),
     h("div", { class: "grid side" },
       h("div", { class: "stack" },
         m ? atsCard(m, rescore) : h("div", { class: "alert" }, "Upload your resume (or fill in your profile) to see an ATS match score for this job."),

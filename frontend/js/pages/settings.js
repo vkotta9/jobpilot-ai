@@ -1,6 +1,49 @@
 import { api } from "../api.js";
 import { h, mount, loading, field, busy, toast, modal, fmtDate, confirmDialog } from "../ui.js";
 import { setPaused, route } from "../app.js";
+import * as ext from "../ext.js";
+
+function extensionCard(root) {
+  const st = h("div", { class: "small muted" }, "Checking…");
+  const btns = h("div", { class: "row", style: { gap: "8px", marginTop: "8px" } });
+  const draw = async () => {
+    const s = await ext.status();
+    btns.replaceChildren();
+    const dl = h("a", { class: "btn" + (s.installed ? "" : " btn-primary"), href: "/api/extension/jobpilot-extension.zip", download: "jobpilot-extension.zip" }, "⬇ Download extension");
+    if (!s.installed) {
+      mount(st, h("span", { style: { color: "var(--warn)" } }, "Not installed in this browser."));
+      btns.append(dl);
+      return;
+    }
+    if (s.connected) {
+      mount(st, h("span", { style: { color: "var(--good)" } }, `✓ Installed and connected${s.email ? " as " + s.email : ""}. Use “Apply with JobPilot” on an application.`));
+    } else {
+      mount(st, h("span", { style: { color: "var(--warn)" } }, "Installed — click Connect to link it to your account."));
+    }
+    const c = h("button", { class: s.connected ? "" : "btn-primary" }, s.connected ? "Reconnect" : "Connect");
+    c.addEventListener("click", busy(c, async () => {
+      const t = await api.post("/api/extension/connect");
+      const r = await ext.connect(t.token, t.email);
+      toast(r.ok ? "Extension connected." : "Couldn't connect: " + (r.error || "no response"), r.ok ? "" : "bad");
+      draw();
+    }));
+    btns.append(c, dl);
+  };
+  draw();
+  return h("div", { class: "card", style: { marginTop: "16px" } },
+    h("div", { class: "card-head" }, h("h2", {}, "Browser extension — one-click apply"), h("span", { class: "faint" }, "Chrome, Edge, Brave")),
+    h("p", { class: "small muted" }, "The JobPilot extension fills the company's application form for you — name, contact details, links, work authorization, ",
+      "your approved screening answers, and attaches your resume (and cover letter). You check it and press Submit; JobPilot records the submission automatically from the site's confirmation page. ",
+      "It never accepts terms for you, never answers demographic questions and never solves CAPTCHAs."),
+    st, btns,
+    h("details", { style: { marginTop: "10px" } }, h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "How to install (2 minutes, once)"),
+      h("ol", { class: "small", style: { lineHeight: 1.7 } },
+        h("li", {}, "Click ", h("strong", {}, "Download extension"), " and unzip the file (you'll get a folder called jobpilot-extension)."),
+        h("li", {}, "Open ", h("code", {}, "chrome://extensions"), " in a new tab (Edge: edge://extensions)."),
+        h("li", {}, "Turn on ", h("strong", {}, "Developer mode"), " (top-right switch)."),
+        h("li", {}, "Click ", h("strong", {}, "Load unpacked"), " and choose the jobpilot-extension folder."),
+        h("li", {}, "Come back to this page, refresh it, and click ", h("strong", {}, "Connect"), "."))));
+}
 
 function connectionsCard(c, root) {
   const test = (provider) => async (e) => {
@@ -150,13 +193,14 @@ export async function render(root) {
     ["Remotive · Himalayas · Jobicy · The Muse · Arbeitnow", "Real · public · no key needed", "good", null],
     ["JSearch (Google Jobs)", conns.jsearch.configured ? "Connected" : "Optional free key", conns.jsearch.configured ? "good" : "", null],
     ["Company career boards", "Greenhouse · Lever · Ashby · SmartRecruiters · Workable · Recruitee — no key needed", "good", null],
-    ["Automatic application submission", "Not available — employers' ATS APIs need employer keys; you submit manually", "", null],
+    ["One-click apply", "JobPilot browser extension fills the company's form; you press Submit (see Browser extension above)", "good", null],
     ["LinkedIn messaging", "Not integrated — drafts are copied and sent by you", "", null],
   ];
 
   mount(root,
     h("div", { class: "page-head" }, h("div", {}, h("h1", {}, "Settings & privacy"), h("div", { class: "sub" }, "Control what runs automatically and what happens to your data."))),
     connectionsCard(conns, root),
+    extensionCard(root),
     h("div", { class: "grid cols-2", style: { marginTop: "16px" } },
       h("div", { class: "stack" },
         h("div", { class: "card" }, h("h2", {}, "Kill switch"),

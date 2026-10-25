@@ -1,0 +1,17 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  body{font:13px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;width:300px;margin:0;padding:14px;color:#1f2337}
+  h1{font-size:15px;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+  .dot{width:12px;height:12px;border-radius:3px;background:#5b4fe9;display:inline-block}
+  .m{color:#4b5068;margin:6px 0}.ok{color:#15803d}.bad{color:#b45309}
+  button,a.btn{font:600 12px system-ui;border-radius:8px;border:1px solid #d9dcf2;background:#f6f7ff;padding:7px 10px;cursor:pointer;text-decoration:none;color:#1f2337;display:inline-block;margin:4px 4px 0 0}
+  button.p{background:#5b4fe9;color:#fff;border-color:#5b4fe9}
+</style></head>
+<body>
+  <h1><span class="dot"></span>JobPilot Autofill</h1>
+  <div id="state" class="m">Loading…</div>
+  <div id="actions"></div>
+  <p class="m" style="font-size:11px">JobPilot fills the form; you review it and press Submit. It never accepts terms for you, answers demographic questions or solves CAPTCHAs.</p>
+  <script src="popup.js"></script>
+</body></html>

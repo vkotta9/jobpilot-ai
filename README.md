@@ -66,6 +66,19 @@ API reference (OpenAPI): http://127.0.0.1:8000/api/docs
 - **Top 100 tech companies.** Discover → *Top 100 tech companies*: one click follows all of them (the Google Jobs ones need a JSearch key). 66 have direct feeds verified live from GitHub Actions in Oct 2026 (big tech, NVIDIA/Intel/Broadcom and other chip makers on Workday, Salesforce, Adobe, OpenAI, Anthropic, xAI, Stripe, SpaceX…); the other 34 use Google Jobs. Following more than 8 companies at once searches them in the background.
 - **Connections.** Save an AI key (Google Gemini free plan or OpenAI), JSearch, USAJOBS or Adzuna keys in Settings → Connections; they're stored encrypted.
 
+## One-click apply (browser extension)
+
+JobPilot → Settings → **Browser extension**: download, load it in Chrome/Edge (Developer mode → Load unpacked), click **Connect**.
+Then **⚡ Apply with JobPilot** on a job or application: you approve the package once, the company's application form opens,
+and the extension fills it — name, contact details, links, location, work authorization and sponsorship (from your profile),
+your approved screening answers, and attaches your resume (the approved tailored version, or your uploaded resume) and cover letter.
+You check the highlighted fields and press the site's Submit button; the extension sees the site's confirmation page and records
+the submission in JobPilot with that text as evidence.
+
+It never accepts terms or consent boxes, never answers demographic (EEO) questions, never solves CAPTCHAs, and only runs in tabs
+opened from JobPilot (or when you click *Fill this page* in its popup). Workday and some company sites need you to sign in to their
+portal first; the extension fills each step's fields after that.
+
 ## What works now (verified)
 
 | Area | Status | Notes |

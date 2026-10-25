@@ -1,5 +1,6 @@
 import { api } from "../api.js";
 import { h, mount, loading, statusBadge, statusLabel, simBadge, fmtDate, busy, toast, modal, field, scoreRing } from "../ui.js";
+import * as ext from "../ext.js";
 
 export async function render(root, id) {
   mount(root, loading());
@@ -16,18 +17,59 @@ export async function render(root, id) {
     toast(r.ok ? "Package is complete — review and approve it." : "Package needs attention: " + r.problems.join(" "), r.ok ? "" : "bad");
     reload();
   }, "btn-primary");
-  const approveBtn = btn("✓ Approve package", async () => {
-    const ok = await modal("Approve application package", h("div", {},
+  const approveModal = () => modal("Approve application package", h("div", {},
       h("p", {}, `You're approving the materials for ${j.title} at ${j.company}.`),
       h("ul", { class: "small" }, h("li", {}, a.resume_used?.type === "tailored" ? `Tailored resume v${a.resume_used.version}` : `Your resume “${a.resume_used?.filename || ""}” (as uploaded)`), a.cover_letter && h("li", {}, `Cover letter v${a.cover_letter.version}`),
         h("li", {}, `${a.answers.length} screening answer(s)`)),
       h("p", { class: "small muted" }, "JobPilot will not submit anything for you. After approving, you submit on the official site and record it here.")),
       [{ label: "Cancel", value: () => null }, { label: "I reviewed everything — approve", primary: true, value: () => true }]);
-    if (!ok) return;
+  const approveBtn = btn("✓ Approve package", async () => {
+    if (!(await approveModal())) return;
     await api.post(`/api/applications/${id}/approve`, { confirm: true });
     toast("Package approved.");
     reload();
   }, "btn-primary");
+
+  // ---- one-click apply through the browser extension
+  async function applyWithJobPilot() {
+    if (!ext.installed()) {
+      await modal("Install the JobPilot extension", h("div", {},
+        h("p", {}, "One-click apply uses the JobPilot browser extension: it opens the company's application form and fills it with your details, answers and resume. You check it and press Submit."),
+        h("p", {}, "It takes about 2 minutes to install once: ", h("a", { href: "#/settings" }, "Settings → Browser extension"), ".")),
+        [{ label: "OK", primary: true, value: () => true }]);
+      return;
+    }
+    const st = await ext.status();
+    if (!st.connected) {
+      await modal("Connect the extension", h("p", {}, "The extension is installed but not connected to your account yet. Go to ",
+        h("a", { href: "#/settings" }, "Settings → Browser extension"), " and click Connect."), [{ label: "OK", primary: true, value: () => true }]);
+      return;
+    }
+    if (!a.approval_current) {
+      if (a.status !== "awaiting_approval") {
+        const r = await api.post(`/api/applications/${id}/request-approval`);
+        if (!r.ok) { toast("Before applying: " + r.problems.join(" "), "bad"); reload(); return; }
+      }
+      if (!(await approveModal())) { reload(); return; }
+      await api.post(`/api/applications/${id}/approve`, { confirm: true });
+    }
+    const r = await ext.apply(id, j.apply_url || j.url);
+    if (r.ok) toast("Opening the application form — JobPilot is filling it in. Check it and press Submit.");
+    else toast("Couldn't start: " + (r.error === "not_connected" ? "connect the extension in Settings." : r.error), "bad");
+    reload();
+  }
+  const applyBtn = btn("⚡ Apply with JobPilot", applyWithJobPilot, "btn-primary");
+  if (sessionStorage.getItem("jp_autoapply") === String(id)) {
+    sessionStorage.removeItem("jp_autoapply");
+    setTimeout(() => applyBtn.click(), 300);
+  }
+  // when you come back from the company's site, show the recorded submission
+  if (!submitted && !window.__jpVis) {
+    window.__jpVis = true;
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && location.hash.startsWith(`#/applications/${id}`)) render(root, id);
+    });
+  }
 
   const confirmation = h("textarea", { rows: 3, placeholder: "Paste the confirmation message, email subject or application/reference number" });
   const record = btn("Record submission", async () => {
@@ -133,9 +175,10 @@ export async function render(root, id) {
           submitted ? h("div", {}, h("p", {}, `Submitted ${fmtDate(a.submitted_at, true)} (${a.submission_method.replace(/_/g, " ")}).`),
             a.confirmation_detail && h("div", { class: "desc small" }, a.confirmation_detail))
             : h("div", { class: "stack" },
-              h("p", { class: "small muted" }, "JobPilot never submits applications automatically. Open the official form, attach your downloaded resume/letter, paste your approved answers, and submit it yourself."),
+              h("p", { class: "small muted" }, "Click Apply with JobPilot: the company's form opens and the JobPilot extension fills it — your details, approved answers and resume. Check it and press the site's Submit button; JobPilot records the submission from the confirmation page."),
               h("div", { class: "row" },
-                j.apply_url && h("a", { class: "btn", href: j.apply_url, target: "_blank", rel: "noopener noreferrer" }, "Open official application ↗"),
+                applyBtn,
+                j.apply_url && h("a", { class: "btn", href: j.apply_url, target: "_blank", rel: "noopener noreferrer" }, "Open form without filling ↗"),
                 resumeDownload(),
                 a.cover_letter && h("button", { onclick: () => api.file(`/api/documents/${a.cover_letter.id}/download?format=pdf`, "cover_letter.pdf") }, "⬇ Letter PDF")),
               a.approval_current ? [field("Confirmation (recommended)", confirmation), h("div", {}, record)]
