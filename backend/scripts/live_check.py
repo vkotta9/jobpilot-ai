@@ -36,6 +36,13 @@ def main() -> int:
                                 + (f" countryFilter={'countrySel' in r.text}" if path.endswith("discover.js") else ""))
                 except Exception as e:  # noqa: BLE001
                     rows.append(f"r{rnd} {path} ERR {type(e).__name__} {(_t.time() - t0):.2f}s")
+        try:
+            import io as _io, json as _js, zipfile as _zf
+            z = _zf.ZipFile(_io.BytesIO(httpx.get(base + "/api/extension/jobpilot-extension.zip", timeout=60).content))
+            m = _js.loads(z.read("jobpilot-extension/manifest.json"))
+            rows.append(f"extension zip OK: matches={m['content_scripts'][0]['matches']} config={z.read('jobpilot-extension/config.js').decode().strip()}")
+        except Exception as e:  # noqa: BLE001
+            rows.append(f"extension zip ERROR {e}")
         print("::notice title=timing::" + " || ".join(rows))
         return 0
     if kind == "workday":
