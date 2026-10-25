@@ -28,11 +28,12 @@ def main() -> int:
         rows = []
         base = arg.rstrip("/")
         for rnd in (1, 2, 3):
-            for path in ("/api/health", "/", "/app.js", "/js/app.js", "/styles.css", "/api/companies/top-tech"):
+            for path in ("/api/health", "/", "/static/js/app.js", "/static/js/pages/discover.js", "/api/companies/top-tech"):
                 t0 = _t.time()
                 try:
                     r = httpx.get(base + path, timeout=180, follow_redirects=True)
-                    rows.append(f"r{rnd} {path} {r.status_code} {len(r.content)}B {(_t.time() - t0):.2f}s")
+                    rows.append(f"r{rnd} {path} {r.status_code} {len(r.content)}B {(_t.time() - t0):.2f}s cache={r.headers.get('cache-control')}"
+                                + (f" countryFilter={'countrySel' in r.text}" if path.endswith("discover.js") else ""))
                 except Exception as e:  # noqa: BLE001
                     rows.append(f"r{rnd} {path} ERR {type(e).__name__} {(_t.time() - t0):.2f}s")
         print("::notice title=timing::" + " || ".join(rows))
