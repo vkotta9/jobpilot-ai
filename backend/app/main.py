@@ -57,6 +57,10 @@ async def security_headers(request: Request, call_next):
         )
     if request.url.path.startswith("/api/"):
         resp.headers["Cache-Control"] = "no-store"
+    else:
+        # the app's pages and scripts: browsers must check for a newer version on every load
+        # (unchanged files come back as a tiny 304), so updates show up without a hard refresh
+        resp.headers["Cache-Control"] = "no-cache"
     return resp
 
 
