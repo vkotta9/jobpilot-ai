@@ -38,10 +38,10 @@ function extensionCard(root) {
     st, btns,
     h("details", { style: { marginTop: "10px" } }, h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "How to install (2 minutes, once)"),
       h("ol", { class: "small", style: { lineHeight: 1.7 } },
-        h("li", {}, "Click ", h("strong", {}, "Download extension"), " and unzip the file (you'll get a folder called jobpilot-extension)."),
+        h("li", {}, "Click ", h("strong", {}, "Download extension"), ", then right-click the downloaded file → ", h("strong", {}, "Extract All…"), " → Extract. You'll get a folder called jobpilot-extension with manifest.json inside."),
         h("li", {}, "Open ", h("code", {}, "chrome://extensions"), " in a new tab (Edge: edge://extensions)."),
         h("li", {}, "Turn on ", h("strong", {}, "Developer mode"), " (top-right switch)."),
-        h("li", {}, "Click ", h("strong", {}, "Load unpacked"), " and choose the jobpilot-extension folder."),
+        h("li", {}, "Click ", h("strong", {}, "Load unpacked"), " and select the jobpilot-extension folder (the one that contains manifest.json — open it once to check)."),
         h("li", {}, "Come back to this page, refresh it, and click ", h("strong", {}, "Connect"), "."))));
 }
 

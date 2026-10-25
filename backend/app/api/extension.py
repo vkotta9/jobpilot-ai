@@ -181,6 +181,6 @@ def download_extension(request: Request):
                 data = json.dumps(m, indent=2).encode()
             elif rel == "config.js":
                 data = f"self.JOBPILOT_ORIGIN = {json.dumps(f'{u.scheme}://{u.netloc}')};\n".encode()
-            z.writestr(f"jobpilot-extension/{rel}", data)
+            z.writestr(rel, data)  # files at the top level: unzipping into "jobpilot-extension" gives Chrome the manifest directly
     return Response(buf.getvalue(), media_type="application/zip",
                     headers={"Content-Disposition": 'attachment; filename="jobpilot-extension.zip"'})

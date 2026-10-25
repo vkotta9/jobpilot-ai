@@ -49,7 +49,7 @@ def test_extension_zip_is_set_up_for_this_site(client):
     assert r.status_code == 200 and r.headers["content-type"] == "application/zip"
     z = zipfile.ZipFile(io.BytesIO(r.content))
     names = set(z.namelist())
-    assert {"jobpilot-extension/manifest.json", "jobpilot-extension/filler.js", "jobpilot-extension/background.js"} <= names
-    m = json.loads(z.read("jobpilot-extension/manifest.json"))
+    assert {"manifest.json", "filler.js", "background.js"} <= names
+    m = json.loads(z.read("manifest.json"))
     assert m["content_scripts"][0]["matches"] == ["http://testserver/*"] and m["manifest_version"] == 3
-    assert b'"http://testserver"' in z.read("jobpilot-extension/config.js")
+    assert b'"http://testserver"' in z.read("config.js")
