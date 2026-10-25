@@ -248,11 +248,12 @@ def run_all_sources(db: Session, user_id: int) -> list[dict]:
 
 
 def score_unscored(db: Session, user_id: int, limit: int = 500) -> int:
-    """Score jobs that never got an ATS score (e.g. a run was cut off by a restart)."""
+    """Score jobs that never got an ATS score (e.g. a run was cut off by a restart) or were scored by an older model."""
     from ..models import MatchAssessment
     from .matching import score_jobs
 
-    scored = db.query(MatchAssessment.job_id).filter(MatchAssessment.user_id == user_id)
+    # "scored" = has an assessment from the current model (older ones lack the education check)
+    scored = db.query(MatchAssessment.job_id).filter(MatchAssessment.user_id == user_id, MatchAssessment.edu_status.isnot(None))
     ids = [jid for (jid,) in db.query(Job.id).filter(Job.user_id == user_id, Job.duplicate_of_id.is_(None),
                                                       ~Job.id.in_(scored)).limit(limit)]
     return score_jobs(db, user_id, ids) if ids else 0

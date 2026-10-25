@@ -75,6 +75,7 @@ class MatchWeights(BaseModel):
     experience: float = Field(default=15, ge=0, le=100)
     education: float = Field(default=15, ge=0, le=100)
     soft_skills: float = Field(default=10, ge=0, le=100)
+    preset: str = Field(default="auto", pattern=r"^(auto|typical|entry|experienced|research|custom)$")
 
 
 class ProfileIn(BaseModel):

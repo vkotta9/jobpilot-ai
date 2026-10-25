@@ -221,6 +221,7 @@ class MatchAssessment(Base):
     flags: Mapped[list] = mapped_column(JSON, default=list)
     explanation: Mapped[str] = mapped_column(Text, default="")
     weights: Mapped[dict] = mapped_column(JSON, default=dict)
+    edu_status: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # none|meets|exceeds|equivalent|below|unknown
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 

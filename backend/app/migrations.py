@@ -34,10 +34,17 @@ def _m003_integrations(conn: Connection) -> None:
     models.IntegrationSetting.__table__.create(bind=conn, checkfirst=True)
 
 
+def _m004_edu_status(conn: Connection) -> None:
+    cols = {c["name"] for c in inspect(conn).get_columns("match_assessments")}
+    if "edu_status" not in cols:
+        conn.execute(text("ALTER TABLE match_assessments ADD COLUMN edu_status VARCHAR(20)"))
+
+
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "initial schema", _m001_initial),
     (2, "store resume file bytes in database", _m002_resume_file_data),
     (3, "integration settings", _m003_integrations),
+    (4, "education fit on match assessments", _m004_edu_status),
 ]
 
 

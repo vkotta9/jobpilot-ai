@@ -217,11 +217,128 @@ def resume_years(text: str) -> Optional[float]:
 
 
 def _degree_level(text: str) -> int:
-    low = (text or "").lower()
-    for lvl, rx in DEGREE_LEVELS:
-        if re.search(rx, low):
-            return lvl
-    return 0
+    lv = degree_levels(text)
+    return max(lv) if lv else 0
+
+
+# Strict patterns: bare "MS"/"BS" also mean "MS Office" or "10 ms", so they only count next to "in/of/degree" or a slash.
+DEG_RX = {
+    3: re.compile(r"\bph\.?\s?d\b|\bdoctorate\b|\bdoctoral\b|\bd\.phil\b", re.I),
+    2: re.compile(r"\bmaster'?s?\b|\bmasters\b|\bm\.s\.|\bm\.sc\.?(?=\W|$)|\bmsc\b|\bms\s+(?:in|of|degree)\b|\bmba\b|"
+                  r"\bm\.?tech\b|\bm\.eng\b|\bmeng\b|\bgraduate degree\b|\badvanced degree\b", re.I),
+    1: re.compile(r"\bbachelor'?s?\b|\bbachelors\b|\bb\.s\.|\bb\.sc\.?(?=\W|$)|\bbsc\b|\bbs\s+(?:in|of|degree)\b|\bb\.a\.|"
+                  r"\bba\s+(?:in|of)\b|\bb\.?tech\b|\bb\.e\.|\bundergraduate degree\b|\b(?:4|four)[- ]year degree\b|"
+                  r"\bcollege degree\b|\buniversity degree\b", re.I),
+}
+SLASH_RX = re.compile(r"\b(bs|ba|b\.s\.?|ms|m\.s\.?|phd|ph\.d\.?)\s*/\s*(bs|ba|b\.s\.?|ms|m\.s\.?|phd|ph\.d\.?)"
+                      r"(?:\s*/\s*(bs|ms|m\.s\.?|phd|ph\.d\.?))?", re.I)
+_SLASH_LVL = {"b": 1, "m": 2, "p": 3}
+DEGREE_NAMES = {0: "no degree listed", 1: "a bachelor's", 2: "a master's", 3: "a PhD"}
+CS_FAMILY = {"computer science", "computer engineering", "software engineering", "information technology",
+             "information systems", "electrical engineering", "data science", "statistics", "mathematics", "engineering"}
+
+
+def degree_levels(text: str) -> set[int]:
+    t = text or ""
+    out = {lvl for lvl, rx in DEG_RX.items() if rx.search(t)}
+    for m in SLASH_RX.finditer(t):
+        out |= {_SLASH_LVL[g.lower()[0]] for g in m.groups() if g}
+    # "BS, MS or PhD in …": bare abbreviations in a list, only where the sentence is clearly about degrees
+    if re.search(r"degree|ph\.?d|science|engineering|field|discipline|equivalent", t, re.I):
+        for m in re.finditer(r"\b(bs|ba|ms|m\.s|b\.s)\b(?=\s*(?:,|/|\bor\b|\band\b))", t, re.I):
+            out.add(_SLASH_LVL[m.group(1).lower()[0]])
+    return out
+
+
+def _sentences(jd: str):
+    """(section, sentence) pairs; unlike _segments, a 'preferred' word only affects its own sentence."""
+    cls = "general"
+    for raw in (jd or "").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        short = len(line) < 70 and not line.endswith(".")
+        if short and OTHER_HDR.search(line):
+            cls = "other"
+        elif short and PREF_HDR.search(line):
+            cls = "pref"
+        elif short and REQ_HDR.search(line):
+            cls = "req"
+        for part in re.split(r"(?<=[.;•])\s+|\s+[•·]\s+", line):
+            if part.strip():
+                yield cls, part.strip()
+
+
+def degree_requirement(jd: str) -> dict:
+    """What the posting asks for. Any degree in a list ("BS/MS/PhD", "Master's or PhD") qualifies, so a
+    requirement line counts at its lowest level; "preferred"/"plus" lines don't make a degree required."""
+    req_levels, pref, equiv, related = [], 0, False, False
+    for cls, sent in _sentences(jd):
+        if cls == "other":
+            continue
+        lv = degree_levels(sent)
+        if not lv:
+            continue
+        if re.search(r"equivalent (?:practical |professional |work |industry )?experience|or equivalent|equivalent combination", sent, re.I):
+            equiv = True
+        if re.search(r"related (?:technical )?field|related discipline|technical field|stem field|quantitative field|similar field", sent, re.I):
+            related = True
+        if cls == "pref" or re.search(r"prefer|\bplus\b|nice to have|desired|desirable|ideally|bonus|advantage", sent, re.I):
+            pref = max(pref, max(lv))
+        else:
+            req_levels.append(min(lv))
+    low = (jd or "").lower()
+    fields = [f for f in FIELDS if f in low]
+    return {"required": min(req_levels) if req_levels else 0, "preferred": pref, "equivalent_ok": equiv,
+            "related_ok": related or not fields, "fields": fields}
+
+
+def education_match(jd: str, resume_text: str, degrees: Optional[list[str]] = None) -> dict:
+    """Compare the posting's degree requirement with the candidate's highest degree.
+    status: none (no requirement) | meets | exceeds | equivalent | below | unknown."""
+    req = degree_requirement(jd)
+    deg_text = "\n".join(degrees or [])
+    have = _degree_level(deg_text) if deg_text.strip() else 0
+    have = have or _degree_level(_education_part(resume_text))
+    low_cv = ((deg_text + "\n" + (resume_text or "")).lower())
+    cv_fields = [f for f in FIELDS if f in low_cv]
+    if req["fields"]:
+        field_ok = any(f in cv_fields for f in req["fields"]) or (
+            req["related_ok"] and any(f in CS_FAMILY for f in cv_fields) and any(f in CS_FAMILY for f in req["fields"]))
+    else:
+        field_ok = True
+    r, pf = req["required"], req["preferred"]
+    if r == 0:
+        status = "none"
+        sc = 1.0 if (not pf or have >= pf) else 0.85
+        note = "No degree is required" + (f" ({DEGREE_NAMES[pf]} preferred; you have {DEGREE_NAMES[have]})." if pf else ".")
+    elif have == 0:
+        status, sc = "unknown", 0.5
+        note = f"Requires {DEGREE_NAMES[r]}; add your degree to your profile's Education section to check."
+    elif have >= r:
+        status = "exceeds" if have > r else "meets"
+        sc = 1.0 if field_ok else 0.7
+        note = f"Requires {DEGREE_NAMES[r]}" + (f" in {req['fields'][0]}" if req["fields"] else "") + f"; you have {DEGREE_NAMES[have]}"
+        note += ("" if field_ok else " in a different field") + "."
+    elif req["equivalent_ok"] and r == 1:
+        status, sc = "equivalent", 0.6
+        note = f"Requires {DEGREE_NAMES[r]} or equivalent experience; you have {DEGREE_NAMES[have]}."
+    else:
+        status, sc = "below", 0.1
+        note = f"Requires {DEGREE_NAMES[r]}; you have {DEGREE_NAMES[have]} — this role needs a higher degree."
+    return {"score": sc, "status": status, "required": r, "preferred": pf, "have": have, "field_ok": field_ok, "note": note}
+
+
+def _education_part(resume_text: str) -> str:
+    """The resume's education section if it has one (avoids 'worked with PhD researchers' elsewhere)."""
+    t = resume_text or ""
+    m = re.search(r"(?im)^\s*(education|academic background|academics|qualifications)\b.*$", t)
+    if not m:
+        return t
+    rest = t[m.end():]
+    nxt = re.search(r"(?im)^\s*(experience|work experience|professional experience|employment|projects|skills|technical skills|"
+                    r"certifications|publications|awards)\b", rest)
+    return rest[: nxt.start()] if nxt else rest[:1500]
 
 
 def required_years(jd: str) -> Optional[int]:
@@ -254,7 +371,7 @@ def _title_score(job_title: str, resume_text: str, targets: list[str]) -> tuple[
 
 
 def score(resume_text: str, job_title: str, jd_text: str, company: str = "", weights: Optional[dict] = None,
-          targets: Optional[list[str]] = None) -> dict:
+          targets: Optional[list[str]] = None, degrees: Optional[list[str]] = None) -> dict:
     w = {"keywords": 45, "title": 15, "experience": 15, "education": 15, "soft_skills": 10}
     if weights:
         w.update({k: float(v) for k, v in weights.items() if k in w})
@@ -284,21 +401,8 @@ def score(resume_text: str, job_title: str, jd_text: str, company: str = "", wei
         exp_s = 1.0 if have_y >= req_y else max(0.0, have_y / req_y)
         exp_note = f"Posting asks for {req_y}+ years; your resume's dates add up to about {have_y} years."
 
-    jd_lvl = 0
-    for cls, line in _segments(jd_text):
-        if cls in ("req", "general") and re.search(r"degree|bachelor|master|ph\.?d|b\.?s\.|m\.?s\.", line, re.I):
-            jd_lvl = max(jd_lvl, _degree_level(line))
-    cv_lvl = _degree_level(resume_text)
-    fields = [f for f in FIELDS if f in (jd_text or "").lower()]
-    field_ok = not fields or any(f in norm for f in fields)
-    if jd_lvl == 0 and not fields:
-        edu_s, edu_note = 1.0, "No specific degree requirement found."
-    else:
-        lvl_ok = cv_lvl >= jd_lvl
-        edu_s = (0.7 if lvl_ok else 0.2) + (0.3 if field_ok else 0)
-        names = {0: "a degree", 1: "a bachelor's", 2: "a master's", 3: "a PhD"}
-        edu_note = (f"Asks for {names[jd_lvl]}" + (f" in {fields[0]}" if fields else "") + "; your resume shows "
-                    + (names[cv_lvl] if cv_lvl else "no degree keywords") + ("" if field_ok or not fields else " in a different field") + ".")
+    edu = education_match(jd_text, resume_text, degrees)
+    edu_s, edu_note = edu["score"], edu["note"]
 
     comps = {
         "keywords": (hard_s if hard_s is not None else 0.5,
@@ -323,6 +427,7 @@ def score(resume_text: str, job_title: str, jd_text: str, company: str = "", wei
         "keywords": [{"term": k.term, "kind": k.kind, "required": k.required, "weight": k.weight,
                       "found": has_soft(norm, k.term) if k.kind == "soft" else has_term(norm, k.term)} for k in kws],
         "resume_years": have_y,
+        "education": edu,
         "weights": w,
         "computed_at": datetime.now(timezone.utc).isoformat(),
     }

@@ -34,7 +34,16 @@ def get_profile(db: Session, user: User) -> CandidateProfile:
 
 
 def profile_out(p: CandidateProfile) -> dict:
+    from sqlalchemy.orm import object_session
+
+    from ..services.matching import WEIGHT_PRESETS, auto_preset, effective_weights, resolve_preset
+
     d = to_dict(p)
+    db = object_session(p)
+    r = db.query(Resume).filter_by(user_id=p.user_id, is_primary=True).one_or_none() if db else None
+    text = r.text if r else ""
+    d["ats_weights"] = {"preset": resolve_preset(p.match_weights or {}), "auto_choice": auto_preset(text, p),
+                        "effective": effective_weights(p.match_weights or {}, text, p), "presets": WEIGHT_PRESETS}
     d["complete"] = bool(p.full_name and p.experience and p.skills)
     return d
 
@@ -57,8 +66,30 @@ def _apply(db: Session, p: CandidateProfile, data: dict, confirm: bool, user: Us
     p.updated_at = utcnow()
     audit(db, user.id, "profile.update", "candidate_profile", p.id, fields=sorted(k for k, v in data.items() if v is not None))
     db.commit()
-    score_jobs(db, user.id)  # keep match scores in sync with the profile
+    rescore_all(db, user.id)  # keep match scores in sync with the profile
     return p
+
+
+def rescore_all(db: Session, user_id: int) -> None:
+    """Re-score every job; big lists run in the background so saving the profile stays instant."""
+    from ..models import Job
+
+    n = db.query(Job).filter(Job.user_id == user_id).count()
+    if n <= 300:
+        score_jobs(db, user_id)
+        return
+    import threading
+
+    from ..db import session_scope
+    from ..scheduler import user_lock
+
+    def work():
+        lock = user_lock(user_id)
+        with lock:  # wait for any running search to finish first
+            with session_scope() as bg:
+                score_jobs(bg, user_id)
+
+    threading.Thread(target=work, daemon=True).start()
 
 
 @router.put("/profile")

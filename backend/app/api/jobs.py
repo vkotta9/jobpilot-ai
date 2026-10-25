@@ -124,7 +124,9 @@ def run_all(user: User = Depends(current_user), db: Session = Depends(get_db)):
 @router.get("/jobs")
 def list_jobs(
     q: str = "", location: str = "", company: str = "", remote: str = "", seniority: str = "",
-    min_score: int = 0, salary_min: Optional[float] = None, status: str = "active", source: str = "",
+    min_score: int = 0, max_score: Optional[int] = None, posted_within: int = Query(0, ge=0, le=24 * 365),
+    qualified_only: bool = True,
+    salary_min: Optional[float] = None, status: str = "active", source: str = "",
     pipeline: str = "", include_duplicates: bool = False, include_simulated: bool = True,
     sort: str = "score", limit: int = Query(100, le=500), offset: int = 0,
     user: User = Depends(current_user), db: Session = Depends(get_db),
@@ -160,10 +162,22 @@ def list_jobs(
     if salary_min:
         qry = qry.filter(or_(Job.salary_max >= salary_min, Job.salary_max.is_(None)))
     jobs = qry.all()
-    latest: dict[int, tuple[int, int]] = {}  # job_id -> (assessment id, score), newest wins
-    for jid_, aid, sc in db.query(MatchAssessment.job_id, MatchAssessment.id, MatchAssessment.score) \
+    latest: dict[int, tuple[int, int, Optional[str]]] = {}  # job_id -> (assessment id, score, education fit), newest wins
+    for jid_, aid, sc, edu in db.query(MatchAssessment.job_id, MatchAssessment.id, MatchAssessment.score, MatchAssessment.edu_status) \
             .filter(MatchAssessment.user_id == user.id).order_by(MatchAssessment.id):
-        latest[jid_] = (aid, sc)
+        latest[jid_] = (aid, sc, edu)
+    if posted_within:
+        from datetime import timedelta
+
+        from ..models import utcnow
+
+        since = utcnow() - timedelta(hours=posted_within)
+        jobs = [j for j in jobs if (j.posted_at or j.discovered_at) >= since]
+    hidden = 0
+    if qualified_only:  # hide roles that require a higher degree than yours (e.g. PhD-only for a master's)
+        before = len(jobs)
+        jobs = [j for j in jobs if not (j.id in latest and latest[j.id][2] == "below")]
+        hidden = before - len(jobs)
 
     class _S:  # lightweight stand-in with .score for filtering/sorting
         __slots__ = ("score",)
@@ -179,12 +193,15 @@ def list_jobs(
         jobs = [j for j in jobs if seniority_of(j.title) in want]
     if min_score:
         jobs = [j for j in jobs if j.id in scores and scores[j.id].score >= min_score]
+    if max_score is not None and max_score < 100:
+        jobs = [j for j in jobs if j.id in scores and scores[j.id].score <= max_score]
     if pipeline:
         want_p = set(pipeline.split(","))
         jobs = [j for j in jobs if (j.application.status if j.application else "discovered") in want_p]
     keyf = {
         "score": lambda j: -(scores[j.id].score if j.id in scores else -1),
-        "posted": lambda j: -(j.posted_at.timestamp() if j.posted_at else 0),
+        "posted": lambda j: -((j.posted_at or j.discovered_at).timestamp()),
+        "score_asc": lambda j: (scores[j.id].score if j.id in scores else 999),
         "discovered": lambda j: -j.discovered_at.timestamp(),
         "company": lambda j: j.company.lower(),
         "salary": lambda j: -(j.salary_max or j.salary_min or 0),
@@ -196,7 +213,8 @@ def list_jobs(
     full = {m.job_id: m for m in db.query(MatchAssessment).filter(
         MatchAssessment.id.in_([latest[i][0] for i in ids if i in latest]))} if ids else {}
     snips = dict(db.query(Job.id, func.substr(Job.description_text, 1, 220)).filter(Job.id.in_(ids)).all()) if ids else {}
-    return {"total": total, "items": [job_out(j, full.get(j.id), snippet=snips.get(j.id) or "") for j in page]}
+    return {"total": total, "hidden_higher_degree": hidden,
+            "items": [job_out(j, full.get(j.id), snippet=snips.get(j.id) or "") for j in page]}
 
 
 @router.get("/jobs/{jid}")

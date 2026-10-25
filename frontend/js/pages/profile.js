@@ -35,12 +35,59 @@ export async function render(root) {
   };
   const sen = SENIORITY.map((s) => h("label", { class: "check" }, h("input", { type: "checkbox", value: s, checked: (prefs.seniority || []).includes(s) }), s));
   const wp = WORKPLACE.map((s) => h("label", { class: "check" }, h("input", { type: "checkbox", value: s, checked: (prefs.workplace || []).includes(s) }), s));
-  const weights = Object.keys(w).map((k) => {
-    const out = h("strong", {}, String(w[k]));
-    const r = h("input", { type: "range", min: 0, max: 100, step: 5, value: w[k], "aria-label": `${k} weight`, oninput: () => (out.textContent = r.value) });
+  // ---- ATS weights: pick a preset (Auto by default) or fine-tune
+  const AW = p.ats_weights || { preset: "auto", auto_choice: "typical", effective: w, presets: {} };
+  const PRESETS = [
+    ["auto", "Auto (recommended)", "JobPilot picks the right balance from your experience — entry-level, typical or experienced — and updates it as your resume changes."],
+    ["typical", "Typical ATS", "The usual balance for most professional roles: skills and keywords count most, then title, experience and degree."],
+    ["entry", "Entry-level / new grad", "Degree and skills matter more; years of experience matter less (you're expected to have few)."],
+    ["experienced", "Experienced (6+ years)", "Experience and job title weigh more; your degree matters little at this stage."],
+    ["research", "Research / PhD roles", "Degree and field count heavily, as research and scientist roles screen on them."],
+    ["custom", "Custom", "Set each weight yourself."],
+  ];
+  const WHY = {
+    keywords: "Skills, tools and keywords from the posting found in your resume. ATS ranking relies on this most.",
+    title: "How closely your past titles match this job's title.",
+    experience: "Your years of experience vs. what the posting asks for.",
+    education: "Your degree vs. the posting's required degree (a higher degree also counts).",
+    soft_skills: "Communication, leadership and similar words the posting mentions.",
+  };
+  let preset = AW.preset || "auto";
+  const vals = { ...(preset === "custom" ? w : (AW.presets[preset === "auto" ? AW.auto_choice : preset] || AW.effective || w)) };
+  const bars = h("div", { class: "stack", style: { gap: "6px" } });
+  const sliders = {};
+  const drawBars = () => {
+    const total = Object.keys(W0).reduce((a, k) => a + Number(vals[k] || 0), 0) || 1;
+    Object.keys(W0).forEach((k) => {
+      const sl = sliders[k];
+      sl.r.value = vals[k]; sl.r.disabled = preset !== "custom";
+      sl.pct.textContent = `${Math.round((100 * vals[k]) / total)}%`;
+    });
+  };
+  Object.keys(W0).forEach((k) => {
+    const pct = h("strong", { style: { minWidth: "44px", textAlign: "right" } });
+    const r = h("input", { type: "range", min: 0, max: 100, step: 5, value: vals[k], "aria-label": `${WL[k]} weight`,
+      oninput: () => { vals[k] = Number(r.value); drawBars(); } });
     r.dataset.key = k;
-    return h("div", { class: "breakdown-row" }, h("span", {}, WL[k]), r, out);
+    sliders[k] = { r, pct };
+    bars.appendChild(h("div", { class: "breakdown-row", title: WHY[k], style: { gridTemplateColumns: "minmax(160px, 260px) 1fr 50px" } }, h("span", {}, WL[k], h("div", { class: "faint small" }, WHY[k])), r, pct));
   });
+  const presetCards = h("div", { class: "grid cols-3", style: { gap: "8px", marginBottom: "12px" } });
+  const drawPresets = () => {
+    mount(presetCards, PRESETS.map(([key, label, desc]) => h("label", {
+      class: "card", style: { cursor: "pointer", padding: "10px", margin: 0, borderColor: preset === key ? "var(--accent)" : "" } },
+      h("div", { class: "row", style: { gap: "6px" } }, h("input", { type: "radio", name: "ats-preset", checked: preset === key,
+        onchange: () => { preset = key; if (key !== "custom") Object.assign(vals, AW.presets[key === "auto" ? AW.auto_choice : key] || {}); drawPresets(); drawBars(); } }),
+        h("strong", {}, label)),
+      h("div", { class: "faint small", style: { marginTop: "4px" } }, desc,
+        key === "auto" ? h("div", { style: { marginTop: "4px" } }, `Right now: ${(PRESETS.find((x) => x[0] === AW.auto_choice) || [, AW.auto_choice])[1]}.`) : null))));
+  };
+  drawPresets();
+  drawBars();
+  const weights = [h("p", { class: "small muted" }, "Companies don't publish their ATS settings, but applicant tracking systems rank mostly on skills/keyword match and job title, ",
+      "and use experience and degree as screens. Pick the profile that fits you; JobPilot re-scores every job when you save. Choose Custom to move the sliders yourself."),
+    presetCards, bars];
+  const readWeights = () => ({ ...Object.fromEntries(Object.keys(W0).map((k) => [k, Number(vals[k])])), preset });
 
   const exp = h("div", { class: "stack" });
   const addExp = (e = {}) => exp.appendChild(expCard(e));
@@ -70,11 +117,11 @@ export async function render(root) {
         employment_types: list(f.emp.value), exclude_keywords: list(f.exclude.value),
       },
       work_authorization: { authorized_countries: list(f.countries.value), requires_sponsorship: f.sponsor.value === "" ? null : f.sponsor.value === "yes", notes: "" },
-      match_weights: Object.fromEntries(weights.map((r) => { const i = r.querySelector("input"); return [i.dataset.key, Number(i.value)]; })),
+      match_weights: readWeights(),
       confirm: f.confirm.checked,
     };
     await api.put("/api/profile", body);
-    toast("Profile saved. Match scores were recalculated.");
+    toast("Profile saved. Match scores are being updated with your new settings.");
     render(root);
   };
   save.addEventListener("click", busy(save, doSave));
@@ -110,7 +157,7 @@ export async function render(root) {
         h("div", { class: "full" }, field("Exclude jobs mentioning", f.exclude)))),
       section("Work authorization", "Used only to check eligibility statements in postings and to pre-fill matching screening questions. Never guessed.",
         h("div", { class: "form-grid" }, field("Authorized to work in", f.countries, "Comma-separated countries"), field("Visa sponsorship", f.sponsor))),
-      section("ATS score weights", "How much each part counts toward the 0–100 ATS match. Defaults mirror how applicant tracking systems rank resumes. Location and salary are checked separately.", weights),
+      section("ATS score weights", "How much each part counts toward the 0–100 ATS match. Location and salary are checked separately and don't change the score.", weights),
       h("div", { class: "card row between" },
         h("label", { class: "check", for: "confirm" }, f.confirm, "I confirm this profile is accurate and may be used to generate my materials."),
         save2)));

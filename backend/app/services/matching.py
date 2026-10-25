@@ -130,6 +130,49 @@ def _comp_score(job: Job, prefs: dict) -> tuple[float, str]:
     return round(max(0.0, top / want_min) ** 3, 2), f"Posted max {int(top):,} is below your minimum {int(want_min):,}."
 
 
+# Weight presets. ATS products don't publish a formula, but they all rank mainly on skills/keyword
+# match and job title, use years of experience and degree as screens, and look at soft skills least.
+# The presets shift that balance for different career stages.
+WEIGHT_PRESETS = {
+    "typical": {"keywords": 45, "title": 15, "experience": 15, "education": 15, "soft_skills": 10},
+    "entry": {"keywords": 40, "title": 10, "experience": 5, "education": 30, "soft_skills": 15},
+    "experienced": {"keywords": 45, "title": 20, "experience": 25, "education": 5, "soft_skills": 5},
+    "research": {"keywords": 35, "title": 10, "experience": 15, "education": 35, "soft_skills": 5},
+}
+
+
+def auto_preset(resume_text: str, profile: Optional[CandidateProfile] = None) -> str:
+    from . import ats
+
+    yoe = ats.resume_years(resume_text or "")
+    if yoe is None and profile is not None:
+        yoe = years_of_experience(profile.experience or [])
+    if yoe is None or yoe < 2:
+        return "entry"
+    return "experienced" if yoe >= 6 else "typical"
+
+
+def resolve_preset(saved: dict) -> str:
+    """Saved choice; profiles saved before presets existed count as 'auto' unless the sliders were changed."""
+    saved = saved or {}
+    if saved.get("preset"):
+        return saved["preset"]
+    vals = {k: float(saved[k]) for k in WEIGHT_PRESETS["typical"] if k in saved}
+    return "auto" if not vals or vals == {k: float(v) for k, v in WEIGHT_PRESETS["typical"].items() if k in vals} else "custom"
+
+
+def effective_weights(saved: dict, resume_text: str = "", profile: Optional[CandidateProfile] = None) -> dict:
+    """The weights actually used: a preset (auto picks one from your experience) or your custom values."""
+    preset = resolve_preset(saved)
+    if preset == "auto":
+        preset = auto_preset(resume_text, profile)
+    if preset in WEIGHT_PRESETS:
+        return dict(WEIGHT_PRESETS[preset])
+    w = MatchWeights(**{k: v for k, v in (saved or {}).items() if k in WEIGHT_PRESETS["typical"]}).model_dump()
+    w.pop("preset", None)
+    return w
+
+
 def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
     """ATS match of the resume against the posting + preference checks.
 
@@ -140,10 +183,12 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
     from . import ats
 
     prefs = profile.preferences or {}
-    weights = MatchWeights(**(profile.match_weights or {})).model_dump()
     text = resume_text.strip() or candidate_evidence_text(profile)
     jd = f"{job.title}\n{job.description_text}".lower()
-    a = ats.score(text, job.title, job.description_text or "", job.company, weights, prefs.get("target_titles") or [])
+    degrees = [" ".join(x for x in (e.get("degree", ""), e.get("field", "")) if x) for e in (profile.education or [])]
+    weights = effective_weights(profile.match_weights or {}, text, profile)
+    a = ats.score(text, job.title, job.description_text or "", job.company, weights, prefs.get("target_titles") or [],
+                  degrees=[d for d in degrees if d])
     score = a["score"]
     matched, missing = a["matched"], a["missing"]
 
@@ -173,8 +218,11 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
         flags.append("Location: " + loc_note)
     if job.listing_status != "active":
         flags.append("Listing is no longer active on its source.")
-    if len(job.description_text or "") < 600:
-        flags.append("Only a short job summary is available — open the posting and paste the full description for an accurate score.")
+    edu = a["education"]
+    if edu["status"] == "below":
+        flags.append("Education: " + edu["note"])
+    if len(job.description_text or "") < 200:
+        flags.append("Only a short job summary is available so far — JobPilot fetches the full description when you open the job.")
     if job.is_simulated:
         flags.append("SIMULATED listing (demo data) — not a real job.")
 
@@ -182,6 +230,8 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
     hard = any(f.startswith(("Work authorization:", "Contains excluded", "Listing is no longer", "Location:")) for f in flags)
     if hard and rec == "apply":
         rec = "review"
+    if edu["status"] == "below":
+        rec = "skip"  # e.g. a PhD-only role for a master's graduate: don't suggest it
 
     bd = a["breakdown"]
     strengths = [k.replace("_", " ") for k, v in bd.items() if v["score"] >= 0.75]
@@ -206,6 +256,7 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
     breakdown["_soft"] = {"matched": a["soft_matched"], "missing": a["soft_missing"]}
     breakdown["_missing_required"] = a["missing_required"]
     breakdown["_resume_source"] = "uploaded resume" if resume_text.strip() else "profile"
+    breakdown["_education"] = edu
 
     return {
         "score": score,
@@ -216,6 +267,7 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
         "flags": flags,
         "explanation": explanation,
         "weights": weights,
+        "edu_status": edu["status"],
         "relevant_experience": relevant[:6],
         "years_experience": yoe,
     }

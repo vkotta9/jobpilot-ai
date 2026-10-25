@@ -1,7 +1,8 @@
 import { api, qs } from "../api.js";
 import { h, mount, loading, empty, scoreRing, simBadge, statusBadge, money, ago, field, toast, busy, modal, confirmDialog, sourceCredit } from "../ui.js";
 
-const filters = { q: "", location: "", company: "", remote: "", seniority: "", min_score: "", sort: "score", status: "active", include_simulated: true };
+const filters = { q: "", location: "", company: "", remote: "", seniority: "", min_score: "", max_score: "", posted_within: "", qualified_only: true,
+  sort: "score", status: "active", include_simulated: true };
 
 export async function render(root) {
   mount(root, loading());
@@ -16,7 +17,8 @@ export async function render(root) {
     const r = await api.get("/api/jobs" + qs(filters));
     mount(results,
       h("div", { class: "row between", style: { padding: "12px 16px", borderBottom: "1px solid var(--border)" } },
-        h("strong", {}, `${r.total} job${r.total === 1 ? "" : "s"}`),
+        h("div", {}, h("strong", {}, `${r.total} job${r.total === 1 ? "" : "s"}`),
+          r.hidden_higher_degree ? h("span", { class: "faint small" }, ` · ${r.hidden_higher_degree} hidden because they require a higher degree`) : null),
         h("span", { class: "faint" }, "Duplicates across sources are merged. Closed listings are hidden unless you filter for them.")),
       r.items.length ? r.items.map(jobRow) : empty("⌕", "No jobs match", sources.length ? "Try widening the filters or run a search." : "Add a job source above, then run a search."));
   };
@@ -32,6 +34,26 @@ export async function render(root) {
     el.addEventListener("change", () => { filters[k] = el.value; load(); });
     return el;
   };
+  function scoreRange() {
+    const presets = [["", "", "Any ATS score"], ["90", "", "90+"], ["80", "", "80+"], ["70", "", "70+"], ["60", "", "60+"], ["50", "", "50+"],
+      ["70", "89", "70–89"], ["50", "69", "50–69"], ["custom", "", "Custom range…"]];
+    const cur = presets.find(([a, b]) => a === String(filters.min_score || "") && b === String(filters.max_score || ""));
+    const s = h("select", { "aria-label": "ATS score range" }, presets.map(([a, b, l]) =>
+      h("option", { value: `${a}|${b}`, selected: cur ? cur[0] === a && cur[1] === b : a === "custom" }, l)));
+    const lo = h("input", { type: "number", min: 0, max: 100, placeholder: "min", value: filters.min_score, style: { width: "70px" }, "aria-label": "Minimum score" });
+    const hi = h("input", { type: "number", min: 0, max: 100, placeholder: "max", value: filters.max_score, style: { width: "70px" }, "aria-label": "Maximum score" });
+    const custom = h("div", { class: "row", style: { gap: "4px", display: cur ? "none" : "flex" } }, lo, "–", hi);
+    const apply = () => { filters.min_score = lo.value; filters.max_score = hi.value; load(); };
+    lo.addEventListener("change", apply); hi.addEventListener("change", apply);
+    s.addEventListener("change", () => {
+      const [a, b] = s.value.split("|");
+      if (a === "custom") { custom.style.display = "flex"; lo.focus(); return; }
+      custom.style.display = "none"; filters.min_score = a; filters.max_score = b; lo.value = a; hi.value = b; load();
+    });
+    return h("div", { class: "stack", style: { gap: "4px" } }, s, custom);
+  }
+  const qual = h("input", { type: "checkbox", checked: filters.qualified_only });
+  qual.addEventListener("change", () => { filters.qualified_only = qual.checked; load(); });
   const sim = h("input", { type: "checkbox", checked: filters.include_simulated });
   sim.addEventListener("change", () => { filters.include_simulated = sim.checked; load(); });
 
@@ -53,28 +75,32 @@ export async function render(root) {
     h("div", { class: "page-head" },
       h("div", {}, h("h1", {}, "Discover jobs"), h("div", { class: "sub" }, "New postings matching your target roles, scored against your resume like an ATS would.")),
       h("div", { class: "row" }, h("button", { onclick: () => manualJob(root) }, "+ Add a job I found"), runAll)),
-    autoCard(auto, root),
-    topTechCard(top, root),
-    companiesCard(following, popular, root),
-    catalog.some((c) => c.kind === "mock") && h("details", { class: "card", style: { marginTop: "16px" } },
-      h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Demo data (simulated listings for trying the app)"),
-      h("div", { style: { marginTop: "12px" } }, sourcesCard(sources, catalog.filter((c) => c.kind === "mock"), root))),
     h("div", { class: "card", style: { margin: "16px 0" } },
       h("div", { class: "grid cols-4" },
         inp("q", "Keywords (title, description)"), inp("location", "Location"), inp("company", "Company"),
         sel("remote", [["", "Any workplace"], ["remote", "Remote"], ["hybrid", "Hybrid"], ["onsite", "On-site"], ["remote,hybrid", "Remote or hybrid"]], "Workplace"),
         sel("seniority", [["", "Any seniority"], ["junior", "Junior"], ["mid", "Mid"], ["senior", "Senior"], ["staff,lead", "Staff / lead"], ["manager,director", "Manager+"]], "Seniority"),
-        sel("min_score", [["", "Any match score"], ["50", "50+"], ["70", "70+"], ["85", "85+"]], "Minimum score"),
-        sel("sort", [["score", "Sort: best match"], ["posted", "Sort: newest posted"], ["discovered", "Sort: recently found"], ["salary", "Sort: salary"], ["company", "Sort: company"]], "Sort"),
+        scoreRange(),
+        sel("posted_within", [["", "Posted: any time"], ["24", "Last 24 hours"], ["48", "Last 2 days"], ["72", "Last 3 days"], ["168", "Last week"], ["336", "Last 2 weeks"], ["720", "Last month"]], "Posted within"),
+        sel("sort", [["score", "Sort: best ATS match"], ["posted", "Sort: newest posted"], ["discovered", "Sort: recently found"], ["score_asc", "Sort: lowest match first"], ["salary", "Sort: highest salary"], ["company", "Sort: company A–Z"]], "Sort"),
         sel("status", [["active", "Active listings"], ["closed", "Closed listings"], ["all", "All listings"]], "Listing status")),
       h("div", { class: "row between", style: { marginTop: "10px" } },
-        h("label", { class: "check" }, sim, "Include simulated demo listings"),
+        h("div", { class: "row", style: { gap: "16px" } },
+          h("label", { class: "check", title: "Hides roles whose required degree is higher than yours (e.g. PhD-only roles if you have a master's). Roles that accept your degree or higher are kept." }, qual, "Only jobs my degree qualifies for"),
+          h("label", { class: "check" }, sim, "Include simulated demo listings")),
         h("div", { class: "row" },
           saved.map((s) => h("span", { class: "row", style: { gap: "2px" } },
             h("button", { class: "btn-sm", onclick: () => { Object.assign(filters, s.filters); render(root); } }, "★ " + s.name),
             h("button", { class: "btn-sm btn-ghost", "aria-label": `Delete saved search ${s.name}`, onclick: async () => { await api.del(`/api/saved-searches/${s.id}`); render(root); } }, "✕"))),
           saveSearch))),
-    results);
+    results,
+    h("h2", { style: { margin: "28px 0 0" } }, "Where JobPilot looks for jobs"),
+    autoCard(auto, root),
+    topTechCard(top, root),
+    companiesCard(following, popular, root),
+    catalog.some((c) => c.kind === "mock") && h("details", { class: "card", style: { marginTop: "16px" } },
+      h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Demo data (simulated listings for trying the app)"),
+      h("div", { style: { marginTop: "12px" } }, sourcesCard(sources, catalog.filter((c) => c.kind === "mock"), root))));
   load();
 }
 
@@ -236,6 +262,17 @@ function summarize(results) {
   toast(`${n} new · ${u} updated · ${c} closed${errs.length ? ` · ${errs.length} failed` : ""}`, errs.length ? "bad" : "");
 }
 
+const EDU = {
+  meets: ["good", "Degree matches", "You have the degree this role requires."],
+  exceeds: ["good", "Degree exceeds", "Your degree is higher than this role requires."],
+  equivalent: ["warn", "Degree or equivalent", "Role asks for a degree or equivalent experience."],
+  below: ["bad", "Needs higher degree", "This role requires a higher degree than yours."],
+};
+function eduBadge(st) {
+  const e = EDU[st];
+  return e ? h("span", { class: `badge ${e[0]}`, title: e[2] }, e[1]) : null;
+}
+
 function jobRow(j) {
   const m = j.match;
   const sal = money(j.salary_min, j.salary_max, j.salary_currency, j.salary_interval);
@@ -247,8 +284,9 @@ function jobRow(j) {
       h("div", { class: "m" }, h("strong", {}, j.company), j.location && h("span", {}, "· " + j.location),
         j.remote_type !== "unknown" && h("span", { class: "badge" }, j.remote_type), sal && h("span", { class: "badge good" }, sal),
         j.is_simulated && simBadge(), j.listing_status === "closed" && h("span", { class: "badge bad" }, "Closed"),
-        m && (m.flags || []).some((f) => f.startsWith("Work authorization")) && h("span", { class: "badge warn" }, "Sponsorship conflict")),
-      h("div", { class: "faint row", style: { marginTop: "3px", gap: "6px" } }, sourceCredit(j.source_kind) || j.source_kind, `checked ${ago(j.last_checked_at)}`, j.posted_at ? ` · posted ${ago(j.posted_at)}` : "")),
+        m && (m.flags || []).some((f) => f.startsWith("Work authorization")) && h("span", { class: "badge warn" }, "Sponsorship conflict"),
+        m && eduBadge(m.edu_status)),
+      h("div", { class: "faint row", style: { marginTop: "3px", gap: "6px" } }, sourceCredit(j.source_kind) || j.source_kind, `· checked ${ago(j.last_checked_at)}`, j.posted_at ? ` · posted ${ago(j.posted_at)}` : "")),
     h("div", { style: { textAlign: "right" } }, j.application ? statusBadge(j.application.status) : m && h("span", { class: `badge ${m.recommendation === "apply" ? "good" : m.recommendation === "review" ? "warn" : ""}` }, m.recommendation)));
 }
 
