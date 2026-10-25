@@ -92,3 +92,32 @@ def test_job_filters_and_degree_hiding(client):
     assert aw["preset"] == "auto" and set(aw["presets"]) == {"typical", "entry", "experienced", "research"}
     client.patch("/api/profile", headers=h, json={"match_weights": {"preset": "research"}})
     assert client.get("/api/profile", headers=h).json()["ats_weights"]["effective"] == WEIGHT_PRESETS["research"]
+
+
+def test_country_inference():
+    from app.services.geo import countries_of, in_country
+
+    us = ["Austin, Texas, United States of America", "Seattle, WA, USA", "New York, NY", "Remote — US", "San Francisco",
+          "US-CA-Mountain View", "Sunnyvale, CA", "Atlanta, Georgia"]
+    assert all("US" in countries_of(l) for l in us)
+    assert countries_of("Bengaluru, Karnataka, India") == {"IN"} and countries_of("Toronto, ON, Canada") == {"CA"}
+    assert countries_of("London, UK; Remote") == {"GB"} and countries_of("Paris, France; New York, NY") == {"FR", "US"}
+    assert in_country("Remote — Anywhere", "remote", "US") and not in_country("Berlin", "onsite", "US")
+    assert in_country("2 Locations", "onsite", "US", url="https://gm.wd5.myworkdayjobs.com/Careers_GM/job/Austin-Texas-United-States-of-America/Engineer_JR1")
+
+
+def test_country_filter_api(client):
+    from app.db import session_scope
+    from app.models import Job
+
+    h, _ = make_user(client)
+    uid = client.get("/api/auth/me", headers=h).json()["id"]
+    with session_scope() as db:
+        for i, loc in enumerate(["Seattle, WA, USA", "Bengaluru, India", "Remote — Anywhere", "London, UK"]):
+            db.add(Job(user_id=uid, source_kind="manual", external_id=f"c{i}", fingerprint=f"cf{uid}{i}", title=f"Engineer {i}",
+                       company="Acme", location=loc, remote_type="remote" if "Remote" in loc else "onsite", description_text="x"))
+        db.commit()
+    us = {j["location"] for j in client.get("/api/jobs?country=US", headers=h).json()["items"]}
+    assert us == {"Seattle, WA, USA", "Remote — Anywhere"}
+    assert {j["location"] for j in client.get("/api/jobs?country=IN", headers=h).json()["items"]} == {"Bengaluru, India", "Remote — Anywhere"}
+    assert len(client.get("/api/jobs", headers=h).json()["items"]) == 4

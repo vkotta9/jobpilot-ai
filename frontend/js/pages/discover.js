@@ -1,7 +1,8 @@
 import { api, qs } from "../api.js";
 import { h, mount, loading, empty, scoreRing, simBadge, statusBadge, money, ago, field, toast, busy, modal, confirmDialog, sourceCredit } from "../ui.js";
 
-const filters = { q: "", location: "", company: "", remote: "", seniority: "", min_score: "", max_score: "", posted_within: "", qualified_only: true,
+const savedCountry = (() => { try { return localStorage.getItem("jp_country"); } catch { return null; } })();
+const filters = { q: "", location: "", country: savedCountry ?? "US", company: "", remote: "", seniority: "", min_score: "", max_score: "", posted_within: "", qualified_only: true,
   sort: "score", status: "active", include_simulated: true };
 
 export async function render(root) {
@@ -52,6 +53,16 @@ export async function render(root) {
     });
     return h("div", { class: "stack", style: { gap: "4px" } }, s, custom);
   }
+  function countrySel() {
+    const C = [["US", "United States"], ["", "Any country"], ["CA", "Canada"], ["GB", "United Kingdom"], ["IE", "Ireland"], ["IN", "India"],
+      ["DE", "Germany"], ["NL", "Netherlands"], ["FR", "France"], ["ES", "Spain"], ["PT", "Portugal"], ["PL", "Poland"], ["CH", "Switzerland"],
+      ["SE", "Sweden"], ["IL", "Israel"], ["AE", "United Arab Emirates"], ["SG", "Singapore"], ["JP", "Japan"], ["AU", "Australia"],
+      ["MX", "Mexico"], ["BR", "Brazil"]];
+    const el = h("select", { "aria-label": "Country", title: "Jobs located in this country (remote roles open worldwide are included)" },
+      C.map(([v, l]) => h("option", { value: v, selected: filters.country === v }, v ? `📍 ${l}` : `🌐 ${l}`)));
+    el.addEventListener("change", () => { filters.country = el.value; try { localStorage.setItem("jp_country", el.value); } catch { /* private mode */ } load(); });
+    return el;
+  }
   const qual = h("input", { type: "checkbox", checked: filters.qualified_only });
   qual.addEventListener("change", () => { filters.qualified_only = qual.checked; load(); });
   const sim = h("input", { type: "checkbox", checked: filters.include_simulated });
@@ -77,7 +88,7 @@ export async function render(root) {
       h("div", { class: "row" }, h("button", { onclick: () => manualJob(root) }, "+ Add a job I found"), runAll)),
     h("div", { class: "card", style: { margin: "16px 0" } },
       h("div", { class: "grid cols-4" },
-        inp("q", "Keywords (title, description)"), inp("location", "Location"), inp("company", "Company"),
+        inp("q", "Keywords (title, description)"), countrySel(), inp("location", "City or state (optional)"), inp("company", "Company"),
         sel("remote", [["", "Any workplace"], ["remote", "Remote"], ["hybrid", "Hybrid"], ["onsite", "On-site"], ["remote,hybrid", "Remote or hybrid"]], "Workplace"),
         sel("seniority", [["", "Any seniority"], ["junior", "Junior"], ["mid", "Mid"], ["senior", "Senior"], ["staff,lead", "Staff / lead"], ["manager,director", "Manager+"]], "Seniority"),
         scoreRange(),

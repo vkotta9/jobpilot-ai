@@ -125,7 +125,7 @@ def run_all(user: User = Depends(current_user), db: Session = Depends(get_db)):
 def list_jobs(
     q: str = "", location: str = "", company: str = "", remote: str = "", seniority: str = "",
     min_score: int = 0, max_score: Optional[int] = None, posted_within: int = Query(0, ge=0, le=24 * 365),
-    qualified_only: bool = True,
+    qualified_only: bool = True, country: str = Query("", max_length=2),
     salary_min: Optional[float] = None, status: str = "active", source: str = "",
     pipeline: str = "", include_duplicates: bool = False, include_simulated: bool = True,
     sort: str = "score", limit: int = Query(100, le=500), offset: int = 0,
@@ -173,6 +173,11 @@ def list_jobs(
 
         since = utcnow() - timedelta(hours=posted_within)
         jobs = [j for j in jobs if (j.posted_at or j.discovered_at) >= since]
+    if country:
+        from ..services.geo import in_country
+
+        code = country.upper()
+        jobs = [j for j in jobs if in_country(j.location, j.remote_type, code, url=j.url or "")]
     hidden = 0
     if qualified_only:  # hide roles that require a higher degree than yours (e.g. PhD-only for a master's)
         before = len(jobs)
@@ -304,7 +309,8 @@ def saved(user: User = Depends(current_user), db: Session = Depends(get_db)):
 
 @router.post("/saved-searches")
 def save_search(body: SavedSearchIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
-    allowed = {"q", "location", "company", "remote", "seniority", "min_score", "salary_min", "status", "source", "sort"}
+    allowed = {"q", "location", "country", "company", "remote", "seniority", "min_score", "max_score", "posted_within",
+               "qualified_only", "salary_min", "status", "source", "sort"}
     s = SavedSearch(user_id=user.id, name=body.name, filters={k: v for k, v in body.filters.items() if k in allowed})
     db.add(s)
     db.commit()
