@@ -417,12 +417,19 @@ def _layout(unit: Unit, runs: list[tuple[str, bool]], reg: pymupdf.Font, bold: p
     return lines, width, space
 
 
-def fits(data_or_doc, unit: Unit, runs: list[tuple[str, bool]]) -> dict:
+MIN_SCALE = 0.92  # the most a rewritten line's font may shrink to keep the layout (also used by _write_unit)
+
+
+def fits(data_or_doc, unit: Unit, runs: list[tuple[str, bool]], allow_shrink: bool = False) -> dict:
     doc = data_or_doc if isinstance(data_or_doc, pymupdf.Document) else pymupdf.open(stream=data_or_doc, filetype="pdf")
     kit = _FontKit(doc, doc[unit.page])
     reg, bold = kit.pick(unit, runs)
-    lines, _, _ = _layout(unit, runs, reg, bold, unit.size)
-    return {"needed": len(lines), "available": len(unit.lines), "fits": len(lines) <= len(unit.lines)}
+    size = unit.size
+    lines, _, _ = _layout(unit, runs, reg, bold, size)
+    while allow_shrink and len(lines) > len(unit.lines) and size > unit.size * MIN_SCALE:
+        size = round(size - 0.1, 2)
+        lines, _, _ = _layout(unit, runs, reg, bold, size)
+    return {"needed": len(lines), "available": len(unit.lines), "fits": len(lines) <= len(unit.lines), "size": size}
 
 
 def _write_unit(doc: pymupdf.Document, page: pymupdf.Page, unit: Unit, runs: list[tuple[str, bool]]) -> list[str]:
@@ -431,7 +438,7 @@ def _write_unit(doc: pymupdf.Document, page: pymupdf.Page, unit: Unit, runs: lis
     reg, bold = kit.pick(unit, runs)
     size = unit.size
     lines, width, space = _layout(unit, runs, reg, bold, size)
-    while len(lines) > len(unit.lines) and size > unit.size * 0.92:
+    while len(lines) > len(unit.lines) and size > unit.size * MIN_SCALE:
         size = round(size - 0.1, 2)
         lines, width, space = _layout(unit, runs, reg, bold, size)
     if len(lines) > len(unit.lines):

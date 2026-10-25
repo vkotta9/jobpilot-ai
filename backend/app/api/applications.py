@@ -299,6 +299,8 @@ def _merge_inplace_edit(old: dict, new: dict) -> dict:
     out["units"] = units
     sel = {s.get("term"): bool(s.get("selected")) for s in new.get("skills", []) if isinstance(s, dict)}
     out["skills"] = [dict(s, selected=sel.get(s["term"], s["selected"])) for s in old.get("skills", [])]
+    rem = {(r.get("unit_id"), r.get("display")): bool(r.get("remove")) for r in new.get("skill_removals", []) if isinstance(r, dict)}
+    out["skill_removals"] = [dict(r, remove=rem.get((r["unit_id"], r["display"]), r["remove"])) for r in old.get("skill_removals", []) or []]
     return out
 
 

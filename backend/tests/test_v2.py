@@ -207,7 +207,7 @@ def test_plan_applies_safe_suggestions_and_rejects_unsafe(monkeypatch):
     assert skills["ci/cd"]["selected"] is False  # not evidenced in the original resume
     out, _ = tailor_inplace.render(content, _Resume(data))
     text = inplace_pdf.full_text(out)
-    assert "Built REST services in Java on Azure" in text and "60%" not in text
+    assert "Built REST APIs in Java on Azure" in text and "60%" not in text  # AI rewrite + the posting's wording
     after = tailor_inplace.ats_after(content, out, _Job())
     assert after["score"] >= content["ats_before"]["score"]
 
@@ -215,8 +215,9 @@ def test_plan_applies_safe_suggestions_and_rejects_unsafe(monkeypatch):
 def test_plan_without_ai_only_suggests_skills(monkeypatch):
     monkeypatch.setattr(llm, "config_for", lambda db, uid: None)
     content, flags, gen = tailor_inplace.build_plan(_NoDB(), 1, _Job(), _Resume(latex_like_pdf()))
-    assert gen == "rules" and all(u["status"] == "unchanged" for u in content["units"])
-    assert any("Connect an AI model" in f["message"] for f in flags)
+    assert gen == "rules" and all(u["status"] in ("unchanged", "rules") for u in content["units"])
+    assert any("connect a free AI" in f["message"] for f in flags)
+    assert any(u["status"] == "rules" and "REST APIs" in u["final"] for u in content["units"])  # posting's wording
     assert content["skills"]
 
 

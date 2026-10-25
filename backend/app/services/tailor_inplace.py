@@ -21,6 +21,7 @@ from ..models import Job, Resume
 from . import ats, inplace_docx, inplace_pdf, llm
 from .inplace_pdf import FitError
 from .tailoring import fact_guard
+from .textutil import SKILL_VOCAB
 
 log = logging.getLogger("jobpilot.tailor")
 
@@ -134,6 +135,117 @@ def _assign_skill_unit(term: str, skill_units: list) -> Optional[object]:
     return unlabelled[0] if unlabelled else candidates[-1]
 
 
+
+# Same concept, different words: use the posting's wording when your resume says the same thing another way.
+SYNONYMS = [
+    ["PostgreSQL", "Postgres"], ["Kubernetes", "K8s"], ["JavaScript", "JS"], ["Node.js", "NodeJS", "Node"],
+    ["React", "React.js", "ReactJS"], ["Next.js", "NextJS"], ["Vue.js", "Vue", "VueJS"], ["Angular", "AngularJS"],
+    ["RESTful APIs", "REST APIs", "RESTful services", "RESTful web services", "REST services", "REST API"],
+    ["machine learning", "ML"], ["large language models", "LLMs"], ["natural language processing", "NLP"],
+    ["generative AI", "GenAI", "Gen AI"], ["Amazon Web Services", "AWS"], ["Google Cloud Platform", "GCP", "Google Cloud"],
+    ["Microsoft Azure", "Azure"], ["microservices", "micro-services", "microservice architecture"],
+    ["CI/CD", "CI/CD pipelines", "continuous integration and delivery", "continuous integration/continuous deployment"],
+    ["unit testing", "unit tests"], ["object-oriented programming", "OOP"], ["front-end", "frontend", "front end"],
+    ["back-end", "backend", "back end"], ["full-stack", "full stack", "fullstack"], ["software engineer", "software developer"],
+    ["data pipelines", "ETL pipelines"], ["cloud-native", "cloud native"], ["Spring Boot", "SpringBoot"],
+    ["Elasticsearch", "Elastic Search"], ["scikit-learn", "sklearn"], ["TensorFlow", "Tensorflow"], ["GitHub Actions", "Github Actions"],
+]
+
+
+def _rx(term: str):
+    return re.compile(r"(?<![A-Za-z0-9])" + re.escape(term) + r"(?![A-Za-z0-9])", re.I)
+
+
+def _jd_variant(group: list[str], jd: str) -> Optional[str]:
+    """The variant of a synonym group the posting uses most (exactly as written there)."""
+    best, n = None, 0
+    for v in group:
+        hits = _rx(v).findall(jd)
+        if len(hits) > n:
+            best, n = hits[0], len(hits)
+    return best
+
+
+def align_wording(md: str, jd: str) -> tuple[str, list[str]]:
+    """Swap your wording for the posting's wording where both mean the same thing."""
+    out, swaps = md, []
+    for group in SYNONYMS:
+        want = _jd_variant(group, jd)
+        if not want or _rx(want).search(out):
+            continue
+        for v in sorted(group, key=len, reverse=True):
+            if v.lower() == want.lower():
+                continue
+            m = _rx(v).search(out)
+            if m:
+                out = out[: m.start()] + want + out[m.end():]
+                swaps.append(f"{m.group(0)} → {want}")
+                break
+    return out, swaps
+
+
+def split_skill_line(unit) -> tuple[list[tuple[str, bool]], list[str]]:
+    """(label runs, items) for a skills line like 'Languages: Python, Java, SQL'."""
+    full = "".join(t for t, _ in unit.rich)
+    cut = 0
+    if unit.label:
+        i = full.find(unit.label.rstrip(":").strip())
+        j = full.find(":", i if i >= 0 else 0)
+        cut = j + 1 if j >= 0 and j < 60 else 0
+    label_runs, pos = [], 0
+    for t, b in unit.rich:
+        if pos >= cut:
+            break
+        piece = t[: max(0, cut - pos)]
+        if piece:
+            label_runs.append((piece, b))
+        pos += len(t)
+    items, depth, cur = [], 0, ""
+    for ch in full[cut:]:
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth = max(0, depth - 1)
+        if ch in ",;|" and depth == 0:
+            items.append(cur.strip())
+            cur = ""
+        else:
+            cur += ch
+    items.append(cur.strip())
+    return label_runs, [x for x in items if x]
+
+
+def skill_line_runs(label_runs: list[tuple[str, bool]], items: list[str]) -> list[tuple[str, bool]]:
+    return list(label_runs) + [((" " if label_runs else "") + ", ".join(items), False)]
+
+
+def fit_skill_line(data: bytes, unit, plan: dict, adds: list[str], keep: set) -> dict:
+    """Build the skills line: the job's skills first (yours, then the added ones), then your other skills.
+    Drop other skills from the end only as far as needed for everything to fit at the original font size;
+    as a last resort allow a slight font reduction. `keep` = skills the user chose not to drop."""
+    label_runs, items = split_skill_line(unit)
+    relevant = [i for i in items if i in plan.get("relevant", [])]
+    others = [i for i in items if i not in relevant]
+    droppable = [i for i in plan.get("droppable", []) if i in others and i not in keep]
+    dropped: list[str] = []
+
+    def line():
+        return relevant + adds + [i for i in others if i not in dropped]
+
+    while not inplace_pdf.fits(data, unit, skill_line_runs(label_runs, line()))["fits"] and len(dropped) < len(droppable):
+        dropped.append(droppable[len(dropped)])
+    ok = inplace_pdf.fits(data, unit, skill_line_runs(label_runs, line()), allow_shrink=True)["fits"]
+    if not ok:
+        dropped = list(droppable)
+        ok = inplace_pdf.fits(data, unit, skill_line_runs(label_runs, line()), allow_shrink=True)["fits"]
+    return {"items": line(), "dropped": dropped, "fits": ok, "runs": skill_line_runs(label_runs, line())}
+
+
+def _relevant(item: str, jd_low: str) -> bool:
+    core = re.sub(r"\(.*?\)", "", item).strip().lower()
+    return bool(core) and (ats.has_term(jd_low, core) or any(ats.has_term(jd_low, w) for w in re.split(r"\s*/\s*", core) if len(w) > 1))
+
+
 def _llm_suggestions(cfg, job: Job, items: list[dict], resume_text: str, keywords: list[str]) -> dict[str, str]:
     schema = llm.strict_schema({"items": {"type": "array", "items": llm.strict_schema(
         {"id": {"type": "string"}, "text": {"type": "string"}, "changed": {"type": "boolean"}})}})
@@ -148,8 +260,11 @@ def _llm_suggestions(cfg, job: Job, items: list[dict], resume_text: str, keyword
         f"- Job keywords you may use only when truthful: {', '.join(keywords[:30])}.\n"
         "- Stay within each item's max/min character counts so the page layout does not change.\n"
         "- Keep **double-asterisk** bold markers around the same terms when they remain.\n"
+        "- The summary/profile paragraph should open with the candidate's real title closest to the job's title and name the "
+        "job's most important skills the candidate actually has.\n"
+        "- For bullets: lead with the action and the job-relevant technology, keep the result/metric, use strong verbs.\n"
         "- If a line is already a good fit or is unrelated to the job, return it unchanged with changed=false.\n"
-        "- Prefer improving the 4–8 most relevant lines; leave the rest unchanged."
+        "- Improve the summary and the 6–10 most relevant bullets; leave the rest unchanged."
     )
     payload = (f"<candidate_facts>\n{resume_text[:9000]}\n</candidate_facts>\n<items>\n{lines}\n</items>\n"
                + llm.untrusted("job_description", f"{job.title} at {job.company}\n{job.description_text}", 9000))
@@ -207,7 +322,7 @@ def build_plan(db, user_id: int, job: Job, resume: Resume) -> tuple[dict, list[d
             if problems:
                 e["status"], e["note"] = "rejected_guard", "Not applied — " + "; ".join(problems) + ". Use it only if it's true."
                 continue
-            if kind == "pdf" and not inplace_pdf.fits(data, u, from_md(text))["fits"]:
+            if kind == "pdf" and not inplace_pdf.fits(data, u, from_md(text), allow_shrink=True)["fits"]:
                 retry.append(uid)
                 continue
             e["status"], e["final"], e["accepted"] = "suggested", text, True
@@ -221,46 +336,112 @@ def build_plan(db, user_id: int, job: Job, resume: Resume) -> tuple[dict, list[d
             for uid in retry:
                 e, u = by_id[uid], unit_by_id[uid]
                 text = sugg2.get(uid) or e["proposed"]
-                if not fact_guard(plain(e["original"]), plain(text), full_low) and inplace_pdf.fits(data, u, from_md(text))["fits"]:
+                if not fact_guard(plain(e["original"]), plain(text), full_low) and inplace_pdf.fits(data, u, from_md(text), allow_shrink=True)["fits"]:
                     e["proposed"], e["status"], e["final"], e["accepted"] = text, "suggested", text, True
                 else:
                     e["status"], e["note"] = "too_long", "Suggestion is longer than the space on the page — shorten it to use it."
-    elif not cfg:
-        flags.append({"path": "generator", "message": "Connect an AI model in Settings → Connections to get sentence-level "
-                      "rewrites. Without it, JobPilot only adds matching skills."})
+    # wording alignment (works with or without AI): use the posting's terms for the same things
+    for u in rewritable:
+        e = by_id[u.id]
+        base = e["final"]
+        new, swaps = align_wording(base, jd)
+        if not swaps or fact_guard(plain(e["original"]), plain(new), full_low):
+            continue
+        if kind == "pdf" and not inplace_pdf.fits(data, u, from_md(new), allow_shrink=True)["fits"]:
+            continue
+        e["proposed"], e["final"], e["accepted"] = new, new, True
+        e["status"] = "suggested" if e["status"] == "suggested" else "rules"
+        e["note"] = ((e["note"] + " ") if e["note"] else "") + "Uses the posting's wording: " + ", ".join(swaps) + "."
+    if not cfg:
+        flags.append({"path": "generator", "message": "For full sentence rewrites of your summary and bullet points, connect a free AI "
+                      "model in Settings → Connections (Google Gemini is free). Without it, JobPilot aligns your wording with the "
+                      "posting, reorganises your skills and adds missing skills to your summary."})
 
-    # skills
+    # skills: add the posting's skills to the matching skills line. If a line is full, make room by
+    # dropping skills on it that this job doesn't mention; anything that still doesn't fit goes into the summary.
     skill_units = [u for u in units if u.kind == "skill_line"]
     skills_text = " ".join(u.text.lower() for u in skill_units)
     non_skill_text = "\n".join(u.text.lower() for u in units if u.kind != "skill_line") + "\n" + full_low
-    skills = []
-    used: dict[str, list[str]] = {}
+    jd_low = jd.lower()
+    required = {k.term for k in kw if k.kind == "hard" and k.required}
+    skills, removals = [], []
     for term in hard:
         if ats.has_term(skills_text, term) or len(term) < 2:
             continue
+        if term not in SKILL_VOCAB and not re.search(r"[A-Z0-9+#./]", _display(term, jd)):
+            continue  # a plain word from the posting ("payments", "platform") isn't a skill to list
         target = _assign_skill_unit(term, skill_units)
         if target is None:
             break
         evidenced = ats.has_term(non_skill_text, term)
-        disp = _display(term, jd)
-        fits = True
-        if kind == "pdf":
-            pending = used.get(target.id, []) + [disp]
-            fits = inplace_pdf.free_width(target, data, ", " + ", ".join(pending)) >= 0
-        if fits and evidenced:
-            used.setdefault(target.id, []).append(disp)
-        skills.append({"term": term, "display": disp, "unit_id": target.id, "label": target.label,
-                       "evidenced": evidenced, "selected": bool(evidenced and fits), "fits": fits})
+        skills.append({"term": term, "display": _display(term, jd), "unit_id": target.id, "label": target.label,
+                       "evidenced": evidenced, "selected": evidenced, "fits": True, "required": term in required, "placed": "skills"})
+    skill_lines: dict[str, dict] = {}
+    if kind == "pdf":
+        for u in skill_units:
+            mine = [x for x in skills if x["unit_id"] == u.id]
+            if not mine:
+                continue
+            _, items = split_skill_line(u)
+            relevant = [it for it in items if _relevant(it, jd_low)]
+            droppable = [it for it in reversed(items) if it not in relevant]  # least relevant first: from the end
+            skill_lines[u.id] = {"relevant": relevant, "droppable": droppable}
+            placed: list[dict] = []
+            for x in sorted([x for x in mine if x["selected"]], key=lambda x: not x["required"]):
+                res = fit_skill_line(data, u, skill_lines[u.id], [y["display"] for y in placed] + [x["display"]], set())
+                if res["fits"]:
+                    placed.append(x)
+                else:
+                    x["fits"], x["selected"] = False, False
+            final = fit_skill_line(data, u, skill_lines[u.id], [y["display"] for y in placed], set())
+            for gone in final["dropped"]:
+                removals.append({"unit_id": u.id, "label": u.label, "display": gone, "remove": True})
+            for x in mine:  # unticked skills: would they fit if the user ticks them (dropping more unrelated skills)?
+                if not x["selected"] and x["fits"]:
+                    x["fits"] = fit_skill_line(data, u, skill_lines[u.id], [y["display"] for y in placed] + [x["display"]], set())["fits"]
+        # posting skills you have that found no room on any skills line → a short line in your summary, if there's space
+        overflow = [x for x in skills if x["evidenced"] and not x["fits"]]
+        summary = next((u for u in units if u.kind == "paragraph" and re.search(
+            r"summary|profile|objective|about", (u.section or "") + " " + (u.heading or ""), re.I)), None)
+        if summary is not None and not overflow and by_id[summary.id]["status"] in ("unchanged", "rules"):
+            # room left in the summary: name the job's key skills you have (shown elsewhere in your resume)
+            e = by_id[summary.id]
+            in_summary = plain(e["final"]).lower()
+            top = [k for k in hard if ats.has_term(non_skill_text, k) and not ats.has_term(in_summary, k)][:5]
+            for n in range(len(top), 1, -1):
+                cand = e["final"].rstrip() + " Skilled in " + _join([_display(t, jd) for t in top[:n]]) + "."
+                if inplace_pdf.fits(data, summary, from_md(cand))["fits"]:
+                    e["proposed"], e["final"], e["accepted"] = cand, cand, True
+                    e["status"] = "rules"
+                    e["note"] = ((e["note"] + " ") if e["note"] else "") + "Names the job's key skills you have, so your summary matches the posting."
+                    break
+        if summary is not None and overflow:
+            e = by_id[summary.id]
+            want = [x["display"] for x in sorted(overflow, key=lambda x: not x["required"])]
+            for n in range(len(want), 0, -1):
+                cand = e["final"].rstrip() + " Skilled in " + _join(want[:n]) + "."
+                if inplace_pdf.fits(data, summary, from_md(cand), allow_shrink=True)["fits"]:
+                    e["proposed"], e["final"], e["accepted"] = cand, cand, True
+                    e["status"] = "suggested" if e["status"] == "suggested" else "rules"
+                    e["note"] = ((e["note"] + " ") if e["note"] else "") + "Added job skills that had no room in your skills section."
+                    for x in overflow:
+                        if x["display"] in want[:n]:
+                            x["placed"] = "summary"
+                    break
     if not skill_units:
         flags.append({"path": "skills", "message": "No skills section was found in your resume, so no skills were added."})
 
     content = {
         "format": "inplace", "file_kind": kind, "resume_id": resume.id, "resume_filename": resume.original_filename,
-        "units": entries, "skills": skills,
+        "units": entries, "skills": skills, "skill_removals": removals, "skill_lines": skill_lines,
         "target": {"job_id": job.id, "title": job.title, "company": job.company},
         "ats_before": _ats_summary(ats.score(full, job.title, jd, job.company)),
     }
     return content, flags, generator
+
+
+def _join(items: list[str]) -> str:
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
 
 
 def _ats_summary(a: dict) -> dict:
@@ -282,8 +463,22 @@ def render(content: dict, resume: Resume) -> tuple[bytes, dict]:
             edits[e["id"]] = from_md(e["final"])
     adds: dict[str, list[str]] = {}
     for s in content.get("skills", []):
-        if s.get("selected") and s["unit_id"] in known:
+        if s.get("selected") and s["unit_id"] in known and s.get("placed", "skills") == "skills":
             adds.setdefault(s["unit_id"], []).append(s["display"])
+    by_id = {u.id: u for u in units}
+    if kind == "pdf":
+        keep_items: dict[str, set] = {}
+        for r in content.get("skill_removals", []) or []:
+            if not r.get("remove"):
+                keep_items.setdefault(r["unit_id"], set()).add(r["display"])
+        plans = content.get("skill_lines") or {}
+        for uid in set(adds) | set(plans):
+            if uid in edits or uid not in by_id or (uid not in adds and not plans.get(uid)):
+                continue
+            if not adds.get(uid):
+                continue  # nothing added to this line: leave it exactly as it was
+            res = fit_skill_line(data, by_id[uid], plans.get(uid, {}), adds.pop(uid, []), keep_items.get(uid, set()))
+            edits[uid] = res["runs"]
     out, warnings = eng.render(data, units, edits, adds)
     return out, warnings
 

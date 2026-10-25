@@ -20,7 +20,7 @@ export async function renderInplace(root, d) {
   const pdf = c.file_kind === "pdf";
   let page = 0;
   let showAll = false;
-  const state = JSON.parse(JSON.stringify({ units: c.units, skills: c.skills }));
+  const state = JSON.parse(JSON.stringify({ units: c.units, skills: c.skills, skill_removals: c.skill_removals || [] }));
 
   const img = h("img", { alt: "Preview of your tailored resume", style: { width: "100%", border: "1px solid var(--border)", borderRadius: "8px", background: "#fff" } });
   const refreshPreview = () => { if (pdf) img.src = `/api/documents/${id}/preview.png?page=${page}&t=${Date.now()}`; };
@@ -33,21 +33,24 @@ export async function renderInplace(root, d) {
   };
 
   const changed = (u) => u.accepted && plain(u.final) !== plain(u.original);
-  const nChanges = () => state.units.filter(changed).length + state.skills.filter((s) => s.selected).length;
+  const nChanges = () => state.units.filter(changed).length + state.skills.filter((s) => s.selected && s.placed !== "summary").length
+    + state.skill_removals.filter((r) => r.remove).length;
 
   const unitRow = (u) => {
-    const ta = h("textarea", { rows: Math.max(2, Math.ceil(plain(u.final).length / 95)), value: u.final, "aria-label": "Tailored text" });
+    const ta = h("textarea", { rows: Math.max(3, Math.ceil(plain(u.final).length / 45)), value: u.final, "aria-label": "Tailored text" });
     const cb = h("input", { type: "checkbox", checked: u.accepted });
     const count = h("span", { class: "faint" });
+    let typed = false;  // JobPilot's own suggestions are already checked to fit; warn only about the user's edits
     const updCount = () => {
       const n = plain(ta.value).length, o = plain(u.original).length;
-      count.textContent = `${n} / ${o} chars` + (n > o * 1.06 ? " — may not fit" : "");
-      count.style.color = n > o * 1.06 ? "var(--warn)" : "";
+      const warn = typed && n > o * 1.06;
+      count.textContent = `${n} / ${o} chars` + (warn ? " — may not fit" : "");
+      count.style.color = warn ? "var(--warn)" : "";
     };
-    ta.addEventListener("input", () => { u.final = ta.value; u.accepted = true; cb.checked = true; updCount(); });
+    ta.addEventListener("input", () => { typed = true; u.final = ta.value; u.accepted = true; cb.checked = true; updCount(); });
     cb.addEventListener("change", () => { u.accepted = cb.checked; });
     updCount();
-    const status = { suggested: ["good", "AI suggestion"], edited: ["accent", "your edit"], rejected_guard: ["warn", "needs your check"], too_long: ["warn", "too long"], unchanged: ["", "unchanged"] }[u.status] || ["", u.status];
+    const status = { suggested: ["good", "AI suggestion"], rules: ["good", "matched to the job"], edited: ["accent", "your edit"], rejected_guard: ["warn", "needs your check"], too_long: ["warn", "too long"], unchanged: ["", "unchanged"] }[u.status] || ["", u.status];
     return h("div", { style: { padding: "12px 0", borderBottom: "1px solid var(--border)" } },
       h("div", { class: "row between" }, h("span", { class: "faint" }, `${u.heading || u.section}${u.kind === "paragraph" ? " · paragraph" : ""}`),
         h("span", { class: `badge ${status[0]}` }, status[1])),
@@ -68,8 +71,19 @@ export async function renderInplace(root, d) {
   const skillRow = (s) => {
     const cb = h("input", { type: "checkbox", checked: s.selected, disabled: !s.fits && !s.selected });
     cb.addEventListener("change", () => { s.selected = cb.checked; });
+    if (s.placed === "summary") {
+      return h("div", { class: "small", style: { margin: "4px 0" } }, "✓ ", h("strong", {}, s.display),
+        h("span", { class: "faint" }, " → added to your summary (no room left on the skills line)"));
+    }
     return h("label", { class: "check small", style: { margin: "4px 0" } }, cb, h("strong", {}, s.display),
-      h("span", { class: "faint" }, ` → ${s.label || "skills line"}`), !s.fits && h("span", { class: "badge warn" }, "no room on that line"));
+      h("span", { class: "faint" }, ` → ${s.label || "skills line"}`),
+      !s.fits && h("span", { class: "badge warn", title: "Even after removing skills this job doesn't mention, the line is full" }, "no room on that line"));
+  };
+  const removalRow = (r) => {
+    const cb = h("input", { type: "checkbox", checked: r.remove });
+    cb.addEventListener("change", () => { r.remove = cb.checked; });
+    return h("label", { class: "check small", style: { margin: "4px 0" } }, cb, "Remove ", h("strong", {}, r.display),
+      h("span", { class: "faint" }, ` from ${r.label || "skills line"}`));
   };
   const ev = state.skills.filter((s) => s.evidenced), unev = state.skills.filter((s) => !s.evidenced);
 
@@ -120,10 +134,14 @@ export async function renderInplace(root, d) {
               h("button", { class: "btn-sm", onclick: () => { showAll = !showAll; drawUnits(); } }, showAll ? "Show only changes" : "Edit any line")),
             h("p", { class: "faint" }, "Words between **double asterisks** stay bold, like in your original. Keep each line about the same length so your layout doesn't move."),
             unitsBox),
-          h("div", { class: "card" }, h("h2", {}, "Skills to add"),
+          h("div", { class: "card" }, h("h2", {}, "Skills"),
             !state.skills.length && h("p", { class: "muted small" }, "Your skills section already covers the posting's skills."),
             ev.length > 0 && h("div", {}, h("h3", {}, "Shown elsewhere in your resume (recommended)"), ev.map(skillRow)),
-            unev.length > 0 && h("div", { style: { marginTop: "10px" } }, h("h3", {}, "Not in your resume — tick only if you really have it"), unev.map(skillRow)))),
+            unev.length > 0 && h("div", { style: { marginTop: "10px" } }, h("h3", {}, "Not in your resume — tick only if you really have it"), unev.map(skillRow)),
+            state.skill_removals.length > 0 && h("div", { style: { marginTop: "10px" } },
+              h("h3", {}, "Removed to make room"),
+              h("p", { class: "faint" }, "These skills aren't mentioned in this job, so they were taken off this version to fit the job's skills at your normal font size. The job's skills are also listed first. Untick to keep one (the line may then need a slightly smaller font). Your master resume isn't changed."),
+              state.skill_removals.map(removalRow)))),
         h("div", { class: "card", style: { position: "sticky", top: "12px" } },
           h("div", { class: "card-head" }, h("h2", {}, "Preview"),
             pdf && (fresh_pages() > 1) && h("div", { class: "row" },

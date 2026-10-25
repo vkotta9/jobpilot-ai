@@ -121,3 +121,72 @@ def test_country_filter_api(client):
     assert us == {"Seattle, WA, USA", "Remote — Anywhere"}
     assert {j["location"] for j in client.get("/api/jobs?country=IN", headers=h).json()["items"]} == {"Bengaluru, India", "Remote — Anywhere"}
     assert len(client.get("/api/jobs", headers=h).json()["items"]) == 4
+
+
+def _full_skills_pdf() -> bytes:
+    import io
+
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=letter)
+    y = letter[1] - 50
+
+    def text(x, s, font="Times-Roman", size=10):
+        c.setFont(font, size)
+        c.drawString(x, y, s)
+
+    text(240, "Sam Lee", "Times-Bold", 17); y -= 22
+    text(43, "Summary", "Times-Bold", 14); y -= 16
+    text(43, "Software engineer with 4 years building backend services in Python for fintech teams.")
+    y -= 12
+    text(43, "Focused on reliable APIs.")
+    y -= 20
+    text(43, "Experience", "Times-Bold", 14); y -= 16
+    for b in ["Built payment APIs in Python with Docker and Terraform on AWS, cutting latency by 20%.",
+              "Set up Jenkins pipelines and Grafana dashboards for 12 services."]:
+        text(43, "•"); text(52, b); y -= 13
+    y -= 8
+    text(43, "Technical Skills", "Times-Bold", 14); y -= 16
+    for label, items in [("Languages:", "Python, SQL, MATLAB, Visual Basic, Fortran, COBOL, Pascal, Perl, Haskell, Lisp, Prolog, Ada"),
+                         ("Tools:", "Git, Photoshop, Excel, Tableau, Illustrator, Premiere Pro, InDesign, Lightroom, Figma, SPSS, AutoCAD")]:
+        c.setFont("Times-Bold", 10); c.drawString(43, y, label)
+        w = c.stringWidth(label, "Times-Bold", 10)
+        c.setFont("Times-Roman", 10); c.drawString(43 + w + 3, y, items); y -= 12
+    c.save()
+    return buf.getvalue()
+
+
+def test_full_skills_line_makes_room_and_uses_summary(monkeypatch):
+    from app.services import inplace_pdf, llm, tailor_inplace
+
+    from .test_v2 import _NoDB
+
+    pdf = _full_skills_pdf()
+
+    class J:
+        id, title, company = 1, "Backend Engineer", "Acme"
+        description_text = ("Requirements\n- Python, SQL, Docker, Terraform, Jenkins, Grafana and AWS\n- REST APIs and Kubernetes\n"
+                            "- Bachelor's degree in Computer Science")
+
+    class R:
+        id, user_id, mime_type, original_filename, storage_name = 1, 1, "pdf", "r.pdf", "x"
+        file_data = pdf
+
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: None)
+    content, flags, gen = tailor_inplace.build_plan(_NoDB(), 1, J(), R())
+    sk = {s["display"].lower(): s for s in content["skills"]}
+    assert {"docker", "terraform", "jenkins", "grafana"} <= set(sk)  # evidenced in bullets
+    removed = {r["display"] for r in content["skill_removals"]}
+    assert removed and not ({"Python", "SQL", "Git"} & removed)  # only skills the job doesn't mention are dropped
+    placed_skills = [s for s in content["skills"] if s["selected"] and s["placed"] == "skills"]
+    assert placed_skills
+    out, warnings = tailor_inplace.render(content, R())
+    text = inplace_pdf.full_text(out)
+    for s in placed_skills:
+        assert s["display"] in text
+    assert "Python, SQL" in text and "Sam Lee" in text
+    for s in content["skills"]:
+        if s.get("placed") == "summary":
+            assert s["display"] in text  # moved into the summary
