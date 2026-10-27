@@ -53,3 +53,59 @@ def test_extension_zip_is_set_up_for_this_site(client):
     m = json.loads(z.read("manifest.json"))
     assert m["content_scripts"][0]["matches"] == ["http://testserver/*"] and m["manifest_version"] == 3
     assert b'"http://testserver"' in z.read("config.js")
+
+
+def _tailored_doc(client, h):
+    from .test_api import _mock_jobs
+
+    setup_profile(client, h)
+    client.post("/api/resumes", headers=h, files={"file": ("cv.docx", sample_docx_bytes(), "application/octet-stream")})
+    job = _mock_jobs(client, h)[0]
+    return client.post(f"/api/jobs/{job['id']}/resume/tailor", headers=h).json()
+
+
+def test_change_request_with_rules(client, monkeypatch):
+    from app.services import llm
+
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: None)
+    h, _ = make_user(client)
+    d = _tailored_doc(client, h)
+    req = "Add Node.js and GraphQL to my skills\nReplace FastAPI with Starlette\nmake it sound amazing"
+    r = client.post(f"/api/documents/{d['id']}/request-change", headers=h, json={"request": req})
+    assert r.status_code == 200, r.text
+    res, doc = r.json()["result"], r.json()["document"]
+    assert any("Node.js" in x for x in res["done"]) and any("GraphQL" in x for x in res["done"])
+    assert any("Starlette" in x for x in res["done"])
+    assert any("make it sound amazing" in x for x in res["skipped"])  # not understood → said so, nothing invented
+    assert doc["status"] == "draft" and doc["content"]["requests"][-1]["via"] == "rules"
+    added = [s for s in doc["content"]["skills"] if s.get("user")]
+    assert {"Node.js", "GraphQL"} <= {s["display"] for s in added}
+    # the rendered file has the changes
+    from app.services import inplace_docx
+    raw = client.get(f"/api/documents/{d['id']}/download?format=docx", headers=h).content
+    text = inplace_docx.full_text(raw)
+    assert "Node.js" in text and "GraphQL" in text and "Starlette" in text
+
+
+def test_change_request_uses_ai_when_connected(client, monkeypatch):
+    from app.services import llm
+
+    h, _ = make_user(client)
+    d = _tailored_doc(client, h)
+    b = next(u for u in d["content"]["units"] if u["kind"] == "bullet")
+    sl = next(u for u in d["content"]["units"] if u["kind"] == "skill_line")
+    seen = {}
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: llm.LLMConfig("k", "https://x.test/v1", "test-model"))
+
+    def fake(task, payload, schema, cfg=None, name=""):
+        seen["payload"] = payload
+        return {"edits": [{"id": b["id"], "text": b["final"].rstrip(".") + " with cross-functional teams."}],
+                "add_skills": [{"line_id": sl["id"], "skill": "Node.js"}], "remove_skills": [], "not_done": []}
+
+    monkeypatch.setattr(llm, "complete_json", fake)
+    r = client.post(f"/api/documents/{d['id']}/request-change", headers=h,
+                    json={"request": "Add Node.js to Backend skills and add cross-functional to my first bullet"}).json()
+    assert "<request>" in seen["payload"] and "<untrusted_job_description>" in seen["payload"]
+    units = {u["id"]: u for u in r["document"]["content"]["units"]}
+    assert units[b["id"]]["status"] == "requested" and "cross-functional" in units[b["id"]]["final"]
+    assert r["result"]["via"] == "ai:test-model" and len(r["result"]["done"]) == 2

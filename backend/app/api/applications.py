@@ -5,6 +5,7 @@ import re
 from datetime import datetime
 from typing import Optional
 
+from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
@@ -130,6 +131,44 @@ def get_document(did: int, user: User = Depends(current_user), db: Session = Dep
         p = db.query(CandidateProfile).filter_by(user_id=user.id).one()
         out["original"] = {"summary": p.summary, "skills": p.skills, "experience": p.experience}
     return out
+
+
+class ChangeRequest(BaseModel):
+    request: str = Field(min_length=3, max_length=2000)
+    content: Optional[dict] = None  # unsaved edits on the page, merged first
+
+
+@router.post("/documents/{did}/request-change", dependencies=[Depends(rate_limit("doc-request", 60, 3600))])
+def request_change(did: int, body: ChangeRequest, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Apply your own instruction ("add Node.js to Backend skills", "add 'cross-functional' to the H&M bullet")."""
+    from ..services.tailor_request import apply_request
+
+    d = owned(db, Document, did, user)
+    if d.content.get("format") != "inplace":
+        raise HTTPException(400, "Change requests work on resumes tailored from your uploaded file.")
+    content = _merge_inplace_edit(d.content, body.content) if body.content else d.content
+    r = db.get(Resume, content["resume_id"])
+    job = db.get(Job, d.job_id)
+    if r is None:
+        raise HTTPException(400, "The original resume for this document was deleted. Upload it again and re-tailor.")
+    try:
+        content, result = apply_request(db, user.id, content, r, job, body.request)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    d.content = content
+    try:
+        out, warnings = _render_inplace(d, r)
+    except FitError as e:
+        raise HTTPException(400, _fit_message(d.content, str(e)))
+    content = dict(d.content)
+    content["ats_after"] = tailor_inplace.ats_after(content, out, job)
+    content["warnings"] = warnings
+    d.content = content
+    d.status, d.approved_at = "draft", None
+    _invalidate_for_job(db, d.job_id, user.id, "resume changed on your request")
+    audit(db, user.id, "document.request_change", "document", d.id, applied=len(result["done"]))
+    db.commit()
+    return {"result": result, "document": doc_out(d)}
 
 
 @router.put("/documents/{did}")

@@ -50,14 +50,15 @@ export async function renderInplace(root, d) {
     ta.addEventListener("input", () => { typed = true; u.final = ta.value; u.accepted = true; cb.checked = true; updCount(); });
     cb.addEventListener("change", () => { u.accepted = cb.checked; });
     updCount();
-    const status = { suggested: ["good", "AI suggestion"], rules: ["good", "matched to the job"], edited: ["accent", "your edit"], rejected_guard: ["warn", "needs your check"], too_long: ["warn", "too long"], unchanged: ["", "unchanged"] }[u.status] || ["", u.status];
+    const status = { suggested: ["good", "AI suggestion"], rules: ["good", "matched to the job"], requested: ["accent", "your request"], edited: ["accent", "your edit"], rejected_guard: ["warn", "needs your check"], too_long: ["warn", "too long"], unchanged: ["", "unchanged"] }[u.status] || ["", u.status];
     return h("div", { style: { padding: "12px 0", borderBottom: "1px solid var(--border)" } },
       h("div", { class: "row between" }, h("span", { class: "faint" }, `${u.heading || u.section}${u.kind === "paragraph" ? " · paragraph" : ""}`),
         h("span", { class: `badge ${status[0]}` }, status[1])),
       h("div", { class: "diff", style: { marginTop: "6px" } },
         h("div", { class: "orig" }, h("div", { class: "faint" }, "Your original"), plain(u.original)),
         h("div", {}, ta, h("div", { class: "row between" }, h("label", { class: "check small" }, cb, "Use this version"), count))),
-      u.note && h("div", { class: "small", style: { color: "var(--warn)" } }, u.note),
+      u.note && h("div", { class: "small", style: { color: u.status === "requested" ? "var(--accent)" : "var(--warn)" } }, u.note),
+      h("button", { class: "btn-sm btn-ghost", style: { marginTop: "4px" }, onclick: () => askAbout(u) }, "💬 Ask for a change to this line"),
       u.status === "rejected_guard" && u.proposed && h("button", { class: "btn-sm", onclick: () => { ta.value = u.proposed; u.final = u.proposed; u.accepted = true; cb.checked = true; updCount(); } }, "Load the suggestion (only if it's true)"));
   };
 
@@ -76,7 +77,7 @@ export async function renderInplace(root, d) {
         h("span", { class: "faint" }, " → added to your summary (no room left on the skills line)"));
     }
     return h("label", { class: "check small", style: { margin: "4px 0" } }, cb, h("strong", {}, s.display),
-      h("span", { class: "faint" }, ` → ${s.label || "skills line"}`),
+      h("span", { class: "faint" }, ` → ${s.label || "skills line"}`), s.user && h("span", { class: "badge accent" }, "your request"),
       !s.fits && h("span", { class: "badge warn", title: "Even after removing skills this job doesn't mention, the line is full" }, "no room on that line"));
   };
   const removalRow = (r) => {
@@ -85,7 +86,49 @@ export async function renderInplace(root, d) {
     return h("label", { class: "check small", style: { margin: "4px 0" } }, cb, "Remove ", h("strong", {}, r.display),
       h("span", { class: "faint" }, ` from ${r.label || "skills line"}`));
   };
-  const ev = state.skills.filter((s) => s.evidenced), unev = state.skills.filter((s) => !s.evidenced);
+  const ev = () => state.skills.filter((s) => s.evidenced), unev = () => state.skills.filter((s) => !s.evidenced);
+
+  // ---- your own change requests ("add Node.js to Backend skills", "add 'cross-functional' to the H&M bullet")
+  const reqBox = h("textarea", { rows: 3, placeholder: "Tell JobPilot what else to change, e.g.\nAdd Node.js and Express to my Web skills\nIn the Apache Camel bullet, add the keyword \"cross-functional\"\nReplace Azure DevOps with Azure Pipelines\nRemove PHP from Web skills", "aria-label": "Your change request" });
+  const reqLog = h("div");
+  function askAbout(u) {
+    const start = plain(u.final).split(" ").slice(0, 6).join(" ");
+    reqBox.value = `In the line "${start}…": `;
+    reqBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    reqBox.focus();
+  }
+  const drawReqLog = () => mount(reqLog, (c.requests || []).slice().reverse().slice(0, 6).map((r) =>
+    h("div", { class: "list-item", style: { display: "block" } },
+      h("div", { class: "small", style: { whiteSpace: "pre-line" } }, h("strong", {}, "You asked: "), r.text),
+      (r.done || []).map((x) => h("div", { class: "small", style: { color: "var(--good)" } }, "✓ " + x)),
+      (r.skipped || []).map((x) => h("div", { class: "small", style: { color: "var(--warn)" } }, "• " + x)),
+      h("div", { class: "faint" }, r.via && r.via.startsWith("ai:") ? "done by your AI model" : "done by JobPilot's built-in rules"))));
+  const reqBtn = h("button", { class: "btn-primary" }, "Apply my request");
+  reqBtn.addEventListener("click", busy(reqBtn, async () => {
+    const text = reqBox.value.trim();
+    if (text.length < 3) return toast("Type what you'd like changed.", "bad");
+    const r = await api.post(`/api/documents/${id}/request-change`, { request: text, content: state });
+    const res = r.result;
+    toast(res.done.length ? `Done: ${res.done.length} change(s).` + (res.skipped.length ? " Some parts need attention — see below." : "")
+      : "Nothing changed — see the note below.", res.done.length ? "" : "bad");
+    reqBox.value = "";
+    d = r.document;
+    Object.assign(c, r.document.content);
+    state.units = JSON.parse(JSON.stringify(c.units));
+    state.skills = JSON.parse(JSON.stringify(c.skills));
+    state.skill_removals = JSON.parse(JSON.stringify(c.skill_removals || []));
+    drawAll();
+  }));
+  const requestCard = () => h("div", { class: "card" },
+    h("div", { class: "card-head" }, h("h2", {}, "💬 Ask for a change"), h("span", { class: "faint" }, "your own edits, in plain words")),
+    h("p", { class: "small muted" }, "Anything else you want changed for this job — skills to add or remove, a keyword to work into a bullet, a word to replace, or a rewrite. ",
+      "One request per line. Changes keep your layout and appear above for you to check."),
+    reqBox,
+    h("div", { class: "row", style: { flexWrap: "wrap", gap: "6px", margin: "6px 0" } },
+      ["Add Node.js to my Web skills", "Add the keyword \"cross-functional\" to the bullet about collaboration", "Replace JBoss with WildFly", "Remove PHP from Web skills"].map((ex) =>
+        h("button", { class: "btn-sm btn-ghost", onclick: () => { reqBox.value = (reqBox.value ? reqBox.value + "\n" : "") + ex; reqBox.focus(); } }, ex))),
+    h("div", { class: "row", style: { justifyContent: "flex-end" } }, reqBtn),
+    reqLog);
 
   const saveBtn = h("button", {}, "Save & refresh preview");
   saveBtn.addEventListener("click", busy(saveBtn, async () => { await save(); render(); }));
@@ -136,12 +179,15 @@ export async function renderInplace(root, d) {
             unitsBox),
           h("div", { class: "card" }, h("h2", {}, "Skills"),
             !state.skills.length && h("p", { class: "muted small" }, "Your skills section already covers the posting's skills."),
-            ev.length > 0 && h("div", {}, h("h3", {}, "Shown elsewhere in your resume (recommended)"), ev.map(skillRow)),
-            unev.length > 0 && h("div", { style: { marginTop: "10px" } }, h("h3", {}, "Not in your resume — tick only if you really have it"), unev.map(skillRow)),
-            state.skill_removals.length > 0 && h("div", { style: { marginTop: "10px" } },
+            ev().length > 0 && h("div", {}, h("h3", {}, "Shown elsewhere in your resume (recommended)"), ev().map(skillRow)),
+            unev().length > 0 && h("div", { style: { marginTop: "10px" } }, h("h3", {}, "Not in your resume — tick only if you really have it"), unev().map(skillRow)),
+            state.skill_removals.some((r) => r.user) && h("div", { style: { marginTop: "10px" } },
+              h("h3", {}, "Removed at your request"), state.skill_removals.filter((r) => r.user).map(removalRow)),
+            state.skill_removals.some((r) => !r.user) && h("div", { style: { marginTop: "10px" } },
               h("h3", {}, "Removed to make room"),
               h("p", { class: "faint" }, "These skills aren't mentioned in this job, so they were taken off this version to fit the job's skills at your normal font size. The job's skills are also listed first. Untick to keep one (the line may then need a slightly smaller font). Your master resume isn't changed."),
-              state.skill_removals.map(removalRow)))),
+              state.skill_removals.filter((r) => !r.user).map(removalRow))),
+          requestCard()),
         h("div", { class: "card", style: { position: "sticky", top: "12px" } },
           h("div", { class: "card-head" }, h("h2", {}, "Preview"),
             pdf && (fresh_pages() > 1) && h("div", { class: "row" },
@@ -149,6 +195,7 @@ export async function renderInplace(root, d) {
               h("button", { class: "btn-sm", onclick: () => { page = Math.min(fresh_pages() - 1, page + 1); refreshPreview(); } }, "›"))),
           pdf ? img : h("p", { class: "muted small" }, "Live preview is available for PDF resumes. Download the DOCX to see your formatted Word file."))));
     drawUnits();
+    drawReqLog();
     refreshPreview();
   }
   const fresh_pages = () => d.pages || 1;

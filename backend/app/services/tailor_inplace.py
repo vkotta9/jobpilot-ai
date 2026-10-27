@@ -219,11 +219,13 @@ def skill_line_runs(label_runs: list[tuple[str, bool]], items: list[str]) -> lis
     return list(label_runs) + [((" " if label_runs else "") + ", ".join(items), False)]
 
 
-def fit_skill_line(data: bytes, unit, plan: dict, adds: list[str], keep: set) -> dict:
+def fit_skill_line(data: bytes, unit, plan: dict, adds: list[str], keep: set, remove: Optional[set] = None) -> dict:
     """Build the skills line: the job's skills first (yours, then the added ones), then your other skills.
     Drop other skills from the end only as far as needed for everything to fit at the original font size;
     as a last resort allow a slight font reduction. `keep` = skills the user chose not to drop."""
     label_runs, items = split_skill_line(unit)
+    gone = {x.lower() for x in (remove or set())}
+    items = [i for i in items if i.lower() not in gone]  # skills you asked to take off
     relevant = [i for i in items if i in plan.get("relevant", [])]
     others = [i for i in items if i not in relevant]
     droppable = [i for i in plan.get("droppable", []) if i in others and i not in keep]
@@ -466,19 +468,30 @@ def render(content: dict, resume: Resume) -> tuple[bytes, dict]:
         if s.get("selected") and s["unit_id"] in known and s.get("placed", "skills") == "skills":
             adds.setdefault(s["unit_id"], []).append(s["display"])
     by_id = {u.id: u for u in units}
+    asked_off: dict[str, set] = {}  # skills the user asked to remove
+    for r in content.get("skill_removals", []) or []:
+        if r.get("remove") and r.get("user") and r["unit_id"] in known:
+            asked_off.setdefault(r["unit_id"], set()).add(r["display"])
     if kind == "pdf":
         keep_items: dict[str, set] = {}
         for r in content.get("skill_removals", []) or []:
             if not r.get("remove"):
                 keep_items.setdefault(r["unit_id"], set()).add(r["display"])
         plans = content.get("skill_lines") or {}
-        for uid in set(adds) | set(plans):
-            if uid in edits or uid not in by_id or (uid not in adds and not plans.get(uid)):
+        for uid in set(adds) | set(plans) | set(asked_off):
+            if uid in edits or uid not in by_id:
                 continue
-            if not adds.get(uid):
+            if not adds.get(uid) and not asked_off.get(uid):
                 continue  # nothing added to this line: leave it exactly as it was
-            res = fit_skill_line(data, by_id[uid], plans.get(uid, {}), adds.pop(uid, []), keep_items.get(uid, set()))
+            res = fit_skill_line(data, by_id[uid], plans.get(uid, {}), adds.pop(uid, []), keep_items.get(uid, set()), asked_off.get(uid))
             edits[uid] = res["runs"]
+    else:
+        for uid, gone in asked_off.items():
+            if uid in edits or uid not in by_id:
+                continue
+            label_runs, items = split_skill_line(by_id[uid])
+            low_gone = {g.lower() for g in gone}
+            edits[uid] = skill_line_runs(label_runs, [i for i in items if i.lower() not in low_gone] + adds.pop(uid, []))
     out, warnings = eng.render(data, units, edits, adds)
     return out, warnings
 
