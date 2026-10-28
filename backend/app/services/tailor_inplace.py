@@ -21,7 +21,7 @@ from ..models import Job, Resume
 from . import ats, inplace_docx, inplace_pdf, llm
 from .inplace_pdf import FitError
 from .tailoring import fact_guard
-from .textutil import SKILL_VOCAB
+from .textutil import SKILL_VOCAB, pretty_skill
 
 log = logging.getLogger("jobpilot.tailor")
 
@@ -92,11 +92,10 @@ def analyze(kind: str, data: bytes) -> list:
 
 
 def _display(term: str, jd: str) -> str:
-    m = re.search(r"(?<![A-Za-z0-9])" + re.escape(term) + r"(?![A-Za-z0-9])", jd, re.I)
-    if m:
-        s = m.group(0)
-        return s if not s.islower() or len(s) > 3 else s.upper() if len(s) <= 3 else s
-    return term.title() if term.islower() and len(term) > 3 else term.upper()
+    m = re.search(r"(?<![A-Za-z0-9])" + re.escape(term) + r"(?![A-Za-z0-9])", jd or "", re.I)
+    if m and not m.group(0).islower():
+        return m.group(0)  # as the posting writes it
+    return pretty_skill(term)
 
 
 def _group_of(term: str) -> Optional[str]:
@@ -219,20 +218,57 @@ def skill_line_runs(label_runs: list[tuple[str, bool]], items: list[str]) -> lis
     return list(label_runs) + [((" " if label_runs else "") + ", ".join(items), False)]
 
 
-def fit_skill_line(data: bytes, unit, plan: dict, adds: list[str], keep: set, remove: Optional[set] = None) -> dict:
+def _norm_item(x: str) -> str:
+    return re.sub(r"[^a-z0-9+#]", "", (x or "").lower())
+
+
+def find_item(items: list[str], name: str) -> Optional[int]:
+    """Index of `name` in a skills list, tolerating case, punctuation and small typos ("nodejs" → "Node.js")."""
+    import difflib
+
+    n = _norm_item(name)
+    if not n:
+        return None
+    for i, it in enumerate(items):
+        if _norm_item(it) == n:
+            return i
+    best = difflib.get_close_matches(n, [_norm_item(it) for it in items], n=1, cutoff=0.8)
+    return [_norm_item(it) for it in items].index(best[0]) if best else None
+
+
+def place_items(items: list[str], positioned: list[tuple[str, dict]]) -> list[str]:
+    """Put skills where the user asked: at the start, at the end, or right after/before another skill."""
+    out = list(items)
+    for disp, pos in positioned or []:
+        out = [i for i in out if _norm_item(i) != _norm_item(disp)]
+        where, ref = (pos or {}).get("where", "end"), (pos or {}).get("ref", "")
+        idx = find_item(out, ref) if ref else None
+        if where == "start":
+            out.insert(0, disp)
+        elif where == "after" and idx is not None:
+            out.insert(idx + 1, disp)
+        elif where == "before" and idx is not None:
+            out.insert(idx, disp)
+        else:
+            out.append(disp)
+    return out
+
+
+def fit_skill_line(data: bytes, unit, plan: dict, adds: list[str], keep: set, remove: Optional[set] = None,
+                   positioned: Optional[list] = None) -> dict:
     """Build the skills line: the job's skills first (yours, then the added ones), then your other skills.
     Drop other skills from the end only as far as needed for everything to fit at the original font size;
     as a last resort allow a slight font reduction. `keep` = skills the user chose not to drop."""
     label_runs, items = split_skill_line(unit)
-    gone = {x.lower() for x in (remove or set())}
-    items = [i for i in items if i.lower() not in gone]  # skills you asked to take off
+    gone = {_norm_item(x) for x in (remove or set())}
+    items = [i for i in items if _norm_item(i) not in gone]  # skills you asked to take off
     relevant = [i for i in items if i in plan.get("relevant", [])]
     others = [i for i in items if i not in relevant]
     droppable = [i for i in plan.get("droppable", []) if i in others and i not in keep]
     dropped: list[str] = []
 
     def line():
-        return relevant + adds + [i for i in others if i not in dropped]
+        return place_items(relevant + adds + [i for i in others if i not in dropped], positioned or [])
 
     while not inplace_pdf.fits(data, unit, skill_line_runs(label_runs, line()))["fits"] and len(dropped) < len(droppable):
         dropped.append(droppable[len(dropped)])
@@ -464,9 +500,13 @@ def render(content: dict, resume: Resume) -> tuple[bytes, dict]:
         if e["id"] in known and e.get("accepted") and plain(e["final"]) and plain(e["final"]) != plain(e["original"]):
             edits[e["id"]] = from_md(e["final"])
     adds: dict[str, list[str]] = {}
+    positioned: dict[str, list] = {}  # skills you asked to put at a specific place on the line
     for s in content.get("skills", []):
         if s.get("selected") and s["unit_id"] in known and s.get("placed", "skills") == "skills":
-            adds.setdefault(s["unit_id"], []).append(s["display"])
+            if s.get("position"):
+                positioned.setdefault(s["unit_id"], []).append((s["display"], s["position"]))
+            else:
+                adds.setdefault(s["unit_id"], []).append(s["display"])
     by_id = {u.id: u for u in units}
     asked_off: dict[str, set] = {}  # skills the user asked to remove
     for r in content.get("skill_removals", []) or []:
@@ -478,20 +518,22 @@ def render(content: dict, resume: Resume) -> tuple[bytes, dict]:
             if not r.get("remove"):
                 keep_items.setdefault(r["unit_id"], set()).add(r["display"])
         plans = content.get("skill_lines") or {}
-        for uid in set(adds) | set(plans) | set(asked_off):
+        for uid in set(adds) | set(plans) | set(asked_off) | set(positioned):
             if uid in edits or uid not in by_id:
                 continue
-            if not adds.get(uid) and not asked_off.get(uid):
+            if not adds.get(uid) and not asked_off.get(uid) and not positioned.get(uid):
                 continue  # nothing added to this line: leave it exactly as it was
-            res = fit_skill_line(data, by_id[uid], plans.get(uid, {}), adds.pop(uid, []), keep_items.get(uid, set()), asked_off.get(uid))
+            res = fit_skill_line(data, by_id[uid], plans.get(uid, {}), adds.pop(uid, []), keep_items.get(uid, set()),
+                                 asked_off.get(uid), positioned.get(uid))
             edits[uid] = res["runs"]
     else:
-        for uid, gone in asked_off.items():
+        for uid in set(asked_off) | set(positioned):
             if uid in edits or uid not in by_id:
                 continue
             label_runs, items = split_skill_line(by_id[uid])
-            low_gone = {g.lower() for g in gone}
-            edits[uid] = skill_line_runs(label_runs, [i for i in items if i.lower() not in low_gone] + adds.pop(uid, []))
+            low_gone = {_norm_item(g) for g in asked_off.get(uid, set())}
+            items = [i for i in items if _norm_item(i) not in low_gone] + adds.pop(uid, [])
+            edits[uid] = skill_line_runs(label_runs, place_items(items, positioned.get(uid, [])))
     out, warnings = eng.render(data, units, edits, adds)
     return out, warnings
 

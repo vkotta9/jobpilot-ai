@@ -12,6 +12,7 @@ as JSON, validated by callers, and checked by the fact guard.
 from __future__ import annotations
 
 import json
+import re
 import logging
 import time
 from dataclasses import dataclass
@@ -101,6 +102,46 @@ def _error_message(r: httpx.Response) -> str:
         return ""
 
 
+_ALT_MODEL: dict[str, Optional[str]] = {}
+
+
+def _wait_after(r: httpx.Response, attempt: int, remaining: float) -> float:
+    """Sleep as long as the service asks (Retry-After / Gemini's retryDelay), within the remaining budget."""
+    delay = None
+    try:
+        delay = float(r.headers.get("retry-after", ""))
+    except ValueError:
+        pass
+    if delay is None:
+        m = re.search(r'"retryDelay"\s*:\s*"(\d+(?:\.\d+)?)s"', r.text or "")
+        delay = float(m.group(1)) if m else min(2 ** attempt, 10)
+    delay = max(1.0, min(delay, remaining, 20.0))
+    if remaining > 0:
+        time.sleep(delay)
+    return delay
+
+
+def _alternative_model(cfg: "LLMConfig", transport=None) -> Optional[str]:
+    """Another fast model on the same key (Gemini's free tier limits each model separately)."""
+    if cfg.provider != "gemini":
+        return None
+    key = cfg.api_key[-6:] + cfg.model
+    if key in _ALT_MODEL:
+        return _ALT_MODEL[key]
+    alt = None
+    try:
+        with httpx.Client(timeout=10, transport=transport) as c:
+            r = c.get(f"{cfg.base_url}/models", headers={"Authorization": f"Bearer {cfg.api_key}"})
+        ids = [m.get("id", "").replace("models/", "") for m in (r.json().get("data") or [])] if r.status_code == 200 else []
+        flash = [i for i in ids if "flash" in i and i != cfg.model and not re.search(r"image|tts|audio|live|embed|preview-0", i)]
+        flash.sort(key=lambda i: ("lite" not in i, i), reverse=False)
+        alt = flash[0] if flash else None
+    except (httpx.HTTPError, ValueError, AttributeError):
+        alt = None
+    _ALT_MODEL[key] = alt
+    return alt
+
+
 def complete_json(task: str, payload: str, schema: dict, *, cfg: Optional[LLMConfig] = None, name: str = "result",
                   transport: Optional[httpx.BaseTransport] = None, max_attempts: int = 2) -> dict:
     cfg = cfg or env_config()
@@ -112,8 +153,12 @@ def complete_json(task: str, payload: str, schema: dict, *, cfg: Optional[LLMCon
         "response_format": {"type": "json_schema", "json_schema": {"name": name, "schema": schema, "strict": True}},
     }
     last: Optional[Exception] = None
-    downgraded = False
-    for attempt in range(1, max_attempts + 2):
+    downgraded = switched = False
+    waited, budget_s = 0.0, 40.0  # how long a busy (rate-limited) service may make us wait in total
+    for attempt in range(1, 40):
+        busy = bool(last and "busy" in str(last))
+        if attempt > max_attempts + 1 and not (busy and (waited < budget_s or not switched)):
+            break
         try:
             r = _post(cfg, body, transport)
         except httpx.HTTPError as e:
@@ -133,7 +178,13 @@ def complete_json(task: str, payload: str, schema: dict, *, cfg: Optional[LLMCon
             continue
         if r.status_code == 429 or r.status_code >= 500:
             last = LLMError(f"The AI service is busy or rate-limited ({r.status_code}). Try again in a minute.")
-            time.sleep(min(2 ** attempt, 8))
+            if waited < budget_s:
+                waited += _wait_after(r, attempt, budget_s - waited)
+            if waited >= budget_s and not switched:
+                switched = True  # free plans limit each model separately: try another fast model once
+                alt = _alternative_model(cfg, transport) if r.status_code == 429 else None
+                if alt:
+                    body["model"], waited = alt, budget_s - 10
             continue
         if r.status_code >= 400:
             raise LLMError(f"AI request failed ({r.status_code}). {_error_message(r)}")

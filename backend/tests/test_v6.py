@@ -109,3 +109,92 @@ def test_change_request_uses_ai_when_connected(client, monkeypatch):
     units = {u["id"]: u for u in r["document"]["content"]["units"]}
     assert units[b["id"]]["status"] == "requested" and "cross-functional" in units[b["id"]]["final"]
     assert r["result"]["via"] == "ai:test-model" and len(r["result"]["done"]) == 2
+
+
+def _skills_pdf():
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=letter)
+    y = letter[1] - 50
+
+    def t(x, s, f="Times-Roman", z=10):
+        c.setFont(f, z)
+        c.drawString(x, y, s)
+
+    t(240, "Alex Kim", "Times-Bold", 17); y -= 22
+    t(43, "Summary", "Times-Bold", 14); y -= 16; t(43, "Software engineer building backend services and ML pipelines."); y -= 20
+    t(43, "Experience", "Times-Bold", 14); y -= 16
+    for b in ["Built REST APIs in Python and Node.js for a payments platform, serving 2M requests a day.",
+              "Collaborated with product and design teams to ship features every sprint."]:
+        t(43, "•"); t(52, b); y -= 13
+    y -= 8; t(43, "Technical Skills", "Times-Bold", 14); y -= 16
+    for label, items in [("Languages:", "Python, Java, JavaScript, TypeScript"), ("AI/ML:", "PyTorch, TensorFlow, scikit-learn"),
+                         ("Web:", "React, HTML, CSS, PHP"), ("Databases:", "PostgreSQL, MySQL, Oracle")]:
+        c.setFont("Times-Bold", 10); c.drawString(43, y, label); w = c.stringWidth(label, "Times-Bold", 10)
+        c.setFont("Times-Roman", 10); c.drawString(43 + w + 3, y, items); y -= 12
+    c.save()
+    return buf.getvalue()
+
+
+def test_plain_language_requests_without_ai(monkeypatch):
+    from app.services import inplace_pdf, llm, tailor_inplace, tailor_request
+
+    from .test_v2 import _NoDB
+
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: None)
+    pdf = _skills_pdf()
+
+    class J:
+        id, title, company = 1, "Backend Engineer", "Acme"
+        description_text = "Requirements\n- Python, Node.js, PostgreSQL"
+
+    class R:
+        id, user_id, mime_type, original_filename, storage_name = 1, 1, "pdf", "r.pdf", "x"
+        file_data = pdf
+
+    c, _, _ = tailor_inplace.build_plan(_NoDB(), 1, J(), R())
+
+    def ask(text):
+        nonlocal c
+        c, res = tailor_request.apply_request(_NoDB(), 1, c, R(), J(), text)
+        return res
+
+    ask("Add Node.js to AI/ML")
+    res = ask("No please remove Node.js from AI/Ml and add that in the Language that too at the end means after TypeScript")
+    assert len(res["done"]) == 2 and not res["skipped"], res
+    ask("remvoe php form web skils")  # typos
+    ask("ad kubernets and docker to languages at the start")
+    ask("move PyTorch to the end")
+    ask("replace Oracle with SQLite")
+    ask('In the line "Collaborated with product": add the keyword cross-functional')
+    assert "Didn't understand" in ask("make it sound more senior")["skipped"][0]
+    text = inplace_pdf.full_text(tailor_inplace.render(c, R())[0])
+    assert "Languages: Kubernetes, Docker, Python, Java, JavaScript, TypeScript, Node.js" in text
+    assert "AI/ML: TensorFlow, scikit-learn, PyTorch" in text
+    assert "Web: React, HTML, CSS" in text and "PHP" not in text
+    assert "Databases: PostgreSQL, MySQL, SQLite" in text
+    assert "with cross-functional product and design teams" in text
+
+
+def test_ai_rate_limit_waits_then_switches_model(monkeypatch):
+    import httpx
+
+    from app.services import llm
+
+    monkeypatch.setattr(llm.time, "sleep", lambda s: None)
+    seen = []
+
+    def handler(req):
+        if req.url.path.endswith("/models"):
+            return httpx.Response(200, json={"data": [{"id": "models/gemini-x-flash"}, {"id": "models/gemini-x-flash-lite"}]})
+        body = json.loads(req.content)
+        seen.append(body["model"])
+        if body["model"] == "gemini-x-flash":
+            return httpx.Response(429, json={"error": {"message": "quota", "details": [{"retryDelay": "3s"}]}})
+        return httpx.Response(200, json={"choices": [{"message": {"content": "{\"ok\": true}"}}]})
+
+    cfg = llm.LLMConfig("k-123456", "https://g.test/v1beta/openai", "gemini-x-flash", "gemini")
+    out = llm.complete_json("t", "p", llm.strict_schema({"ok": {"type": "boolean"}}), cfg=cfg, transport=httpx.MockTransport(handler))
+    assert out == {"ok": True} and seen[0] == "gemini-x-flash" and seen[-1] == "gemini-x-flash-lite"

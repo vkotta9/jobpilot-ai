@@ -212,3 +212,38 @@ NUMBER_RE = re.compile(r"\$?\d[\d,.]*\s*(?:%|k|m|x|\+)?", re.I)
 
 def numbers_in(text: str) -> set[str]:
     return {re.sub(r"[\s,]", "", n.lower()).rstrip(".") for n in NUMBER_RE.findall(text or "")}
+
+
+_PRETTY = {
+    "node.js": "Node.js", "nodejs": "Node.js", "node": "Node.js", "next.js": "Next.js", "nextjs": "Next.js", "vue": "Vue.js",
+    "vue.js": "Vue.js", "react": "React", "react.js": "React", "reactjs": "React", "javascript": "JavaScript", "typescript": "TypeScript",
+    "postgresql": "PostgreSQL", "postgres": "PostgreSQL", "mongodb": "MongoDB", "mysql": "MySQL", "graphql": "GraphQL",
+    "github": "GitHub", "github actions": "GitHub Actions", "gitlab": "GitLab", "fastapi": "FastAPI", "spring boot": "Spring Boot",
+    "pytorch": "PyTorch", "tensorflow": "TensorFlow", "scikit-learn": "scikit-learn", "numpy": "NumPy", "elasticsearch": "Elasticsearch",
+    "dynamodb": "DynamoDB", "bigquery": "BigQuery", "ci/cd": "CI/CD", "rest apis": "REST APIs", "rest api": "REST APIs",
+    "macos": "macOS", "ios": "iOS", "llm": "LLM", "llms": "LLMs", "nlp": "NLP", "mlops": "MLOps", "devops": "DevOps",
+    "sql server": "SQL Server", ".net": ".NET", "c#": "C#", "c++": "C++", "golang": "Go", "oop": "OOP", "oops": "OOPs", "rag": "RAG",
+    "langchain": "LangChain", "hugging face": "Hugging Face", "power bi": "Power BI", "azure devops": "Azure DevOps",
+    "openai": "OpenAI", "jquery": "jQuery", "sqlite": "SQLite", "nosql": "NoSQL", "rabbitmq": "RabbitMQ", "kafka": "Kafka",
+    "jboss": "JBoss", "wildfly": "WildFly", "xgboost": "XGBoost", "opencv": "OpenCV", "matlab": "MATLAB", "php": "PHP",
+    "html": "HTML", "css": "CSS", "sql": "SQL", "aws": "AWS", "gcp": "GCP", "api": "API", "apis": "APIs", "etl": "ETL", "tdd": "TDD",
+    "express": "Express", "express.js": "Express", "redis": "Redis", "linux": "Linux", "docker": "Docker", "kubernetes": "Kubernetes",
+    "k8s": "Kubernetes", "terraform": "Terraform", "ansible": "Ansible", "jenkins": "Jenkins", "git": "Git", "jira": "Jira",
+    "airflow": "Airflow", "snowflake": "Snowflake", "databricks": "Databricks", "spark": "Spark", "hadoop": "Hadoop",
+    "tableau": "Tableau", "pandas": "pandas", "django": "Django", "flask": "Flask", "angular": "Angular", "kotlin": "Kotlin",
+    "swift": "Swift", "rust": "Rust", "go": "Go", "java": "Java", "python": "Python", "scala": "Scala", "ruby": "Ruby",
+    "r": "R", "c": "C", "bash": "Bash", "powershell": "PowerShell", "azure": "Azure", "salesforce": "Salesforce",
+    "microservices": "Microservices", "machine learning": "Machine Learning", "deep learning": "Deep Learning",
+    "computer vision": "Computer Vision", "generative ai": "Generative AI", "data structures": "Data Structures",
+    "algorithms": "Algorithms", "system design": "System Design", "unit testing": "Unit Testing", "agile": "Agile", "scrum": "Scrum",
+}
+
+
+def pretty_skill(s: str) -> str:
+    """How a skill is usually written: 'node.js' → 'Node.js', 'aws' → 'AWS', 'kubernetes' → 'Kubernetes'."""
+    low = (s or "").strip().lower()
+    if low in _PRETTY:
+        return _PRETTY[low]
+    if len(low) <= 3 and low.isalpha():
+        return low.upper()
+    return " ".join(w[:1].upper() + w[1:] if w.islower() else w for w in s.strip().split(" "))
