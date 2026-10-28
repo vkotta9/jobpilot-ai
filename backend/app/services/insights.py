@@ -26,11 +26,11 @@ def next_best_action(db: Session, app: Application) -> str:
     if s == "applied":
         if app.follow_up_at and app.follow_up_at < utcnow():
             return "Follow-up is overdue — send a short follow-up message."
-        return "Find a recruiter or hiring manager to contact (Networking tab)."
+        return "Start your interview prep plan, and find a recruiter or hiring manager to contact (Networking tab)."
     if s == "assessment":
-        return "Complete the assessment and note the deadline."
+        return "Complete the assessment — your prep plan lists the topics to review first."
     if s == "interview":
-        return "Prepare for the interview; send a thank-you within 24 hours afterwards."
+        return "Work through your interview prep plan; send a thank-you within 24 hours afterwards."
     if s == "offer":
         return "Review the offer details and respond by the deadline."
     return ""

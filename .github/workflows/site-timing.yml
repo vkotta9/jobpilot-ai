@@ -15,3 +15,7 @@ jobs:
       - name: Time page loads
         working-directory: backend
         run: python scripts/live_check.py timing https://jobpilot-ai-45bq.onrender.com
+      - name: Interview prep resource links
+        working-directory: backend
+        run: python scripts/live_check.py links
+        continue-on-error: true

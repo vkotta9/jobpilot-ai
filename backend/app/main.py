@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import __version__
-from .api import applications, auth, companies, extension, integrations, jobs, misc, network, profile
+from .api import applications, auth, companies, extension, integrations, jobs, misc, network, prep, profile
 from .config import PROJECT_DIR, settings
 from .migrations import run_migrations
 
@@ -79,7 +79,7 @@ async def unhandled(_: Request, exc: Exception):  # never leak internals or secr
     return JSONResponse({"detail": "Something went wrong on the server. Check the server log for details."}, status_code=500)
 
 
-for r in (auth.router, profile.router, jobs.router, applications.router, network.router, misc.router, integrations.router, companies.router, extension.router):
+for r in (auth.router, profile.router, jobs.router, applications.router, network.router, misc.router, integrations.router, companies.router, extension.router, prep.router):
     app.include_router(r)
 
 if FRONTEND_DIR.exists():

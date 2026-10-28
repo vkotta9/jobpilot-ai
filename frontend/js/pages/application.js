@@ -183,6 +183,10 @@ export async function render(root, id) {
                 a.cover_letter && h("button", { onclick: () => api.file(`/api/documents/${a.cover_letter.id}/download?format=pdf`, "cover_letter.pdf") }, "⬇ Letter PDF")),
               a.approval_current ? [field("Confirmation (recommended)", confirmation), h("div", {}, record)]
                 : h("div", { class: "alert warn" }, "Approve the package first — submissions can only be recorded for an approved package."))),
+        h("div", { class: "card" },
+          h("div", { class: "card-head" }, h("h2", {}, "4 · Interview prep"), submitted ? h("span", { class: "badge good" }, "Ready") : h("span", { class: "faint" }, "available any time")),
+          h("p", { class: "small muted" }, "What the hiring process usually looks like for this role, the topics and skills to study (with free resources), likely technical questions, behavioral questions with stories from your own resume, and a day-by-day plan you can tick off."),
+          h("a", { class: "btn btn-primary", href: `#/applications/${id}/prep` }, "Open interview prep →")),
         h("div", { class: "card" }, h("h2", {}, "History"),
           h("div", { class: "timeline" }, a.events.map((e) => h("div", { class: "ev" },
             h("div", { class: "small" }, h("strong", {}, e.kind === "status" ? `${statusLabel(e.from_status)} → ${statusLabel(e.to_status)}` : e.kind.replace(/_/g, " ")),

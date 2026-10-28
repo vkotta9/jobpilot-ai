@@ -253,6 +253,7 @@ class Application(Base):
     notes: Mapped[str] = mapped_column(Text, default="")
     next_action: Mapped[str] = mapped_column(String(300), default="")
     outcome_detail: Mapped[str] = mapped_column(Text, default="")
+    prep: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)  # interview prep plan (+ which tasks you've done)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 

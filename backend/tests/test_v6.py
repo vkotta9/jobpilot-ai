@@ -198,3 +198,46 @@ def test_ai_rate_limit_waits_then_switches_model(monkeypatch):
     cfg = llm.LLMConfig("k-123456", "https://g.test/v1beta/openai", "gemini-x-flash", "gemini")
     out = llm.complete_json("t", "p", llm.strict_schema({"ok": {"type": "boolean"}}), cfg=cfg, transport=httpx.MockTransport(handler))
     assert out == {"ok": True} and seen[0] == "gemini-x-flash" and seen[-1] == "gemini-x-flash-lite"
+
+
+def test_interview_prep_plan(client, monkeypatch):
+    from app.services import interview_prep, llm
+
+    from .test_api import _mock_jobs
+
+    h, _ = make_user(client)
+    setup_profile(client, h)
+    client.post("/api/resumes", headers=h, files={"file": ("cv.docx", sample_docx_bytes(), "application/octet-stream")})
+    job = _mock_jobs(client, h)[0]
+    aid = client.post(f"/api/jobs/{job['id']}/shortlist", headers=h).json()["application_id"]
+    p = client.get(f"/api/applications/{aid}/prep", headers=h).json()["prep"]
+    assert p["role"]["family"] in interview_prep.FAMILY_NAMES and len(p["stages"]) >= 3
+    assert p["focus"] and all(f["resources"] and f["questions"] for f in p["focus"])
+    assert all(r["url"].startswith("https://") for f in p["focus"] for r in f["resources"])
+    assert len(p["behavioral"]) == 9 and any(b["story"] for b in p["behavioral"])  # stories from the resume
+    assert p["plan"] and p["ask_them"]
+    # progress is saved
+    first = p["plan"][0]["id"]
+    assert client.put(f"/api/applications/{aid}/prep/progress", headers=h, json={"done": [first, "bogus"]}).json()["done"] == [first]
+    assert client.get(f"/api/applications/{aid}/prep", headers=h).json()["prep"]["done"] == [first]
+    # AI-written questions for this posting
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: llm.LLMConfig("k", "https://x.test/v1", "m"))
+    monkeypatch.setattr(llm, "complete_json", lambda *a, **k: {"questions": [
+        {"question": "How would you design an idempotent payments API?", "type": "design", "why_likely": "Posting: REST APIs",
+         "strong_answer_covers": "idempotency keys, retries", "use_from_resume": "payments API"}]})
+    p = client.post(f"/api/applications/{aid}/prep", headers=h, json={"use_ai": True}).json()["prep"]
+    assert p["ai_questions"][0]["type"] == "design" and p["done"] == [first]
+
+
+def test_prep_knows_company_guides_and_role_families():
+    from app.services import interview_prep as ip
+
+    class J:
+        title, company = "Senior Data Scientist", "Amazon"
+        description_text = "Requirements\n- 5+ years\n- SQL, Python, statistics, A/B testing"
+
+    p = ip.build(J(), "", None, [])
+    assert p["role"]["family"] == "data_sci" and p["role"]["level"] == "senior"
+    assert p["company"]["url"].startswith("https://www.amazon.jobs/") and any("SQL" in s["name"] for s in p["stages"])
+    assert {"sql", "statistics"} <= {f["key"] for f in p["focus"]}
+    assert ip.family_of("Site Reliability Engineer", "") == "devops" and ip.level_of("Software Engineer I", None) == "entry"

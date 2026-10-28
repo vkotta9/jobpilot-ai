@@ -45,6 +45,29 @@ def main() -> int:
             rows.append(f"extension zip ERROR {e}")
         print("::notice title=timing::" + " || ".join(rows))
         return 0
+    if kind == "links":
+        from app.services import interview_prep as ip
+
+        urls = {u for _, u in ip.R.values()}
+        for sk in ip.SKILLS.values():
+            for r in sk["resources"]:
+                if not isinstance(r, str):
+                    urls.add(r[1])
+        urls |= {c["url"] for c in ip.COMPANIES.values() if c.get("url")}
+        bad, ok = [], 0
+        for u in sorted(urls):
+            try:
+                r = httpx.get(u, timeout=25, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (JobPilot link check)"})
+                if r.status_code < 400 or r.status_code in (403, 429):  # some sites block bots but the page exists
+                    ok += 1
+                    if r.status_code >= 400:
+                        bad.append(f"{u} → {r.status_code} (bot-blocked?)")
+                else:
+                    bad.append(f"{u} → {r.status_code}")
+            except Exception as e:  # noqa: BLE001
+                bad.append(f"{u} → {type(e).__name__}")
+        print(f"::notice title=links::{ok}/{len(urls)} OK || " + " || ".join(bad))
+        return 0
     if kind == "workday":
         from app.services.sources.workday import WorkdayAdapter
 

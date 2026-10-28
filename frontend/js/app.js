@@ -12,6 +12,7 @@ import * as networking from "./pages/networking.js";
 import * as followups from "./pages/followups.js";
 import * as analytics from "./pages/analytics.js";
 import * as settings from "./pages/settings.js";
+import * as prep from "./pages/prep.js";
 
 const NAV = [
   ["Workspace"],
@@ -30,7 +31,7 @@ const NAV = [
 const ROUTES = [
   [/^#\/dashboard$/, dashboard], [/^#\/profile$/, profile], [/^#\/resumes$/, resumes],
   [/^#\/discover$/, discover], [/^#\/jobs\/(\d+)$/, job], [/^#\/documents\/(\d+)$/, documentPage],
-  [/^#\/applications\/(\d+)$/, application], [/^#\/tracker$/, tracker], [/^#\/networking$/, networking],
+  [/^#\/applications\/(\d+)$/, application], [/^#\/applications\/(\d+)\/prep$/, prep], [/^#\/tracker$/, tracker], [/^#\/networking$/, networking],
   [/^#\/followups$/, followups], [/^#\/analytics$/, analytics], [/^#\/settings$/, settings],
 ];
 

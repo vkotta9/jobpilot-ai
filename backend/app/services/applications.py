@@ -228,6 +228,12 @@ def record_submission(db: Session, app: Application, confirm: bool, method: str,
           "Confirmation: " + detail.strip() if detail.strip() else "User reported submission (no confirmation provided)",
           verified=app.submission_verified)
     audit(db, app.user_id, "application.submitted", "application", app.id, method=method, verified=app.submission_verified)
+    try:  # start your interview prep plan right away (rules only: fast, no AI call)
+        from ..api.prep import build_for
+
+        build_for(db, app)
+    except Exception:  # noqa: BLE001 - never block recording a submission
+        pass
     days = (db.get(UserSettings, app.user_id).follow_up_days if db.get(UserSettings, app.user_id) else 7)
     _ensure_task(db, app, "application_follow_up", "Follow up on application", days=days)
     return {"ok": True, "verified": app.submission_verified}

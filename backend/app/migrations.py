@@ -49,12 +49,19 @@ def _m005_job_triage(conn: Connection) -> None:
         conn.execute(text("ALTER TABLE jobs ADD COLUMN triaged_at TIMESTAMP"))
 
 
+def _m006_interview_prep(conn: Connection) -> None:
+    cols = {c["name"] for c in inspect(conn).get_columns("applications")}
+    if "prep" not in cols:
+        conn.execute(text("ALTER TABLE applications ADD COLUMN prep JSON"))
+
+
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "initial schema", _m001_initial),
     (2, "store resume file bytes in database", _m002_resume_file_data),
     (3, "integration settings", _m003_integrations),
     (4, "education fit on match assessments", _m004_edu_status),
     (5, "job triage (skip / later)", _m005_job_triage),
+    (6, "interview prep plans", _m006_interview_prep),
 ]
 
 

@@ -50,7 +50,9 @@ export async function render(root) {
     const v = filters.view === "all" ? (j.application ? "applied" : j.triage === "later" ? "later" : j.triage === "skipped" ? "skipped" : "new") : filters.view;
     let actions;
     if (v === "applied") {
-      actions = [statusBadge(j.application.status), h("a", { class: "btn btn-sm", href: `#/applications/${j.application.id}`, onclick: (e) => e.stopPropagation() }, "Open →")];
+      actions = [statusBadge(j.application.status),
+        h("a", { class: "btn btn-sm", href: `#/applications/${j.application.id}/prep`, onclick: (e) => e.stopPropagation(), title: "Interview prep plan" }, "🎯 Prep"),
+        h("a", { class: "btn btn-sm", href: `#/applications/${j.application.id}`, onclick: (e) => e.stopPropagation() }, "Open →")];
     } else if (v === "skipped") {
       actions = [b("↩ Restore", "", "Move back to New", () => act([j.id], "restore", "Restored to New.")),
         b("Delete", "btn-ghost", "Remove from the recycle bin for good (it won't come back as new)", async () => {
