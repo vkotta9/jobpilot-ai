@@ -187,6 +187,9 @@ class Job(Base):
     discovered_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     last_checked_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     is_manual: Mapped[bool] = mapped_column(Boolean, default=False)
+    # your decision in Discover: None = new, "later" = on hold, "skipped" = recycle bin, "deleted" = emptied from the bin
+    triage: Mapped[Optional[str]] = mapped_column(String(20), nullable=True, index=True)
+    triaged_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
     application: Mapped[Optional["Application"]] = relationship(
         back_populates="job", uselist=False, cascade="all, delete-orphan"

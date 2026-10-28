@@ -30,6 +30,11 @@ export async function render(root, id) {
     sessionStorage.setItem("jp_autoapply", String(appId));
     location.hash = `#/applications/${appId}`;
   }, true);
+  const triage = (action, msg) => act(action === "skip" ? "✕ Skip" : action === "later" ? "⏸ Later" : "↩ Back to New", async () => {
+    await api.post(`/api/jobs/${id}/triage`, { action });
+    toast(msg);
+    if (action === "restore") render(root, id); else location.hash = "#/discover";
+  });
   const rescore = act("Recalculate", async () => { await api.post(`/api/jobs/${id}/rescore`); render(root, id); });
 
   mount(root,
@@ -42,10 +47,13 @@ export async function render(root, id) {
           h("div", { class: "sub" }, h("strong", {}, j.company), j.location ? ` · ${j.location}` : "", j.department ? ` · ${j.department}` : ""),
           h("div", { class: "row", style: { marginTop: "8px" } },
             j.remote_type !== "unknown" && h("span", { class: "badge" }, j.remote_type), j.employment_type && h("span", { class: "badge" }, j.employment_type),
-            sal && h("span", { class: "badge good" }, sal), m && recBadge(m.recommendation), j.application && statusBadge(j.application.status), j.is_simulated && simBadge()))),
+            sal && h("span", { class: "badge good" }, sal), m && recBadge(m.recommendation), j.application && statusBadge(j.application.status), j.is_simulated && simBadge(),
+            !j.application && j.triage === "skipped" && h("span", { class: "badge" }, "Skipped"), !j.application && j.triage === "later" && h("span", { class: "badge warn" }, "Saved for later")))),
       h("div", { class: "row" },
         (j.apply_url || j.url) && h("a", { class: "btn", href: j.url || j.apply_url, target: "_blank", rel: "noopener noreferrer" }, "Open official posting ↗"),
         j.application ? h("a", { class: "btn", href: `#/applications/${j.application.id}` }, "Application →") : shortlist,
+        !j.application && (j.triage === "skipped" || j.triage === "later" ? triage("restore", "Moved back to New.")
+          : [triage("skip", "Skipped — it's in Discover → Skipped if you change your mind."), triage("later", "Saved in Discover → Later.")]),
         letter, tailor, !(j.application && ["applied", "assessment", "interview", "offer", "rejected"].includes(j.application.status)) && applyNow)),
     h("div", { class: "grid side" },
       h("div", { class: "stack" },

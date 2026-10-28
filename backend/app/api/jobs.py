@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Optional
 
+from pydantic import BaseModel, Field
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -129,6 +130,7 @@ def list_jobs(
     salary_min: Optional[float] = None, status: str = "active", source: str = "",
     pipeline: str = "", include_duplicates: bool = False, include_simulated: bool = True,
     sort: str = "score", limit: int = Query(100, le=500), offset: int = 0,
+    view: str = Query("all", pattern="^(new|later|applied|skipped|all)$"),
     user: User = Depends(current_user), db: Session = Depends(get_db),
 ):
     from sqlalchemy import func
@@ -139,8 +141,9 @@ def list_jobs(
     # don't load every description (thousands of jobs × several KB) just to list 100 of them
     qry = db.query(Job).options(defer(Job.description_text), defer(Job.content_hash), selectinload(Job.application)) \
         .filter(Job.user_id == user.id)
-    if status in ("active", "closed"):
-        qry = qry.filter(Job.listing_status == status)
+    if status in ("active", "closed") and not (view == "applied" and status == "active"):
+        qry = qry.filter(Job.listing_status == status)  # your applications stay visible after a listing closes
+    qry = qry.filter(or_(Job.triage.is_(None), Job.triage != "deleted"))
     if not include_duplicates:
         qry = qry.filter(Job.duplicate_of_id.is_(None))
     if not include_simulated:
@@ -212,13 +215,24 @@ def list_jobs(
         "salary": lambda j: -(j.salary_max or j.salary_min or 0),
     }.get(sort, lambda j: -j.discovered_at.timestamp())
     jobs.sort(key=keyf)
+    # Discover's four tabs: New (not decided yet), Later (on hold), Applying & applied, Skipped (recycle bin)
+    def view_of(j: Job) -> str:
+        if j.application is not None:
+            return "applied"
+        return {"later": "later", "skipped": "skipped"}.get(j.triage or "", "new")
+
+    counts = {"new": 0, "later": 0, "applied": 0, "skipped": 0}
+    for j in jobs:
+        counts[view_of(j)] += 1
+    if view != "all":
+        jobs = [j for j in jobs if view_of(j) == view]
     total = len(jobs)
     page = jobs[offset: offset + limit]
     ids = [j.id for j in page]
     full = {m.job_id: m for m in db.query(MatchAssessment).filter(
         MatchAssessment.id.in_([latest[i][0] for i in ids if i in latest]))} if ids else {}
     snips = dict(db.query(Job.id, func.substr(Job.description_text, 1, 220)).filter(Job.id.in_(ids)).all()) if ids else {}
-    return {"total": total, "hidden_higher_degree": hidden,
+    return {"total": total, "hidden_higher_degree": hidden, "counts": counts, "view": view,
             "items": [job_out(j, full.get(j.id), snippet=snips.get(j.id) or "") for j in page]}
 
 
@@ -286,6 +300,46 @@ def shortlist(jid: int, user: User = Depends(current_user), db: Session = Depend
     app = appsvc.get_or_create(db, job)
     db.commit()
     return {"application_id": app.id, "status": app.status}
+
+
+class TriageIn(BaseModel):
+    action: str = Field(pattern="^(skip|later|restore|delete)$")
+
+
+@router.post("/jobs/{jid}/triage")
+def triage(jid: int, body: TriageIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Skip (to the recycle bin), Later (on hold), Restore (back to New) or Delete (empty from the bin — the job
+    stays recorded so it isn't found again as new)."""
+    from ..models import utcnow
+
+    job = owned(db, Job, jid, user)
+    if body.action in ("skip", "delete") and job.application is not None and job.application.submitted_at:
+        raise HTTPException(400, "You've already applied to this job — it's tracked in your applications.")
+    if body.action in ("skip", "later") and job.application is not None and job.application.status in ("shortlisted", "preparing", "awaiting_approval"):
+        db.delete(job.application)  # changed your mind before applying
+        db.flush()
+    job.triage = {"skip": "skipped", "later": "later", "restore": None, "delete": "deleted"}[body.action]
+    job.triaged_at = utcnow()
+    audit(db, user.id, f"job.{body.action}", "job", job.id)
+    db.commit()
+    return {"ok": True, "triage": job.triage}
+
+
+class BulkTriageIn(BaseModel):
+    ids: list[int] = Field(min_length=1, max_length=500)
+    action: str = Field(pattern="^(skip|later|restore|delete)$")
+
+
+@router.post("/jobs/triage-bulk")
+def triage_bulk(body: BulkTriageIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    n = 0
+    for jid in body.ids:
+        job = db.get(Job, jid)
+        if job is None or job.user_id != user.id or (job.application is not None and job.application.submitted_at):
+            continue
+        triage(jid, TriageIn(action=body.action), user, db)
+        n += 1
+    return {"ok": True, "changed": n}
 
 
 @router.delete("/jobs/{jid}")

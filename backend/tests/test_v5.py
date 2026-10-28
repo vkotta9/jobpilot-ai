@@ -223,3 +223,38 @@ def test_approval_needs_some_resume(client):
     app_id = client.post(f"/api/jobs/{job['id']}/shortlist", headers=h).json()["application_id"]
     r = client.post(f"/api/applications/{app_id}/request-approval", headers=h).json()
     assert r["ok"] is False and any("Resume library" in p for p in r["problems"])
+
+
+def test_triage_tabs_skip_later_apply_restore_delete(client):
+    from .test_api import _mock_jobs
+
+    h, _ = make_user(client)
+    setup_profile(client, h)
+    jobs = _mock_jobs(client, h)
+    ids = [j["id"] for j in jobs]
+    r = client.get("/api/jobs?view=new", headers=h).json()
+    assert r["counts"] == {"new": 5, "later": 0, "applied": 0, "skipped": 0} and r["total"] == 5
+    assert client.post(f"/api/jobs/{ids[0]}/triage", headers=h, json={"action": "skip"}).json()["triage"] == "skipped"
+    client.post(f"/api/jobs/{ids[1]}/triage", headers=h, json={"action": "later"})
+    client.post(f"/api/jobs/{ids[2]}/shortlist", headers=h)  # Apply →
+    r = client.get("/api/jobs?view=new", headers=h).json()
+    assert r["counts"] == {"new": 2, "later": 1, "applied": 1, "skipped": 1}
+    assert {j["id"] for j in client.get("/api/jobs?view=skipped", headers=h).json()["items"]} == {ids[0]}
+    assert {j["id"] for j in client.get("/api/jobs?view=later", headers=h).json()["items"]} == {ids[1]}
+    assert {j["id"] for j in client.get("/api/jobs?view=applied", headers=h).json()["items"]} == {ids[2]}
+    # filters apply inside every tab
+    assert client.get("/api/jobs?view=skipped&min_score=101", headers=h).json()["total"] == 0
+    # restore, bulk, delete
+    client.post(f"/api/jobs/{ids[0]}/triage", headers=h, json={"action": "restore"})
+    assert client.post("/api/jobs/triage-bulk", headers=h, json={"ids": [ids[3], ids[4]], "action": "skip"}).json()["changed"] == 2
+    client.post("/api/jobs/triage-bulk", headers=h, json={"ids": [ids[3]], "action": "delete"})
+    r = client.get("/api/jobs?view=new", headers=h).json()
+    assert r["counts"] == {"new": 1, "later": 1, "applied": 1, "skipped": 1}
+    assert ids[3] not in {j["id"] for j in client.get("/api/jobs?view=all", headers=h).json()["items"]}
+    # changing your mind before applying: Skip an application in progress
+    client.post(f"/api/jobs/{ids[2]}/triage", headers=h, json={"action": "skip"})
+    assert client.get("/api/jobs?view=new", headers=h).json()["counts"]["applied"] == 0
+    # a rediscovered skipped job stays skipped (decision kept)
+    s = client.get("/api/sources", headers=h).json()[0]
+    client.post(f"/api/sources/{s['id']}/run", headers=h)
+    assert client.get("/api/jobs?view=new", headers=h).json()["counts"]["skipped"] == 2

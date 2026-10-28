@@ -3,7 +3,15 @@ import { h, mount, loading, empty, scoreRing, simBadge, statusBadge, money, ago,
 
 const savedCountry = (() => { try { return localStorage.getItem("jp_country"); } catch { return null; } })();
 const filters = { q: "", location: "", country: savedCountry ?? "US", company: "", remote: "", seniority: "", min_score: "", max_score: "", posted_within: "", qualified_only: true,
-  sort: "score", status: "active", include_simulated: true };
+  sort: "score", status: "active", include_simulated: true,
+  view: (() => { try { return sessionStorage.getItem("jp_view") || "new"; } catch { return "new"; } })() };
+
+const VIEWS = [
+  ["new", "New", "Jobs you haven't decided on yet"],
+  ["later", "Later", "On hold — reconsider and apply or skip later"],
+  ["applied", "Applying & applied", "Jobs you chose to apply to, tracked to the end"],
+  ["skipped", "Skipped", "Recycle bin — restore anything you skipped by mistake"],
+];
 
 export async function render(root) {
   mount(root, loading());
@@ -13,15 +21,135 @@ export async function render(root) {
   const sources = allSources.filter((s) => s.kind === "mock");
   const results = h("div", { class: "card", style: { padding: 0 } }, loading());
 
+  const tabsBox = h("div", { class: "tabs", role: "tablist" });
+  const selected = new Set();
+  let lastResult = null;
+
+  const act = async (ids, action, label) => {
+    if (ids.length === 1) await api.post(`/api/jobs/${ids[0]}/triage`, { action });
+    else await api.post("/api/jobs/triage-bulk", { ids, action });
+    const undo = { skip: "restore", later: "restore", restore: filters.view === "later" ? "later" : "skip" }[action];
+    toast(label, "", undo && action !== "delete" ? { label: "Undo", onclick: async () => {
+      if (ids.length === 1) await api.post(`/api/jobs/${ids[0]}/triage`, { action: undo });
+      else await api.post("/api/jobs/triage-bulk", { ids, action: undo });
+      load();
+    } } : null);
+    ids.forEach((i) => selected.delete(i));
+    load();
+  };
+  const applyTo = async (j) => {
+    if (!j.application) await api.post(`/api/jobs/${j.id}/shortlist`);
+    location.hash = `#/jobs/${j.id}`;
+  };
+
+  function triRow(j) {
+    const m = j.match;
+    const sal = money(j.salary_min, j.salary_max, j.salary_currency, j.salary_interval);
+    const stop = (fn) => (e) => { e.stopPropagation(); fn(); };
+    const b = (label, cls, title, fn) => { const x = h("button", { class: `btn-sm ${cls}`, title }, label); x.addEventListener("click", stop(busy(x, fn))); return x; };
+    const v = filters.view === "all" ? (j.application ? "applied" : j.triage === "later" ? "later" : j.triage === "skipped" ? "skipped" : "new") : filters.view;
+    let actions;
+    if (v === "applied") {
+      actions = [statusBadge(j.application.status), h("a", { class: "btn btn-sm", href: `#/applications/${j.application.id}`, onclick: (e) => e.stopPropagation() }, "Open →")];
+    } else if (v === "skipped") {
+      actions = [b("↩ Restore", "", "Move back to New", () => act([j.id], "restore", "Restored to New.")),
+        b("Delete", "btn-ghost", "Remove from the recycle bin for good (it won't come back as new)", async () => {
+          if (await confirmDialog("Delete this job for good?", "It's removed from the recycle bin and won't show up as new again.", "Delete", true)) await act([j.id], "delete", "Deleted.");
+        })];
+    } else {
+      actions = [
+        b("✕ Skip", "btn-ghost", "Not interested — moves it to Skipped (S)", () => act([j.id], "skip", `Skipped ${j.title}.`)),
+        v === "later" ? b("↩ New", "btn-ghost", "Move back to New", () => act([j.id], "restore", "Moved back to New."))
+          : b("⏸ Later", "", "Keep for later — moves it to Later (L)", () => act([j.id], "later", `Saved ${j.title} for later.`)),
+        b("Apply →", "btn-primary", "Start applying — opens the job (A)", () => applyTo(j)),
+      ];
+    }
+    const cb = h("input", { type: "checkbox", "aria-label": `Select ${j.title}`, checked: selected.has(j.id), style: { margin: 0 } });
+    cb.addEventListener("click", (e) => e.stopPropagation());
+    cb.addEventListener("change", () => { cb.checked ? selected.add(j.id) : selected.delete(j.id); drawBulk(); });
+    const card = h("div", { class: "job-card", tabindex: 0, role: "link", style: { gridTemplateColumns: "auto auto 1fr auto" },
+      onclick: () => (location.hash = `#/jobs/${j.id}`),
+      onkeydown: (e) => {
+        if (e.target !== card) return;
+        if (e.key === "Enter") location.hash = `#/jobs/${j.id}`;
+        if (v === "new" || v === "later") {
+          if (e.key === "s" || e.key === "S") act([j.id], "skip", `Skipped ${j.title}.`);
+          if ((e.key === "l" || e.key === "L") && v === "new") act([j.id], "later", `Saved ${j.title} for later.`);
+          if (e.key === "a" || e.key === "A") applyTo(j);
+        }
+      } },
+      v === "applied" ? h("span") : cb,
+      scoreRing(m ? m.score : null),
+      h("div", {},
+        h("div", { class: "t" }, j.title),
+        h("div", { class: "m" }, h("strong", {}, j.company), j.location && h("span", {}, "· " + j.location),
+          j.remote_type !== "unknown" && h("span", { class: "badge" }, j.remote_type), sal && h("span", { class: "badge good" }, sal),
+          j.is_simulated && simBadge(), j.listing_status === "closed" && h("span", { class: "badge bad" }, "Closed"),
+          m && (m.flags || []).some((f) => f.startsWith("Work authorization")) && h("span", { class: "badge warn" }, "Sponsorship conflict"),
+          m && eduBadge(m.edu_status), m && v !== "applied" && h("span", { class: `badge ${m.recommendation === "apply" ? "good" : m.recommendation === "review" ? "warn" : ""}` },
+            { apply: "strong match", review: "worth a look", skip: "weak match" }[m.recommendation] || m.recommendation)),
+        h("div", { class: "faint row", style: { marginTop: "3px", gap: "6px" } }, sourceCredit(j.source_kind) || j.source_kind,
+          `· checked ${ago(j.last_checked_at)}`, j.posted_at ? ` · posted ${ago(j.posted_at)}` : "",
+          v === "skipped" && j.triaged_at ? ` · skipped ${ago(j.triaged_at)}` : "", v === "later" && j.triaged_at ? ` · saved ${ago(j.triaged_at)}` : "")),
+      h("div", { class: "row", style: { gap: "6px", justifyContent: "flex-end", flexWrap: "nowrap" } }, actions));
+    return card;
+  }
+
+  const bulkBar = h("div");
+  function drawBulk() {
+    const v = filters.view;
+    if (!selected.size || v === "applied") return mount(bulkBar);
+    const ids = [...selected];
+    const bb = (label, action, cls = "") => { const x = h("button", { class: `btn-sm ${cls}` }, label); x.addEventListener("click", busy(x, () => act(ids, action, `${label.replace(/^\W+\s*/, "")}: ${ids.length} job(s).`))); return x; };
+    mount(bulkBar, h("div", { class: "row between", style: { padding: "8px 16px", background: "var(--surface-2)", borderBottom: "1px solid var(--border)" } },
+      h("span", { class: "small" }, `${ids.length} selected`),
+      h("div", { class: "row", style: { gap: "6px" } },
+        v === "skipped" ? [bb("↩ Restore", "restore")] : [bb("✕ Skip", "skip"), v === "new" ? bb("⏸ Later", "later") : bb("↩ Back to New", "restore")],
+        h("button", { class: "btn-sm btn-ghost", onclick: () => { selected.clear(); drawBulk(); load(); } }, "Clear"))));
+  }
+
+  function drawTabs(counts) {
+    mount(tabsBox, VIEWS.map(([k, label, tip]) => h("button", {
+      class: "tab" + (filters.view === k ? " active" : ""), role: "tab", "aria-selected": filters.view === k, title: tip,
+      onclick: () => { filters.view = k; selected.clear(); try { sessionStorage.setItem("jp_view", k); } catch { /* */ } load(); } },
+      label, h("span", { class: "count" }, String(counts?.[k] ?? "")))));
+  }
+
   const load = async () => {
     mount(results, loading());
     const r = await api.get("/api/jobs" + qs(filters));
+    lastResult = r;
+    drawTabs(r.counts);
+    const v = filters.view;
+    const visibleIds = r.items.filter((j) => !j.application).map((j) => j.id);
+    const selAll = h("input", { type: "checkbox", "aria-label": "Select all shown", checked: visibleIds.length > 0 && visibleIds.every((i) => selected.has(i)) });
+    selAll.addEventListener("change", () => { visibleIds.forEach((i) => selAll.checked ? selected.add(i) : selected.delete(i)); load(); });
+    const emptyText = {
+      new: ["✓", "You're all caught up", "No new jobs match these filters. Run a search, or widen the filters."],
+      later: ["⏸", "Nothing on hold", "Click ⏸ Later on a job to keep it here and decide later."],
+      applied: ["→", "No applications yet", "Click Apply → on a job to start applying; it's tracked here."],
+      skipped: ["🗑", "Recycle bin is empty", "Jobs you skip land here, so you can restore them."],
+      all: ["⌕", "No jobs match", "Try widening the filters or run a search."],
+    }[v];
     mount(results,
       h("div", { class: "row between", style: { padding: "12px 16px", borderBottom: "1px solid var(--border)" } },
-        h("div", {}, h("strong", {}, `${r.total} job${r.total === 1 ? "" : "s"}`),
+        h("div", { class: "row", style: { gap: "10px" } }, v !== "applied" && r.items.length ? selAll : null,
+          h("strong", {}, `${r.total} job${r.total === 1 ? "" : "s"}`),
           r.hidden_higher_degree ? h("span", { class: "faint small" }, ` · ${r.hidden_higher_degree} hidden because they require a higher degree`) : null),
-        h("span", { class: "faint" }, "Duplicates across sources are merged. Closed listings are hidden unless you filter for them.")),
-      r.items.length ? r.items.map(jobRow) : empty("⌕", "No jobs match", sources.length ? "Try widening the filters or run a search." : "Add a job source above, then run a search."));
+        h("div", { class: "row", style: { gap: "8px" } },
+          (v === "new" || v === "later") && h("span", { class: "faint small" }, "Tip: select a job and press S skip · L later · A apply"),
+          v === "skipped" && r.items.length ? (() => {
+            const x = h("button", { class: "btn-sm btn-ghost" }, "Empty recycle bin");
+            x.addEventListener("click", busy(x, async () => {
+              if (!(await confirmDialog("Empty the recycle bin?", `Deletes the ${r.total} skipped job(s) shown here for good. They won't come back as new.`, "Empty bin", true))) return;
+              await api.post("/api/jobs/triage-bulk", { ids: r.items.map((j) => j.id), action: "delete" });
+              toast("Recycle bin emptied."); load();
+            }));
+            return x;
+          })() : null)),
+      bulkBar,
+      r.items.length ? r.items.map(triRow) : empty(...emptyText));
+    drawBulk();
   };
 
   // ---- filter bar
@@ -104,6 +232,7 @@ export async function render(root) {
             h("button", { class: "btn-sm", onclick: () => { Object.assign(filters, s.filters); render(root); } }, "★ " + s.name),
             h("button", { class: "btn-sm btn-ghost", "aria-label": `Delete saved search ${s.name}`, onclick: async () => { await api.del(`/api/saved-searches/${s.id}`); render(root); } }, "✕"))),
           saveSearch))),
+    tabsBox,
     results,
     h("h2", { style: { margin: "28px 0 0" } }, "Where JobPilot looks for jobs"),
     autoCard(auto, root),

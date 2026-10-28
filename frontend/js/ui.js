@@ -30,10 +30,15 @@ export function mount(target, ...children) {
   append(target, children);
 }
 
-export function toast(msg, kind = "") {
+export function toast(msg, kind = "", action = null) {
   const t = h("div", { class: `toast ${kind}` }, msg);
+  if (action) {
+    const b = h("button", { class: "btn-sm", style: { marginLeft: "10px" } }, action.label);
+    b.addEventListener("click", () => { t.remove(); action.onclick(); });
+    t.appendChild(b);
+  }
   document.getElementById("toasts").appendChild(t);
-  setTimeout(() => t.remove(), kind === "bad" ? 6500 : 3500);
+  setTimeout(() => t.remove(), kind === "bad" ? 6500 : action ? 6000 : 3500);
 }
 
 export function modal(title, body, actions = []) {
