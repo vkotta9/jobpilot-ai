@@ -85,7 +85,8 @@ def _mark_duplicate(db: Session, job: Job) -> None:
         job.duplicate_of_id = original.id
 
 
-def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.BaseTransport] = None) -> dict:
+def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.BaseTransport] = None,
+               max_interval_hours: Optional[float] = None) -> dict:
     adapter_cls = ADAPTERS.get(source.kind)
     if adapter_cls is None:
         raise SourceError(f"Unknown source kind: {source.kind}")
@@ -94,6 +95,8 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
     stats = {"source_id": source.id, "kind": source.kind, "new": 0, "updated": 0, "unchanged": 0,
              "closed": 0, "error": None, "simulated": adapter_cls.is_simulated}
     interval = adapter_cls.interval_for(source.identifier)
+    if max_interval_hours is not None:  # priority companies are checked more often than the default
+        interval = min(interval or max_interval_hours, max_interval_hours)
     if interval and source.last_run_at and source.last_status == "ok" and \
             utcnow() - source.last_run_at < timedelta(hours=interval):
         stats["skipped"] = f"{source.kind}: searched recently — it's checked at most once every {interval}h."
@@ -124,6 +127,7 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
             n.company = source.display_name
     seen: set[str] = {n.external_id for n in listings}  # everything still on the board (for closed detection)
     new_ids: list[int] = []
+    brand_new: list[int] = []
     stats["on_board"] = len(listings)
     if keep:
         listings = [n for n in listings if keep(n.title)]
@@ -133,6 +137,8 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
         stats[state] += 1
         if state in ("new", "updated"):
             new_ids.append(job.id)
+        if state == "new":
+            brand_new.append(job.id)
     # A company board's own listing is authoritative: anything missing is no longer posted.
     # (Keyword searches return a changing subset, so absence there means nothing.)
     closable = [] if (adapter_cls.keyword or getattr(adapter_cls, "partial", False)) else db.query(Job).filter(
@@ -150,6 +156,7 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
           **{k: v for k, v in stats.items() if k in ("new", "updated", "closed")})
     db.commit()
     stats["changed_job_ids"] = new_ids
+    stats["new_job_ids"] = brand_new
     return stats
 
 
@@ -173,7 +180,7 @@ def search_context(db: Session, user_id: int) -> dict:
     prefs = (profile.preferences or {}) if profile else {}
     creds: dict = {}
     for row in db.query(IntegrationSetting).filter_by(user_id=user_id).all():
-        if row.provider != "ai":  # provider fields use distinct names (app_id, rapidapi_key, usajobs_key, …)
+        if row.provider not in ("ai", "email"):  # provider fields use distinct names (app_id, rapidapi_key, usajobs_key, …)
             creds.update(unseal(row.data_encrypted))
     locations = [l for l in prefs.get("locations") or [] if l.strip()]
     return {"queries": search_queries(profile), "locations": locations, "credentials": creds}

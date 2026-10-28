@@ -74,6 +74,10 @@ class UserSettings(Base):
     # per-workflow toggles: {"discovery": true, "follow_up_tasks": true, "digest": true}
     workflows: Mapped[dict] = mapped_column(JSON, default=dict)
     last_auto_search_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    # priority-company alerts: {"enabled", "start_hour", "end_hour", "days": [0..6], "timezone", "min_score", "email"}
+    priority_alerts: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
+    priority_last_run_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    priority_last_result: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
 
 
 class CandidateProfile(Base):
@@ -141,6 +145,7 @@ class JobSource(Base):
     last_status: Mapped[str] = mapped_column(String(40), default="never_run")
     last_error: Mapped[str] = mapped_column(Text, default="")
     last_job_count: Mapped[int] = mapped_column(Integer, default=0)
+    priority: Mapped[bool] = mapped_column(Boolean, default=False)  # checked hourly in your alert window, with email alerts
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
     __table_args__ = (UniqueConstraint("user_id", "kind", "identifier", name="uq_source"),)
 
@@ -190,6 +195,7 @@ class Job(Base):
     # your decision in Discover: None = new, "later" = on hold, "skipped" = recycle bin, "deleted" = emptied from the bin
     triage: Mapped[Optional[str]] = mapped_column(String(20), nullable=True, index=True)
     triaged_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    alerted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)  # emailed to you as a new priority job
 
     application: Mapped[Optional["Application"]] = relationship(
         back_populates="job", uselist=False, cascade="all, delete-orphan"

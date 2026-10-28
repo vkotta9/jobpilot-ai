@@ -30,7 +30,12 @@ def tick() -> list[int]:
     from .services.discovery import run_all_sources
 
     from .services.discovery import score_unscored
+    from .services import priority
 
+    try:
+        priority.tick_all(session_scope)  # priority companies: hourly inside your alert window
+    except Exception:  # pragma: no cover
+        log.exception("Priority tick failed")
     ran = []
     with session_scope() as db:  # catch up on jobs left unscored by an interrupted run
         from .models import CandidateProfile

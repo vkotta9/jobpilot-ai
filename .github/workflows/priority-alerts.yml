@@ -1,0 +1,22 @@
+name: Priority company alerts (hourly wake-up)
+
+# The free Render server sleeps when idle. This wakes it every hour and asks it to check whatever is due:
+# each user's priority companies are checked only inside their own alert hours (default 10 AM–5 PM Eastern,
+# Mon–Fri), so the server decides — this schedule just makes sure it's awake.
+on:
+  schedule:
+    - cron: "2 * * * *"
+  workflow_dispatch:
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Wake JobPilot and run due checks
+        run: |
+          for i in 1 2 3; do
+            if curl -fsS --max-time 120 -X POST https://jobpilot-ai-45bq.onrender.com/api/cron/priority; then exit 0; fi
+            sleep 20
+          done
+          exit 1

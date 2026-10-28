@@ -55,6 +55,20 @@ def _m006_interview_prep(conn: Connection) -> None:
         conn.execute(text("ALTER TABLE applications ADD COLUMN prep JSON"))
 
 
+def _m007_priority_alerts(conn: Connection) -> None:
+    insp = inspect(conn)
+    add = {
+        "job_sources": [("priority", "BOOLEAN DEFAULT FALSE")],
+        "user_settings": [("priority_alerts", "JSON"), ("priority_last_run_at", "TIMESTAMP"), ("priority_last_result", "JSON")],
+        "jobs": [("alerted_at", "TIMESTAMP")],
+    }
+    for table, cols in add.items():
+        have = {c["name"] for c in insp.get_columns(table)}
+        for name, typ in cols:
+            if name not in have:
+                conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {name} {typ}"))
+
+
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "initial schema", _m001_initial),
     (2, "store resume file bytes in database", _m002_resume_file_data),
@@ -62,6 +76,7 @@ MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (4, "education fit on match assessments", _m004_edu_status),
     (5, "job triage (skip / later)", _m005_job_triage),
     (6, "interview prep plans", _m006_interview_prep),
+    (7, "priority companies and email alerts", _m007_priority_alerts),
 ]
 
 

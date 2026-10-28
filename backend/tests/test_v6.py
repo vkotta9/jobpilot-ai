@@ -241,3 +241,76 @@ def test_prep_knows_company_guides_and_role_families():
     assert p["company"]["url"].startswith("https://www.amazon.jobs/") and any("SQL" in s["name"] for s in p["stages"])
     assert {"sql", "statistics"} <= {f["key"] for f in p["focus"]}
     assert ip.family_of("Site Reliability Engineer", "") == "devops" and ip.level_of("Software Engineer I", None) == "entry"
+
+
+def test_priority_window_is_in_your_time_zone():
+    from datetime import datetime, timezone
+
+    from app.services import priority as pr
+
+    cfg = dict(pr.DEFAULTS)
+    at = lambda *a: datetime(*a, tzinfo=timezone.utc)  # noqa: E731
+    assert pr.in_window(cfg, at(2026, 10, 28, 14, 30))          # Wed 10:30 EDT
+    assert not pr.in_window(cfg, at(2026, 10, 28, 13, 59))      # 9:59 EDT
+    assert pr.in_window(cfg, at(2026, 10, 28, 21, 30))          # 5:30 PM EDT (the 5 PM hour)
+    assert not pr.in_window(cfg, at(2026, 10, 28, 22, 5))       # 6:05 PM
+    assert not pr.in_window(cfg, at(2026, 11, 2, 14, 30))       # Mon 9:30 EST (after the clocks change)
+    assert pr.in_window(cfg, at(2026, 11, 2, 15, 30))           # Mon 10:30 EST
+    assert not pr.in_window(cfg, at(2026, 10, 31, 15, 0))       # Saturday
+
+
+def test_priority_company_alerts_new_roles_by_email(client, monkeypatch):
+    from datetime import timedelta
+
+    from app.db import session_scope
+    from app.models import Job, JobSource, utcnow
+    from app.services import notify, priority
+    from app.services.sources import mock as mock_src
+    from app.services.sources.base import NormalizedJob
+
+    h, email = make_user(client)
+    setup_profile(client, h)
+    s = client.post("/api/sources", json={"kind": "mock", "identifier": "acme"}, headers=h).json()
+    assert client.post("/api/priority/run", headers=h).status_code == 400  # nothing starred yet
+    client.post(f"/api/companies/{s['id']}/priority", headers=h, json={"on": True})
+    g = client.get("/api/priority", headers=h).json()
+    assert g["configured"] and g["config"]["start_hour"] == 10 and [c["id"] for c in g["companies"]] == [s["id"]]
+    assert g["email"]["configured"] is False
+    # email via Resend
+    assert client.put("/api/integrations/email", headers=h, json={"resend_key": "nope"}).status_code == 400
+    assert client.put("/api/integrations/email", headers=h, json={"resend_key": "re_test_123456"}).json()["to"] == email
+    sent = []
+    monkeypatch.setattr(notify, "send_email", lambda cfg, subject, html, text, transport=None: sent.append((cfg["to"], subject, html)) or "id")
+    t = client.post("/api/integrations/email/test", headers=h)
+    assert t.status_code == 200 and t.json()["ok"] and len(sent) == 1, t.text
+    uid = client.get("/api/auth/me", headers=h).json()["id"]
+    # first check = starting point: today's open roles aren't "new", no email
+    with session_scope() as db:
+        r = priority.run_for_user(db, uid)
+    assert r["new"] == 0 and r["baseline"][0]["open_roles"] == 5 and len(sent) == 1
+    # a new role appears an hour later
+    orig = mock_src.MockAdapter.fetch
+
+    def fetch_more(self):
+        return orig(self) + [NormalizedJob(external_id="new-1", title="Backend Engineer, Payments", company="Acme (Demo)",
+                                           location="New York, NY", description_text="Python FastAPI PostgreSQL " * 30,
+                                           url="https://example.com/jobs/new-1")]
+
+    monkeypatch.setattr(mock_src.MockAdapter, "fetch", fetch_more)
+    with session_scope() as db:
+        db.get(JobSource, s["id"]).last_run_at = utcnow() - timedelta(hours=2)
+        db.commit()
+        r = priority.run_for_user(db, uid)
+    assert r["new"] == 1 and r["emailed"] == 1 and len(sent) == 2
+    to, subject, html = sent[-1]
+    assert to == email and "Backend Engineer, Payments" in subject and "ATS" in html and "Backend Engineer, Payments" in html
+    with session_scope() as db:
+        assert db.query(Job).filter_by(external_id="new-1").one().alerted_at is not None
+        db.get(JobSource, s["id"]).last_run_at = utcnow() - timedelta(hours=2)
+        db.commit()
+        assert priority.run_for_user(db, uid)["new"] == 0  # never emailed twice
+    assert len(sent) == 2
+    # settings
+    assert client.put("/api/priority", headers=h, json={"start_hour": 9, "end_hour": 18, "days": [0, 1, 2, 3, 4], "min_score": 60}).json()["config"]["min_score"] == 60
+    assert client.put("/api/priority", headers=h, json={"start_hour": 18, "end_hour": 9}).status_code == 400
+    assert client.get("/api/cron/priority").json()["started"] in (True, False)

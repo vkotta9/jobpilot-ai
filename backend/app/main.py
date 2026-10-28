@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import __version__
-from .api import applications, auth, companies, extension, integrations, jobs, misc, network, prep, profile
+from .api import alerts, applications, auth, companies, extension, integrations, jobs, misc, network, prep, profile
 from .config import PROJECT_DIR, settings
 from .migrations import run_migrations
 
@@ -44,9 +44,22 @@ app = FastAPI(title="JobPilot AI", version=__version__, lifespan=lifespan,
               docs_url="/api/docs", openapi_url="/api/openapi.json")
 
 
+def _remember_public_url(request: Request) -> None:
+    """The site's public address, for links in alert emails (unless JOBPILOT_PUBLIC_URL is set)."""
+    from .services.notify import PUBLIC_URL
+
+    if PUBLIC_URL["value"] or request.url.hostname in (None, "testserver"):
+        return
+    host = request.headers.get("x-forwarded-host") or request.headers.get("host") or ""
+    proto = request.headers.get("x-forwarded-proto") or request.url.scheme
+    if host and not host.startswith(("127.", "localhost", "0.0.0.0")):
+        PUBLIC_URL["value"] = f"{proto}://{host}"
+
+
 @app.middleware("http")
 async def security_headers(request: Request, call_next):
     resp = await call_next(request)
+    _remember_public_url(request)
     resp.headers["X-Content-Type-Options"] = "nosniff"
     resp.headers["X-Frame-Options"] = "DENY"
     resp.headers["Referrer-Policy"] = "no-referrer"
@@ -79,7 +92,8 @@ async def unhandled(_: Request, exc: Exception):  # never leak internals or secr
     return JSONResponse({"detail": "Something went wrong on the server. Check the server log for details."}, status_code=500)
 
 
-for r in (auth.router, profile.router, jobs.router, applications.router, network.router, misc.router, integrations.router, companies.router, extension.router, prep.router):
+for r in (auth.router, alerts.router, profile.router, jobs.router, applications.router, network.router, misc.router, integrations.router,
+          companies.router, extension.router, prep.router):  # alerts first: its /integrations/email routes are more specific
     app.include_router(r)
 
 if FRONTEND_DIR.exists():

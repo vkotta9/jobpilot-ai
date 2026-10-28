@@ -15,9 +15,9 @@ const VIEWS = [
 
 export async function render(root) {
   mount(root, loading());
-  const [allSources, catalog, saved, auto, following, popular, top] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
+  const [allSources, catalog, saved, auto, following, popular, top, prio] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
     api.get("/api/saved-searches"), api.get("/api/discovery/auto"), api.get("/api/companies"), api.get("/api/companies/popular"),
-    api.get("/api/companies/top-tech")]);
+    api.get("/api/companies/top-tech"), api.get("/api/priority")]);
   const sources = allSources.filter((s) => s.kind === "mock");
   const results = h("div", { class: "card", style: { padding: 0 } }, loading());
 
@@ -238,6 +238,7 @@ export async function render(root) {
     results,
     h("h2", { style: { margin: "28px 0 0" } }, "Where JobPilot looks for jobs"),
     autoCard(auto, root),
+    priorityCard(prio, following, root),
     topTechCard(top, root),
     companiesCard(following, popular, root),
     catalog.some((c) => c.kind === "mock") && h("details", { class: "card", style: { marginTop: "16px" } },
@@ -324,6 +325,61 @@ function topTechCard(top, root) {
       h("div", { style: { marginTop: "10px" } }, groups, h("div", { class: "row", style: { justifyContent: "flex-end" } }, bSel))));
 }
 
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const hourLabel = (x) => `${((x + 11) % 12) + 1} ${x < 12 ? "AM" : "PM"}`;
+
+function priorityCard(pr, following, root) {
+  const cfg = pr.config;
+  const hours = (val) => h("select", {}, Array.from({ length: 24 }, (_, i) => h("option", { value: i, selected: i === val }, hourLabel(i))));
+  const start = hours(cfg.start_hour), end = hours(cfg.end_hour);
+  const days = DAYS.map((d, i) => h("label", { class: "check small" }, h("input", { type: "checkbox", value: i, checked: cfg.days.includes(i) }), d));
+  const tz = h("select", {}, [["America/New_York", "Eastern (New York)"], ["America/Chicago", "Central (Chicago)"], ["America/Denver", "Mountain (Denver)"],
+    ["America/Los_Angeles", "Pacific (Los Angeles)"], ["Asia/Kolkata", "India (IST)"], ["Europe/London", "UK (London)"], ["UTC", "UTC"]]
+    .map(([v, l]) => h("option", { value: v, selected: cfg.timezone === v }, l)));
+  const minScore = h("select", {}, [[0, "Any ATS score"], [50, "50+"], [60, "60+"], [70, "70+"], [80, "80+"]].map(([v, l]) => h("option", { value: v, selected: cfg.min_score === v }, l)));
+  const enabled = h("input", { type: "checkbox", checked: cfg.enabled });
+  const save = h("button", { class: "btn-primary" }, "Save schedule");
+  save.addEventListener("click", busy(save, async () => {
+    await api.put("/api/priority", { enabled: enabled.checked, start_hour: Number(start.value), end_hour: Number(end.value), timezone: tz.value,
+      min_score: Number(minScore.value), email: true, days: days.map((l) => l.querySelector("input")).filter((i) => i.checked).map((i) => Number(i.value)) });
+    toast("Priority alert schedule saved."); render(root);
+  }));
+  const runNow = h("button", {}, "Check now");
+  runNow.addEventListener("click", busy(runNow, async () => {
+    const r = await api.post("/api/priority/run");
+    toast(r.started ? "Checking your priority companies — new matching roles will be emailed to you." : "A check is already running.");
+    setTimeout(() => render(root), 30000);
+  }));
+  const stars = pr.companies;
+  const last = pr.last_result;
+  const lastLine = last ? [
+    `Last check ${new Date(pr.last_run_at).toLocaleString()}: ${last.companies} compan${last.companies === 1 ? "y" : "ies"}, `,
+    h("strong", {}, `${last.new} new matching role${last.new === 1 ? "" : "s"}`),
+    last.emailed ? ` — emailed to ${pr.email.to}.` : ".",
+    (last.baseline || []).length ? h("div", { class: "faint" }, "First check for " + last.baseline.map((b) => `${b.company} (${b.open_roles} open roles)`).join(", ") + " — those are your starting point; you'll be emailed about roles posted from now on.") : null,
+    last.email_error ? h("div", { style: { color: "var(--warn)" } }, last.email_error) : null,
+    (last.errors || []).length ? h("div", { style: { color: "var(--warn)" } }, last.errors.join(" · ")) : null,
+    (last.jobs || []).length ? h("div", { style: { marginTop: "4px" } }, last.jobs.map((j) => h("a", { class: "chip", href: `#/jobs/${j.id}` }, `${j.title} · ${j.company} · ATS ${j.score ?? "–"}`))) : null,
+  ] : "No checks yet.";
+  return h("div", { class: "card", style: { marginTop: "16px" } },
+    h("div", { class: "card-head" }, h("h2", {}, "★ Priority companies — hourly checks & email alerts"),
+      h("span", { class: `badge ${pr.in_window_now && cfg.enabled ? "good" : ""}` }, cfg.enabled ? (pr.in_window_now ? "checking hourly now" : "outside your alert hours") : "paused")),
+    h("p", { class: "small muted" }, `Every hour from ${hourLabel(cfg.start_hour)} to ${hourLabel(cfg.end_hour)} (${cfg.days.map((d) => DAYS[d]).join(", ")}), JobPilot checks these companies for new roles matching your target titles and emails you each one with its ATS match. Star (☆) a company under “Companies I follow” to add it.`),
+    !pr.email.configured && h("div", { class: "alert warn small" }, "Email isn't set up yet — ", h("a", { href: "#/settings" }, "Settings → Connections → Email alerts"), " (free Resend key). Until then, new roles show here and in Discover."),
+    h("div", { class: "row", style: { gap: "6px", flexWrap: "wrap", margin: "6px 0" } },
+      stars.length ? stars.map((c) => h("span", { class: "chip" }, "★ ", c.display_name || c.identifier,
+        h("button", { class: "btn-ghost btn-sm", style: { padding: "0 4px" }, "aria-label": `Remove ${c.display_name} from priority`,
+          onclick: async () => { await api.post(`/api/companies/${c.id}/priority`, { on: false }); render(root); } }, "✕")))
+        : h("span", { class: "muted small" }, following.length ? "No priority companies yet — click ☆ next to a company you follow below." : "Follow some companies below, then star the ones you care most about.")),
+    h("div", { class: "small", style: { margin: "8px 0" } }, lastLine),
+    h("details", {}, h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Alert schedule"),
+      h("div", { class: "grid cols-4", style: { marginTop: "8px", alignItems: "end" } },
+        h("label", {}, "From", start), h("label", {}, "To (last check)", end), h("label", {}, "Time zone", tz), h("label", {}, "Only email if ATS is", minScore)),
+      h("div", { class: "row", style: { gap: "10px", margin: "8px 0" } }, days),
+      h("label", { class: "check small" }, enabled, "Alerts on")),
+    h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px" } }, stars.length > 0 && runNow, save));
+}
+
 function companiesCard(following, popular, root) {
   const ta = h("textarea", { rows: 4, placeholder: "One per line — a careers page link or just the company name, e.g.\nhttps://stripe.com/jobs\nDatabricks\nhttps://jobs.lever.co/palantir" });
   const results = h("div");
@@ -357,6 +413,11 @@ function companiesCard(following, popular, root) {
   }));
 
   const list = following.length ? h("div", { class: "row", style: { gap: "6px" } }, following.map((s) => h("span", { class: "chip", title: `${PLATFORM[s.kind] || s.kind}: ${s.identifier} · last checked ${s.last_run_at ? new Date(s.last_run_at).toLocaleString() : "never"}${s.last_error ? " · " + s.last_error : ""}` },
+    h("button", { class: "btn-ghost btn-sm", title: s.priority ? "Priority: checked every hour in your alert window, with email alerts. Click to remove." : "Make this a priority company (hourly checks + email alerts)",
+      "aria-label": s.priority ? `Remove ${s.display_name} from priority companies` : `Make ${s.display_name} a priority company`,
+      style: { padding: "0 4px", color: s.priority ? "#f59e0b" : "var(--muted)" },
+      onclick: async () => { await api.post(`/api/companies/${s.id}/priority`, { on: !s.priority }); toast(s.priority ? "Removed from priority companies." : `★ ${s.display_name || s.identifier} is now a priority company.`); render(root); } },
+      s.priority ? "★" : "☆"),
     s.last_status === "error" ? "⚠ " : "", s.display_name || s.identifier, h("span", { class: "faint" }, ` · ${s.last_job_count}`),
     h("button", { class: "btn-ghost btn-sm", "aria-label": `Stop following ${s.display_name}`, style: { padding: "0 4px" }, onclick: async () => { await api.del(`/api/sources/${s.id}`); render(root); } }, "✕"))))
     : h("p", { class: "muted small" }, "You aren't following any companies yet.");

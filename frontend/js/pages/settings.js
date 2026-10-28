@@ -105,9 +105,38 @@ function connectionsCard(c, root) {
         h("div", { class: "row" }, saveAdz, c.adzuna.configured && h("button", { onclick: test("adzuna") }, "Test"), c.adzuna.configured && h("button", { class: "btn-danger", onclick: remove("adzuna") }, "Remove")),
         h("p", { class: "faint" }, "Remotive, Himalayas, Jobicy, The Muse and Arbeitnow work without any key."))),
     h("hr"),
-    h("div", { class: "grid cols-2" }, jsearchBox(c, root, test, remove), usajobsBox(c, root, test, remove)));
+    h("div", { class: "grid cols-2" }, jsearchBox(c, root, test, remove), usajobsBox(c, root, test, remove)),
+    h("hr"),
+    h("div", { class: "grid cols-2" }, emailBox(root), h("div")));
   setTimeout(setHelp, 0);
   return card;
+}
+
+function emailBox(root) {
+  const box = h("div", { class: "stack" }, h("p", { class: "small muted" }, "Loading…"));
+  api.get("/api/priority").then((pr) => {
+    const e = pr.email;
+    const key = h("input", { type: "password", autocomplete: "off", placeholder: e.configured ? `saved ${e.key_hint} — leave blank to keep` : "re_…" });
+    const to = h("input", { type: "email", value: e.to || "", placeholder: "the email you signed up to Resend with" });
+    const save = h("button", { class: "btn-primary" }, "Save");
+    save.addEventListener("click", busy(save, async () => {
+      await api.put("/api/integrations/email", { resend_key: key.value, to: to.value });
+      toast("Email saved. Sending a test…");
+      try { const r = await api.post("/api/integrations/email/test"); toast(r.message); } catch {}
+      render(root);
+    }));
+    const testBtn = h("button", {}, "Send test email");
+    testBtn.addEventListener("click", busy(testBtn, async () => { const r = await api.post("/api/integrations/email/test"); toast(r.message); }));
+    mount(box,
+      h("div", { class: "row between" }, h("h3", {}, "Email alerts — new jobs at your priority companies"),
+        h("span", { class: `badge ${e.configured ? "good" : "warn"}` }, e.configured ? `on · ${e.to}` : "not set up")),
+      h("p", { class: "small muted" }, "JobPilot emails you through ", h("a", { href: "https://resend.com/signup", target: "_blank", rel: "noopener noreferrer" }, "Resend ↗"),
+        " (free: 3,000 emails/month, 100/day). 1) Sign up with the email you want alerts at. 2) In Resend, open API Keys → Create API key (Sending access). ",
+        "3) Paste it here. Without your own domain, Resend can only send to the address you signed up with — so use that address below."),
+      field("Resend API key", key), field("Send alerts to", to),
+      h("div", { class: "row" }, save, e.configured && testBtn, e.configured && h("button", { class: "btn-danger", onclick: async () => { await api.del("/api/integrations/email"); render(root); } }, "Remove")));
+  });
+  return box;
 }
 
 function jsearchBox(c, root, test, remove) {
