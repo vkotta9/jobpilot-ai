@@ -138,6 +138,38 @@ def cron(request: Request):
     return {"started": True, "at": datetime.now(timezone.utc).isoformat()}
 
 
+@router.post("/priority/sample-email", dependencies=[Depends(rate_limit("email-test", 10, 3600))])
+def sample_email(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Email yourself a real alert built from your best current matches (marked as a sample), to see what alerts look like."""
+    from ..models import Job, MatchAssessment
+
+    cfg = notify.email_config(db, user.id)
+    if cfg is None:
+        raise HTTPException(400, "Set up email first: Settings → Connections → Email alerts.")
+    prio = {s.id for s in db.query(JobSource).filter(JobSource.user_id == user.id, JobSource.priority.is_(True))}
+    rows = []
+    for j in db.query(Job).filter(Job.user_id == user.id, Job.listing_status == "active", Job.duplicate_of_id.is_(None)).all():
+        if j.triage in ("skipped", "deleted"):
+            continue
+        m = db.query(MatchAssessment).filter_by(job_id=j.id).order_by(MatchAssessment.id.desc()).first()
+        rows.append((j, m.score if m else None, j.source_id in prio))
+    if not rows:
+        raise HTTPException(400, "You don't have any jobs yet — run a search in Discover first.")
+    rows.sort(key=lambda r: (not r[2], -(r[1] or 0)))
+    jobs = [(j, sc) for j, sc, _ in rows[:3]]
+    subject, html_body, text_body = priority.compose(jobs)
+    try:
+        notify.send_email(cfg, "[Sample] " + subject,
+                          '<p style="font:13px system-ui;color:#b45309">This is a sample of what JobPilot alerts look like, '
+                          "using some of your current matches — these roles aren't necessarily new.</p>" + html_body,
+                          "SAMPLE ALERT (these roles aren't necessarily new)\n\n" + text_body)
+    except notify.EmailError as e:
+        raise HTTPException(400, str(e))
+    audit(db, user.id, "priority.sample_email", "user", user.id)
+    db.commit()
+    return {"ok": True, "message": f"Sample alert with {len(jobs)} job(s) sent to {cfg['to']}. Check your inbox (and spam)."}
+
+
 # ---------------------------------------------------------------- email connection (Resend)
 
 class EmailIn(BaseModel):

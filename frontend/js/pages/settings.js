@@ -127,6 +127,8 @@ function emailBox(root) {
     }));
     const testBtn = h("button", {}, "Send test email");
     testBtn.addEventListener("click", busy(testBtn, async () => { const r = await api.post("/api/integrations/email/test"); toast(r.message); }));
+    const sampleBtn = h("button", {}, "Send sample alert");
+    sampleBtn.addEventListener("click", busy(sampleBtn, async () => { const r = await api.post("/api/priority/sample-email"); toast(r.message); }));
     mount(box,
       h("div", { class: "row between" }, h("h3", {}, "Email alerts — new jobs at your priority companies"),
         h("span", { class: `badge ${e.configured ? "good" : "warn"}` }, e.configured ? `on · ${e.to}` : "not set up")),
@@ -134,7 +136,7 @@ function emailBox(root) {
         " (free: 3,000 emails/month, 100/day). 1) Sign up with the email you want alerts at. 2) In Resend, open API Keys → Create API key (Sending access). ",
         "3) Paste it here. Without your own domain, Resend can only send to the address you signed up with — so use that address below."),
       field("Resend API key", key), field("Send alerts to", to),
-      h("div", { class: "row" }, save, e.configured && testBtn, e.configured && h("button", { class: "btn-danger", onclick: async () => { await api.del("/api/integrations/email"); render(root); } }, "Remove")));
+      h("div", { class: "row" }, save, e.configured && testBtn, e.configured && sampleBtn, e.configured && h("button", { class: "btn-danger", onclick: async () => { await api.del("/api/integrations/email"); render(root); } }, "Remove")));
   });
   return box;
 }

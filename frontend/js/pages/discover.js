@@ -350,6 +350,8 @@ function priorityCard(pr, following, root) {
     toast(r.started ? "Checking your priority companies — new matching roles will be emailed to you." : "A check is already running.");
     setTimeout(() => render(root), 30000);
   }));
+  const sample = h("button", { title: "Email yourself a sample alert built from your current best matches" }, "✉ Send sample alert");
+  sample.addEventListener("click", busy(sample, async () => { const r = await api.post("/api/priority/sample-email"); toast(r.message); }));
   const stars = pr.companies;
   const last = pr.last_result;
   const lastLine = last ? [
@@ -377,7 +379,7 @@ function priorityCard(pr, following, root) {
         h("label", {}, "From", start), h("label", {}, "To (last check)", end), h("label", {}, "Time zone", tz), h("label", {}, "Only email if ATS is", minScore)),
       h("div", { class: "row", style: { gap: "10px", margin: "8px 0" } }, days),
       h("label", { class: "check small" }, enabled, "Alerts on")),
-    h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px" } }, stars.length > 0 && runNow, save));
+    h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px" } }, pr.email.configured && sample, stars.length > 0 && runNow, save));
 }
 
 function companiesCard(following, popular, root) {

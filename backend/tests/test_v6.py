@@ -314,3 +314,41 @@ def test_priority_company_alerts_new_roles_by_email(client, monkeypatch):
     assert client.put("/api/priority", headers=h, json={"start_hour": 9, "end_hour": 18, "days": [0, 1, 2, 3, 4], "min_score": 60}).json()["config"]["min_score"] == 60
     assert client.put("/api/priority", headers=h, json={"start_hour": 18, "end_hour": 9}).status_code == 400
     assert client.get("/api/cron/priority").json()["started"] in (True, False)
+
+
+def test_sample_alert_email(client, monkeypatch):
+    from app.services import notify
+
+    from .test_api import _mock_jobs
+
+    h, email = make_user(client)
+    setup_profile(client, h)
+    assert client.post("/api/priority/sample-email", headers=h).status_code == 400  # email not set up
+    client.put("/api/integrations/email", headers=h, json={"resend_key": "re_abc123456"})
+    assert client.post("/api/priority/sample-email", headers=h).status_code == 400  # no jobs yet
+    _mock_jobs(client, h)
+    sent = []
+    monkeypatch.setattr(notify, "send_email", lambda cfg, subject, html, text, transport=None: sent.append((cfg["to"], subject, html)) or "id")
+    r = client.post("/api/priority/sample-email", headers=h).json()
+    assert r["ok"] and sent[0][0] == email and sent[0][1].startswith("[Sample]") and "ATS" in sent[0][2]
+
+
+def test_resend_request_and_errors():
+    import httpx
+    import pytest
+
+    from app.services import notify
+
+    seen = []
+
+    def ok(req):
+        seen.append(req)
+        return httpx.Response(200, json={"id": "em_1"})
+
+    assert notify.send_email({"resend_key": "re_k", "to": "me@example.com"}, "S", "<p>h</p>", "t", transport=httpx.MockTransport(ok)) == "em_1"
+    body = json.loads(seen[0].content)
+    assert seen[0].url == "https://api.resend.com/emails" and seen[0].headers["authorization"] == "Bearer re_k"
+    assert body["to"] == ["me@example.com"] and body["from"].endswith("<onboarding@resend.dev>") and seen[0].headers["user-agent"]
+    own = httpx.MockTransport(lambda r: httpx.Response(403, json={"message": "You can only send testing emails to your own email address"}))
+    with pytest.raises(notify.EmailError, match="signed up to Resend"):
+        notify.send_email({"resend_key": "re_k", "to": "other@example.com"}, "S", "h", "t", transport=own)
