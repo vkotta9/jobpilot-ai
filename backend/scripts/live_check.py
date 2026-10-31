@@ -70,8 +70,8 @@ def main() -> int:
             except Exception as e:  # noqa: BLE001
                 wd = [f"ERR {e}"]
             rows.append(f"{name}: workday={wd} || " + " || ".join(found))
-        for r_ in rows:
-            print("::notice title=platforms::" + r_[:3500])
+        for i in range(0, len(rows), 3):  # GitHub shows at most 10 annotations per step
+            print("::notice title=platforms::" + " ##### ".join(x[:2500] for x in rows[i:i + 3]))
         return 0
     if kind == "links":
         from app.services import interview_prep as ip
@@ -130,13 +130,16 @@ def main() -> int:
         return 0
     if kind == "probe":
         rows = []
-        for url in arg.split(","):
+        for url in arg.split(" "):
+            if not url:
+                continue
             try:
-                r = httpx.get(url, timeout=20, follow_redirects=True, headers={"User-Agent": "JobPilotAI/0.1", "Accept": "application/json"})
-                rows.append(f"{url[:90]} → {r.status_code} {r.headers.get('content-type','')[:30]} {r.text[:160]!r}")
+                r = httpx.get(url, timeout=20, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/126 Safari/537.36", "Accept": "application/json, text/html"})
+                rows.append(f"{url[:110]} → {r.status_code} {r.headers.get('content-type','')[:30]} {r.text[:300]!r}")
             except Exception as e:  # noqa: BLE001
-                rows.append(f"{url[:90]} → {type(e).__name__}")
-        print("::notice title=probe::" + " || ".join(rows))
+                rows.append(f"{url[:110]} → {type(e).__name__}")
+        for i in range(0, len(rows), 4):
+            print("::notice title=probe::" + " ##### ".join(rows[i:i + 4]))
         return 0
     if kind == "shape":
         import json as _j
