@@ -45,6 +45,34 @@ def main() -> int:
             rows.append(f"extension zip ERROR {e}")
         print("::notice title=timing::" + " || ".join(rows))
         return 0
+    if kind == "platforms":
+        import re as _re
+        from app.services.sources.workday import discover as wd_discover
+
+        SIG = {"workday": r"myworkdayjobs\.com/[^\"' ]+", "oracle": r"[a-z0-9.-]+\.oraclecloud\.com/hcmUI/CandidateExperience/[^\"' ]+",
+               "eightfold": r"eightfold\.ai|/api/apply/v2|/careers\?pid=", "phenom": r"phenompeople|cdn\.phenom|phApp\.ddo|\"refNum\"",
+               "successfactors": r"successfactors\.(?:com|eu)[^\"' ]*|jobs\.sap\.com|career\d+\.sapsf", "taleo": r"taleo\.net[^\"' ]*",
+               "icims": r"icims\.com[^\"' ]*", "greenhouse": r"greenhouse\.io/[^\"' ]+", "lever": r"jobs\.lever\.co/[^\"' ]+",
+               "smartrecruiters": r"smartrecruiters\.com/[^\"' ]+", "avature": r"avature\.net[^\"' ]*", "brassring": r"brassring\.com[^\"' ]*"}
+        rows = []
+        for spec in arg.split(";"):
+            name, _, urls = spec.partition("=")
+            found = []
+            for u in [x for x in urls.split(",") if x]:
+                try:
+                    r = httpx.get(u, timeout=20, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/126 Safari/537.36"})
+                    hits = {k: sorted(set(_re.findall(v, r.text)))[:2] for k, v in SIG.items() if _re.search(v, r.text)}
+                    found.append(f"{u} [{r.status_code} → {str(r.url)[:60]}] {hits}")
+                except Exception as e:  # noqa: BLE001
+                    found.append(f"{u} ERR {type(e).__name__}")
+            try:
+                wd = wd_discover(name)[:3]
+            except Exception as e:  # noqa: BLE001
+                wd = [f"ERR {e}"]
+            rows.append(f"{name}: workday={wd} || " + " || ".join(found))
+        for r_ in rows:
+            print("::notice title=platforms::" + r_[:3500])
+        return 0
     if kind == "links":
         from app.services import interview_prep as ip
 

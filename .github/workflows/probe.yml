@@ -1,0 +1,21 @@
+name: Probe company career platforms
+on:
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: "name=url1,url2;name2=url"
+        required: true
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r backend/requirements.txt
+      - name: Probe
+        working-directory: backend
+        env:
+          SPEC: ${{ github.event.inputs.spec }}
+        run: python scripts/live_check.py platforms "$SPEC"
