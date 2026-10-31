@@ -73,6 +73,21 @@ def main() -> int:
         for i in range(0, len(rows), 3):  # GitHub shows at most 10 annotations per step
             print("::notice title=platforms::" + " ##### ".join(x[:2500] for x in rows[i:i + 3]))
         return 0
+    if kind == "grep":
+        import re as _re
+
+        rows = []
+        for spec in arg.split(" ;; "):
+            url, _, rx = spec.partition("|||")
+            try:
+                r = httpx.get(url, timeout=25, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Chrome/126 Safari/537.36"})
+                m = _re.findall(rx, r.text, _re.S)[:6]
+                rows.append(f"{url[:100]} [{r.status_code}, {len(r.text)}B] → {m!r}"[:1500])
+            except Exception as e:  # noqa: BLE001
+                rows.append(f"{url[:100]} ERR {type(e).__name__}")
+        for i in range(0, len(rows), 3):
+            print("::notice title=probe::" + " ##### ".join(rows[i:i + 3]))
+        return 0
     if kind == "links":
         from app.services import interview_prep as ip
 

@@ -20,5 +20,5 @@ jobs:
           SPEC: ${{ github.event.inputs.spec }}
         run: |
           MODE="platforms"; ARG="$SPEC"
-          case "$SPEC" in probe:*) MODE="probe"; ARG="${SPEC#probe:}";; esac
+          case "$SPEC" in probe:*) MODE="probe"; ARG="${SPEC#probe:}";; grep:*) MODE="grep"; ARG="${SPEC#grep:}";; esac
           python scripts/live_check.py "$MODE" "$ARG"
