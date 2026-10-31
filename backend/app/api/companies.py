@@ -121,7 +121,7 @@ def popular(user: User = Depends(current_user), db: Session = Depends(get_db)):
 
 @router.get("/top-tech")
 def top_tech(user: User = Depends(current_user), db: Session = Depends(get_db)):
-    """The top-100 tech companies: direct careers feeds where available, Google Jobs (JSearch) for the rest."""
+    """Top tech, finance and consulting companies: direct careers feeds where available, Google Jobs (JSearch) for the rest."""
     from ..models import IntegrationSetting
 
     followed = {(s.kind, s.identifier.lower()) for s in db.query(JobSource).filter(JobSource.user_id == user.id).all()}

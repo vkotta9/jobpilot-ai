@@ -315,7 +315,7 @@ function topTechCard(top, root) {
   const bSel = h("button", {}, "Follow selected");
   bSel.addEventListener("click", busy(bSel, () => follow(picks.filter((b) => b.checked && !b.disabled).map((b) => b._c))));
   return h("div", { class: "card", style: { marginTop: "16px" } },
-    h("div", { class: "card-head" }, h("h2", {}, "Top 100 tech companies"), h("span", { class: "faint" }, `Following ${followingN} of ${all.length}`)),
+    h("div", { class: "card-head" }, h("h2", {}, "Top companies"), h("span", { class: "faint" }, `Following ${followingN} of ${all.length}`)),
     h("p", { class: "small muted" }, `${direct.length} are searched directly on the company's own careers site or job board (Amazon, Microsoft, Google, Apple, NVIDIA, Salesforce, OpenAI, Stripe…). `,
       `The other ${all.length - direct.length} (Meta, Tesla, Uber, Cisco…) don't offer a feed JobPilot may use, so they're followed through Google Jobs, which is checked weekly per company to stay within JSearch's free plan.`),
     top.jsearch_connected ? null : h("div", { class: "alert warn small" }, "Google Jobs companies need your free JSearch key — ", h("a", { href: "#/settings" }, "Settings → Connections"),

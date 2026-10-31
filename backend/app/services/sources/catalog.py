@@ -147,7 +147,7 @@ Big tech|Netflix|eightfold|explore.jobs.netflix.net|netflix.com
 Big tech|Oracle|oraclehcm|eeho.fa.us2.oraclecloud.com|CX_45001
 Big tech|Tesla|jsearch|Tesla
 Big tech|IBM|jsearch|IBM
-Big tech|Cisco|jsearch|Cisco
+Big tech|Cisco|workday|cisco|wd5|Cisco_Careers
 Big tech|LinkedIn|jsearch|LinkedIn
 Big tech|TikTok|jsearch|TikTok
 Big tech|Samsung|jsearch|Samsung
@@ -163,8 +163,8 @@ AI|Palantir|lever|palantir
 AI|Mistral AI|jsearch|Mistral AI
 Chips & hardware|NVIDIA|workday|nvidia|wd5|NVIDIAExternalCareerSite
 Chips & hardware|Intel|workday|intel|wd1|External
-Chips & hardware|AMD|jsearch|AMD
-Chips & hardware|Qualcomm|jsearch|Qualcomm
+Chips & hardware|AMD|jibe|careers.amd.com
+Chips & hardware|Qualcomm|eightfold|qualcomm.eightfold.ai|qualcomm.com
 Chips & hardware|Broadcom|workday|broadcom|wd1|External_Career
 Chips & hardware|Micron|workday|micron|wd1|External
 Chips & hardware|Texas Instruments|jsearch|Texas Instruments
@@ -238,6 +238,22 @@ Fintech|Bloomberg|jsearch|Bloomberg
 Autonomy & space|Waymo|greenhouse|waymo
 Autonomy & space|SpaceX|greenhouse|spacex
 Autonomy & space|General Motors|workday|generalmotors|wd5|Careers_GM
+Chips & hardware|Lenovo|avature|jobs.lenovo.com/en_US/careers
+Autonomy & space|Toyota|workday|toyota|wd503|TMNA
+Banking & finance|JPMorgan Chase|oraclehcm|jpmc.fa.oraclecloud.com|CX_1001
+Banking & finance|Goldman Sachs|jsearch|Goldman Sachs
+Banking & finance|Morgan Stanley|eightfold|morganstanley.eightfold.ai|morganstanley.com
+Banking & finance|Citi|workday|citi|wd5|2
+Banking & finance|Bank of America|workday|ghr|wd1|lateral-us
+Consulting & IT services|Accenture|workday|accenture|wd103|AccentureCareers
+Consulting & IT services|Deloitte|avature|apply.deloitte.com/en_US/careers
+Consulting & IT services|Wipro|jsearch|Wipro
+Consulting & IT services|Infosys|jsearch|Infosys
+Consulting & IT services|Tata Consultancy Services|jsearch|Tata Consultancy Services
+Consulting & IT services|Cognizant|jsearch|Cognizant
+Consulting & IT services|HCLTech|jsearch|HCLTech
+Consulting & IT services|Capgemini|jsearch|Capgemini
+Consulting & IT services|Tech Mahindra|jsearch|Tech Mahindra
 """
 
 TOP_TECH: list[dict] = [

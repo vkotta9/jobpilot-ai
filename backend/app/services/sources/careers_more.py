@@ -123,7 +123,10 @@ class AvatureAdapter(_CareersSiteAdapter):
 
     def describe(self, external_id: str, url: str) -> Optional[str]:
         page = self._page(url)
-        vals = [strip_html(v) for v in re.findall(r'class="article__content__view__field__value[^"]*"[^>]*>(.*?)</div>', page, re.S)]
+        # a field's value can hold nested <div>s, so take everything up to the next field (or the article's end)
+        vals = [strip_html(v) for v in re.findall(
+            r'class="article__content__view__field__value[^"]*"[^>]*>(.*?)(?=class="article__content__view__field[ "_]|</article>)', page, re.S)]
+        vals = [re.sub(r"<[^>]*$", "", v).strip() for v in vals]
         best = max(vals, key=len) if vals else ""
         if len(best) < 200:  # other Avature templates: the main article body
             m = re.search(r"<article[^>]*>(.*?)</article>", page, re.S)
