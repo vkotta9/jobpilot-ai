@@ -49,7 +49,7 @@ def main() -> int:
         import re as _re
         from app.services.sources.workday import discover as wd_discover
 
-        SIG = {"workday": r"myworkdayjobs\.com/[^\"' ]+", "oracle": r"[a-z0-9.-]+\.oraclecloud\.com/hcmUI/CandidateExperience/[^\"' ]+",
+        SIG = {"workday": r"[a-z0-9-]+\.wd\d+\.myworkdayjobs\.com/[^\"' &]+", "oracle": r"[a-z0-9.-]+\.oraclecloud\.com/hcmUI/CandidateExperience/[^\"' ]+",
                "eightfold": r"eightfold\.ai|/api/apply/v2|/careers\?pid=", "phenom": r"phenompeople|cdn\.phenom|phApp\.ddo|\"refNum\"",
                "successfactors": r"successfactors\.(?:com|eu)[^\"' ]*|jobs\.sap\.com|career\d+\.sapsf", "taleo": r"taleo\.net[^\"' ]*",
                "icims": r"icims\.com[^\"' ]*", "greenhouse": r"greenhouse\.io/[^\"' ]+", "lever": r"jobs\.lever\.co/[^\"' ]+",
