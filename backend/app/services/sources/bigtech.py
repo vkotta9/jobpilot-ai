@@ -457,6 +457,11 @@ def parse_link(text: str) -> Optional[tuple[str, str]]:
         return ("apple", "apple")
     if re.search(r"careers\.microsoft\.com", t, re.I):
         return ("microsoft", "microsoft")
+    if re.search(r"careers\.amd\.com", t, re.I):
+        return ("jibe", "careers.amd.com")
+    m = re.search(r"(jobs\.lenovo\.com|apply\.deloitte\.com)/([a-z]{2}_[A-Z]{2})", t, re.I)
+    if m:
+        return ("avature", f"{m.group(1).lower()}/{m.group(2)}/careers")
     if re.search(r"jobs\.netflix\.(com|net)|explore\.jobs\.netflix\.net", t, re.I):
         return ("eightfold", "explore.jobs.netflix.net|netflix.com")
     m = ORACLE_RE.search(t)

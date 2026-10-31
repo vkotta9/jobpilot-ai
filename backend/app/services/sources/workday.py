@@ -138,7 +138,7 @@ class WorkdayAdapter(JobSourceAdapter):
         return out
 
 
-WD_INSTANCES = ("wd1", "wd5", "wd3", "wd12", "wd10", "wd2", "wd103", "wd501")
+WD_INSTANCES = ("wd1", "wd5", "wd3", "wd12", "wd10", "wd2", "wd103", "wd501", "wd503", "wd108", "wd502")
 SITEMAP_RE = re.compile(r"Sitemap:\s*https?://([A-Za-z0-9-]+)\.(wd\d+)\.myworkdayjobs\.com/(?:[a-z]{2}-[A-Z]{2}/)?([A-Za-z0-9_-]+)/siteMap\.xml", re.I)
 
 

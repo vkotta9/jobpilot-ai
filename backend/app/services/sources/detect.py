@@ -52,21 +52,34 @@ IN_HOUSE = {"google": "Google", "alphabet": "Google", "amazon": "Amazon", "aws":
             "apple": "Apple", "meta": "Meta", "facebook": "Meta", "netflix": "Netflix", "ibm": "IBM", "oracle": "Oracle",
             "tesla": "Tesla", "uber": "Uber", "linkedin": "LinkedIn", "bytedance": "ByteDance", "tiktok": "TikTok",
             "jpmorgan": "JPMorgan Chase", "jpmorganchase": "JPMorgan Chase", "goldmansachs": "Goldman Sachs",
-            "bloomberg": "Bloomberg", "qualcomm": "Qualcomm", "cisco": "Cisco", "x": "X", "twitter": "X", "ebay": "eBay", "americanexpress": "American Express", "amex": "American Express",
-            "accenture": "Accenture"}
+            "bloomberg": "Bloomberg", "x": "X", "twitter": "X", "ebay": "eBay", "americanexpress": "American Express", "amex": "American Express",
+            "goldman": "Goldman Sachs", "gs": "Goldman Sachs", "wipro": "Wipro", "hcltech": "HCLTech", "hcl": "HCLTech",
+            "hcltechnologies": "HCLTech", "infosys": "Infosys", "cognizant": "Cognizant", "tcs": "Tata Consultancy Services",
+            "tataconsultancyservices": "Tata Consultancy Services", "techmahindra": "Tech Mahindra", "capgemini": "Capgemini",
+            "dell": "Dell Technologies", "delltechnologies": "Dell Technologies", "intuit": "Intuit"}
 # Companies with their own careers sites that JobPilot has a direct connector for
 CUSTOM_BY_NAME = {
     "amazon": ("amazon", "amazon", "Amazon"), "aws": ("amazon", "amazon", "Amazon"), "amazonwebservices": ("amazon", "amazon", "Amazon"),
     "google": ("google", "google", "Google"), "alphabet": ("google", "google", "Google"),
     "microsoft": ("microsoft", "microsoft", "Microsoft"),
     "apple": ("apple", "apple", "Apple"),
+    "amd": ("jibe", "careers.amd.com", "AMD"), "advancedmicrodevices": ("jibe", "careers.amd.com", "AMD"),
+    "lenovo": ("avature", "jobs.lenovo.com/en_US/careers", "Lenovo"),
+    "deloitte": ("avature", "apply.deloitte.com/en_US/careers", "Deloitte"),
+    "morganstanley": ("eightfold", "morganstanley.eightfold.ai|morganstanley.com", "Morgan Stanley"),
+    "jpmorganchase": ("oraclehcm", "jpmc.fa.oraclecloud.com|CX_1001", "JPMorgan Chase"),
+    "jpmorganchaseco": ("oraclehcm", "jpmc.fa.oraclecloud.com|CX_1001", "JPMorgan Chase"),
+    "chase": ("oraclehcm", "jpmc.fa.oraclecloud.com|CX_1001", "JPMorgan Chase"),
     "netflix": ("eightfold", "explore.jobs.netflix.net|netflix.com", "Netflix"),
     "oracle": ("oraclehcm", "eeho.fa.us2.oraclecloud.com|CX_45001", "Oracle"),
     "jpmorgan": ("oraclehcm", "jpmc.fa.oraclecloud.com|CX_1001", "JPMorgan Chase"),
     "jpmorganchase": ("oraclehcm", "jpmc.fa.oraclecloud.com|CX_1001", "JPMorgan Chase"),
 }
 # Well-known companies on Workday (verified live — see scripts/validate_companies.py)
-KNOWN_WORKDAY = {"nvidia": "nvidia|wd5|NVIDIAExternalCareerSite", "salesforce": "salesforce|wd12|External_Career_Site", "intel": "intel|wd1|External", "adobe": "adobe|wd5|external_experienced", "hp": "hp|wd5|ExternalCareerSite", "hpinc": "hp|wd5|ExternalCareerSite", "paypal": "paypal|wd1|jobs", "capitalone": "capitalone|wd12|Capital_One", "mastercard": "mastercard|wd1|CorporateCareers", "boeing": "boeing|wd1|EXTERNAL_CAREERS", "target": "target|wd5|targetcareers", "disney": "disney|wd5|disneycareer", "waltdisney": "disney|wd5|disneycareer", "thewaltdisneycompany": "disney|wd5|disneycareer", "workday": "workday|wd5|Workday", "snap": "snapchat|wd1|snap", "snapchat": "snapchat|wd1|snap", "snapinc": "snapchat|wd1|snap", "autodesk": "autodesk|wd1|Ext"}
+KNOWN_WORKDAY = {"accenture": "accenture|wd103|AccentureCareers", "toyota": "toyota|wd503|TMNA", "toyotanorthamerica": "toyota|wd503|TMNA",
+                 "toyotamotornorthamerica": "toyota|wd503|TMNA", "cisco": "cisco|wd5|Cisco_Careers", "ciscosystems": "cisco|wd5|Cisco_Careers",
+                 "qualcomm": "qualcomm|wd12|External", "citi": "citi|wd5|2", "citigroup": "citi|wd5|2", "citibank": "citi|wd5|2",
+                 "bankofamerica": "ghr|wd1|lateral-us", "bofa": "ghr|wd1|lateral-us", "nvidia": "nvidia|wd5|NVIDIAExternalCareerSite", "salesforce": "salesforce|wd12|External_Career_Site", "intel": "intel|wd1|External", "adobe": "adobe|wd5|external_experienced", "hp": "hp|wd5|ExternalCareerSite", "hpinc": "hp|wd5|ExternalCareerSite", "paypal": "paypal|wd1|jobs", "capitalone": "capitalone|wd12|Capital_One", "mastercard": "mastercard|wd1|CorporateCareers", "boeing": "boeing|wd1|EXTERNAL_CAREERS", "target": "target|wd5|targetcareers", "disney": "disney|wd5|disneycareer", "waltdisney": "disney|wd5|disneycareer", "thewaltdisneycompany": "disney|wd5|disneycareer", "workday": "workday|wd5|Workday", "snap": "snapchat|wd1|snap", "snapchat": "snapchat|wd1|snap", "snapinc": "snapchat|wd1|snap", "autodesk": "autodesk|wd1|Ext"}
 IGNORE_SLUGS = {"embed", "api", "jobs", "careers", "www", "apply", "job_board", "v1", "boards", "js"}
 PROBE_ORDER = ("greenhouse", "lever", "ashby", "workable", "recruitee", "smartrecruiters")
 
