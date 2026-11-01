@@ -54,6 +54,8 @@ def main() -> None:
     with ThreadPoolExecutor(max_workers=12) as pool:
         results = list(pool.map(scan, lines))
     Path("scan.json").write_text(json.dumps(results, indent=1))
+    for r in results:  # also in the log (artifacts can't always be downloaded)
+        print("SCAN " + json.dumps(r))
     found = sum(1 for r in results if r["best"])
     print(f"::notice title=scan::{found}/{len(results)} companies have a verified direct feed")
 
