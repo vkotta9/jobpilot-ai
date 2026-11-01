@@ -28,9 +28,30 @@ def _content_hash(n: NormalizedJob) -> str:
     return sha256(*[str(getattr(n, f) or "") for f in _TRACKED])
 
 
+def fit_columns(n: NormalizedJob) -> NormalizedJob:
+    """Make every text field fit its database column (Postgres rejects longer values; SQLite doesn't check).
+    A too-long id is shortened deterministically (prefix + hash) so the same job keeps the same id."""
+    cols = Job.__table__.columns
+    for field, value in list(vars(n).items()):
+        col = cols.get(field)
+        limit = getattr(getattr(col, "type", None), "length", None)
+        if not isinstance(value, str) or not limit or len(value) <= limit:
+            continue
+        if field == "external_id":
+            setattr(n, field, value[: limit - 41] + "~" + sha256(value)[:40])
+        elif field in ("url", "apply_url"):
+            setattr(n, field, "")  # a cut-off link would be broken; the other link is used instead
+        else:
+            setattr(n, field, value[: limit - 1].rstrip() + "…")
+    if not n.url and n.apply_url:
+        n.url = n.apply_url
+    return n
+
+
 def upsert_job(db: Session, user_id: int, source: Optional[JobSource], n: NormalizedJob,
                kind: str, simulated: bool) -> tuple[Job, str]:
     """Insert or update one listing. Returns (job, 'new'|'updated'|'unchanged')."""
+    n = fit_columns(n)
     now = utcnow()
     chash = _content_hash(n)
     job = (

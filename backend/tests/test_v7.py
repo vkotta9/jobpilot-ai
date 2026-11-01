@@ -116,3 +116,28 @@ def test_follow_all_catalog_companies_at_once(client):
     assert "jobs.lenovo.com/en_US/careers" in srcs  # case kept: the locale in the path matters
     top = client.get("/api/companies/top-tech", headers=h).json()["companies"]
     assert next(c for c in top if c["company"] == "Lenovo")["following"]
+
+
+def test_long_jsearch_values_fit_the_database(client):
+    """Postgres rejects values longer than the column (seen with JSearch ids); they're shortened consistently."""
+    from app.db import SessionLocal
+    from app.models import Job, User
+    from app.services.discovery import upsert_job
+    from app.services.sources.base import NormalizedJob
+
+    from .conftest import make_user
+
+    _, email = make_user(client)
+    long_id = "Ab3_" * 120  # 480 chars
+    with SessionLocal() as db:
+        uid = db.query(User).filter_by(email=email).one().id
+        mk = lambda: NormalizedJob(external_id=long_id, title="Software Engineer " + "x" * 400, company="Samsung " * 40,
+                                   location="Austin", department="Eng " * 80, url="https://x.com/" + "a" * 1200,
+                                   apply_url="https://x.com/apply", description_text="d")
+        job, state = upsert_job(db, uid, None, mk(), "jsearch", False)
+        db.commit()
+        assert state == "new" and len(job.external_id) <= 200 and len(job.company) <= 200 and job.url == "https://x.com/apply"
+        job2, state2 = upsert_job(db, uid, None, mk(), "jsearch", False)
+        db.commit()
+        assert job2.id == job.id and state2 == "unchanged"
+        assert db.query(Job).filter_by(user_id=uid).count() == 1
