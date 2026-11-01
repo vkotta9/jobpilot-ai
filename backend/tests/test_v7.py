@@ -92,3 +92,27 @@ def test_detect_uses_catalog_connector_for_oracle_sites():
     finally:
         d._connector_hit = orig
     assert r.kind == "oraclehcm" and calls == [("oraclehcm", "hdox.fa.us6.oraclecloud.com|CX_1")]
+
+
+def test_every_catalog_company_can_be_followed():
+    from app.api.companies import FollowItem
+    from app.services.sources.catalog import POPULAR, TOP_TECH
+
+    for c in TOP_TECH + POPULAR:
+        FollowItem(kind=c["kind"], identifier=c["identifier"], company=c["company"])  # raises if rejected
+
+
+
+
+def test_follow_all_catalog_companies_at_once(client):
+    from app.services.sources.catalog import TOP_TECH
+    from .conftest import make_user
+
+    h, _ = make_user(client)
+    items = [{"kind": c["kind"], "identifier": c["identifier"], "company": c["company"]} for c in TOP_TECH if c["kind"] != "jsearch"]
+    r = client.post("/api/companies/follow", headers=h, json={"run_now": False, "items": items})
+    assert r.status_code == 200, r.text
+    srcs = {s["identifier"] for s in client.get("/api/companies", headers=h).json()}
+    assert "jobs.lenovo.com/en_US/careers" in srcs  # case kept: the locale in the path matters
+    top = client.get("/api/companies/top-tech", headers=h).json()["companies"]
+    assert next(c for c in top if c["company"] == "Lenovo")["following"]

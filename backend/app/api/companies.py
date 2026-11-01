@@ -23,12 +23,12 @@ class DetectIn(BaseModel):
 
 class FollowItem(BaseModel):
     kind: str
-    identifier: str = Field(min_length=1, max_length=200, pattern=r"^[A-Za-z0-9_.%&|' \-]+$")
+    identifier: str = Field(min_length=1, max_length=200, pattern=r"^[A-Za-z0-9_.%&|' \-]+(/[A-Za-z0-9_.\-]+)*$")  # "/" for sites like jobs.lenovo.com/en_US/careers
     company: str = Field(default="", max_length=200)
 
 
 class FollowIn(BaseModel):
-    items: list[FollowItem] = Field(min_length=1, max_length=150)
+    items: list[FollowItem] = Field(min_length=1, max_length=400)
     run_now: bool = True
 
 
@@ -44,7 +44,7 @@ def _follow(db: Session, user: User, items: list[FollowItem], run_now: bool) -> 
             raise HTTPException(400, f"Unsupported board type: {it.kind}")
         if it.kind == "jsearch" and it.identifier.lower() == "auto":
             raise HTTPException(400, "Invalid company.")
-        ident = it.identifier if it.kind in ("smartrecruiters", "ashby", "workday", "jsearch", "eightfold", "oraclehcm") else it.identifier.lower()
+        ident = it.identifier if it.kind in ("smartrecruiters", "ashby", "workday", "jsearch", "eightfold", "oraclehcm", "avature") else it.identifier.lower()
         src = db.query(JobSource).filter_by(user_id=user.id, kind=it.kind, identifier=ident).one_or_none()
         if src:
             existing += 1
