@@ -30,7 +30,7 @@ def wd_count(ident: str) -> int:
 
 
 def scan(line: str) -> dict:
-    cat, name, slugs = (line.split("|") + ["", ""])[:3]
+    cat, name, slugs = (line.split("|", 2) + ["", ""])[:3]
     slugs = [s.strip() for s in slugs.split(",") if s.strip()]
     res = {"category": cat, "company": name, "tried": slugs, "best": None, "candidates": []}
     for slug in slugs:

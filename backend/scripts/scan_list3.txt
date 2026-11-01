@@ -1,0 +1,43 @@
+Healthcare & pharma|UnitedHealth Group (Optum)|wd:uhg|wd1|UHG_External
+Healthcare & pharma|Thermo Fisher Scientific|wd:thermofisher|wd5|ThermoFisherCareers
+Healthcare & pharma|Boston Scientific|wd:bostonscientific|wd1|BSCI,wd:bsci|wd1|BSCI
+Healthcare & pharma|Eli Lilly|wd:lilly|wd5|LLY
+Healthcare & pharma|BD|wd:bdx|wd1|EXTERNAL_CAREER_SITE_USA
+Banking & finance|Wells Fargo|wd:wf|wd1|WellsFargoJobs
+Banking & finance|Fidelity Investments|wd:fmr|wd1|targeted,wd:fmr|wd1|FidelityCareers
+Banking & finance|Charles Schwab|wd:schwab|wd1|External
+Banking & finance|American Express|wd:aexp|wd1|AmericanExpress
+Banking & finance|BNY|wd:bnymellon|wd5|BNY_Careers
+Banking & finance|Freddie Mac|wd:freddiemac|wd5|External
+Banking & finance|Citizens Bank|wd:citizensbank|wd5|CitizensBank
+Banking & finance|Capital Group|wd:capgroup|wd1|capitalgroupcareers
+Banking & finance|Moody's|wd:moodys|wd5|MCO
+Banking & finance|Synchrony|wd:synchronyfinancial|wd5|Careers
+Insurance|Nationwide|wd:nationwide|wd1|Nationwide_Career
+Insurance|Prudential|wd:pru|wd5|Careers
+Insurance|Liberty Mutual|wd:lmi|wd5|LMI
+Retail & consumer|Walmart|wd:walmart|wd5|WalmartExternal
+Retail & consumer|The Home Depot|wd:homedepot|wd5|CareerDepot
+Retail & consumer|Nike|wd:nike|wd1|nke
+Retail & consumer|Chewy|wd:chewy|wd5|chewycareers
+Retail & consumer|Coca-Cola|wd:coke|wd1|coca-cola-careers
+Telecom & media|Verizon|wd:verizon|wd12|verizon-careers
+Telecom & media|T-Mobile|wd:tmobile|wd1|External
+Telecom & media|Comcast|wd:comcast|wd5|Comcast_Careers
+Telecom & media|Paramount|wd:paramount|wd5|ParamountPlus
+Telecom & media|Fox|wd:fox|wd1|Domestic
+Industrial, aerospace & defense|Caterpillar|wd:cat|wd5|CaterpillarCareers
+Industrial, aerospace & defense|John Deere|wd:deere|wd5|External,wd:johndeere|wd5|JohnDeere
+Industrial, aerospace & defense|SAIC|wd:saic|wd1|saic
+Industrial, aerospace & defense|CACI|wd:caci|wd1|External
+Enterprise software & cloud|DocuSign|wd:docusign|wd1|DocuSignCareers
+Enterprise software & cloud|Equifax|wd:equifax|wd5|External
+Enterprise software & cloud|NetApp|wd:netapp|wd1|NetAppCareers
+Enterprise software & cloud|Nutanix|wd:nutanix|wd1|Nutanix_Careers
+Enterprise software & cloud|Garmin|wd:garmin|wd1|Garmin
+Enterprise software & cloud|Tenable|wd:tenable|wd1|Tenable_Careers
+Consulting & IT services|Publicis Sapient|wd:publicisgroupe|wd3|Publicis_Groupe_Careers
+Healthcare & pharma|UnitedHealth Group (Optum)|wd:uhg|wd5|UHG_External,wd:uhg|wd1|External,wd:unitedhealthgroup|wd5|External
+Banking & finance|Wells Fargo |wd:wf|wd1|WF_External,wd:wellsfargo|wd1|WellsFargoJobs
+Retail & consumer|Walmart |wd:walmart|wd5|WalmartExternal,wd:walmart|wd1|WalmartExternal
+Telecom & media|Verizon |wd:verizon|wd12|verizon,wd:verizon|wd5|verizon-careers
