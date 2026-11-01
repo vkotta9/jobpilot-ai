@@ -1,0 +1,96 @@
+Healthcare & pharma|UnitedHealth Group (Optum)|page:https://careers.unitedhealthgroup.com/,page:https://www.optum.com/careers.html,wd:uhg|wd1|UHG_External
+Healthcare & pharma|Kaiser Permanente|page:https://www.kaiserpermanentejobs.org/
+Healthcare & pharma|HCA Healthcare|page:https://careers.hcahealthcare.com/
+Healthcare & pharma|Walgreens|page:https://jobs.walgreens.com/
+Healthcare & pharma|Quest Diagnostics|page:https://careers.questdiagnostics.com/
+Healthcare & pharma|Thermo Fisher Scientific|wd:thermofisher|wd5|ThermoFisherCareers,page:https://jobs.thermofisher.com/
+Healthcare & pharma|Boston Scientific|wd:bostonscientific|wd1|BSCI,wd:bsci|wd1|BSCI,page:https://jobs.bostonscientific.com/
+Healthcare & pharma|Eli Lilly|wd:lilly|wd5|LLY,page:https://careers.lilly.com/
+Healthcare & pharma|AbbVie|page:https://careers.abbvie.com/
+Healthcare & pharma|Molina Healthcare|page:https://careers.molinahealthcare.com/
+Healthcare & pharma|BD|wd:bdx|wd1|EXTERNAL_CAREER_SITE_USA
+Banking & finance|Wells Fargo|wd:wf|wd1|WellsFargoJobs,page:https://www.wellsfargojobs.com/
+Banking & finance|Fidelity Investments|wd:fmr|wd1|targeted,wd:fmr|wd1|FidelityCareers,page:https://jobs.fidelity.com/
+Banking & finance|Charles Schwab|wd:schwab|wd1|External,page:https://www.schwabjobs.com/
+Banking & finance|American Express|page:https://www.americanexpress.com/en-us/careers/,wd:aexp|wd1|AmericanExpress
+Banking & finance|Discover Financial|page:https://jobs.discover.com/
+Banking & finance|BNY|wd:bnymellon|wd5|BNY_Careers,page:https://www.bny.com/corporate/global/en/careers.html
+Banking & finance|Freddie Mac|wd:freddiemac|wd5|External,page:https://careers.freddiemac.com/
+Banking & finance|Citizens Bank|wd:citizensbank|wd5|CitizensBank,page:https://jobs.citizensbank.com/
+Banking & finance|Capital Group|wd:capgroup|wd1|capitalgroupcareers,page:https://www.capitalgroup.com/about-us/careers.html
+Banking & finance|Moody's|wd:moodys|wd5|MCO,page:https://careers.moodys.com/
+Banking & finance|Synchrony|wd:synchronyfinancial|wd5|Careers,page:https://www.synchrony.com/careers
+Banking & finance|Two Sigma|page:https://careers.twosigma.com/
+Banking & finance|Citadel|page:https://www.citadel.com/careers/
+Insurance|Nationwide|wd:nationwide|wd1|Nationwide_Career
+Insurance|Prudential|wd:pru|wd5|Careers
+Insurance|State Farm|page:https://jobs.statefarm.com/
+Insurance|Progressive|page:https://careers.progressive.com/
+Insurance|Liberty Mutual|wd:lmi|wd5|LMI,page:https://jobs.libertymutualgroup.com/
+Insurance|Aflac|page:https://careers.aflac.com/
+Retail & consumer|Walmart|wd:walmart|wd5|WalmartExternal,page:https://careers.walmart.com/
+Retail & consumer|The Home Depot|wd:homedepot|wd5|CareerDepot,page:https://careers.homedepot.com/
+Retail & consumer|Lowe's|page:https://talent.lowes.com/
+Retail & consumer|Costco|page:https://www.costco.com/jobs.html
+Retail & consumer|Best Buy|page:https://jobs.bestbuy.com/
+Retail & consumer|Nike|wd:nike|wd1|nke,page:https://careers.nike.com/
+Retail & consumer|Starbucks|page:https://careers.starbucks.com/
+Retail & consumer|Kroger|page:https://www.krogerfamilycareers.com/
+Retail & consumer|Macy's|page:https://www.macysjobs.com/
+Retail & consumer|Wayfair|page:https://www.aboutwayfair.com/careers
+Retail & consumer|Chewy|wd:chewy|wd5|chewycareers,page:https://careers.chewy.com/
+Retail & consumer|McDonald's|page:https://careers.mcdonalds.com/
+Retail & consumer|PepsiCo|page:https://www.pepsicojobs.com/
+Retail & consumer|Coca-Cola|wd:coke|wd1|coca-cola-careers,page:https://careers.coca-colacompany.com/
+Retail & consumer|Booking Holdings|page:https://careers.booking.com/
+Retail & consumer|Marriott|page:https://careers.marriott.com/
+Retail & consumer|Hilton|page:https://jobs.hilton.com/
+Telecom & media|Verizon|wd:verizon|wd12|verizon-careers,page:https://mycareer.verizon.com/
+Telecom & media|T-Mobile|wd:tmobile|wd1|External,page:https://careers.t-mobile.com/
+Telecom & media|Comcast|wd:comcast|wd5|Comcast_Careers,page:https://jobs.comcast.com/
+Telecom & media|Charter Communications|page:https://jobs.spectrum.com/
+Telecom & media|Paramount|wd:paramount|wd5|ParamountPlus,page:https://careers.paramount.com/
+Telecom & media|Fox|wd:fox|wd1|Domestic,page:https://www.foxcareers.com/
+Industrial, aerospace & defense|Lockheed Martin|page:https://www.lockheedmartinjobs.com/
+Industrial, aerospace & defense|Honeywell|page:https://careers.honeywell.com/
+Industrial, aerospace & defense|Caterpillar|wd:cat|wd5|CaterpillarCareers,page:https://careers.caterpillar.com/
+Industrial, aerospace & defense|John Deere|wd:deere|wd5|External,wd:johndeere|wd5|JohnDeere,page:https://careers.deere.com/
+Industrial, aerospace & defense|Ford|page:https://corporate.ford.com/careers.html
+Industrial, aerospace & defense|Rivian|page:https://careers.rivian.com/
+Industrial, aerospace & defense|SAIC|wd:saic|wd1|saic,page:https://jobs.saic.com/
+Industrial, aerospace & defense|CACI|wd:caci|wd1|External,page:https://careers.caci.com/
+Industrial, aerospace & defense|L3Harris|page:https://careers.l3harris.com/
+Industrial, aerospace & defense|ExxonMobil|page:https://jobs.exxonmobil.com/
+Industrial, aerospace & defense|UPS|page:https://www.jobs-ups.com/
+Industrial, aerospace & defense|FedEx|page:https://careers.fedex.com/
+Industrial, aerospace & defense|Delta Air Lines|page:https://delta.avature.net/
+Industrial, aerospace & defense|United Airlines|page:https://careers.united.com/
+Industrial, aerospace & defense|American Airlines|page:https://jobs.aa.com/
+Industrial, aerospace & defense|Anduril|gh:andurilindustries,lever:anduril,page:https://www.anduril.com/careers/
+Enterprise software & cloud|HubSpot|gh:hubspotjobs,page:https://www.hubspot.com/careers
+Enterprise software & cloud|DocuSign|wd:docusign|wd1|DocuSignCareers,page:https://careers.docusign.com/
+Enterprise software & cloud|ADP|page:https://jobs.adp.com/
+Enterprise software & cloud|Paychex|page:https://careers.paychex.com/
+Enterprise software & cloud|Equifax|wd:equifax|wd5|External,page:https://careers.equifax.com/
+Enterprise software & cloud|Experian|sr:Experian,page:https://jobs.experian.com/
+Enterprise software & cloud|NetApp|wd:netapp|wd1|NetAppCareers,page:https://careers.netapp.com/
+Enterprise software & cloud|Nutanix|wd:nutanix|wd1|Nutanix_Careers,page:https://careers.nutanix.com/
+Enterprise software & cloud|Teradata|page:https://careers.teradata.com/
+Enterprise software & cloud|Dynatrace|sr:Dynatrace,page:https://careers.dynatrace.com/
+Enterprise software & cloud|Unity|gh:unity3d,page:https://careers.unity.com/
+Enterprise software & cloud|Garmin|wd:garmin|wd1|Garmin,page:https://careers.garmin.com/
+Enterprise software & cloud|Arista Networks|page:https://www.arista.com/en/careers
+Enterprise software & cloud|Tenable|wd:tenable|wd1|Tenable_Careers,page:https://careers.tenable.com/
+Enterprise software & cloud|Rapid7|page:https://careers.rapid7.com/
+Enterprise software & cloud|dbt Labs|gh:dbtlabs,ashby:dbt-labs,page:https://www.getdbt.com/careers
+Enterprise software & cloud|Anaconda|gh:anaconda,page:https://www.anaconda.com/about-us/careers
+Enterprise software & cloud|SAP|page:https://jobs.sap.com/
+Consulting & IT services|EY|page:https://careers.ey.com/
+Consulting & IT services|KPMG|page:https://www.kpmguscareers.com/
+Consulting & IT services|Slalom|sr:Slalom,page:https://www.slalom.com/us/en/careers
+Consulting & IT services|EPAM|page:https://www.epam.com/careers
+Consulting & IT services|Globant|page:https://career.globant.com/
+Consulting & IT services|CGI|page:https://www.cgi.com/en/careers
+Consulting & IT services|NTT DATA|page:https://careers-inc.nttdata.com/
+Consulting & IT services|LTIMindtree|page:https://www.ltimindtree.com/careers/
+Consulting & IT services|Publicis Sapient|wd:publicisgroupe|wd3|Publicis_Groupe_Careers,page:https://careers.publicissapient.com/

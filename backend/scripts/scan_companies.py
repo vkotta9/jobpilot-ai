@@ -7,13 +7,15 @@ Greenhouse / Lever / Ashby boards for each slug, and keeps the feed with the mos
 from __future__ import annotations
 
 import json
+import re
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app.services.sources.detect import _same_company, probe  # noqa: E402
+from app.services.sources.detect import _fetch_page, _same_company, from_text, probe  # noqa: E402
+from app.services.sources.bigtech import parse_link  # noqa: E402
 from app.services.sources.workday import WorkdayAdapter, discover  # noqa: E402
 
 
@@ -32,6 +34,37 @@ def scan(line: str) -> dict:
     slugs = [s.strip() for s in slugs.split(",") if s.strip()]
     res = {"category": cat, "company": name, "tried": slugs, "best": None, "candidates": []}
     for slug in slugs:
+        if slug.startswith("wd:"):
+            ident = slug[3:]
+            res["candidates"].append({"kind": "workday", "identifier": ident, "jobs": wd_count(ident)})
+            continue
+        if slug.startswith(("sr:", "gh:", "lever:", "ashby:")):
+            kind, ident = slug.split(":", 1)
+            kind = {"sr": "smartrecruiters", "gh": "greenhouse"}.get(kind, kind)
+            hit = probe(kind, ident)
+            if hit and hit.jobs:
+                res["candidates"].append({"kind": kind, "identifier": ident, "jobs": hit.jobs, "reported": hit.company})
+            continue
+        if slug.startswith("page:"):
+            try:
+                _, page = _fetch_page(slug[5:])
+            except Exception as e:  # noqa: BLE001
+                res["candidates"].append({"kind": "page", "identifier": slug[5:], "jobs": 0, "error": str(e)[:80]})
+                continue
+            links = from_text(page)[:4]
+            for m in re.finditer(r"([A-Za-z0-9-]+)\.(wd\d+)\.myworkdayjobs\.com/(?:[a-z]{2}-[A-Z]{2}/)?([A-Za-z0-9_-]+)", page):
+                ident = f"{m.group(1).lower()}|{m.group(2).lower()}|{m.group(3)}"
+                if ("workday", ident) not in links and m.group(3).lower() not in ("wday", "assets"):
+                    links.append(("workday", ident))
+            pl = parse_link(page)
+            if pl and pl not in links:
+                links.append(pl)
+            links = links[:8]
+            res["candidates"].append({"kind": "page", "identifier": slug[5:], "jobs": 0, "links": links})
+            for kind, ident in links:
+                n = wd_count(ident) if kind == "workday" else ((probe(kind, ident) or type("x", (), {"jobs": 0})).jobs)
+                res["candidates"].append({"kind": kind, "identifier": ident, "jobs": n})
+            continue
         try:
             idents = discover(slug)[:3]
         except Exception:  # noqa: BLE001
