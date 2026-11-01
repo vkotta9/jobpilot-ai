@@ -1,0 +1,189 @@
+Healthcare & pharma|CVS Health|cvshealth,cvs
+Healthcare & pharma|UnitedHealth Group (Optum)|uhg,unitedhealthgroup,optum
+Healthcare & pharma|Elevance Health|elevancehealth,antheminc
+Healthcare & pharma|Cigna|cigna,thecignagroup
+Healthcare & pharma|Humana|humana
+Healthcare & pharma|Centene|centene
+Healthcare & pharma|Kaiser Permanente|kp,kaiserpermanente
+Healthcare & pharma|HCA Healthcare|hcahealthcare,hca
+Healthcare & pharma|Johnson & Johnson|jj,jnj
+Healthcare & pharma|Pfizer|pfizer
+Healthcare & pharma|Merck|msd,merck
+Healthcare & pharma|Abbott|abbott
+Healthcare & pharma|Medtronic|medtronic
+Healthcare & pharma|GE HealthCare|gehc,gehealthcare
+Healthcare & pharma|McKesson|mckesson
+Healthcare & pharma|Cardinal Health|cardinalhealth
+Healthcare & pharma|Walgreens|walgreens
+Healthcare & pharma|Labcorp|labcorp
+Healthcare & pharma|Quest Diagnostics|questdiagnostics
+Healthcare & pharma|Moderna|modernatx,moderna
+Healthcare & pharma|Thermo Fisher Scientific|thermofisher
+Healthcare & pharma|Stryker|stryker
+Healthcare & pharma|Boston Scientific|bostonscientific
+Healthcare & pharma|BD|bdx,bd
+Healthcare & pharma|Eli Lilly|lilly
+Healthcare & pharma|Bristol Myers Squibb|bms,bristolmyerssquibb
+Healthcare & pharma|Amgen|amgen
+Healthcare & pharma|Gilead|gilead
+Healthcare & pharma|AbbVie|abbvie
+Healthcare & pharma|Philips|philips
+Healthcare & pharma|Molina Healthcare|molinahealthcare
+Healthcare & pharma|Danaher|danaher
+Healthcare & pharma|Illumina|illumina
+Healthcare & pharma|Tempus AI|tempus
+Healthcare & pharma|Oscar Health|oscar
+Banking & finance|Wells Fargo|wf,wellsfargo
+Banking & finance|Fidelity Investments|fmr,fidelity
+Banking & finance|Charles Schwab|schwab
+Banking & finance|Vanguard|vanguard
+Banking & finance|BlackRock|blackrock
+Banking & finance|American Express|aexp,americanexpress
+Banking & finance|Discover Financial|discover
+Banking & finance|U.S. Bank|usbank
+Banking & finance|PNC|pnc
+Banking & finance|Truist|truist
+Banking & finance|State Street|statestreet
+Banking & finance|Northern Trust|ntrs
+Banking & finance|BNY|bnymellon,bny
+Banking & finance|Fannie Mae|fanniemae
+Banking & finance|Freddie Mac|freddiemac
+Banking & finance|Fiserv|fiserv
+Banking & finance|FIS|fis
+Banking & finance|Global Payments|globalpayments,tsys
+Banking & finance|Ally|ally
+Banking & finance|Synchrony|synchronyfinancial,synchrony
+Banking & finance|Citizens Bank|citizens
+Banking & finance|Capital Group|capitalgroup
+Banking & finance|T. Rowe Price|troweprice
+Banking & finance|Nasdaq|nasdaq
+Banking & finance|CME Group|cmegroup
+Banking & finance|S&P Global|spgi
+Banking & finance|Moody's|moodys
+Banking & finance|Two Sigma|twosigma
+Banking & finance|Citadel|citadel
+Banking & finance|Jane Street|janestreet
+Banking & finance|SoFi|sofi
+Banking & finance|Chime|chime
+Insurance|State Farm|statefarm
+Insurance|Progressive|progressive
+Insurance|Allstate|allstate
+Insurance|Liberty Mutual|libertymutual
+Insurance|USAA|usaa
+Insurance|Travelers|travelers
+Insurance|Nationwide|nationwide
+Insurance|MetLife|metlife
+Insurance|Prudential|pru,prudential
+Insurance|The Hartford|thehartford
+Insurance|Aflac|aflac
+Retail & consumer|Walmart|walmart
+Retail & consumer|Target|target
+Retail & consumer|The Home Depot|homedepot
+Retail & consumer|Lowe's|lowes
+Retail & consumer|Costco|costco
+Retail & consumer|Best Buy|bestbuy
+Retail & consumer|Nike|nike
+Retail & consumer|Starbucks|starbucks
+Retail & consumer|Kroger|kroger
+Retail & consumer|Macy's|macys
+Retail & consumer|Wayfair|wayfair
+Retail & consumer|Chewy|chewy
+Retail & consumer|McDonald's|mcdonalds
+Retail & consumer|PepsiCo|pepsico
+Retail & consumer|Coca-Cola|coca-cola,cocacola
+Retail & consumer|Procter & Gamble|pg
+Retail & consumer|Expedia|expedia
+Retail & consumer|Booking Holdings|booking,bookingholdings
+Retail & consumer|Marriott|marriott
+Retail & consumer|Hilton|hilton
+Telecom & media|Verizon|verizon
+Telecom & media|AT&T|att
+Telecom & media|T-Mobile|tmobile
+Telecom & media|Comcast|comcast
+Telecom & media|Charter Communications|charter
+Telecom & media|Disney|disney
+Telecom & media|Warner Bros. Discovery|warnerbros,wbd
+Telecom & media|Paramount|paramount
+Telecom & media|Fox|fox
+Telecom & media|Sony|sonyglobal,sony
+Industrial, aerospace & defense|Boeing|boeing
+Industrial, aerospace & defense|Lockheed Martin|lmco
+Industrial, aerospace & defense|Northrop Grumman|ngc
+Industrial, aerospace & defense|RTX|globalhr,rtx
+Industrial, aerospace & defense|General Dynamics IT|gdit
+Industrial, aerospace & defense|GE Aerospace|geaerospace
+Industrial, aerospace & defense|Honeywell|honeywell
+Industrial, aerospace & defense|Caterpillar|cat
+Industrial, aerospace & defense|John Deere|johndeere
+Industrial, aerospace & defense|Ford|ford
+Industrial, aerospace & defense|Stellantis|stellantis
+Industrial, aerospace & defense|Rivian|rivian
+Industrial, aerospace & defense|Lucid Motors|lucidmotors,lucid
+Industrial, aerospace & defense|3M|3m
+Industrial, aerospace & defense|Booz Allen Hamilton|bah
+Industrial, aerospace & defense|Leidos|leidos
+Industrial, aerospace & defense|SAIC|saic
+Industrial, aerospace & defense|CACI|caci
+Industrial, aerospace & defense|L3Harris|l3harris
+Industrial, aerospace & defense|Chevron|chevron
+Industrial, aerospace & defense|ExxonMobil|exxonmobil
+Industrial, aerospace & defense|UPS|ups
+Industrial, aerospace & defense|FedEx|fedex
+Industrial, aerospace & defense|Delta Air Lines|delta
+Industrial, aerospace & defense|United Airlines|united
+Industrial, aerospace & defense|American Airlines|aa
+Industrial, aerospace & defense|Anduril|anduril
+Enterprise software & cloud|HubSpot|hubspot
+Enterprise software & cloud|DocuSign|docusign
+Enterprise software & cloud|SAP|sap
+Enterprise software & cloud|ADP|adp
+Enterprise software & cloud|Paychex|paychex
+Enterprise software & cloud|Equifax|equifax
+Enterprise software & cloud|Experian|experian
+Enterprise software & cloud|TransUnion|transunion
+Enterprise software & cloud|Gartner|gartner
+Enterprise software & cloud|Thomson Reuters|thomsonreuters
+Enterprise software & cloud|RELX (LexisNexis)|relx
+Enterprise software & cloud|Veeva Systems|veeva
+Enterprise software & cloud|Ciena|ciena
+Enterprise software & cloud|Juniper Networks|juniper
+Enterprise software & cloud|NetApp|netapp
+Enterprise software & cloud|Nutanix|nutanix
+Enterprise software & cloud|Pure Storage|purestorage
+Enterprise software & cloud|Teradata|teradata
+Enterprise software & cloud|Informatica|informatica
+Enterprise software & cloud|Dynatrace|dynatrace
+Enterprise software & cloud|Unity|unity
+Enterprise software & cloud|Garmin|garmin
+Enterprise software & cloud|Arista Networks|arista
+Enterprise software & cloud|Rubrik|rubrik
+Enterprise software & cloud|UiPath|uipath
+Enterprise software & cloud|Tenable|tenable
+Enterprise software & cloud|Rapid7|rapid7
+Enterprise software & cloud|Toast|toast
+Enterprise software & cloud|Samsara|samsara
+Enterprise software & cloud|Asana|asana
+Enterprise software & cloud|Figma|figma
+Enterprise software & cloud|Notion|notion
+Enterprise software & cloud|Box|boxinc,box
+Enterprise software & cloud|Fivetran|fivetran
+Enterprise software & cloud|dbt Labs|dbtlabsinc,dbtlabs
+Enterprise software & cloud|Anaconda|anaconda
+Enterprise software & cloud|CoreWeave|coreweave
+Enterprise software & cloud|Lambda|lambda
+Enterprise software & cloud|Weights & Biases|wandb
+Enterprise software & cloud|Glean|gleanwork,glean
+Consulting & IT services|EY|ey
+Consulting & IT services|PwC|pwc
+Consulting & IT services|KPMG|kpmg
+Consulting & IT services|Slalom|slalom
+Consulting & IT services|Genpact|genpact
+Consulting & IT services|EPAM|epam
+Consulting & IT services|Globant|globant
+Consulting & IT services|CGI|cgi
+Consulting & IT services|Kyndryl|kyndryl
+Consulting & IT services|DXC Technology|dxctechnology,dxc
+Consulting & IT services|NTT DATA|nttdata
+Consulting & IT services|LTIMindtree|ltimindtree
+Consulting & IT services|Publicis Sapient|publicissapient
+Consulting & IT services|Thoughtworks|thoughtworks

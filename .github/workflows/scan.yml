@@ -1,0 +1,24 @@
+name: Scan companies for careers feeds
+on:
+  workflow_dispatch:
+    inputs:
+      list:
+        description: "path of the company list"
+        default: "backend/scripts/scan_list.txt"
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r backend/requirements.txt
+      - name: Scan
+        working-directory: backend
+        run: python scripts/scan_companies.py "../${{ github.event.inputs.list }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scan
+          path: backend/scan.json
