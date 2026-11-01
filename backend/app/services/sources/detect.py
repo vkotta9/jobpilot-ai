@@ -251,11 +251,16 @@ def detect(entry: str, transport=None) -> Detection:
         hit = _workday_hit(entry, KNOWN_WORKDAY[key], transport)
         if hit:
             return hit
+    key = ALIASES.get(key, key)
     top = _top_tech().get(key)
     if top and top["kind"] == "workday":
         hit = _workday_hit(entry, top["identifier"], transport)
         if hit:
             hit.company = top["company"]
+            return hit
+    elif top and top["kind"] in ("oraclehcm", "eightfold", "jibe", "avature", "amazon", "google", "apple", "microsoft"):
+        hit = _connector_hit(entry, top["kind"], top["identifier"], top["company"], transport)
+        if hit:
             return hit
     elif top and top["kind"] in PROBE_ORDER:
         hit = probe(top["kind"], top["identifier"], transport)
@@ -294,6 +299,18 @@ AMBIGUOUS = {"workable", "recruitee", "smartrecruiters", "greenhouse"}  # feeds 
 
 
 _TOP_INDEX: dict = {}
+# other names people type for catalog companies (normalized: lowercase letters only)
+ALIASES = {"cvs": "cvshealth", "cvspharmacy": "cvshealth", "aetna": "cvshealth", "optum": "unitedhealthgroupoptum",
+           "uhg": "unitedhealthgroupoptum", "unitedhealthgroup": "unitedhealthgroupoptum", "unitedhealth": "unitedhealthgroupoptum",
+           "unitedhealthcare": "unitedhealthgroupoptum", "jnj": "johnsonjohnson", "jj": "johnsonjohnson", "anthem": "elevancehealth",
+           "elevance": "elevancehealth", "gehealthcare": "gehealthcare", "homedepot": "thehomedepot", "pg": "proctergamble",
+           "pandg": "proctergamble", "wellsfargo": "wellsfargo", "fidelity": "fidelityinvestments", "raytheon": "rtx",
+           "boozallen": "boozallenhamilton", "bms": "bristolmyerssquibb", "lilly": "elililly", "elililly": "elililly", "coke": "cocacola",
+           "cocacolacompany": "cocacola", "tmobileus": "tmobile", "warnerbros": "warnerbrosdiscovery", "wbd": "warnerbrosdiscovery",
+           "lexisnexis": "relxlexisnexis", "relx": "relxlexisnexis", "usbank": "usbank", "usbancorp": "usbank",
+           "spglobal": "spglobal", "ge": "geaerospace", "generalelectric": "geaerospace", "amex": "americanexpress",
+           "schwab": "charlesschwab", "gd": "generaldynamicsit", "generaldynamics": "generaldynamicsit",
+           "metlifeinc": "metlife", "fannie": "fanniemae", "freddie": "freddiemac"}
 
 
 def _top_tech() -> dict:

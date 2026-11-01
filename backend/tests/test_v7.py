@@ -67,3 +67,28 @@ def test_requested_companies_have_direct_feeds_or_google_jobs():
     assert "accenture" not in IN_HOUSE and IN_HOUSE["goldmansachs"] == "Goldman Sachs" and IN_HOUSE["wipro"] == "Wipro"
     assert parse_link("https://careers.amd.com/careers-home/jobs/1") == ("jibe", "careers.amd.com")
     assert parse_link("https://jobs.lenovo.com/en_US/careers/JobDetail/x/1") == ("avature", "jobs.lenovo.com/en_US/careers")
+
+
+def test_catalog_aliases_and_healthcare_companies():
+    from app.services.sources.catalog import TOP_TECH
+    from app.services.sources.detect import ALIASES, _top_tech
+
+    idx = _top_tech()
+    assert all(v in idx for v in ALIASES.values())
+    assert idx[ALIASES["cvs"]]["identifier"] == "cvshealth|wd1|CVS_Health_Careers"
+    assert idx[ALIASES["optum"]]["kind"] == "jsearch"  # Taleo: no public feed
+    cats = {t["category"] for t in TOP_TECH}
+    assert {"Healthcare & pharma", "Insurance", "Retail & consumer", "Telecom & media"} <= cats
+
+
+def test_detect_uses_catalog_connector_for_oracle_sites():
+    from app.services.sources import detect as d
+
+    calls = []
+    orig = d._connector_hit
+    d._connector_hit = lambda entry, kind, ident, company, transport=None: calls.append((kind, ident)) or d.Detection(entry, "found", kind=kind, identifier=ident, company=company, jobs=3)
+    try:
+        r = d.detect("Quest Diagnostics")
+    finally:
+        d._connector_hit = orig
+    assert r.kind == "oraclehcm" and calls == [("oraclehcm", "hdox.fa.us6.oraclecloud.com|CX_1")]

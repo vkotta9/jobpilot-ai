@@ -89,14 +89,14 @@ def test_top_tech_catalog_and_endpoint(client):
 
     from .conftest import make_user
 
-    assert len(TOP_TECH) == 116 and len({t["company"] for t in TOP_TECH}) == 116
+    assert len(TOP_TECH) == 238 and len({t["company"] for t in TOP_TECH}) == 238
     assert all(t["kind"] in ADAPTERS for t in TOP_TECH)
     direct = [t for t in TOP_TECH if t["via"] == "direct"]
     assert len(direct) >= 60 and {"Apple", "Microsoft", "Google", "Amazon", "NVIDIA"} <= {t["company"] for t in direct}
     assert next(t for t in TOP_TECH if t["company"] == "Meta")["kind"] == "jsearch"
     h, _ = make_user(client)
     r = client.get("/api/companies/top-tech", headers=h).json()
-    assert r["jsearch_connected"] is False and len(r["companies"]) == 116
+    assert r["jsearch_connected"] is False and len(r["companies"]) == 238
     oracle = next(t for t in TOP_TECH if t["company"] == "Oracle")
     out = client.post("/api/companies/follow", headers=h, json={"run_now": False, "items": [
         {"kind": oracle["kind"], "identifier": oracle["identifier"], "company": "Oracle"}]}).json()

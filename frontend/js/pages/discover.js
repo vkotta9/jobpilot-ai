@@ -291,16 +291,6 @@ function topTechCard(top, root) {
   const followingN = all.filter((c) => c.following).length;
   const cats = {};
   all.forEach((c) => (cats[c.category] = cats[c.category] || []).push(c));
-  const picks = [];
-  const groups = Object.entries(cats).map(([cat, items]) => h("div", { style: { marginBottom: "10px" } },
-    h("h3", {}, cat),
-    h("div", { class: "row", style: { gap: "4px 12px" } }, items.map((c) => {
-      const cb = h("input", { type: "checkbox", checked: c.following, disabled: c.following });
-      cb._c = c;
-      picks.push(cb);
-      return h("label", { class: "check small", style: { minWidth: "190px" }, title: `${PLATFORM[c.kind] || c.kind}` }, cb, c.company,
-        c.via === "google_jobs" ? h("span", { class: "faint" }, " · Google Jobs") : null);
-    }))));
   const follow = async (items) => {
     if (!items.length) return toast("Nothing new to follow.", "bad");
     const out = await api.post("/api/companies/follow", { items: items.map((c) => ({ kind: c.kind, identifier: c.identifier, company: c.company })) });
@@ -308,6 +298,23 @@ function topTechCard(top, root) {
     render(root);
     if (out.background) setTimeout(() => render(root), 90000);
   };
+  const picks = [];
+  const catButton = (items) => {
+    const todo = items.filter((c) => !c.following && (c.via === "direct" || top.jsearch_connected));
+    if (!todo.length) return h("span", { class: "faint small" }, items.every((c) => c.following) ? "all followed" : "");
+    const b = h("button", { class: "small" }, `Follow all ${todo.length}`);
+    b.addEventListener("click", busy(b, () => follow(todo)));
+    return b;
+  };
+  const groups = Object.entries(cats).map(([cat, items]) => h("div", { style: { marginBottom: "10px" } },
+    h("div", { class: "row", style: { justifyContent: "space-between", alignItems: "center" } }, h("h3", {}, `${cat} (${items.length})`), catButton(items)),
+    h("div", { class: "row", style: { gap: "4px 12px" } }, items.map((c) => {
+      const cb = h("input", { type: "checkbox", checked: c.following, disabled: c.following });
+      cb._c = c;
+      picks.push(cb);
+      return h("label", { class: "check small", style: { minWidth: "190px" }, title: `${PLATFORM[c.kind] || c.kind}` }, cb, c.company,
+        c.via === "google_jobs" ? h("span", { class: "faint" }, " · Google Jobs") : null);
+    }))));
   const bDirect = h("button", {}, `Follow all ${direct.length} direct feeds`);
   bDirect.addEventListener("click", busy(bDirect, () => follow(direct.filter((c) => !c.following))));
   const bAll = h("button", { class: "btn-primary" }, `Follow all ${all.length}`);
@@ -316,8 +323,8 @@ function topTechCard(top, root) {
   bSel.addEventListener("click", busy(bSel, () => follow(picks.filter((b) => b.checked && !b.disabled).map((b) => b._c))));
   return h("div", { class: "card", style: { marginTop: "16px" } },
     h("div", { class: "card-head" }, h("h2", {}, "Top companies"), h("span", { class: "faint" }, `Following ${followingN} of ${all.length}`)),
-    h("p", { class: "small muted" }, `${direct.length} are searched directly on the company's own careers site or job board (Amazon, Microsoft, Google, Apple, NVIDIA, Salesforce, OpenAI, Stripe…). `,
-      `The other ${all.length - direct.length} (Meta, Tesla, Uber, Cisco…) don't offer a feed JobPilot may use, so they're followed through Google Jobs, which is checked weekly per company to stay within JSearch's free plan.`),
+    h("p", { class: "small muted" }, `${direct.length} are searched directly on the company's own careers site or job board (Amazon, Microsoft, Google, NVIDIA, JPMorgan, CVS Health, Home Depot, Stripe…). `,
+      `The other ${all.length - direct.length} (Meta, Tesla, Goldman Sachs, UnitedHealth…) don't offer a feed JobPilot may use, so they're followed through Google Jobs, which is checked weekly per company to stay within JSearch's free plan.`),
     top.jsearch_connected ? null : h("div", { class: "alert warn small" }, "Google Jobs companies need your free JSearch key — ", h("a", { href: "#/settings" }, "Settings → Connections"),
       ". Until then, “Follow all” follows the direct feeds only."),
     h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px", margin: "8px 0" } }, bDirect, bAll),
