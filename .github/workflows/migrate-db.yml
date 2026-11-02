@@ -1,0 +1,46 @@
+name: Copy database to a new Postgres
+
+# Copies everything (account, profile, resumes, jobs, applications, settings) from the old database to a new one.
+# Before running, add two repository secrets (Settings → Secrets and variables → Actions):
+#   OLD_DATABASE_URL  - Render dashboard → jobpilot-db → Connections → "External Database URL"
+#   NEW_DATABASE_URL  - the new database's connection string (e.g. from Neon)
+# The URLs are never printed. No copy of the data is kept by this workflow.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type COPY to copy the old database into the new one (the new one should be empty)'
+        required: true
+
+jobs:
+  copy:
+    if: ${{ github.event.inputs.confirm == 'COPY' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OLD: ${{ secrets.OLD_DATABASE_URL }}
+      NEW: ${{ secrets.NEW_DATABASE_URL }}
+    steps:
+      - name: Check secrets
+        run: |
+          [ -n "$OLD" ] || { echo "::error::Add the OLD_DATABASE_URL secret first"; exit 1; }
+          [ -n "$NEW" ] || { echo "::error::Add the NEW_DATABASE_URL secret first"; exit 1; }
+      - name: Install Postgres 17 client tools
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -fsSo /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client-17
+      - name: Copy
+        run: |
+          export PATH=/usr/lib/postgresql/17/bin:$PATH
+          pg_dump --no-owner --no-acl -Fc -f /tmp/db.dump "$OLD"
+          pg_restore --no-owner --no-acl --exit-on-error -d "$NEW" /tmp/db.dump
+          rm -f /tmp/db.dump
+      - name: Compare row counts
+        run: |
+          export PATH=/usr/lib/postgresql/17/bin:$PATH
+          Q="select string_agg(t || '=' || n, ', ' order by t) from (select 'users' t, count(*) n from users union all select 'jobs', count(*) from jobs union all select 'applications', count(*) from applications union all select 'resumes', count(*) from resumes union all select 'job_sources', count(*) from job_sources) x"
+          A=$(psql "$OLD" -tAc "$Q"); B=$(psql "$NEW" -tAc "$Q")
+          echo "::notice title=old::$A"; echo "::notice title=new::$B"
+          [ "$A" = "$B" ] || { echo "::error::Row counts differ"; exit 1; }
