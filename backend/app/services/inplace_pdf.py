@@ -432,6 +432,23 @@ def fits(data_or_doc, unit: Unit, runs: list[tuple[str, bool]], allow_shrink: bo
     return {"needed": len(lines), "available": len(unit.lines), "fits": len(lines) <= len(unit.lines), "size": size}
 
 
+def capacity(data_or_doc, unit: Unit) -> int:
+    """About how many characters fit in this unit's lines at its font size (its own text's average glyph width).
+    Rewrites may use this much room: the last line is often half empty, so ±a few % of the old length is too strict."""
+    doc = data_or_doc if isinstance(data_or_doc, pymupdf.Document) else pymupdf.open(stream=data_or_doc, filetype="pdf")
+    kit = _FontKit(doc, doc[unit.page])
+    runs = unit.rich or [(unit.text, False)]
+    reg, bold = kit.pick(unit, runs)
+    text = "".join(t for t, _ in runs)
+    used = sum((bold if b else reg).text_length(t, unit.size) for t, b in runs)
+    if not text.strip() or used <= 0:
+        return len(text)
+    per_char = used / len(text)
+    avail = sum(unit.right - (unit.text_x0 if i == 0 else unit.cont_x0) for i in range(len(unit.lines)))
+    # word wrapping wastes on average about half a word at the end of each full line
+    return max(len(text), int(avail * 0.97 / per_char) - 6 * len(unit.lines))
+
+
 def _write_unit(doc: pymupdf.Document, page: pymupdf.Page, unit: Unit, runs: list[tuple[str, bool]]) -> list[str]:
     warnings: list[str] = []
     kit = _FontKit(doc, page)

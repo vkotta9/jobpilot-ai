@@ -1,9 +1,9 @@
 """Tailor the user's *own* resume file for a job, keeping its exact format.
 
 1. Analyse the uploaded PDF/DOCX into editable units (summary, bullets, skills lines).
-2. Ask the AI (if connected) to re-word relevant lines in the job's language —
-   same facts, same numbers, about the same length so the layout doesn't move.
-   Every suggestion passes the fact guard and a fit check.
+2. With an AI connected (tailor_ai): rewrite the summary and the job-relevant bullets in the job's language,
+   using each line's real space on the page; a second review pass removes keyword stuffing; every line then passes
+   the fact guard, the style guard and the fit check. Without AI: wording alignment and skills only.
 3. Suggest skills from the job description for the existing skills lines:
    skills already evidenced elsewhere in the resume are pre-selected; skills
    that aren't are listed unticked ("add only if true").
@@ -284,32 +284,6 @@ def _relevant(item: str, jd_low: str) -> bool:
     return bool(core) and (ats.has_term(jd_low, core) or any(ats.has_term(jd_low, w) for w in re.split(r"\s*/\s*", core) if len(w) > 1))
 
 
-def _llm_suggestions(cfg, job: Job, items: list[dict], resume_text: str, keywords: list[str]) -> dict[str, str]:
-    schema = llm.strict_schema({"items": {"type": "array", "items": llm.strict_schema(
-        {"id": {"type": "string"}, "text": {"type": "string"}, "changed": {"type": "boolean"}})}})
-    lines = "\n".join(f'{i["id"]} (max {i["max"]} chars, min {i["min"]} chars): {i["text"]}' for i in items)
-    task = (
-        "Tailor these lines of the candidate's resume to the target job. For each item return the rewritten text.\n"
-        "Rules:\n"
-        "- Keep every fact, number, company, tool and result exactly; do not add any tool, skill, metric or achievement "
-        "that is not already in that line or in candidate_facts.\n"
-        "- Use the job posting's terminology where it truthfully describes the SAME work (e.g. its words for the same concept), "
-        "and put the most job-relevant part first.\n"
-        f"- Job keywords you may use only when truthful: {', '.join(keywords[:30])}.\n"
-        "- Stay within each item's max/min character counts so the page layout does not change.\n"
-        "- Keep **double-asterisk** bold markers around the same terms when they remain.\n"
-        "- The summary/profile paragraph should open with the candidate's real title closest to the job's title and name the "
-        "job's most important skills the candidate actually has.\n"
-        "- For bullets: lead with the action and the job-relevant technology, keep the result/metric, use strong verbs.\n"
-        "- If a line is already a good fit or is unrelated to the job, return it unchanged with changed=false.\n"
-        "- Improve the summary and the 6–10 most relevant bullets; leave the rest unchanged."
-    )
-    payload = (f"<candidate_facts>\n{resume_text[:9000]}\n</candidate_facts>\n<items>\n{lines}\n</items>\n"
-               + llm.untrusted("job_description", f"{job.title} at {job.company}\n{job.description_text}", 9000))
-    out = llm.complete_json(task, payload, schema, cfg=cfg, name="tailored_lines")
-    return {x["id"]: x["text"].strip() for x in out.get("items", []) if x.get("changed") and x.get("text")}
-
-
 def build_plan(db, user_id: int, job: Job, resume: Resume) -> tuple[dict, list[dict], str]:
     data = resume_bytes(resume)
     if data is None:
@@ -338,63 +312,6 @@ def build_plan(db, user_id: int, job: Job, resume: Resume) -> tuple[dict, list[d
     unit_by_id = {u.id: u for u in units}
 
     rewritable = [u for u in units if u.kind in ("bullet", "paragraph")]
-    if cfg and rewritable:
-        items = []
-        for u in rewritable:
-            t = to_md(u.rich)
-            n = len(plain(t))
-            items.append({"id": u.id, "text": t, "max": int(n * 1.04) + 2, "min": int(n * 0.85)})
-        try:
-            sugg = _llm_suggestions(cfg, job, items, full, hard)
-            generator = "ai:" + cfg.model
-        except llm.LLMError as e:
-            sugg = {}
-            flags.append({"path": "generator", "message": f"AI suggestions unavailable: {e} Skills suggestions still work."})
-        retry = []
-        for uid, text in sugg.items():
-            e, u = by_id.get(uid), unit_by_id.get(uid)
-            if not e or plain(text) == plain(e["original"]):
-                continue
-            problems = fact_guard(plain(e["original"]), plain(text), full_low)
-            e["proposed"] = text
-            if problems:
-                e["status"], e["note"] = "rejected_guard", "Not applied — " + "; ".join(problems) + ". Use it only if it's true."
-                continue
-            if kind == "pdf" and not inplace_pdf.fits(data, u, from_md(text), allow_shrink=True)["fits"]:
-                retry.append(uid)
-                continue
-            e["status"], e["final"], e["accepted"] = "suggested", text, True
-        if retry and cfg:
-            try:
-                tighter = [{"id": uid, "text": by_id[uid]["proposed"], "max": int(len(plain(by_id[uid]["original"])) * 0.97),
-                            "min": int(len(plain(by_id[uid]["original"])) * 0.8)} for uid in retry]
-                sugg2 = _llm_suggestions(cfg, job, tighter, full, hard)
-            except llm.LLMError:
-                sugg2 = {}
-            for uid in retry:
-                e, u = by_id[uid], unit_by_id[uid]
-                text = sugg2.get(uid) or e["proposed"]
-                if not fact_guard(plain(e["original"]), plain(text), full_low) and inplace_pdf.fits(data, u, from_md(text), allow_shrink=True)["fits"]:
-                    e["proposed"], e["status"], e["final"], e["accepted"] = text, "suggested", text, True
-                else:
-                    e["status"], e["note"] = "too_long", "Suggestion is longer than the space on the page — shorten it to use it."
-    # wording alignment (works with or without AI): use the posting's terms for the same things
-    for u in rewritable:
-        e = by_id[u.id]
-        base = e["final"]
-        new, swaps = align_wording(base, jd)
-        if not swaps or fact_guard(plain(e["original"]), plain(new), full_low):
-            continue
-        if kind == "pdf" and not inplace_pdf.fits(data, u, from_md(new), allow_shrink=True)["fits"]:
-            continue
-        e["proposed"], e["final"], e["accepted"] = new, new, True
-        e["status"] = "suggested" if e["status"] == "suggested" else "rules"
-        e["note"] = ((e["note"] + " ") if e["note"] else "") + "Uses the posting's wording: " + ", ".join(swaps) + "."
-    if not cfg:
-        flags.append({"path": "generator", "message": "For full sentence rewrites of your summary and bullet points, connect a free AI "
-                      "model in Settings → Connections (Google Gemini is free). Without it, JobPilot aligns your wording with the "
-                      "posting, reorganises your skills and adds missing skills to your summary."})
-
     # skills: add the posting's skills to the matching skills line. If a line is full, make room by
     # dropping skills on it that this job doesn't mention; anything that still doesn't fit goes into the summary.
     skill_units = [u for u in units if u.kind == "skill_line"]
@@ -437,37 +354,43 @@ def build_plan(db, user_id: int, job: Job, resume: Resume) -> tuple[dict, list[d
             for x in mine:  # unticked skills: would they fit if the user ticks them (dropping more unrelated skills)?
                 if not x["selected"] and x["fits"]:
                     x["fits"] = fit_skill_line(data, u, skill_lines[u.id], [y["display"] for y in placed] + [x["display"]], set())["fits"]
-        # posting skills you have that found no room on any skills line → a short line in your summary, if there's space
+        # posting skills you have that found no room on any skills line: the summary rewrite mentions them
         overflow = [x for x in skills if x["evidenced"] and not x["fits"]]
-        summary = next((u for u in units if u.kind == "paragraph" and re.search(
-            r"summary|profile|objective|about", (u.section or "") + " " + (u.heading or ""), re.I)), None)
-        if summary is not None and not overflow and by_id[summary.id]["status"] in ("unchanged", "rules"):
-            # room left in the summary: name the job's key skills you have (shown elsewhere in your resume)
-            e = by_id[summary.id]
-            in_summary = plain(e["final"]).lower()
-            top = [k for k in hard if ats.has_term(non_skill_text, k) and not ats.has_term(in_summary, k)][:5]
-            for n in range(len(top), 1, -1):
-                cand = e["final"].rstrip() + " Skilled in " + _join([_display(t, jd) for t in top[:n]]) + "."
-                if inplace_pdf.fits(data, summary, from_md(cand))["fits"]:
-                    e["proposed"], e["final"], e["accepted"] = cand, cand, True
-                    e["status"] = "rules"
-                    e["note"] = ((e["note"] + " ") if e["note"] else "") + "Names the job's key skills you have, so your summary matches the posting."
-                    break
-        if summary is not None and overflow:
-            e = by_id[summary.id]
-            want = [x["display"] for x in sorted(overflow, key=lambda x: not x["required"])]
-            for n in range(len(want), 0, -1):
-                cand = e["final"].rstrip() + " Skilled in " + _join(want[:n]) + "."
-                if inplace_pdf.fits(data, summary, from_md(cand), allow_shrink=True)["fits"]:
-                    e["proposed"], e["final"], e["accepted"] = cand, cand, True
-                    e["status"] = "suggested" if e["status"] == "suggested" else "rules"
-                    e["note"] = ((e["note"] + " ") if e["note"] else "") + "Added job skills that had no room in your skills section."
-                    for x in overflow:
-                        if x["display"] in want[:n]:
-                            x["placed"] = "summary"
-                    break
+    else:
+        overflow = []
     if not skill_units:
         flags.append({"path": "skills", "message": "No skills section was found in your resume, so no skills were added."})
+
+    summary = next((u for u in units if u.kind == "paragraph" and re.search(
+        r"summary|profile|objective|about", (u.section or "") + " " + (u.heading or ""), re.I)), None)
+    ai_done = False
+    if cfg and rewritable:
+        ai_done, generator = _ai_rewrite(data, kind, job, units, rewritable, by_id, full, kw, hard, overflow, summary, cfg, flags,
+                                         generator)
+    # wording alignment (works with or without AI): use the posting's terms for the same things
+    for u in rewritable:
+        e = by_id[u.id]
+        base = e["final"]
+        new, swaps = align_wording(base, jd)
+        if not swaps or fact_guard(plain(e["original"]), plain(new), full_low):
+            continue
+        if kind == "pdf" and not inplace_pdf.fits(data, u, from_md(new), allow_shrink=True)["fits"]:
+            continue
+        e["proposed"], e["final"], e["accepted"] = new, new, True
+        e["status"] = "suggested" if e["status"] == "suggested" else "rules"
+        e["note"] = ((e["note"] + " ") if e["note"] else "") + "Uses the posting's wording: " + ", ".join(swaps) + "."
+    if not cfg:
+        flags.append({"path": "generator", "message": "For real rewrites of your summary and bullet points in the job's language, connect "
+                      "a free AI model in Settings → Connections (Google Gemini is free). Without it, JobPilot only aligns your "
+                      "wording with the posting and updates your skills section."})
+
+    if summary is not None and not ai_done and by_id[summary.id]["status"] in ("unchanged", "rules"):
+        _weave_into_summary(data, kind, summary, by_id[summary.id], overflow, hard, non_skill_text, jd)
+    if summary is not None:
+        fin = plain(by_id[summary.id]["final"]).lower()
+        for x in overflow:
+            if ats.has_term(fin, x["term"]) and not ats.has_term(plain(by_id[summary.id]["original"]).lower(), x["term"]):
+                x["placed"] = "summary"
 
     content = {
         "format": "inplace", "file_kind": kind, "resume_id": resume.id, "resume_filename": resume.original_filename,
@@ -476,6 +399,95 @@ def build_plan(db, user_id: int, job: Job, resume: Resume) -> tuple[dict, list[d
         "ats_before": _ats_summary(ats.score(full, job.title, jd, job.company)),
     }
     return content, flags, generator
+
+
+def _relevance(text: str, hard: list[str]) -> int:
+    low = plain(text).lower()
+    return sum(1 for t in hard if ats.has_term(low, t))
+
+
+def _ai_rewrite(data, kind, job, units, rewritable, by_id, full, kw, hard, overflow, summary, cfg, flags, generator):
+    """Rewrite the summary and job-relevant bullets with the AI (rewrite → review → guards). Returns (done, generator)."""
+    from . import tailor_ai
+
+    jd = job.description_text or ""
+    full_low = full.lower()
+    summary_low = plain(by_id[summary.id]["original"]).lower() if summary is not None else ""
+    required = {k.term for k in kw if k.kind == "hard" and k.required}
+    gap = tailor_ai.gap_analysis(hard, required, full_low, summary_low, lambda t: _display(t, jd))
+    # skills that found no room on the skills lines go first: the summary is where they can still appear
+    first = [x["display"] for x in sorted(overflow, key=lambda x: not x["required"])]
+    gap["feature"] = list(dict.fromkeys(first + gap["feature"]))[:8]
+    unit_by_id = {u.id: u for u in rewritable}
+
+    def kind_of(e):
+        return "summary" if summary is not None and e["id"] == summary.id else ("bullet" if e["kind"] == "bullet" else "paragraph")
+
+    def room(e):
+        u = unit_by_id[e["id"]]
+        n = len(plain(e["md"]))
+        if kind == "pdf":
+            return inplace_pdf.capacity(data, u)
+        return int(n * (1.15 if kind_of(e) == "summary" else 1.25))  # Word re-flows; keep growth modest
+
+    def fits(uid, text):
+        return kind != "pdf" or inplace_pdf.fits(data, unit_by_id[uid], from_md(text), allow_shrink=True)["fits"]
+
+    lines = [{"id": u.id, "md": by_id[u.id]["original"], "kind": u.kind, "heading": u.heading or ""} for u in rewritable]
+    try:
+        result, model, notes = tailor_ai.tailor_lines(cfg, job, lines, full, gap, room, fits, kind_of,
+                                                      lambda e: _relevance(e["md"], hard))
+    except llm.LLMError as e:
+        flags.append({"path": "generator", "message": f"AI rewrite unavailable right now: {e} Your skills section was still "
+                      "updated; press “Tailor again” in a minute for the summary and bullet rewrites."})
+        return False, generator
+    for n in notes:
+        flags.append({"path": "generator", "message": n})
+    for uid, r in result.items():
+        e = by_id.get(uid)
+        if not e:
+            continue
+        e["proposed"] = r["text"]
+        if r.get("too_long"):
+            e["status"], e["note"] = "too_long", "The rewrite is longer than the space on the page — shorten it to use it."
+            continue
+        if r.get("rejected"):
+            e["status"], e["note"] = "rejected_guard", "Not applied — " + r["rejected"] + ". You can still edit it in."
+            continue
+        e["status"], e["final"], e["accepted"] = "suggested", r["text"], True
+        kws = [k for k in r.get("keywords") or [] if k]
+        e["note"] = ("Rewritten for this job" + (" — works in: " + ", ".join(kws[:4]) if kws else "") + "."
+                     + (" Checked by a second review pass." if r.get("reviewed") else ""))
+    if gap["required_missing"]:
+        flags.append({"path": "skills", "message": "The posting asks for " + ", ".join(gap["required_missing"][:6]) +
+                      ", which your resume doesn't show — they were not added. Tick them in Skills only if you really have them."})
+    return True, "ai:" + model
+
+
+_SUMMARY_LIST = re.compile(r"(\b(?:proficient|skilled|experienced|expertise|experience|fluent|strong) (?:in|with) )"
+                           r"([^.;:]{3,160}?)(,? and )([^.;:,]{2,40})(?=[.;,])", re.I)
+
+
+def _weave_into_summary(data, kind, summary, e, overflow, hard, non_skill_text, jd) -> None:
+    """Without AI: add up to two of the job's skills you have into a list of skills your summary already has
+    ("Proficient in Python, Java, and SQL" → "Proficient in Python, Java, Spring Boot, and SQL"). Never appends a new sentence."""
+    text = e["final"]
+    m = _SUMMARY_LIST.search(text)
+    if not m:
+        return
+    in_summary = plain(text).lower()
+    want = [x["display"] for x in sorted(overflow, key=lambda x: not x["required"])]
+    want += [_display(t, jd) for t in hard if ats.has_term(non_skill_text, t)]
+    listed = [x.strip() for x in re.split(r",", m.group(2)) + [m.group(4)] if x.strip()]
+    groups = {_group_of(x.lower()) for x in listed} - {None}
+    # only skills of the same kind as the ones listed (no "Microservices" in a list of languages)
+    want = [w for w in dict.fromkeys(want) if not ats.has_term(in_summary, w.lower()) and _group_of(w.lower()) in groups][:2]
+    for n in range(len(want), 0, -1):
+        cand = text[: m.end(2)] + "".join(", " + w for w in want[:n]) + text[m.end(2):]
+        if kind != "pdf" or inplace_pdf.fits(data, summary, from_md(cand))["fits"]:
+            e["proposed"], e["final"], e["accepted"], e["status"] = cand, cand, True, "rules"
+            e["note"] = ((e["note"] + " ") if e["note"] else "") + "Adds " + _join(want[:n]) + " to the skills your summary names."
+            return
 
 
 def _join(items: list[str]) -> str:

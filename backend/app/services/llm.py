@@ -142,19 +142,63 @@ def _alternative_model(cfg: "LLMConfig", transport=None) -> Optional[str]:
     return alt
 
 
+_BEST_MODEL: dict[str, Optional[str]] = {}
+
+
+def best_model(cfg: "LLMConfig", transport=None) -> Optional[str]:
+    """The strongest model on this key for writing that matters (resume tailoring): Gemini's newest stable 'pro' model.
+    For other providers the user's chosen model is used as is. None = keep cfg.model."""
+    if cfg.provider != "gemini":
+        return None
+    key = cfg.api_key[-6:]
+    if key in _BEST_MODEL:
+        return _BEST_MODEL[key]
+    best = None
+    try:
+        with httpx.Client(timeout=10, transport=transport) as c:
+            r = c.get(f"{cfg.base_url}/models", headers={"Authorization": f"Bearer {cfg.api_key}"})
+        ids = [m.get("id", "").replace("models/", "") for m in (r.json().get("data") or [])] if r.status_code == 200 else []
+        pros = []
+        for i in ids:
+            m = re.fullmatch(r"gemini-(\d+(?:\.\d+)?)-pro(?:-latest)?", i)
+            if m:
+                pros.append((float(m.group(1)), i))
+        best = max(pros)[1] if pros else None
+    except (httpx.HTTPError, ValueError, AttributeError):
+        best = None
+    _BEST_MODEL[key] = best
+    return best
+
+
+def complete_json_best(task: str, payload: str, schema: dict, *, cfg: LLMConfig, name: str = "result", transport=None) -> tuple[dict, str]:
+    """Like complete_json, but first tries the strongest model on the key; falls back to the user's model
+    if that one is unavailable or rate-limited (free plans allow few 'pro' calls). Returns (result, model used)."""
+    strong = best_model(cfg, transport)
+    if strong and strong != cfg.model:
+        try:
+            alt = LLMConfig(cfg.api_key, cfg.base_url, strong, cfg.provider)
+            return complete_json(task, payload, schema, cfg=alt, name=name, transport=transport, max_attempts=1, busy_budget_s=12,
+                                 switch_models=False), strong
+        except LLMError as e:
+            log.info("strong model %s unavailable (%s); using %s", strong, e, cfg.model)
+    return complete_json(task, payload, schema, cfg=cfg, name=name, transport=transport), cfg.model
+
+
 def complete_json(task: str, payload: str, schema: dict, *, cfg: Optional[LLMConfig] = None, name: str = "result",
-                  transport: Optional[httpx.BaseTransport] = None, max_attempts: int = 2) -> dict:
+                  transport: Optional[httpx.BaseTransport] = None, max_attempts: int = 2, busy_budget_s: float = 40.0,
+                  temperature: float = 0.2, switch_models: bool = True) -> dict:
     cfg = cfg or env_config()
     if not cfg:
         raise LLMError("AI is not connected")
     messages = [{"role": "system", "content": GUARDRAILS}, {"role": "user", "content": f"{task}\n\n{payload}"}]
     body: dict[str, Any] = {
-        "model": cfg.model, "temperature": 0.2, "messages": messages,
+        "model": cfg.model, "temperature": temperature, "messages": messages,
         "response_format": {"type": "json_schema", "json_schema": {"name": name, "schema": schema, "strict": True}},
     }
     last: Optional[Exception] = None
-    downgraded = switched = False
-    waited, budget_s = 0.0, 40.0  # how long a busy (rate-limited) service may make us wait in total
+    downgraded = False
+    switched = not switch_models
+    waited, budget_s = 0.0, busy_budget_s  # how long a busy (rate-limited) service may make us wait in total
     for attempt in range(1, 40):
         busy = bool(last and "busy" in str(last))
         if attempt > max_attempts + 1 and not (busy and (waited < budget_s or not switched)):

@@ -191,7 +191,7 @@ def test_plan_applies_safe_suggestions_and_rejects_unsafe(monkeypatch):
         return {"items": [
             {"id": bullets[0].id, "changed": True, "text": "Built REST services in **Java** on **Azure**, improving data flow efficiency by 30% for a major retail client during a legacy-system migration."},
             {"id": bullets[1].id, "changed": True, "text": "Automated CI/CD deployments with Kubernetes and Azure DevOps, cutting release time by 60%."},
-            {"id": bullets[2].id, "changed": True, "text": "Mentored 3 junior developers " + "on code reviews and testing practices " * 6},
+            {"id": bullets[2].id, "changed": True, "text": "Coached 3 junior developers " + "on code reviews and testing practices " * 6},
         ]}
 
     monkeypatch.setattr(llm, "complete_json", fake)
@@ -201,7 +201,7 @@ def test_plan_applies_safe_suggestions_and_rejects_unsafe(monkeypatch):
     assert st[bullets[0].id]["status"] == "suggested" and st[bullets[0].id]["accepted"]
     assert st[bullets[1].id]["status"] == "rejected_guard" and not st[bullets[1].id]["accepted"]  # invented 60%
     assert st[bullets[2].id]["status"] == "too_long" and not st[bullets[2].id]["accepted"]
-    assert calls["n"] == 2  # one retry asking for shorter text
+    assert calls["n"] == 3  # rewrite, review, then one retry asking for shorter text
     skills = {s["term"]: s for s in content["skills"]}
     assert skills["docker"]["evidenced"] is False and skills["docker"]["selected"] is False
     assert skills["ci/cd"]["selected"] is False  # not evidenced in the original resume
