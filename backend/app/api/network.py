@@ -8,7 +8,8 @@ from ..db import get_db
 from ..models import Application, CandidateProfile, Contact, Job, OutreachMessage, User, to_dict, utcnow
 from ..schemas import ApproveIn, ContactIn, OutreachEdit, OutreachGenerateIn
 from ..security import audit, current_user, owned
-from ..services import networking
+from ..services import applications as appsvc
+from ..services import llm, networking
 
 router = APIRouter(prefix="/api", tags=["networking"])
 
@@ -16,11 +17,13 @@ router = APIRouter(prefix="/api", tags=["networking"])
 @router.get("/jobs/{jid}/research-plan")
 def research_plan(jid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     job = owned(db, Job, jid, user)
+    profile = db.query(CandidateProfile).filter_by(user_id=user.id).one_or_none()
     return {
-        "job_id": job.id,
-        "note": "JobPilot does not scrape LinkedIn or people-search sites. Run these searches yourself, then add "
-                "people you find with their profile URL as the source. Nothing below is a verified person.",
-        "plan": networking.research_plan(job),
+        "job_id": job.id, "job_url": job.url or job.apply_url or "",
+        "note": "JobPilot does not scrape LinkedIn or people-search sites, and doesn't guess anyone's email. Run these "
+                "searches yourself, then add the people you find with their profile URL as the source.",
+        "from_posting": networking.posting_contacts(job),
+        "plan": networking.research_plan(job, profile),
         "sequence": [
             "Day 0: connect with the recruiter (short note) and, if senior-relevant, the likely hiring manager.",
             "Day 0–2: once connected, send one concise message referencing the role.",
@@ -86,12 +89,24 @@ def generate_outreach(cid: int, body: OutreachGenerateIn, user: User = Depends(c
     networking.ensure_not_duplicate(db, c, body.kind)
     p = db.query(CandidateProfile).filter_by(user_id=user.id).one()
     job = db.get(Job, c.job_id) if c.job_id else None
-    subject, text = networking.draft_message(p, c, job, body.channel, body.kind)
+    cfg = llm.config_for(db, user.id)
+    generator, note = "template", ""
+    if cfg is not None:
+        app = db.query(Application).filter_by(user_id=user.id, job_id=c.job_id).one_or_none() if c.job_id else None
+        master = appsvc.master_resume(db, user.id)
+        try:
+            subject, text = networking.ai_draft(cfg, p, master.text if master is not None else "", c, job, body.channel,
+                                                body.kind, body.hook, applied=bool(app and app.submitted_at))
+            generator = "ai"
+        except llm.LLMError as e:
+            note = f"AI draft unavailable ({e}); used the template instead."
+    if generator == "template":
+        subject, text = networking.draft_message(p, c, job, body.channel, body.kind)
     m = OutreachMessage(user_id=user.id, contact_id=c.id, job_id=c.job_id, channel=body.channel, kind=body.kind,
                         subject=subject, body=text)
     db.add(m)
     db.commit()
-    return to_dict(m)
+    return to_dict(m) | {"generator": generator, "note": note}
 
 
 @router.put("/outreach/{mid}")

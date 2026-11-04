@@ -210,3 +210,55 @@ def test_ai_answers_only_from_facts_and_only_given_options(client, monkeypatch):
         {"id": "q2", "label": "Gender", "kind": "select", "options": ["Male", "Female"]}]}).json()
     assert r["ai"] is True and [a["id"] for a in r["answers"]] == ["q0"]
     assert "Gender" not in seen["payload"] and "<candidate_facts>" in seen["payload"]
+
+
+def test_posting_contacts_are_only_what_the_company_published():
+    from app.services.networking import posting_contacts
+
+    class Job:
+        description_text = ("Questions? Reach out to our recruiter, Priya Shah (priya.shah@acme.com). Hiring Manager: Daniel Kim. "
+                            "For accommodation requests email accommodations@acme.com. Apply at careers@acme.com. "
+                            "Equal Opportunity Employer.")
+
+    got = {(c["name"], c["role"], c["email"]) for c in posting_contacts(Job())}
+    assert got == {("Priya Shah", "Recruiter", "priya.shah@acme.com"), ("Daniel Kim", "Hiring Manager", ""),
+                   ("", "Contact published in the posting", "careers@acme.com")}
+
+
+def test_outreach_ai_draft_personal_and_guarded(client, monkeypatch):
+    from app.services import llm
+
+    from .conftest import make_user, setup_profile
+    from .test_api import _mock_jobs
+
+    h, _ = make_user(client)
+    setup_profile(client, h, education=[{"institution": "University at Buffalo", "degree": "MS", "field": "Computer Science",
+                                         "start": "2025", "end": "2026"}])
+    job = _mock_jobs(client, h)[0]
+    plan = client.get(f"/api/jobs/{job['id']}/research-plan", headers=h).json()
+    assert any(p["contact_type"] == "alumni" and "University at Buffalo" in p["queries"][0]["query"] for p in plan["plan"])
+    assert "from_posting" in plan and "guess" in plan["note"]
+    c = client.post("/api/contacts", headers=h, json={"job_id": job["id"], "name": "Priya Shah", "role": "Technical Recruiter",
+                                                       "contact_type": "recruiter", "email": "priya@acme.example"}).json()
+    # no AI: the template, with a placeholder to personalise
+    m = client.post(f"/api/contacts/{c['id']}/outreach", headers=h, json={"channel": "email", "kind": "outreach"}).json()
+    assert m["generator"] == "template" and "[[ADD" in m["body"]
+    client.delete(f"/api/outreach/{m['id']}", headers=h)
+    seen = {}
+
+    def fake(task, payload, schema, **k):
+        seen["payload"] = payload
+        return {"subject": "Backend role at Acme — fellow UB grad",
+                "body": "Hi Priya, I saw you recruit for Acme's platform team and I just applied for the backend role. "
+                        "I build Python APIs and would love to hear what the team looks for. Thanks, Jordan"}
+
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: llm.LLMConfig("k", "https://x.test/v1", "m"))
+    monkeypatch.setattr(llm, "complete_json", fake)
+    m = client.post(f"/api/contacts/{c['id']}/outreach", headers=h,
+                    json={"channel": "email", "kind": "outreach", "hook": "She posted about the platform team hiring"}).json()
+    assert m["generator"] == "ai" and m["subject"].startswith("Backend role") and "[[ADD" not in m["body"]
+    assert "platform team hiring" in seen["payload"] and "<untrusted_personal_hook>" in seen["payload"]
+    # invented numbers fall back to the template instead of reaching the user as if true
+    monkeypatch.setattr(llm, "complete_json", lambda *a, **k: {"subject": "Hi", "body": "I grew revenue 900% at Acme."})
+    m2 = client.post(f"/api/contacts/{c['id']}/outreach", headers=h, json={"channel": "linkedin", "kind": "connection"}).json()
+    assert m2["generator"] == "template" and "900" in m2["note"]

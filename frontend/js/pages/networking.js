@@ -22,6 +22,19 @@ export async function render(root) {
           : h("div", { class: "card" }, empty("☍", "No contacts yet", "Run the searches on the right, then add people you find with their profile URL."))),
       h("div", { class: "stack" },
         plan ? [
+          plan.from_posting.length ? h("div", { class: "card tight" },
+            h("h3", {}, "Named in this job posting ", h("span", { class: "badge good" }, "published by the company")),
+            h("p", { class: "small muted" }, "The company listed these for applicants — the best first people to contact."),
+            plan.from_posting.map((pc) => h("div", { style: { margin: "8px 0", paddingTop: "8px", borderTop: "1px solid var(--border)" } },
+              h("strong", {}, pc.name || pc.email), pc.name && pc.email ? h("span", { class: "small" }, " · ", pc.email) : null,
+              h("div", { class: "small muted" }, pc.role), h("div", { class: "faint small" }, "“…", pc.snippet, "…”"),
+              (() => { const b = h("button", { class: "btn-sm", style: { marginTop: "4px" } }, "Add as contact");
+                b.addEventListener("click", busy(b, async () => {
+                  await api.post("/api/contacts", { job_id: Number(jobId), name: pc.name || pc.email.split("@")[0], role: pc.role,
+                    company: "", email: pc.email, source_url: plan.job_url, verified: !!plan.job_url,
+                    contact_type: /hiring manager/i.test(pc.role) ? "hiring_manager" : /recruit|talent/i.test(pc.role) ? "recruiter" : "other",
+                    relevance: "Named in the job posting." }).then(() => render(root)).catch(() => {});
+                })); return b; })()))) : null,
           h("div", { class: "alert" }, plan.note),
           plan.plan.map((p) => h("div", { class: "card tight" },
             h("h3", {}, p.label, " ", h("span", { class: "badge" }, "suggested search")),
@@ -35,9 +48,14 @@ export async function render(root) {
 }
 
 function contactCard(c, root) {
+  const hook = h("input", { placeholder: "Optional: something personal — their post, team project, shared school…", "aria-label": "Personal hook" });
   const gen = (channel, kind) => {
-    const b = h("button", { class: "btn-sm" }, { connection: "LinkedIn note", outreach: channel === "email" ? "Email" : "LinkedIn message", follow_up: "Follow-up" }[kind]);
-    b.addEventListener("click", busy(b, async () => { await api.post(`/api/contacts/${c.id}/outreach`, { channel, kind }); render(root); }));
+    const b = h("button", { class: "btn-sm" }, { connection: "LinkedIn note", outreach: channel === "email" ? "Email" : "LinkedIn message", follow_up: channel === "email" ? "Follow-up email" : "Follow-up message" }[kind]);
+    b.addEventListener("click", busy(b, async () => {
+      const m = await api.post(`/api/contacts/${c.id}/outreach`, { channel, kind, hook: hook.value });
+      toast(m.generator === "ai" ? "Draft written for this person — read it, edit, then approve." : (m.note || "Template draft added — personalise it, then approve."));
+      render(root);
+    }));
     return b;
   };
   return h("div", { class: "card" },
@@ -48,11 +66,31 @@ function contactCard(c, root) {
         c.last_contacted_at && h("div", { class: "faint" }, `Last contacted ${fmtDate(c.last_contacted_at)}`)),
       h("button", { class: "btn-sm btn-danger", onclick: async () => { if (await confirmDialog("Remove contact?", `Delete ${c.name} and their drafts?`, "Remove", true)) { await api.del(`/api/contacts/${c.id}`); render(root); } } }, "Remove")),
     c.relevance && h("p", { class: "small" }, h("strong", {}, "Why: "), c.relevance),
-    h("div", { class: "row small" }, "Draft: ", gen("linkedin", "connection"), gen("linkedin", "outreach"), gen("email", "outreach"), gen("email", "follow_up")),
-    c.messages.map((m) => messageBox(m, root)));
+    c.email ? h("div", { class: "small" }, "✉ ", c.email) : null,
+    hook,
+    h("div", { class: "row small", style: { marginTop: "6px" } }, "Draft: ", gen("linkedin", "connection"), gen("linkedin", "outreach"), gen("email", "outreach"),
+      gen("linkedin", "follow_up"), gen("email", "follow_up")),
+    c.messages.map((m) => messageBox(m, c, root)));
 }
 
-function messageBox(m, root) {
+function sendButtons(m, c, subj, body) {
+  if (m.status !== "approved") return [];
+  const out = [];
+  if (m.channel === "email") {
+    if (c.email) {
+      const enc = encodeURIComponent;
+      out.push(h("a", { class: "btn btn-sm btn-primary", target: "_blank", rel: "noopener noreferrer",
+        href: `https://mail.google.com/mail/?view=cm&fs=1&to=${enc(c.email)}&su=${enc(subj.value)}&body=${enc(body.value)}` }, "Open in Gmail ↗"));
+      out.push(h("a", { class: "btn btn-sm", href: `mailto:${enc(c.email)}?subject=${enc(subj.value)}&body=${enc(body.value)}` }, "Open in mail app"));
+    } else out.push(h("span", { class: "faint small" }, "Add their email to the contact (only one they published) to open it in your mail."));
+  } else if (/linkedin\.com\/in\//.test(c.source_url || "")) {
+    out.push(h("a", { class: "btn btn-sm btn-primary", href: c.source_url, target: "_blank", rel: "noopener noreferrer",
+      onclick: () => navigator.clipboard.writeText(body.value).then(() => toast("Message copied — paste it on their LinkedIn profile.")) }, "Copy & open LinkedIn ↗"));
+  }
+  return out;
+}
+
+function messageBox(m, c, root) {
   const subj = h("input", { value: m.subject, "aria-label": "Subject" });
   const body = h("textarea", { rows: m.kind === "connection" ? 3 : 7, value: m.body, disabled: m.status === "sent", "aria-label": "Message" });
   const count = h("span", { class: "faint" }, `${m.body.length}${m.kind === "connection" ? "/300" : ""} chars`);
@@ -70,7 +108,8 @@ function messageBox(m, root) {
         if (body.value !== m.body || subj.value !== m.subject) await api.put(`/api/outreach/${m.id}`, { body: body.value, subject: subj.value });
         await api.post(`/api/outreach/${m.id}/approve`, { confirm: true }); render(root);
       } }, "Approve"),
-      m.status === "approved" && h("button", { class: "btn-sm", onclick: async () => { await navigator.clipboard.writeText(body.value); toast("Copied. Paste it into LinkedIn or your email client."); } }, "Copy"),
+      ...sendButtons(m, c, subj, body),
+      m.status === "approved" && h("button", { class: "btn-sm", onclick: async () => { await navigator.clipboard.writeText((m.channel === "email" && subj.value ? "Subject: " + subj.value + "\n\n" : "") + body.value); toast("Copied. Paste it into LinkedIn or your email client."); } }, "Copy"),
       m.status === "approved" && h("button", { class: "btn-sm btn-primary", onclick: async () => {
         if (await confirmDialog("Mark as sent?", "Only do this after you've actually sent it yourself. JobPilot never sends messages for you.", "I sent it")) { await api.post(`/api/outreach/${m.id}/mark-sent`); toast("Recorded. A reply check was added to your follow-ups."); render(root); }
       } }, "Mark as sent")));
@@ -78,7 +117,7 @@ function messageBox(m, root) {
 
 async function addContact(jobId, root) {
   const f = { name: h("input"), role: h("input"), company: h("input"), source_url: h("input", { type: "url", placeholder: "https://www.linkedin.com/in/…" }),
-    contact_type: h("select", {}, ["recruiter", "hiring_manager", "team_member", "department_leader", "other"].map((v) => h("option", { value: v }, v.replace(/_/g, " ")))),
+    contact_type: h("select", {}, ["recruiter", "hiring_manager", "team_member", "alumni", "department_leader", "other"].map((v) => h("option", { value: v }, v.replace(/_/g, " ")))),
     relevance: h("textarea", { rows: 2, placeholder: "Why is this person relevant to the role?" }), email: h("input", { type: "email", placeholder: "Only if publicly provided by them" }),
     verified: h("input", { type: "checkbox" }) };
   const r = await modal("Add a contact", h("div", { class: "form-grid" },

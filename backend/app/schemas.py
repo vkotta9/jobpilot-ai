@@ -219,7 +219,7 @@ class ContactIn(BaseModel):
     name: str = Field(min_length=1, max_length=200)
     role: str = ""
     company: str = ""
-    contact_type: Literal["recruiter", "hiring_manager", "team_member", "department_leader", "other"] = "other"
+    contact_type: Literal["recruiter", "hiring_manager", "team_member", "department_leader", "alumni", "other"] = "other"
     source_url: str = Field(default="", max_length=1000)
     verified: bool = False
     relevance: str = ""
@@ -230,6 +230,7 @@ class ContactIn(BaseModel):
 class OutreachGenerateIn(BaseModel):
     channel: Literal["linkedin", "email"] = "linkedin"
     kind: Literal["connection", "outreach", "follow_up"] = "connection"
+    hook: str = Field(default="", max_length=600)  # something personal: their post, a shared school, their team's work
 
 
 class OutreachEdit(BaseModel):
