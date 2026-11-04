@@ -127,3 +127,26 @@ def test_best_model_prefers_newest_pro_and_falls_back(monkeypatch):
     out, used = llm.complete_json_best("t", "p", llm.strict_schema({"ok": {"type": "boolean"}}), cfg=cfg, transport=t)
     assert out == {"ok": True} and seen[0] == "gemini-3.1-pro" and used == "gemini-3.8-flash" and seen[-1] == "gemini-3.8-flash"
     llm._BEST_MODEL.clear()
+
+
+def test_ai_key_that_is_an_email_is_refused_and_test_result_is_shown(client, monkeypatch):
+    from app.services import llm
+
+    from .conftest import make_user
+
+    h, _ = make_user(client)
+    r = client.put("/api/integrations/ai", json={"provider": "gemini", "api_key": "someone.name@gmail.com"}, headers=h)
+    assert r.status_code == 400 and "email" in r.json()["detail"] and "AIza" in r.json()["detail"]
+    assert client.put("/api/integrations/ai", json={"provider": "gemini", "api_key": "AIzaSyD-abcdefghijklmnopqrstuvwxyz012"},
+                      headers=h).json()["tested"] is None  # saved, not tested yet
+
+    def rejected(cfg, transport=None):
+        raise llm.LLMError("The AI service rejected the API key. Check it in Settings → Connections.")
+
+    monkeypatch.setattr(llm, "test_connection", rejected)
+    assert client.post("/api/integrations/ai/test", headers=h).status_code == 400
+    ai = client.get("/api/integrations", headers=h).json()["ai"]
+    assert ai["tested"] == "failed" and "rejected" in ai["test_msg"]
+    monkeypatch.setattr(llm, "test_connection", lambda cfg, transport=None: "Google Gemini · gemini-3.8-flash")
+    assert client.post("/api/integrations/ai/test", headers=h).json()["ok"] is True
+    assert client.get("/api/integrations", headers=h).json()["ai"]["tested"] == "ok"

@@ -48,11 +48,15 @@ function extensionCard(root) {
 function connectionsCard(c, root) {
   const test = (provider) => async (e) => {
     const b = e.currentTarget; b.disabled = true;
-    try { const r = await api.post(`/api/integrations/${provider}/test`); toast(r.message); } catch {} finally { b.disabled = false; }
+    try { const r = await api.post(`/api/integrations/${provider}/test`); toast(r.message); } catch {} finally { b.disabled = false; if (provider === "ai") render(root); }
   };
   const remove = (provider) => async () => { if (await confirmDialog("Remove this connection?", "The saved key will be deleted.", "Remove", true)) { await api.del(`/api/integrations/${provider}`); render(root); } };
 
   // AI
+  const aiBadge = (ai) => !ai.configured ? h("span", { class: "badge warn" }, "not connected")
+    : ai.source === "server" || ai.tested === "ok" ? h("span", { class: "badge good" }, `working · ${ai.model}`)
+    : ai.tested === "failed" ? h("span", { class: "badge bad" }, "key not working")
+    : h("span", { class: "badge warn", title: "Press Test to check the key" }, `saved · not tested`);
   const prov = h("select", { "aria-label": "AI provider" },
     [["gemini", "Google Gemini — free plan available"], ["openai", "OpenAI — paid (a few cents per resume)"], ["custom", "Other OpenAI-compatible"]]
       .map(([v, l]) => h("option", { value: v, selected: (c.ai.provider || "gemini") === v }, l)));
@@ -74,7 +78,7 @@ function connectionsCard(c, root) {
     await api.put("/api/integrations/ai", { provider: prov.value, api_key: key.value, model: model.value, base_url: base.value });
     toast("AI connection saved. Testing…");
     try { const r = await api.post("/api/integrations/ai/test"); toast(r.message); } catch {}
-    render(root);
+    render(root);  // the badge now shows whether the key works
   }));
 
   // Adzuna
@@ -93,7 +97,9 @@ function connectionsCard(c, root) {
     h("div", { class: "grid cols-2" },
       h("div", { class: "stack" },
         h("div", { class: "row between" }, h("h3", {}, "AI model — rewrites resume sentences for each job"),
-          h("span", { class: `badge ${c.ai.configured ? "good" : "warn"}` }, c.ai.configured ? `connected · ${c.ai.model}` : "not connected")),
+          aiBadge(c.ai)),
+        c.ai.tested === "failed" && h("div", { class: "alert bad small" }, "Your saved key isn't working: ", c.ai.test_msg || "the AI service rejected it",
+          " Paste a new key below, then Save — resume tailoring falls back to basic mode until it works."),
         field("Provider", prov), field("API key", key), field("Model (optional)", model), field("Base URL", base), help,
         h("div", { class: "row" }, saveAI, c.ai.configured && h("button", { onclick: test("ai") }, "Test"), c.ai.source === "app" && h("button", { class: "btn-danger", onclick: remove("ai") }, "Remove"))),
       h("div", { class: "stack" },

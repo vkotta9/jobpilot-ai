@@ -1,6 +1,8 @@
 """Connections (API keys stored encrypted per user) and one-click automatic job search."""
 from __future__ import annotations
 
+import re
+
 from typing import Literal, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -71,7 +73,8 @@ def list_integrations(user: User = Depends(current_user), db: Session = Depends(
     return {
         "ai": {"configured": bool(cfg), "source": "app" if ai.get("api_key") else ("server" if env else None),
                "provider": ai.get("provider") or ("openai" if env else None), "model": cfg.model if cfg else None,
-               "key_hint": mask(ai.get("api_key", "")), "presets": llm.PRESETS},
+               "key_hint": mask(ai.get("api_key", "")), "presets": llm.PRESETS,
+               "tested": ai.get("tested") if ai.get("api_key") else None, "test_msg": ai.get("test_msg", "")},
         "adzuna": {"configured": bool(adz.get("app_id") and adz.get("app_key")), "app_id_hint": mask(adz.get("app_id", "")),
                    "country": adz.get("country", "us")},
         "muse": {"configured": bool(muse.get("api_key")), "key_hint": mask(muse.get("api_key", ""))},
@@ -87,6 +90,11 @@ def save_ai(body: AIIn, user: User = Depends(current_user), db: Session = Depend
     key = body.api_key.strip() or old.get("api_key", "")
     if not key:
         raise HTTPException(400, "Paste your API key.")
+    new = body.api_key.strip()
+    if new and body.provider in ("gemini", "openai") and (re.search(r"[\s@.]", new) or len(new) < 16):
+        where = "aistudio.google.com/apikey (Gemini keys start with “AIza”)" if body.provider == "gemini" else "platform.openai.com/api-keys"
+        hint = " It looks like an email address or web address was pasted." if re.search(r"@|\.(com|org|net|io)\b", new) else ""
+        raise HTTPException(400, f"That doesn't look like an API key — keys have no spaces, dots or @.{hint} Create one at {where}.")
     if body.provider == "custom" and not body.base_url.startswith("https://"):
         raise HTTPException(400, "A custom provider needs an https:// base URL (OpenAI-compatible).")
     preset = llm.PRESETS.get(body.provider, {})
@@ -144,16 +152,30 @@ def delete_integration(provider: str, user: User = Depends(current_user), db: Se
     return {"ok": True}
 
 
+def _mark_ai_test(db: Session, row: Optional[IntegrationSetting], status: str, msg: str) -> None:
+    """Remember whether the saved AI key last worked, so Settings can say so (saved ≠ working)."""
+    if row is None:
+        return
+    data = unseal(row.data_encrypted)
+    data.update({"tested": status, "test_msg": msg[:240], "tested_at": utcnow().isoformat()})
+    row.data_encrypted = seal(data)
+    db.commit()
+
+
 @router.post("/integrations/{provider}/test", dependencies=[Depends(rate_limit("integration-test", 20, 3600))])
 def test_integration(provider: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
     if provider == "ai":
         cfg = llm.config_for(db, user.id)
         if not cfg:
             raise HTTPException(400, "No AI key saved yet.")
+        row = _row(db, user, "ai")
         try:
-            return {"ok": True, "message": f"Connected to {llm.test_connection(cfg)}."}
+            label = llm.test_connection(cfg)
         except llm.LLMError as e:
+            _mark_ai_test(db, row, "failed", str(e))
             raise HTTPException(400, str(e))
+        _mark_ai_test(db, row, "ok", "")
+        return {"ok": True, "message": f"Connected to {label}."}
     if provider in ("adzuna", "jsearch", "usajobs"):
         creds = unseal(_row(db, user, provider).data_encrypted) if _row(db, user, provider) else {}
         try:
