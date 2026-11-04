@@ -40,7 +40,7 @@ def main() -> int:
             import io as _io, json as _js, zipfile as _zf
             z = _zf.ZipFile(_io.BytesIO(httpx.get(base + "/api/extension/jobpilot-extension.zip", timeout=60).content))
             m = _js.loads(z.read("manifest.json"))
-            rows.append(f"extension zip OK: matches={m['content_scripts'][0]['matches']} config={z.read('config.js').decode().strip()}")
+            rows.append(f"extension zip OK: version={m.get('version')} askAI={'ASK_AI' in z.read('filler.js').decode()} matches={m['content_scripts'][0]['matches']}")
         except Exception as e:  # noqa: BLE001
             rows.append(f"extension zip ERROR {e}")
         print("::notice title=timing::" + " || ".join(rows))
