@@ -21,7 +21,7 @@ from ..services.textutil import sha256
 router = APIRouter(prefix="/api", tags=["profile"])
 
 PROFILE_FIELDS = ["full_name", "email", "phone", "location", "headline", "summary", "links", "skills", "experience",
-                  "education", "certifications", "projects", "preferences", "work_authorization", "match_weights"]
+                  "education", "certifications", "projects", "preferences", "work_authorization", "match_weights", "application_details"]
 
 
 def get_profile(db: Session, user: User) -> CandidateProfile:

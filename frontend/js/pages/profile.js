@@ -33,6 +33,26 @@ export async function render(root) {
       h("option", { value: v, selected: (auth.requires_sponsorship === true && v === "yes") || (auth.requires_sponsorship === false && v === "no") || (auth.requires_sponsorship == null && v === "") }, l))),
     confirm: h("input", { type: "checkbox", id: "confirm" }),
   };
+  // application form details: exactly what forms ask that a resume doesn't say
+  const AD = p.application_details || {};
+  const nameTok = (p.full_name || "").trim().split(/\s+/).filter(Boolean);
+  const ad = {
+    first_name: inp(AD.first_name, { placeholder: nameTok[0] || "" }),
+    middle_name: inp(AD.middle_name, { placeholder: nameTok.slice(1, -1).join(" ") }),
+    last_name: inp(AD.last_name, { placeholder: nameTok.length > 1 ? nameTok[nameTok.length - 1] : "" }),
+    preferred_name: inp(AD.preferred_name),
+    address_line1: inp(AD.address_line1, { autocomplete: "address-line1" }), address_line2: inp(AD.address_line2, { autocomplete: "address-line2" }),
+    city: inp(AD.city, { autocomplete: "address-level2" }), state: inp(AD.state, { autocomplete: "address-level1", placeholder: "e.g. New York or NY" }),
+    postal_code: inp(AD.postal_code, { autocomplete: "postal-code" }), country: inp(AD.country, { placeholder: "United States" }),
+    phone_country_code: inp(AD.phone_country_code, { placeholder: "+1" }),
+    relocate: h("select", {}, [["", "Not specified"], ["yes", "Yes"], ["no", "No"]].map(([v, l]) =>
+      h("option", { value: v, selected: (AD.willing_to_relocate === true && v === "yes") || (AD.willing_to_relocate === false && v === "no") || (AD.willing_to_relocate == null && v === "") }, l))),
+    earliest_start: inp(AD.earliest_start, { placeholder: "e.g. Immediately, 2 weeks' notice, January 2027" }),
+    salary_expectation: inp(AD.salary_expectation, { placeholder: "e.g. $120,000" }),
+    how_heard: inp(AD.how_heard, { placeholder: "e.g. LinkedIn" }),
+  };
+  const readAD = () => ({ ...Object.fromEntries(Object.entries(ad).filter(([k]) => k !== "relocate").map(([k, el]) => [k, el.value.trim()])),
+    willing_to_relocate: ad.relocate.value === "" ? null : ad.relocate.value === "yes" });
   const sen = SENIORITY.map((s) => h("label", { class: "check" }, h("input", { type: "checkbox", value: s, checked: (prefs.seniority || []).includes(s) }), s));
   const wp = WORKPLACE.map((s) => h("label", { class: "check" }, h("input", { type: "checkbox", value: s, checked: (prefs.workplace || []).includes(s) }), s));
   // ---- ATS weights: pick a preset (Auto by default) or fine-tune
@@ -118,6 +138,7 @@ export async function render(root) {
       },
       work_authorization: { authorized_countries: list(f.countries.value), requires_sponsorship: f.sponsor.value === "" ? null : f.sponsor.value === "yes", notes: "" },
       match_weights: readWeights(),
+      application_details: readAD(),
       confirm: f.confirm.checked,
     };
     await api.put("/api/profile", body);
@@ -157,6 +178,13 @@ export async function render(root) {
         h("div", { class: "full" }, field("Exclude jobs mentioning", f.exclude)))),
       section("Work authorization", "Used only to check eligibility statements in postings and to pre-fill matching screening questions. Never guessed.",
         h("div", { class: "form-grid" }, field("Authorized to work in", f.countries, "Comma-separated countries"), field("Visa sponsorship", f.sponsor))),
+      section("Application form details", "Exactly what the browser extension types into application forms. Name parts: leave empty to use first word / middle / last word of your full name (shown in grey). Address fields stay empty on forms until you fill them here — JobPilot never guesses them.",
+        h("div", { class: "form-grid" },
+          field("First name", ad.first_name), field("Middle name", ad.middle_name), field("Last name", ad.last_name), field("Preferred name", ad.preferred_name),
+          field("Address line 1", ad.address_line1), field("Address line 2", ad.address_line2), field("City", ad.city), field("State / province", ad.state),
+          field("Postal / ZIP code", ad.postal_code), field("Country", ad.country), field("Phone country code", ad.phone_country_code),
+          field("Willing to relocate", ad.relocate), field("Earliest start date", ad.earliest_start), field("Salary expectation", ad.salary_expectation),
+          field("How did you hear about us (default)", ad.how_heard))),
       section("ATS score weights", "How much each part counts toward the 0–100 ATS match. Location and salary are checked separately and don't change the score.", weights),
       h("div", { class: "card row between" },
         h("label", { class: "check", for: "confirm" }, f.confirm, "I confirm this profile is accurate and may be used to generate my materials."),

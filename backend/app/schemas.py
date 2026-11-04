@@ -78,6 +78,25 @@ class MatchWeights(BaseModel):
     preset: str = Field(default="auto", pattern=r"^(auto|typical|entry|experienced|research|custom)$")
 
 
+class ApplicationDetails(BaseModel):
+    """What application forms ask for that a resume doesn't say exactly. Empty = leave that field for the user."""
+    first_name: str = Field(default="", max_length=100)
+    middle_name: str = Field(default="", max_length=100)
+    last_name: str = Field(default="", max_length=100)
+    preferred_name: str = Field(default="", max_length=100)
+    address_line1: str = Field(default="", max_length=200)
+    address_line2: str = Field(default="", max_length=200)
+    city: str = Field(default="", max_length=100)
+    state: str = Field(default="", max_length=100)
+    postal_code: str = Field(default="", max_length=20)
+    country: str = Field(default="", max_length=100)
+    phone_country_code: str = Field(default="", max_length=8)
+    willing_to_relocate: Optional[bool] = None
+    earliest_start: str = Field(default="", max_length=100)  # e.g. "Immediately", "2 weeks notice", "January 2027"
+    salary_expectation: str = Field(default="", max_length=100)
+    how_heard: str = Field(default="", max_length=100)
+
+
 class ProfileIn(BaseModel):
     full_name: str = Field(default="", max_length=200)
     email: str = Field(default="", max_length=320)
@@ -94,6 +113,7 @@ class ProfileIn(BaseModel):
     preferences: Preferences = Field(default_factory=Preferences)
     work_authorization: WorkAuthorization = Field(default_factory=WorkAuthorization)
     match_weights: MatchWeights = Field(default_factory=MatchWeights)
+    application_details: Optional[ApplicationDetails] = None  # None = keep what's saved
     confirm: bool = False  # user explicitly confirms the profile is accurate
 
 
@@ -115,6 +135,7 @@ class ProfilePatch(BaseModel):
     preferences: Optional[Preferences] = None
     work_authorization: Optional[WorkAuthorization] = None
     match_weights: Optional[MatchWeights] = None
+    application_details: Optional[ApplicationDetails] = None
     confirm: bool = False
 
 

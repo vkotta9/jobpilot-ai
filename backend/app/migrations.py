@@ -69,6 +69,12 @@ def _m007_priority_alerts(conn: Connection) -> None:
                 conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {name} {typ}"))
 
 
+def _m008_application_details(conn: Connection) -> None:
+    have = {c["name"] for c in inspect(conn).get_columns("candidate_profiles")}
+    if "application_details" not in have:
+        conn.execute(text("ALTER TABLE candidate_profiles ADD COLUMN application_details JSON"))
+
+
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "initial schema", _m001_initial),
     (2, "store resume file bytes in database", _m002_resume_file_data),
@@ -77,6 +83,7 @@ MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (5, "job triage (skip / later)", _m005_job_triage),
     (6, "interview prep plans", _m006_interview_prep),
     (7, "priority companies and email alerts", _m007_priority_alerts),
+    (8, "application form details (name parts, address)", _m008_application_details),
 ]
 
 

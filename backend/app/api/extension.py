@@ -27,7 +27,7 @@ from ..db import get_db
 from ..models import Application, AuthSession, CandidateProfile, Document, Resume, ScreeningAnswer, User, utcnow
 from ..security import _hash_token, audit, current_user, owned, rate_limit
 from ..services import applications as appsvc
-from ..services import ats, export, tailor_inplace
+from ..services import ats, export, formfill, llm, tailor_inplace
 
 router = APIRouter(prefix="/api", tags=["extension"])
 
@@ -48,11 +48,6 @@ def connect(user: User = Depends(current_user), db: Session = Depends(get_db)):
 @router.get("/extension/ping")
 def ping(user: User = Depends(current_user)):
     return {"ok": True, "email": user.email}
-
-
-def _split_name(full: str) -> tuple[str, str]:
-    parts = (full or "").split()
-    return (parts[0], " ".join(parts[1:])) if len(parts) > 1 else ((parts[0], "") if parts else ("", ""))
 
 
 def _link(links: list[str], rx: str) -> str:
@@ -87,18 +82,12 @@ def _resume_file(db: Session, app: Application, first: str, last: str) -> Option
     return {"filename": f"{stem}.{kind}", "mime": mime, "base64": base64.b64encode(data).decode()}
 
 
-@router.get("/applications/{aid}/autofill")
-def autofill(aid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
-    app = owned(db, Application, aid, user)
-    if app.submitted_at:
-        raise HTTPException(409, "This application was already submitted.")
-    if not appsvc.approval_is_current(db, app):
-        raise HTTPException(400, "Approve this application package in JobPilot first.")
-    p = db.query(CandidateProfile).filter_by(user_id=user.id).one_or_none()
-    if p is None:
-        raise HTTPException(400, "Fill in your profile first.")
-    first, last = _split_name(p.full_name)
-    loc = [x.strip() for x in (p.location or "").split(",") if x.strip()]
+def _form_facts(db: Session, user: User, app: Application, p: CandidateProfile) -> dict:
+    """Everything an application form may ask that JobPilot knows (no files)."""
+    details = p.application_details or {}
+    names = formfill.name_parts(p.full_name, details)
+    loc = formfill.parse_location(p.location)
+    addr = formfill.address(details, loc)
     auth = p.work_authorization or {}
     countries = auth.get("authorized_countries") or []
     exp = (p.experience or [{}])[0] if p.experience else {}
@@ -107,22 +96,14 @@ def autofill(aid: int, user: User = Depends(current_user), db: Session = Depends
     years = ats.resume_years(master.text or "") if master is not None else None
     answers = db.query(ScreeningAnswer).filter(ScreeningAnswer.user_id == user.id, ScreeningAnswer.status == "approved",
                                                (ScreeningAnswer.application_id == app.id) | ScreeningAnswer.reusable.is_(True)).all()
-    letter_doc = appsvc.latest_doc(db, app.job_id, "cover_letter")
-    letter = None
-    if letter_doc is not None and letter_doc.status == "approved":
-        stem = re.sub(r"[^A-Za-z0-9]+", "_", f"{first} {last} Cover Letter").strip("_")
-        letter = {"text": letter_doc.content.get("body", ""), "filename": f"{stem}.pdf", "mime": "application/pdf",
-                  "base64": base64.b64encode(export.letter_pdf(letter_doc.content)).decode()}
     job = app.job
-    audit(db, user.id, "extension.autofill", "application", app.id)
-    db.commit()
     return {
-        "application_id": app.id,
         "job": {"title": job.title, "company": job.company, "url": job.apply_url or job.url},
         "profile": {
-            "first_name": first, "last_name": last, "full_name": p.full_name, "email": p.email or user.email, "phone": p.phone,
-            "location": p.location, "city": loc[0] if loc else "", "state": loc[1] if len(loc) > 1 else "",
-            "country": (loc[2] if len(loc) > 2 else (countries[0] if countries else "")),
+            **names, "email": p.email or user.email, "phone": p.phone, "phone_country_code": details.get("phone_country_code", ""),
+            # "where are you located" gets "City, State" when known; address fields only ever get the address you entered
+            "location": ", ".join(x for x in (addr["city"], addr["state"]) if x) or p.location,
+            **addr, "country": addr["country"] or formfill.country_name(countries[0] if countries else "") or (countries[0] if countries else ""),
             "linkedin": _link(p.links, r"linkedin\.com"), "github": _link(p.links, r"github\.com"),
             "website": next((l for l in p.links or [] if not re.search(r"linkedin\.com|github\.com", l, re.I)), ""),
             "current_company": exp.get("company", ""), "current_title": exp.get("title", ""),
@@ -130,10 +111,71 @@ def autofill(aid: int, user: User = Depends(current_user), db: Session = Depends
             "grad_year": _year(edu.get("end", "")), "years_experience": years,
         },
         "work_auth": {"authorized_countries": countries, "requires_sponsorship": auth.get("requires_sponsorship")},
+        "details": {k: details.get(k) for k in ("willing_to_relocate", "earliest_start", "salary_expectation", "how_heard")},
         "answers": [{"question": a.question, "answer": a.answer, "category": a.category} for a in answers],
-        "resume": _resume_file(db, app, first, last),
-        "cover_letter": letter,
+        "resume_text": master.text if master is not None else "",
     }
+
+
+def _ready(db: Session, user: User, aid: int) -> tuple[Application, CandidateProfile]:
+    app = owned(db, Application, aid, user)
+    if app.submitted_at:
+        raise HTTPException(409, "This application was already submitted.")
+    if not appsvc.approval_is_current(db, app):
+        raise HTTPException(400, "Approve this application package in JobPilot first.")
+    p = db.query(CandidateProfile).filter_by(user_id=user.id).one_or_none()
+    if p is None:
+        raise HTTPException(400, "Fill in your profile first.")
+    return app, p
+
+
+@router.get("/applications/{aid}/autofill")
+def autofill(aid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    app, p = _ready(db, user, aid)
+    facts = _form_facts(db, user, app, p)
+    facts.pop("resume_text")
+    first, last = facts["profile"]["first_name"], facts["profile"]["last_name"]
+    letter_doc = appsvc.latest_doc(db, app.job_id, "cover_letter")
+    letter = None
+    if letter_doc is not None and letter_doc.status == "approved":
+        stem = re.sub(r"[^A-Za-z0-9]+", "_", f"{first} {last} Cover Letter").strip("_")
+        letter = {"text": letter_doc.content.get("body", ""), "filename": f"{stem}.pdf", "mime": "application/pdf",
+                  "base64": base64.b64encode(export.letter_pdf(letter_doc.content)).decode()}
+    audit(db, user.id, "extension.autofill", "application", app.id)
+    db.commit()
+    return {"application_id": app.id, **facts, "ai_answers": llm.config_for(db, user.id) is not None,
+            "resume": _resume_file(db, app, first, last), "cover_letter": letter}
+
+
+class FormQuestion(BaseModel):
+    id: str = Field(max_length=40)
+    label: str = Field(max_length=500)
+    kind: str = Field(default="text", max_length=20)
+    options: list[str] = Field(default_factory=list, max_length=60)
+
+
+class FormQuestions(BaseModel):
+    questions: list[FormQuestion] = Field(max_length=40)
+
+
+@router.post("/applications/{aid}/autofill/answers", dependencies=[Depends(rate_limit("form-answers", 60, 3600))])
+def autofill_answers(aid: int, body: FormQuestions, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Answers for the form questions the extension couldn't match itself — from your facts only; "" when unknown."""
+    app, p = _ready(db, user, aid)
+    cfg = llm.config_for(db, user.id)
+    if cfg is None:
+        return {"answers": [], "ai": False}
+    payload = _form_facts(db, user, app, p)  # the same facts the form is filled from
+    facts = formfill.facts_text(payload["profile"], payload["work_auth"], p.application_details or {},
+                                payload["answers"], payload["resume_text"])
+    qs = [{"id": q.id, "label": q.label[:300], "kind": q.kind, "options": [o[:100] for o in q.options]} for q in body.questions]
+    try:
+        answers = formfill.answer_questions(cfg, payload["job"], qs, facts)
+    except llm.LLMError as e:
+        return {"answers": [], "ai": True, "error": str(e)}
+    audit(db, user.id, "extension.ai_answers", "application", app.id, asked=len(qs), answered=len(answers))
+    db.commit()
+    return {"answers": answers, "ai": True}
 
 
 class ExtSubmitted(BaseModel):

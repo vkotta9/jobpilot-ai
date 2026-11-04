@@ -73,6 +73,12 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
           if (!st) return reply({ ok: false });
           return reply({ ok: true, payload: st.payload, appId: st.appId, submitted: !!st.submitted, pendingSubmit: st.pendingSubmit || 0 });
         }
+        case "ASK_AI": {  // questions the filler couldn't match: answered from your JobPilot facts
+          const st = await tabState(sender.tab.id);
+          if (!st) return reply({ ok: false });
+          const r = await api(`/api/applications/${st.appId}/autofill/answers`, { method: "POST", body: JSON.stringify({ questions: msg.questions || [] }) });
+          return reply({ ok: true, answers: r.answers || [] });
+        }
         case "FRAME_STATS": {  // a form inside an iframe (e.g. an embedded Greenhouse form) reports to the page's panel
           chrome.tabs.sendMessage(sender.tab.id, { type: "FRAME_STATS", stats: msg.stats, frameId: sender.frameId }, { frameId: 0 }).catch(() => {});
           return reply({ ok: true });

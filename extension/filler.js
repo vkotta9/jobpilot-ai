@@ -102,38 +102,119 @@
   // ------------------------------------------------------------ what goes where
   const NEVER = /gender|sex\b|race|ethnic|hispanic|latino|veteran|disabilit|pronoun|sexual orientation|transgender|date of birth|birth ?date|\bage\b|social security|\bssn\b|religion|marital|captcha|password|signature|i agree|consent|terms|privacy|acknowledg|certify|attest/i;
 
-  function profileValue(label, P, W) {
-    const l = low(label);
-    const rules = [
-      [/preferred (first )?name|first[\s_-]?name|given[\s_-]?name|\bfname\b/, P.first_name],
-      [/last[\s_-]?name|family[\s_-]?name|surname|\blname\b/, P.last_name],
-      [/^(full[\s_-]?)?name\b|full[\s_-]?name|legal name|your name|candidate name|^name$/, P.full_name],
-      [/e-?mail/, P.email],
-      [/phone|mobile|telephone|\btel\b/, P.phone],
-      [/linkedin/, P.linkedin],
-      [/github/, P.github],
-      [/portfolio|personal (web)?site|website|blog|other url|\burl\b/, P.website || P.github || P.linkedin],
-      [/current (company|employer)|most recent (company|employer)|^company$|employer/, P.current_company],
-      [/current (job )?title|most recent title|job title|current role|^title$/, P.current_title],
-      [/school|university|college|institution/, P.school],
-      [/discipline|major|field of study|area of study/, P.field],
-      [/degree/, P.degree],
-      [/graduation (year|date)|year of graduation|grad year/, P.grad_year],
-      [/years of (professional |relevant |work )?experience|how many years/, P.years_experience != null ? String(Math.floor(P.years_experience)) : ""],
-      [/\bcity\b/, P.city],
-      [/\bstate\b|province|region/, P.state],
-      [/country/, P.country],
-      [/location|where are you (located|based)|current address|address/, P.location],
-    ];
-    for (const [rx, v] of rules) if (rx.test(l) && v) return v;
-    // work authorization / sponsorship — only from what you saved in your profile
-    if (/sponsor|visa/.test(l) && W.requires_sponsorship != null) return W.requires_sponsorship ? "Yes" : "No";
-    if (/(legally )?authori[sz]ed to work|eligib\w* to work|right to work|work authori[sz]ation/.test(l) && (W.authorized_countries || []).length) {
-      const c = (W.authorized_countries || []).join(" ").toLowerCase();
-      const asksUS = /united states|\bu\.?s\.?\b|\busa\b/.test(l) || !/canada|kingdom|\buk\b|europe|india/.test(l);
-      if (asksUS) return /united states|\busa?\b|america/.test(c) ? "Yes" : "No";
+  // what a field asks: its visible question first (label, aria, legend); the page's hidden names only as a fallback
+  function questionOf(el) {
+    const parts = [];
+    if (el.id) { const l = document.querySelector(`label[for="${CSS.escape(el.id)}"]`); if (l) parts.push(l.innerText); }
+    const lb = el.getAttribute("aria-labelledby");
+    if (lb) lb.split(/\s+/).forEach((id) => { const n = document.getElementById(id); if (n && !n.contains(el)) parts.push(n.innerText); });
+    if (!parts.length) { const anc = el.closest("label"); if (anc) parts.push(anc.innerText); }
+    if (!parts.length && el.getAttribute("aria-label")) parts.push(el.getAttribute("aria-label"));
+    if (!parts.length) {
+      let n = el, hops = 0;
+      while (n && hops < 4 && !parts.length) {
+        n = n.parentElement; hops++;
+        if (!n) break;
+        const lg = n.querySelector("legend, label, [class*='label' i], [class*='question' i]");
+        if (lg && !lg.contains(el) && norm(lg.innerText).length > 1) parts.push(lg.innerText);
+      }
     }
-    return "";
+    if (!parts.length && el.placeholder) parts.push(el.placeholder);
+    return norm(parts.join(" ")).replace(/\s*\*+\s*/g, " ").replace(/\s*\(?required\)?\s*$/i, "").trim().slice(0, 300);
+  }
+  const attrsOf = (el) => ["name", "id", "data-automation-id", "data-qa", "autocomplete"].map((a) => el.getAttribute(a) || "").join(" ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2").replace(/[_\-.[\]:]+/g, " ").toLowerCase();
+
+  const AUTOCOMPLETE = {
+    "given-name": "first_name", "additional-name": "middle_name", "family-name": "last_name", "name": "full_name", "nickname": "preferred_name",
+    "email": "email", "tel": "phone", "tel-national": "phone", "tel-country-code": "phone_country_code",
+    "address-line1": "address_line1", "street-address": "address_line1", "address-line2": "address_line2",
+    "address-level2": "city", "address-level1": "state", "postal-code": "postal_code", "country": "country", "country-name": "country",
+    "organization": "current_company", "organization-title": "current_title", "url": "website",
+  };
+  // most specific first; "short" = only for short labels (a long sentence is a screening question, not a form field)
+  const RULES = [
+    ["postal_code", /postal|zip ?code|\bzip\b|post ?code|pin ?code/, true],
+    ["address_line2", /address (line )?2|\bapt\b|apartment|suite|\bunit\b/, true],
+    ["address_line1", /address (line )?1|street|^(home |mailing |postal |current )?address$|^addr/, true],
+    ["phone_country_code", /(country|dial(ing)?) (phone )?code|phone (country )?code/, true],
+    ["skip", /phone (type|device)|device type|extension|\bext\b/, true],
+    ["phone", /phone|mobile|telephone|\btel\b|\bcell\b/, true],
+    ["email", /e-?mail/, true],
+    ["middle_name", /middle (name|initial)/, true],
+    ["preferred_name", /preferred (first )?name|nick ?name/, true],
+    ["first_name", /first ?name|given ?name|\bfname\b|forename/, true],
+    ["last_name", /last ?name|family ?name|surname|\blname\b/, true],
+    ["full_name", /full ?name|legal name|your name|candidate name|^name$/, true],
+    ["linkedin", /linkedin/, false],
+    ["github", /github/, false],
+    ["website", /portfolio|personal (web)?site|website|blog|other (url|link)/, true],
+    ["location", /city,? ?(and |& |\/ )?state|current location|where are you (currently )?(located|based)|^location$|^(current )?(city of )?residence$/, false],
+    ["city", /^(current )?city\b|\bcity$|\btown\b/, true],
+    ["state", /^(state|province|region)\b|\b(state|province)$|state ?\/ ?province/, true],
+    ["country", /^country|country( ?\/ ?region| or region)?$|country of residence/, true],
+    ["current_company", /^(current|most recent|present) (company|employer)( name)?$|^(company|employer)( name)?$|^name of (your )?(current )?(company|employer)$/, true],
+    ["current_title", /^(current|most recent|present) (job )?(title|role|position)$|^(job )?title$/, true],
+    ["school", /^(school|university|college|institution)( name)?$|^name of (school|university|college|institution)$|^(school|university|college) attended$|^educational institution$/, true],
+    ["field", /^(discipline|major|field of study|area of study)$/, true],
+    ["degree", /^degree( type| level| obtained)?$|^highest (level of )?education|^education level$/, true],
+    ["grad_year", /graduation (year|date)|year of graduation|grad(uation)? year/, true],
+    ["years_experience", /years of (professional |relevant |work |industry )?experience|how many years/, false],
+    ["sponsorship", /sponsor|\bvisa\b/, false],
+    ["authorized", /authori[sz]ed to work|eligib\w* to work|right to work|work authori[sz]ation|legally (able|permitted|allowed) to work/, false],
+    ["relocate", /relocat/, false],
+    ["start_date", /start date|earliest (date|start)|when (can|could|would) you (start|join|begin)|notice period|available to start/, false],
+    ["salary", /salary|compensation|pay expectation|desired (pay|wage)/, false],
+    ["how_heard", /how did you (hear|find|learn)|where did you (hear|see|find)|source of (this )?(application|referral)/, false],
+  ];
+  // a form field's label ("Postal Code", "What is your first name?"), not a sentence-long screening question
+  const isShort = (t) => t.length <= 60 && t.replace(/[?:]/g, "").split(/\s+/).filter(Boolean).length <= 5;
+  function classify(el) {
+    const ac = (el.getAttribute("autocomplete") || "").toLowerCase().split(/\s+/).pop();
+    if (AUTOCOMPLETE[ac]) return AUTOCOMPLETE[ac];
+    const q = low(questionOf(el));
+    const test = (text, allowLong) => {
+      for (const [key, rx, short] of RULES) if (rx.test(text) && (!short || allowLong || isShort(text))) return key;
+      return null;
+    };
+    if (q) return test(q, false);
+    return test(attrsOf(el), true);  // no visible question: the page's field names (e.g. Workday's "addressSection_city")
+  }
+  function classifyText(q) {
+    const t = low(q);
+    for (const [key, rx, short] of RULES) if (rx.test(t) && (!short || isShort(t))) return key;
+    return null;
+  }
+  const optionText = (g) => {
+    const l = g.id && document.querySelector(`label[for="${CSS.escape(g.id)}"]`);
+    return norm((l && l.innerText) || g.closest("label")?.innerText || g.getAttribute("aria-label") || g.value);
+  };
+  const yn = (b) => (b == null ? "" : b ? "Yes" : "No");
+  function valueFor(key, q, P, W, D) {
+    switch (key) {
+      case "skip": return "";
+      case "years_experience": return P.years_experience != null ? String(Math.floor(P.years_experience)) : "";
+      case "website": return P.website || P.github || P.linkedin || "";
+      case "sponsorship": return yn(W.requires_sponsorship);
+      case "authorized": {
+        const c = (W.authorized_countries || []).join(" ").toLowerCase();
+        if (!c) return "";
+        const l = low(q);
+        const asksUS = /united states|\bu\.?s\.?a?\b|america/.test(l) || !/canada|kingdom|\buk\b|europe|india|australia/.test(l);
+        return asksUS ? (/united states|\busa?\b|america/.test(c) ? "Yes" : "No") : "";
+      }
+      case "relocate": return yn(D.willing_to_relocate);
+      case "start_date": return D.earliest_start || "";
+      case "salary": return D.salary_expectation || "";
+      case "how_heard": return D.how_heard || "";
+      default: return P[key] == null ? "" : String(P[key]);
+    }
+  }
+  // option text for states / countries the way select boxes spell them
+  function variants(key, v, P) {
+    if (key === "state") return [v, P.state_code].filter(Boolean);
+    if (key === "country" && /^united states$/i.test(v)) return [v, "United States of America", "USA", "US", "U.S."];
+    return [v];
   }
 
   const words = (s) => new Set(low(s).replace(/[^a-z0-9 ]/g, " ").split(" ").filter((w) => w.length > 2 && !STOP.has(w)));
@@ -157,8 +238,9 @@
 
   function fill() {
     if (!payload) return;
-    const P = payload.profile, W = payload.work_auth || {}, A = payload.answers || [];
-    stats.filled = 0; stats.attached = []; stats.needs = [];
+    const P = payload.profile, W = payload.work_auth || {}, A = payload.answers || [], D = payload.details || {};
+    stats.filled = 0; stats.attached = []; stats.needs = []; stats.ai = stats.ai || 0;
+    const unanswered = [];
     const fields = [...document.querySelectorAll("input, textarea, select")].filter((el) =>
       !el.disabled && !el.readOnly && !["hidden", "submit", "button", "reset", "image", "search"].includes(el.type) && visible(el));
 
@@ -184,31 +266,69 @@
         if (NEVER.test(q)) continue;
         const group = [...document.querySelectorAll(`input[name="${CSS.escape(el.name)}"]`)];
         if (group.some((g) => g.checked)) continue;
-        const want = profileValue(q, P, W) || answerFor(q, A);
-        if (!want) { if (el.required) stats.needs.push(q); continue; }
-        const opt = chooseOption(group.map((g) => ({ text: labelOf(g) + " " + g.value, el: g })), want);
+        const rk = classifyText(q);
+        const want = (rk ? valueFor(rk, q, P, W, D) : "") || answerFor(q, A);
+        const opts = group.map((g) => ({ text: optionText(g), el: g }));
+        const opt = want ? chooseOption(opts, want) : null;
         if (opt) { opt.el.click(); mark(opt.el, true); stats.filled++; }
+        else if (rk !== "skip") unanswered.push({ kind: "radio", label: q, options: opts.map((o) => o.text), els: opts });
         continue;
       }
-      if (el.value && el.value.trim()) continue;  // never overwrite what's already there
-      const label = labelOf(el);
-      if (!label || NEVER.test(label)) continue;
-      let v = profileValue(label, P, W);
-      if (!v && /cover letter|why (do you want|are you interested)|additional information|message to/i.test(label) && el.tagName === "TEXTAREA" && payload.cover_letter?.text) v = payload.cover_letter.text;
-      if (!v) v = answerFor(label, A);
-      if (!v) { if (el.required || el.getAttribute("aria-required") === "true") { mark(el, false); stats.needs.push(label.split("|")[0]); } continue; }
+      if (el.tagName === "SELECT" ? el.selectedIndex > 0 && !/^(select|choose|please|--)/i.test(el.options[el.selectedIndex]?.text || "") : el.value && el.value.trim()) continue;  // never overwrite
+      const q = questionOf(el);
+      if (NEVER.test(q) || (!q && NEVER.test(attrsOf(el)))) continue;
+      const key = classify(el);
+      if (key === "skip") continue;
+      let v = key ? valueFor(key, q, P, W, D) : "";
+      if (!v && /cover letter|why (do you want|are you interested)|additional information|message to/i.test(q) && el.tagName === "TEXTAREA" && payload.cover_letter?.text) v = payload.cover_letter.text;
+      if (!v && !key) v = answerFor(q, A);
+      const needs = () => { if (el.required || el.getAttribute("aria-required") === "true") { mark(el, false); stats.needs.push(q || attrsOf(el)); } };
+      if (!v) {
+        // fields we know but have no value for (e.g. address not entered yet) stay empty for you; other questions go to the AI
+        if (key) needs(); else if (q) unanswered.push({ kind: el.tagName === "SELECT" ? "select" : el.tagName === "TEXTAREA" ? "long text" : "text", label: q, el,
+          options: el.tagName === "SELECT" ? [...el.options].map((o) => o.text).filter((t) => t && !/^(select|choose|please select|--)/i.test(t)) : [] });
+        continue;
+      }
       if (el.tagName === "SELECT") {
-        const opt = chooseOption([...el.options].map((o) => ({ text: o.text, el: o })), v);
-        if (opt) { setNative(el, opt.el.value); mark(el, true); stats.filled++; } else if (el.required) { mark(el, false); stats.needs.push(label.split("|")[0]); }
+        const opts = [...el.options].map((o) => ({ text: o.text, el: o }));
+        const opt = variants(key, v, P).map((x) => chooseOption(opts, x)).find(Boolean);
+        if (opt) { setNative(el, opt.el.value); mark(el, true); stats.filled++; } else needs();
       } else {
         if (el.type === "email" && !/@/.test(v)) continue;
         if (el.type === "number" && isNaN(Number(v))) continue;
         setNative(el, String(v)); mark(el, true); stats.filled++;
       }
     }
+    askAI(unanswered);
     if (TOP) panel();
     else send({ type: "FRAME_STATS", stats });
   }
+
+  // questions JobPilot's rules can't place: answered from your profile and resume by the AI (blue = please check)
+  const asked = new Set();
+  async function askAI(list) {
+    const todo = list.filter((x) => x.label && !asked.has(x.label)).slice(0, 40);
+    if (!todo.length) return;
+    if (!payload.ai_answers) { todo.forEach((x) => { if (x.el?.required) stats.needs.push(x.label); }); return; }
+    todo.forEach((x) => asked.add(x.label));
+    const qs = todo.map((x, i) => ({ id: "q" + i, label: x.label, kind: x.kind, options: x.options || [] }));
+    const r = await send({ type: "ASK_AI", questions: qs });
+    if (!r.ok) return;
+    for (const a of r.answers || []) {
+      const x = todo[Number(a.id.slice(1))];
+      if (!x) continue;
+      if (x.kind === "radio") {
+        const opt = chooseOption(x.els, a.answer);
+        if (opt) { opt.el.click(); markAI(opt.el); stats.ai++; }
+      } else if (x.el.tagName === "SELECT") {
+        const opt = chooseOption([...x.el.options].map((o) => ({ text: o.text, el: o })), a.answer);
+        if (opt) { setNative(x.el, opt.el.value); markAI(x.el); stats.ai++; }
+      } else if (!x.el.value) { setNative(x.el, a.answer); markAI(x.el); stats.ai++; }
+    }
+    stats.needs = stats.needs.filter((n) => !todo.some((x) => x.label === n && (r.answers || []).some((a) => todo[Number(a.id.slice(1))] === x)));
+    if (TOP) panel(); else send({ type: "FRAME_STATS", stats });
+  }
+  const markAI = (el) => { el.style.outline = "2px solid #3b82f6"; el.style.outlineOffset = "1px"; el.title = "Suggested by JobPilot's AI from your profile — please check"; };
 
   // ------------------------------------------------------------ open the form if this is the job description page
   function openFormIfNeeded() {
@@ -257,6 +377,7 @@
     const j = payload.job;
     const all = [stats, ...Object.values(frameStats)];
     const filled = all.reduce((a, x) => a + (x.filled || 0), 0);
+    const ai = all.reduce((a, x) => a + (x.ai || 0), 0);
     const attached = all.flatMap((x) => x.attached || []);
     const att = attached.length ? ` Attached your ${[...new Set(attached)].join(" and ")}.` : "";
     const needs = [...new Set(all.flatMap((x) => x.needs || []))].slice(0, 6);
@@ -271,7 +392,8 @@
       </style>
       <div class="b">
         <div class="h"><span class="dot"></span>JobPilot · ${esc(j.company)}<button class="x" title="Close">×</button></div>
-        <div class="m">Filled ${filled} field${filled === 1 ? "" : "s"}.${att} Green = filled by JobPilot. Check everything, then press the site's <b>Submit</b> button.</div>
+        <div class="m">Filled ${filled} field${filled === 1 ? "" : "s"} from your profile${ai ? ` and suggested ${ai} answer${ai === 1 ? "" : "s"}` : ""}.${att}
+          <span style="color:#15803d">Green</span> = from your profile${ai ? `, <span style="color:#2563eb">blue</span> = AI answer from your resume — check it` : ""}. Review everything, then press the site's <b>Submit</b> button.</div>
         ${needs.length ? `<div class="m" style="margin-top:6px">Needs your answer (orange):</div><ul class="n">${needs.map((n) => `<li>${esc(n.slice(0, 70))}</li>`).join("")}</ul>` : ""}
         <div class="r"><button class="p" id="again">Fill again</button><button id="done">I've submitted it</button></div>
       </div>`;

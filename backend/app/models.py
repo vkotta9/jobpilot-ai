@@ -99,6 +99,8 @@ class CandidateProfile(Base):
     preferences: Mapped[dict] = mapped_column(JSON, default=dict)
     work_authorization: Mapped[dict] = mapped_column(JSON, default=dict)
     match_weights: Mapped[dict] = mapped_column(JSON, default=dict)
+    # exactly how to fill application forms: name parts, postal address, common screening answers
+    application_details: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True, default=dict)
     confirmed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, onupdate=utcnow)
 

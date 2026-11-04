@@ -150,3 +150,63 @@ def test_ai_key_that_is_an_email_is_refused_and_test_result_is_shown(client, mon
     monkeypatch.setattr(llm, "test_connection", lambda cfg, transport=None: "Google Gemini · gemini-3.8-flash")
     assert client.post("/api/integrations/ai/test", headers=h).json()["ok"] is True
     assert client.get("/api/integrations", headers=h).json()["ai"]["tested"] == "ok"
+
+
+def _approved_app(client, **profile):
+    from .conftest import make_user, sample_docx_bytes, setup_profile
+    from .test_api import _mock_jobs
+
+    h, _ = make_user(client)
+    setup_profile(client, h, **profile)
+    client.post("/api/resumes", headers=h, files={"file": ("cv.docx", sample_docx_bytes(), "application/octet-stream")})
+    job = _mock_jobs(client, h)[0]
+    aid = client.post(f"/api/jobs/{job['id']}/shortlist", headers=h).json()["application_id"]
+    assert client.post(f"/api/applications/{aid}/request-approval", headers=h).json()["ok"]
+    client.post(f"/api/applications/{aid}/approve", headers=h, json={"confirm": True})
+    return h, aid
+
+
+def test_autofill_never_puts_a_country_into_address_fields(client):
+    h, aid = _approved_app(client, full_name="Vijay Kumar Kotta", location="USA",
+                           work_authorization={"authorized_countries": ["United States"], "requires_sponsorship": True, "notes": ""})
+    P = client.get(f"/api/applications/{aid}/autofill", headers=h).json()["profile"]
+    assert (P["first_name"], P["middle_name"], P["last_name"]) == ("Vijay", "Kumar", "Kotta")
+    assert P["city"] == "" and P["address_line1"] == "" and P["postal_code"] == "" and P["country"] == "United States"
+    # the user's own name parts and address win, and saving the profile without them keeps them
+    prof = client.get("/api/profile", headers=h).json()
+    body = {k: prof[k] for k in ("full_name", "email", "phone", "location", "headline", "summary", "links", "skills", "experience",
+                                 "education", "certifications", "projects", "preferences", "work_authorization")}
+    client.put("/api/profile", headers=h, json={**body, "application_details": {
+        "first_name": "Vijay Kumar", "last_name": "Kotta", "address_line1": "12 Main St", "city": "Buffalo", "state": "NY",
+        "postal_code": "14201", "country": "USA", "willing_to_relocate": True}})
+    client.put("/api/profile", headers=h, json=body)  # an older form without application_details
+    p = client.get(f"/api/applications/{aid}/autofill", headers=h).json()
+    P = p["profile"]
+    assert (P["first_name"], P["middle_name"], P["last_name"]) == ("Vijay Kumar", "", "Kotta")
+    assert (P["address_line1"], P["city"], P["state"], P["state_code"], P["postal_code"], P["country"]) == \
+        ("12 Main St", "Buffalo", "New York", "NY", "14201", "United States")
+    assert P["location"] == "Buffalo, New York" and p["details"]["willing_to_relocate"] is True
+
+
+def test_ai_answers_only_from_facts_and_only_given_options(client, monkeypatch):
+    from app.services import llm
+
+    h, aid = _approved_app(client)
+    assert client.post(f"/api/applications/{aid}/autofill/answers", headers=h, json={"questions": [
+        {"id": "q0", "label": "Why this role?"}]}).json() == {"answers": [], "ai": False}  # no AI: nothing guessed
+    seen = {}
+
+    def fake(task, payload, schema, **k):
+        seen["payload"] = payload
+        return {"answers": [{"id": "q0", "answer": "I build reliable APIs in Python.", "basis": "resume"},
+                            {"id": "q1", "answer": "Maybe", "basis": ""},  # not one of the options → dropped
+                            {"id": "q2", "answer": "Male", "basis": ""}]}  # EEO questions are never sent or filled
+
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: llm.LLMConfig("k", "https://x.test/v1", "m"))
+    monkeypatch.setattr(llm, "complete_json", fake)
+    r = client.post(f"/api/applications/{aid}/autofill/answers", headers=h, json={"questions": [
+        {"id": "q0", "label": "Why are you interested in this role?", "kind": "long text"},
+        {"id": "q1", "label": "Are you willing to work onsite?", "kind": "radio", "options": ["Yes", "No"]},
+        {"id": "q2", "label": "Gender", "kind": "select", "options": ["Male", "Female"]}]}).json()
+    assert r["ai"] is True and [a["id"] for a in r["answers"]] == ["q0"]
+    assert "Gender" not in seen["payload"] and "<candidate_facts>" in seen["payload"]
