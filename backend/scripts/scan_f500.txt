@@ -1,0 +1,372 @@
+F500 #7|Berkshire Hathaway|berkshirehathaway,bhhc,berkshire-hathaway,berkshire
+F500 #9|Exxon Mobil|exxonmobil,exxon,exxon-mobil
+F500 #10|Cencora|cencora,amerisourcebergen
+F500 #13|Costco Wholesale|costco,costcowholesale,costco-wholesale
+F500 #22|Ford Motor|ford,fordmotor,ford-motor
+F500 #27|Kroger|kroger
+F500 #29|Phillips 66|phillips66,p66,phillips-66,phillips
+F500 #30|Marathon Petroleum|mpc,marathonpetroleum,marathon-petroleum,marathon
+F500 #31|StoneX Group|stonex,stonexgroup
+F500 #32|State Farm Insurance|statefarm,statefarminsurance,state-farm,state
+F500 #40|Valero Energy|valero,valeroenergy,valero-energy
+F500 #46|PepsiCo|pepsico
+F500 #48|UPS|ups,hcmportal
+F500 #50|FedEx|fedex
+F500 #51|Progressive|progressive
+F500 #52|Lowe's|lowes,lowe-s
+F500 #53|Energy Transfer|energytransfer,energy-transfer
+F500 #55|Sysco|sysco
+F500 #57|Albertsons|albertsons,eofd
+F500 #58|Archer Daniels Midland|adm,archerdanielsmidland,archer-daniels-midland,archer
+F500 #60|HCA Healthcare|hcahealthcare,hca,hca-healthcare
+F500 #62|New York Life Insurance|newyorklife,nyl,newyorklifeinsurance,new-york-life
+F500 #71|Delta Air Lines|delta,dal,deltaairlines,delta-air-lines
+F500 #72|Publix Super Markets|publix,publixsupermarkets,publix-super-markets
+F500 #74|TD Synnex|tdsynnex,synnex,td-synnex
+F500 #75|ConocoPhillips|conocophillips
+F500 #76|Galaxy Digital|galaxydigital,galaxy,galaxy-digital
+F500 #77|AbbVie|abbvie
+F500 #79|TJX|tjx
+F500 #80|Performance Food Group|pfgc,performancefoodgroup,performancefood,performance-food
+F500 #81|United Airlines Holdings|unitedairlines,ual,unitedairlinesholdings,united-airlines
+F500 #85|Charter Communications|charter,spectrum,chartercommunications,charter-communications
+F500 #86|American Airlines Group|americanairlines,aa,americanairlinesgroup,american-airlines
+F500 #87|Tyson Foods|tysonfoods,tyson,tyson-foods
+F500 #89|Enterprise Products Partners|eprod,enterpriseproducts,enterpriseproductspartners,enterprise-products-partners
+F500 #90|Ingram Micro|ingrammicro,ingram-micro,ingram
+F500 #94|TIAA|tiaa
+F500 #95|Liberty Mutual Insurance|libertymutual,lm,liberty,libertymutualinsurance
+F500 #100|MassMutual|massmutual
+F500 #102|Deere|johndeere,deere
+F500 #103|Plains GP Holdings|plains,plainsallamerican,plainsgp,plainsgpholdings
+F500 #109|Northwestern Mutual|northwesternmutual,nm,northwestern
+F500 #111|Dollar General|dollargeneral,dg,dollar-general,dollar
+F500 #113|Best Buy|bestbuy,best-buy
+F500 #115|BNY|bny,bnymellon
+F500 #116|Honeywell|honeywell
+F500 #117|Philip Morris International|pmi,philipmorris,philipmorrisinternational,philip-morris
+F500 #118|CBRE Group|cbre,cbregroup
+F500 #120|Dow|dow
+F500 #121|US Foods|usfoods,us-foods
+F500 #122|Mondelez International|mdlz,mondelez,mondelezinternational
+F500 #123|Lithia Motors|lithia,driveway,lithiamotors,lithia-motors
+F500 #124|GE Vernova|gevernova,ge-vernova
+F500 #127|Starbucks|starbucks
+F500 #128|World Kinect|worldkinect,wfscorp,world-kinect,world
+F500 #130|CHS|chsinc,chs
+F500 #132|Coupang|coupang
+F500 #134|D.R. Horton|drhorton,d-r-horton
+F500 #135|Lennar|lennar
+F500 #137|Cummins|cummins
+F500 #138|Oneok|oneok
+F500 #140|GuideWell Mutual Holding|guidewell,floridablue,guidewellmutualholding
+F500 #142|Nucor|nucor
+F500 #143|Apollo Global Management|apollo,athene,apolloglobalmanagement,apollo-global-management
+F500 #144|Penske Automotive Group|penske,penskeautomotive,penskeautomotivegroup,penske-automotive
+F500 #145|Duke Energy|dukeenergy,duke-energy
+F500 #146|United Natural Foods|unfi,unitednaturalfoods,united-natural-foods
+F500 #147|Ferguson Enterprises|ferguson,fergusonenterprises
+F500 #148|Arrow Electronics|arrow,arrowelectronics,arrow-electronics
+F500 #149|NRG Energy|nrg,nrgenergy,nrg-energy
+F500 #151|Jabil|jabil
+F500 #152|Southern Company|southerncompany,southernco,southern
+F500 #154|PBF Energy|pbfenergy,pbf-energy
+F500 #155|Paramount Skydance|paramount,paramountskydance,paramount-skydance
+F500 #156|KKR|kkr
+F500 #157|Quanta Services|quanta,quantaservices
+F500 #158|Paccar|paccar
+F500 #159|Medline|medline
+F500 #162|CarMax|carmax
+F500 #163|Southwest Airlines|southwest,swa,southwestairlines,southwest-airlines
+F500 #164|Baker Hughes|bakerhughes,baker-hughes,baker
+F500 #166|AutoNation|autonation
+F500 #167|NextEra Energy|nexteraenergy,nee,nextera-energy,nextera
+F500 #168|Marsh McLennan|mmc,marshmclennan,marsh-mclennan,marsh
+F500 #169|Booking Holdings|booking,bookingholdings
+F500 #170|McDonald's|mcdonalds,mcd,mcdonald-s,mcdonald
+F500 #171|HF Sinclair|hfsinclair,hf-sinclair
+F500 #172|AIG|aig
+F500 #173|Occidental Petroleum|oxy,occidental,occidentalpetroleum,occidental-petroleum
+F500 #174|Marriott International|marriott,marriottinternational
+F500 #175|JLL|jll
+F500 #176|International Paper|internationalpaper,ipaper,paper
+F500 #177|Freeport-McMoRan|fcx,freeportmcmoran,freeport-mcmoran,freeport
+F500 #178|Constellation Energy|constellationenergy,constellation,constellation-energy
+F500 #179|Waste Management|wm,wastemanagement,waste-management,waste
+F500 #180|Live Nation Entertainment|livenation,ticketmaster,livenationentertainment,live-nation-entertainment
+F500 #182|Dollar Tree|dollartree,dollar-tree,dollar
+F500 #184|Kraft Heinz|kraftheinz,kraft-heinz,kraft
+F500 #185|PG&E|pge,pgande,pg-e
+F500 #187|Union Pacific|unionpacific,up,union-pacific,union
+F500 #188|Genuine Parts|genuineparts,napa,genuine-parts,genuine
+F500 #189|Exelon|exelon
+F500 #193|Reinsurance Group of America|rgare,rga,reinsuranceamerica,reinsurancegroupofamerica
+F500 #194|Sherwin-Williams|sherwinwilliams,sherwin-williams,sherwin
+F500 #195|WESCO International|wesco,wescointernational
+F500 #196|Lear|lear
+F500 #198|Amphenol|amphenol
+F500 #199|Ross Stores|ross,rossstores,ross-stores
+F500 #200|Newmont|newmont
+F500 #201|EOG Resources|eog,eogresources,eog-resources
+F500 #204|Group 1 Automotive|group1auto,1automotive,group1automotive,1-automotive
+F500 #205|CDW|cdw
+F500 #206|Avnet|avnet
+F500 #207|Halliburton|halliburton
+F500 #208|Super Micro Computer|supermicro,supermicrocomputer,super-micro-computer,super
+F500 #209|American Electric Power|aep,americanelectricpower,american-electric-power
+F500 #210|L3Harris Technologies|l3harris,l3harristechnologies
+F500 #212|Carrier Global|carrier,carrierglobal,carrier-global
+F500 #213|BJ's Wholesale Club|bjs,bjswholesale,bjswholesaleclub,bj-s-wholesale-club
+F500 #214|Tenet Healthcare|tenet,tenethealth,tenethealthcare,tenet-healthcare
+F500 #218|ADP|adp
+F500 #219|Colgate-Palmolive|colgate,colgatepalmolive,colgate-palmolive
+F500 #220|Carvana|carvana
+F500 #221|Altria Group|altria,altriagroup
+F500 #222|Boston Scientific|bostonscientific,boston-scientific,boston
+F500 #223|Cheniere Energy|cheniere,cheniereenergy,cheniere-energy
+F500 #224|Parker-Hannifin|parker,parkerhannifin,parker-hannifin
+F500 #225|Kimberly-Clark|kimberlyclark,kcc,kimberly-clark,kimberly
+F500 #226|American Family Insurance|amfam,americanfamily,americanfamilyinsurance,american-family
+F500 #227|General Mills|generalmills,general-mills
+F500 #228|Edison International|edison,sce,edisoninternational
+F500 #229|AutoZone|autozone
+F500 #230|Ameriprise Financial|ameriprise,ameriprisefinancial
+F500 #232|Guardian Life|guardianlife,glic,guardian-life,guardian
+F500 #233|Cleveland-Cliffs|clevelandcliffs,cleveland-cliffs,cleveland
+F500 #234|Global Partners|globalpartners,gpmi,global-partners
+F500 #235|Aramark|aramark
+F500 #236|Corebridge Financial|corebridge,corebridgefinancial
+F500 #237|Loews|loews
+F500 #239|Goodyear Tire & Rubber|goodyear,goodyeartirerubber,goodyeartireandrubber,goodyear-tire-rubber
+F500 #240|Pacific Life|pacificlife,pacific-life,pacific
+F500 #241|Auto-Owners Insurance|autoowners,autoownersinsurance,auto-owners
+F500 #242|Kiewit|kiewit
+F500 #243|Lincoln Financial|lincolnfinancial,lfg,lincoln
+F500 #244|Steel Dynamics|steeldynamics,steel-dynamics,steel
+F500 #245|Emerson Electric|emerson,emersonelectric,emerson-electric
+F500 #246|Asbury Automotive Group|asbury,asburyauto,asburyautomotive,asburyautomotivegroup
+F500 #247|ManpowerGroup|manpowergroup,manpower
+F500 #248|W.W. Grainger|grainger,wwgrainger,w-w-grainger
+F500 #249|Edward Jones|edwardjones,ej,edward-jones,edward
+F500 #250|O'Reilly Automotive|oreilly,oreillyauto,oreillyautomotive,o-reilly-automotive
+F500 #251|Vistra|vistra
+F500 #253|MGM Resorts International|mgmresorts,mgm,mgmresortsinternational,mgm-resorts
+F500 #254|Corteva|corteva
+F500 #255|Universal Health Services|uhs,universalhealth,universalhealthservices,universal-health
+F500 #256|PulteGroup|pultegroup,pulte
+F500 #257|Omnicom Group|omnicom,omnicomgroup
+F500 #258|Dick's Sporting Goods|dickssportinggoods,dks,dick-s-sporting-goods
+F500 #259|Devon Energy|devon,devonenergy,devon-energy
+F500 #261|Aflac|aflac
+F500 #262|Targa Resources|targa,targaresources,targa-resources
+F500 #263|Murphy USA|murphyusa,murphy-usa,murphy
+F500 #264|LPL Financial|lpl,lplfinancial
+F500 #265|EMCOR Group|emcor,emcorgroup
+F500 #266|Kinder Morgan|kindermorgan,kinder-morgan,kinder
+F500 #267|Consolidated Edison|coned,conedison,consolidatededison,consolidated-edison
+F500 #268|Keurig Dr Pepper|kdp,keurigdrpepper,keurig-dr-pepper,keurig
+F500 #269|Republic Services|republicservices,rsg,republic
+F500 #270|Markel Group|markel,markelgroup
+F500 #271|Farmers Insurance|farmers,farmersinsurance
+F500 #272|Dominion Energy|dominionenergy,dominion,dominion-energy
+F500 #273|Land O'Lakes|landolakes,land-o-lakes
+F500 #274|IQVIA|iqvia
+F500 #276|AECOM|aecom
+F500 #277|C.H. Robinson|chrobinson,c-h-robinson
+F500 #278|BitGo|bitgo
+F500 #279|United Rentals|unitedrentals,ur,united-rentals
+F500 #280|Ecolab|ecolab
+F500 #281|Illinois Tool Works|itw,illinoistoolworks,illinois-tool-works,illinois
+F500 #282|Casey's General Stores|caseys,caseysgeneralstores,casey-s-general-stores,casey
+F500 #283|Raymond James Financial|raymondjames,rjf,raymondjamesfinancial,raymond-james
+F500 #284|PPG Industries|ppg,ppgindustries
+F500 #285|DTE Energy|dte,dteenergy,dte-energy
+F500 #286|Corning|corning
+F500 #287|Principal Financial|principal,principalfinancial
+F500 #288|Mutual of Omaha|mutualofomaha,omaha
+F500 #289|Kohl's|kohls,kohl-s
+F500 #290|Tractor Supply|tractorsupply,tractor-supply,tractor
+F500 #291|Whirlpool|whirlpool
+F500 #292|Fluor|fluor
+F500 #293|Gap|gapinc,gap
+F500 #296|Builders FirstSource|bldr,buildersfirstsource,builders-firstsource,builders
+F500 #297|Sonic Automotive|sonicautomotive,sonic-automotive,sonic
+F500 #298|Stanley Black & Decker|sbd,stanleyblackdecker,stanleyblackanddecker,stanley-black-decker
+F500 #299|Kenvue|kenvue
+F500 #301|Diamondback Energy|diamondbackenergy,fang,diamondback-energy,diamondback
+F500 #302|EchoStar|echostar,dish
+F500 #303|Textron|textron
+F500 #305|W.R. Berkley|wrberkley,berkley,w-r-berkley
+F500 #306|Xcel Energy|xcelenergy,xcel-energy
+F500 #307|FirstEnergy|firstenergy
+F500 #308|Erie Insurance Group|erieinsurance,erie,erieinsurancegroup
+F500 #309|First Citizens BancShares|firstcitizens,firstcitizensbancshares,first-citizens-bancshares
+F500 #310|Blackstone|blackstone
+F500 #311|Fidelity National Financial|fnf,fidelitynational,fidelitynationalfinancial,fidelity-national
+F500 #312|Otis Worldwide|otis,otisworldwide
+F500 #313|Amentum|amentum
+F500 #314|Regeneron Pharmaceuticals|regeneron,regeneronpharmaceuticals,regeneron-pharmaceuticals
+F500 #315|Estee Lauder|elcompanies,esteelauder,estee-lauder,estee
+F500 #316|BorgWarner|borgwarner
+F500 #318|Viatris|viatris
+F500 #319|MasTec|mastec
+F500 #320|Reliance|reliance,rsac
+F500 #321|Western & Southern Financial Group|westernsouthern,westernandsouthernfinancialgroup,western-southern
+F500 #322|Alaska Air Group|alaskaair,alaskaairgroup,alaska-air,alaska
+F500 #323|BrightSpring Health Services|brightspring,brightspringhealth,brightspringhealthservices,brightspring-health
+F500 #324|CSX|csx
+F500 #325|LKQ|lkq
+F500 #327|Arthur J. Gallagher|ajg,gallagher,arthurjgallagher,arthur-j-gallagher
+F500 #328|Venture Global|ventureglobal,venture-global,venture
+F500 #330|Sempra|sempra
+F500 #331|DaVita|davita
+F500 #332|Eversource Energy|eversource,eversourceenergy,eversource-energy
+F500 #334|M&T Bank|mtb,mtbank,mandtbank,m-t-bank
+F500 #335|Henry Schein|henryschein,henry-schein,henry
+F500 #336|GXO Logistics|gxo,gxologistics,gxo-logistics
+F500 #337|Ball|ball,ballcorp
+F500 #338|Unum Group|unum,unumgroup
+F500 #339|Las Vegas Sands|sands,lvs,lasvegassands,las-vegas-sands
+F500 #340|Entergy|entergy
+F500 #341|Fifth Third Bancorp|fifththird,53,fifththirdbancorp,fifth-third-bancorp
+F500 #342|Graybar Electric|graybar,graybarelectric,graybar-electric
+F500 #344|Alcoa|alcoa
+F500 #345|Assurant|assurant
+F500 #346|Ryder System|ryder,rydersystem,ryder-system
+F500 #347|Intercontinental Exchange|ice,intercontinentalexchange,intercontinental-exchange,intercontinental
+F500 #348|Cincinnati Financial|cinfin,cincinnati,cincinnatifinancial
+F500 #349|Chewy|chewy
+F500 #350|Community Health Systems|chs,communityhealthsystems,communityhealth,community-health
+F500 #350|Huntington Bancshares|huntington,huntingtonbancshares,huntington-bancshares
+F500 #352|Huntington Ingalls Industries|hii,huntingtoningalls,huntingtoningallsindustries,huntington-ingalls
+F500 #353|Wayfair|wayfair
+F500 #354|Lumen Technologies|lumen,lumentechnologies
+F500 #355|Ulta Beauty|ulta,ultabeauty,ulta-beauty
+F500 #356|Crown Holdings|crowncork,crown,crownholdings
+F500 #358|AES|aes
+F500 #359|Norfolk Southern|nscorp,norfolksouthern,norfolk-southern,norfolk
+F500 #360|PSEG|pseg
+F500 #362|Expand Energy|expandenergy,expand-energy,expand
+F500 #363|Hormel Foods|hormel,hormelfoods,hormel-foods
+F500 #364|Darden Restaurants|darden,dardenrestaurants,darden-restaurants
+F500 #365|Citizens Financial Group|citizens,citizensbank,citizensfinancialgroup
+F500 #366|Mosaic|mosaic
+F500 #368|Air Products|airproducts,air-products
+F500 #369|Jacobs Solutions|jacobs,jacobssolutions
+F500 #370|Vertex Pharmaceuticals|vrtx,vertex,vertexpharmaceuticals,vertex-pharmaceuticals
+F500 #371|J.B. Hunt Transport Services|jbhunt,jbhunttransport,jbhunttransportservices,j-b-hunt-transport
+F500 #373|Williams Companies|williams,williamscompanies
+F500 #374|Chipotle Mexican Grill|chipotle,chipotlemexicangrill,chipotle-mexican-grill
+F500 #375|Yum China|yumchina,yum-china
+F500 #377|Hershey|hershey
+F500 #379|Equitable Holdings|equitable,equitableholdings
+F500 #380|Avis Budget Group|avisbudget,abg,avisbudgetgroup,avis-budget
+F500 #381|Conagra Brands|conagra,conagrabrands
+F500 #382|Baxter International|baxter,baxterinternational
+F500 #383|Burlington Stores|burlington,burlingtonstores,burlington-stores
+F500 #384|Caesars Entertainment|caesars,caesarsentertainment,caesars-entertainment
+F500 #385|Owens Corning|owenscorning,owens-corning,owens
+F500 #386|KeyCorp|key,keybank,keycorp
+F500 #387|Thrivent Financial|thrivent,thriventfinancial
+F500 #388|Westlake|westlake
+F500 #389|Wabtec|wabtec
+F500 #390|Molson Coors Beverage|molsoncoors,molsoncoorsbeverage,molson-coors-beverage,molson
+F500 #391|Lululemon|lululemon
+F500 #392|FM|fmglobal,fm
+F500 #394|Expeditors International|expeditors,expeditorsinternational
+F500 #397|The Andersons|andersons,theandersons
+F500 #398|Gold.com|goldcom,gold-com
+F500 #399|Toll Brothers|tollbrothers,toll-brothers
+F500 #400|International Flavors & Fragrances|iff,flavorsfragrances,internationalflavorsandfragrances,flavors-fragrances
+F500 #401|Welltower|welltower
+F500 #402|Jefferies Financial Group|jefferies,jefferiesfinancialgroup
+F500 #403|Autoliv|autoliv
+F500 #404|Mohawk Industries|mohawkind,mohawk,mohawkindustries
+F500 #405|Delek US Holdings|delekus,delek,delekusholdings,delek-us
+F500 #407|Accendra Health|accendra,owensminor,accendrahealth,accendra-health
+F500 #408|American Tower|americantower,amt,american-tower
+F500 #409|NVR|nvr
+F500 #410|Interactive Brokers Group|interactivebrokers,ibkr,interactivebrokersgroup,interactive-brokers
+F500 #411|Oshkosh|oshkoshcorp,oshkosh
+F500 #412|Cintas|cintas
+F500 #413|Campbell's|campbells,campbellsoup,campbell-s,campbell
+F500 #414|Vertiv|vertiv
+F500 #416|Constellation Brands|cbrands,constellationbrands,constellation
+F500 #417|AGCO|agco
+F500 #418|Intuitive Surgical|intuitive,intuitivesurgical,intuitive-surgical
+F500 #419|Ace Hardware|acehardware,ace-hardware
+F500 #420|Dana|dana
+F500 #421|Biogen|biogen
+F500 #422|News Corp|newscorp,dowjones,news
+F500 #423|Concentrix|concentrix
+F500 #424|WEC Energy Group|wecenergygroup,wec,wecenergy,wec-energy
+F500 #425|VF Corporation|vfc,vf,vfcorporation
+F500 #426|Seaboard|seaboard
+F500 #427|Icahn Enterprises|icahn,ielp,icahnenterprises
+F500 #428|Regions Financial|regions,regionsfinancial
+F500 #429|Thor Industries|thor,thorindustries
+F500 #431|Celanese|celanese
+F500 #433|QVC Group|qvc,qurate,qvcgroup
+F500 #434|Zoetis|zoetis
+F500 #435|CenterPoint Energy|centerpointenergy,centerpoint-energy,centerpoint
+F500 #436|Equinix|equinix
+F500 #438|APA|apacorp,apache,apa
+F500 #439|Old Republic International|oldrepublic,oldrepublicinternational,old-republic
+F500 #440|Comfort Systems USA|comfortsystemsusa,comfortusa,comfort-usa,comfort
+F500 #441|JetBlue Airways|jetblue,jetblueairways,jetblue-airways
+F500 #442|PPL|pplweb,ppl
+F500 #443|Xylem|xylem
+F500 #444|Arista Networks|arista,aristanetworks,arista-networks
+F500 #445|Packaging Corp. of America|pca,packagingcorp,packagingamerica,packagingcorpofamerica
+F500 #446|PVH|pvh
+F500 #447|Ovintiv|ovintiv
+F500 #448|Avery Dennison|averydennison,avery-dennison,avery
+F500 #449|TransDigm Group|transdigm,transdigmgroup
+F500 #450|Sprouts Farmers Market|sprouts,sproutsfarmersmarket,sprouts-farmers-market
+F500 #451|Prologis|prologis
+F500 #452|Franklin Templeton|franklintempleton,franklin,franklin-templeton
+F500 #453|Eastman Chemical|eastman,eastmanchemical,eastman-chemical
+F500 #454|ABM Industries|abm,abmindustries
+F500 #455|NOV|nov
+F500 #456|J.M. Smucker|smucker,jmsmucker,j-m-smucker
+F500 #457|Securian Financial Group|securian,securianfinancialgroup
+F500 #458|EQT|eqt
+F500 #460|Graphic Packaging|graphicpkg,graphicpackaging,graphic-packaging,graphic
+F500 #461|Advance Auto Parts|advanceautoparts,aap,advance-auto-parts,advance
+F500 #462|Optimum Communications|optimum,alticeusa,optimumcommunications,optimum-communications
+F500 #463|Sirius XM|siriusxm,sirius-xm,sirius
+F500 #464|CMS Energy|cmsenergy,consumersenergy,cms-energy
+F500 #465|Hertz|hertz
+F500 #466|Ameren|ameren
+F500 #467|Rockwell Automation|rockwellautomation,rockwell,rockwell-automation
+F500 #468|Solventum|solventum
+F500 #469|Monster Beverage|monsterbevcorp,monster,monsterbeverage,monster-beverage
+F500 #471|Howmet Aerospace|howmet,howmetaerospace,howmet-aerospace
+F500 #472|Insight Enterprises|insight,insightenterprises
+F500 #473|Zimmer Biomet|zimmerbiomet,zimmer-biomet,zimmer
+F500 #474|Yum Brands|yumbrands,yum
+F500 #475|Fastenal|fastenal
+F500 #477|Voya Financial|voya,voyafinancial
+F500 #478|American Financial Group|afg,greatamerican,american,americanfinancialgroup
+F500 #479|Post Holdings|postholdings,post
+F500 #480|XPO|xpo
+F500 #481|DuPont|dupont
+F500 #482|Sanmina|sanmina
+F500 #483|Taylor Morrison|taylormorrison,taylor-morrison,taylor
+F500 #484|Dover|dovercorporation,dover
+F500 #485|Vulcan Materials|vulcanmaterials,vmc,vulcan-materials,vulcan
+F500 #486|APi Group|apigroup,api
+F500 #487|Roper Technologies|roper,ropertechnologies
+F500 #488|KBR|kbr
+F500 #489|Sonoco Products|sonoco,sonocoproducts,sonoco-products
+F500 #490|Williams-Sonoma|williamssonoma,wsi,williams-sonoma,williams
+F500 #491|Commercial Metals|cmc,commercialmetals,commercial-metals,commercial
+F500 #492|Moody's|moodys,moody-s,moody
+F500 #493|Continental Resources|clr,continentalresources,continental-resources,continental
+F500 #494|Ingersoll Rand|irco,ingersollrand,ingersoll-rand,ingersoll
+F500 #495|Core & Main|coreandmain,coremain,core-main
+F500 #496|Coterra Energy|coterra,coterraenergy,coterra-energy
+F500 #497|Primoris Services|primoris,primorisservices
+F500 #498|Masco|masco
+F500 #499|Somnigroup International|somnigroup,tempursealy,somnigroupinternational
+F500 #500|Resideo Technologies|resideo,resideotechnologies
