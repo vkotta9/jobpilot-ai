@@ -1,0 +1,2932 @@
+[
+ {
+  "category": "F500 #31",
+  "company": "StoneX Group",
+  "tried": [
+   "page:https://careers.stonex.com",
+   "page:https://jobs.stonex.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.stonex.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.stonex.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #206",
+  "company": "Avnet",
+  "tried": [
+   "page:https://careers.avnet.com",
+   "page:https://jobs.avnet.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.avnet.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.avnet.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #262",
+  "company": "Targa Resources",
+  "tried": [
+   "page:https://careers.targa.com",
+   "page:https://jobs.targa.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.targa.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.targa.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #32",
+  "company": "State Farm Insurance",
+  "tried": [
+   "page:https://jobs.statefarm.com",
+   "page:https://careers.statefarm.com",
+   "page:https://jobs.statefarm.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://jobs.statefarm.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.statefarm.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.statefarm.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #155",
+  "company": "Paramount Skydance",
+  "tried": [
+   "page:https://careers.paramount.com",
+   "page:https://jobs.paramount.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.paramount.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.paramount.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #207",
+  "company": "Halliburton",
+  "tried": [
+   "page:https://careers.halliburton.com",
+   "page:https://jobs.halliburton.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.halliburton.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.halliburton.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #263",
+  "company": "Murphy USA",
+  "tried": [
+   "page:https://careers.murphyusa.com",
+   "page:https://jobs.murphyusa.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.murphyusa.com",
+    "jobs": 0,
+    "error": "timed out"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.murphyusa.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #10",
+  "company": "Cencora",
+  "tried": [
+   "page:https://careers.cencora.com",
+   "page:https://jobs.cencora.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.cencora.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.cencora.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #111",
+  "company": "Dollar General",
+  "tried": [
+   "page:https://careers.dollargeneral.com",
+   "page:https://jobs.dollargeneral.com"
+  ],
+  "best": {
+   "kind": "oraclehcm",
+   "identifier": "ibxwjb.fa.ocs.oraclecloud.com|CX_1",
+   "jobs": 25
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.dollargeneral.com",
+    "jobs": 0,
+    "links": [
+     [
+      "oraclehcm",
+      "ibxwjb.fa.ocs.oraclecloud.com|CX_1"
+     ]
+    ]
+   },
+   {
+    "kind": "oraclehcm",
+    "identifier": "ibxwjb.fa.ocs.oraclecloud.com|CX_1",
+    "jobs": 25
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.dollargeneral.com",
+    "jobs": 0,
+    "error": "timed out"
+   }
+  ]
+ },
+ {
+  "category": "F500 #185",
+  "company": "PG&E",
+  "tried": [
+   "page:https://careers.pge.com",
+   "page:https://jobs.pge.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.pge.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.pge.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #255",
+  "company": "Universal Health Services",
+  "tried": [
+   "page:https://careers.uhs.com",
+   "page:https://jobs.uhs.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.uhs.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.uhs.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #13",
+  "company": "Costco Wholesale",
+  "tried": [
+   "page:https://www.costco.com/jobs.html",
+   "page:https://careers.costco.com",
+   "page:https://jobs.costco.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://www.costco.com/jobs.html",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.costco.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.costco.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #123",
+  "company": "Lithia Motors",
+  "tried": [
+   "page:https://careers.lithia.com",
+   "page:https://jobs.lithia.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.lithia.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.lithia.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #187",
+  "company": "Union Pacific",
+  "tried": [
+   "page:https://up.jobs",
+   "page:https://careers.unionpacific.com",
+   "page:https://jobs.unionpacific.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://up.jobs",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.unionpacific.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.unionpacific.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #265",
+  "company": "EMCOR Group",
+  "tried": [
+   "page:https://careers.emcor.com",
+   "page:https://jobs.emcor.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.emcor.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.emcor.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #79",
+  "company": "TJX",
+  "tried": [
+   "page:https://careers.tjx.com",
+   "page:https://jobs.tjx.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.tjx.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.tjx.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #177",
+  "company": "Freeport-McMoRan",
+  "tried": [
+   "page:https://careers.fcx.com",
+   "page:https://jobs.fcx.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.fcx.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.fcx.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #248",
+  "company": "W.W. Grainger",
+  "tried": [
+   "page:https://careers.grainger.com",
+   "page:https://jobs.grainger.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.grainger.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.grainger.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #50",
+  "company": "FedEx",
+  "tried": [
+   "page:https://careers.fedex.com",
+   "page:https://careers.fedex.com",
+   "page:https://jobs.fedex.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.fedex.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.fedex.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.fedex.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #127",
+  "company": "Starbucks",
+  "tried": [
+   "page:https://careers.starbucks.com",
+   "page:https://careers.starbucks.com",
+   "page:https://jobs.starbucks.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.starbucks.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.starbucks.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.starbucks.com",
+    "jobs": 0,
+    "error": "[Errno 111] Connection refused"
+   }
+  ]
+ },
+ {
+  "category": "F500 #189",
+  "company": "Exelon",
+  "tried": [
+   "page:https://careers.exelon.com",
+   "page:https://jobs.exelon.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.exelon.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.exelon.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #267",
+  "company": "Consolidated Edison",
+  "tried": [
+   "page:https://careers.coned.com",
+   "page:https://jobs.coned.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.coned.com",
+    "jobs": 0,
+    "error": "the page returned HTTP 403"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.coned.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #51",
+  "company": "Progressive",
+  "tried": [
+   "page:https://careers.progressive.com",
+   "page:https://careers.progressive.com",
+   "page:https://jobs.progressive.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.progressive.com",
+    "jobs": 0,
+    "error": "the page returned HTTP 403"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.progressive.com",
+    "jobs": 0,
+    "error": "the page returned HTTP 403"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.progressive.com",
+    "jobs": 0,
+    "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, c"
+   }
+  ]
+ },
+ {
+  "category": "F500 #142",
+  "company": "Nucor",
+  "tried": [
+   "page:https://careers.nucor.com",
+   "page:https://jobs.nucor.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.nucor.com",
+    "jobs": 0,
+    "error": "timed out"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.nucor.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #224",
+  "company": "Parker-Hannifin",
+  "tried": [
+   "page:https://careers.parker.com",
+   "page:https://jobs.parker.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.parker.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.parker.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #285",
+  "company": "DTE Energy",
+  "tried": [
+   "page:https://careers.dte.com",
+   "page:https://jobs.dte.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.dte.com",
+    "jobs": 0,
+    "error": "[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1035)"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.dte.com",
+    "jobs": 0,
+    "error": "[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1035)"
+   }
+  ]
+ },
+ {
+  "category": "F500 #102",
+  "company": "Deere",
+  "tried": [
+   "page:https://careers.deere.com",
+   "page:https://careers.johndeere.com",
+   "page:https://jobs.johndeere.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.deere.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.johndeere.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.johndeere.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   }
+  ]
+ },
+ {
+  "category": "F500 #194",
+  "company": "Sherwin-Williams",
+  "tried": [
+   "page:https://careers.sherwinwilliams.com",
+   "page:https://jobs.sherwinwilliams.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.sherwinwilliams.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.sherwinwilliams.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #251",
+  "company": "Vistra",
+  "tried": [
+   "page:https://careers.vistra.com",
+   "page:https://jobs.vistra.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.vistra.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.vistra.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #53",
+  "company": "Energy Transfer",
+  "tried": [
+   "page:https://careers.energytransfer.com",
+   "page:https://jobs.energytransfer.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.energytransfer.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.energytransfer.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #218",
+  "company": "ADP",
+  "tried": [
+   "page:https://careers.adp.com",
+   "page:https://jobs.adp.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.adp.com",
+    "jobs": 0,
+    "error": "The read operation timed out"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.adp.com",
+    "jobs": 0,
+    "error": "the page returned HTTP 403"
+   }
+  ]
+ },
+ {
+  "category": "F500 #270",
+  "company": "Markel Group",
+  "tried": [
+   "page:https://careers.markel.com",
+   "page:https://jobs.markel.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.markel.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.markel.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #55",
+  "company": "Sysco",
+  "tried": [
+   "page:https://careers.sysco.com",
+   "page:https://jobs.sysco.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.sysco.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.sysco.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #166",
+  "company": "AutoNation",
+  "tried": [
+   "page:https://careers.autonation.com",
+   "page:https://jobs.autonation.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.autonation.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.autonation.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #219",
+  "company": "Colgate-Palmolive",
+  "tried": [
+   "page:https://careers.colgate.com",
+   "page:https://jobs.colgate.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.colgate.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.colgate.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #271",
+  "company": "Farmers Insurance",
+  "tried": [
+   "page:https://careers.farmers.com",
+   "page:https://jobs.farmers.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.farmers.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.farmers.com",
+    "jobs": 0,
+    "error": "timed out"
+   }
+  ]
+ },
+ {
+  "category": "F500 #40",
+  "company": "Valero Energy",
+  "tried": [
+   "page:https://careers.valero.com",
+   "page:https://jobs.valero.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.valero.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.valero.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #122",
+  "company": "Mondelez International",
+  "tried": [
+   "page:https://careers.mdlz.com",
+   "page:https://jobs.mdlz.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.mdlz.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.mdlz.com",
+    "jobs": 0,
+    "error": "timed out"
+   }
+  ]
+ },
+ {
+  "category": "F500 #198",
+  "company": "Amphenol",
+  "tried": [
+   "page:https://careers.amphenol.com",
+   "page:https://jobs.amphenol.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.amphenol.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.amphenol.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   }
+  ]
+ },
+ {
+  "category": "F500 #272",
+  "company": "Dominion Energy",
+  "tried": [
+   "page:https://careers.dominionenergy.com",
+   "page:https://jobs.dominionenergy.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.dominionenergy.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.dominionenergy.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #46",
+  "company": "PepsiCo",
+  "tried": [
+   "page:https://www.pepsicojobs.com/main",
+   "page:https://careers.pepsico.com",
+   "page:https://jobs.pepsico.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://www.pepsicojobs.com/main",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.pepsico.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.pepsico.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #137",
+  "company": "Cummins",
+  "tried": [
+   "page:https://careers.cummins.com",
+   "page:https://jobs.cummins.com"
+  ],
+  "best": {
+   "kind": "oraclehcm",
+   "identifier": "fa-espx-saasfaprod1.fa.ocs.oraclecloud.com|CX_1",
+   "jobs": 25
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.cummins.com",
+    "jobs": 0,
+    "error": "the page returned HTTP 403"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.cummins.com",
+    "jobs": 0,
+    "links": [
+     [
+      "oraclehcm",
+      "fa-espx-saasfaprod1.fa.ocs.oraclecloud.com|CX_1"
+     ]
+    ]
+   },
+   {
+    "kind": "oraclehcm",
+    "identifier": "fa-espx-saasfaprod1.fa.ocs.oraclecloud.com|CX_1",
+    "jobs": 25
+   }
+  ]
+ },
+ {
+  "category": "F500 #199",
+  "company": "Ross Stores",
+  "tried": [
+   "page:https://careers.ross.com",
+   "page:https://jobs.ross.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.ross.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.ross.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #282",
+  "company": "Casey's General Stores",
+  "tried": [
+   "page:https://careers.caseys.com",
+   "page:https://jobs.caseys.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.caseys.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.caseys.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #115",
+  "company": "BNY",
+  "tried": [
+   "page:https://careers.bny.com",
+   "page:https://jobs.bny.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.bny.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.bny.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   }
+  ]
+ },
+ {
+  "category": "F500 #188",
+  "company": "Genuine Parts",
+  "tried": [
+   "page:https://careers.genuineparts.com",
+   "page:https://jobs.genuineparts.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.genuineparts.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.genuineparts.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #257",
+  "company": "Omnicom Group",
+  "tried": [
+   "page:https://careers.omnicom.com",
+   "page:https://jobs.omnicom.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.omnicom.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.omnicom.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #62",
+  "company": "New York Life Insurance",
+  "tried": [
+   "page:https://careers.newyorklife.com",
+   "page:https://jobs.newyorklife.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.newyorklife.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.newyorklife.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #140",
+  "company": "GuideWell Mutual Holding",
+  "tried": [
+   "page:https://careers.guidewell.com",
+   "page:https://jobs.guidewell.com"
+  ],
+  "best": {
+   "kind": "oraclehcm",
+   "identifier": "fa-etum-saasfaprod1.fa.ocs.oraclecloud.com|CX_1",
+   "jobs": 5
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.guidewell.com",
+    "jobs": 0,
+    "links": [
+     [
+      "oraclehcm",
+      "fa-etum-saasfaprod1.fa.ocs.oraclecloud.com|CX_1"
+     ]
+    ]
+   },
+   {
+    "kind": "oraclehcm",
+    "identifier": "fa-etum-saasfaprod1.fa.ocs.oraclecloud.com|CX_1",
+    "jobs": 5
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.guidewell.com",
+    "jobs": 0,
+    "links": [
+     [
+      "oraclehcm",
+      "fa-etum-saasfaprod1.fa.ocs.oraclecloud.com|CX_1"
+     ]
+    ]
+   },
+   {
+    "kind": "oraclehcm",
+    "identifier": "fa-etum-saasfaprod1.fa.ocs.oraclecloud.com|CX_1",
+    "jobs": 5
+   }
+  ]
+ },
+ {
+  "category": "F500 #201",
+  "company": "EOG Resources",
+  "tried": [
+   "page:https://careers.eog.com",
+   "page:https://jobs.eog.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.eog.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.eog.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #276",
+  "company": "AECOM",
+  "tried": [
+   "page:https://careers.aecom.com",
+   "page:https://jobs.aecom.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.aecom.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.aecom.com",
+    "jobs": 0,
+    "error": "timed out"
+   }
+  ]
+ },
+ {
+  "category": "F500 #71",
+  "company": "Delta Air Lines",
+  "tried": [
+   "page:https://www.delta.com/us/en/careers/overview",
+   "page:https://careers.delta.com",
+   "page:https://jobs.delta.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://www.delta.com/us/en/careers/overview",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.delta.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.delta.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #171",
+  "company": "HF Sinclair",
+  "tried": [
+   "page:https://careers.hfsinclair.com",
+   "page:https://jobs.hfsinclair.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.hfsinclair.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.hfsinclair.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #233",
+  "company": "Cleveland-Cliffs",
+  "tried": [
+   "page:https://careers.clevelandcliffs.com",
+   "page:https://jobs.clevelandcliffs.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.clevelandcliffs.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.clevelandcliffs.com",
+    "jobs": 0,
+    "error": "[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1035)"
+   }
+  ]
+ },
+ {
+  "category": "F500 #293",
+  "company": "Gap",
+  "tried": [
+   "page:https://careers.gapinc.com",
+   "page:https://jobs.gapinc.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.gapinc.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.gapinc.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #118",
+  "company": "CBRE Group",
+  "tried": [
+   "page:https://careers.cbre.com",
+   "page:https://jobs.cbre.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.cbre.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.cbre.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #214",
+  "company": "Tenet Healthcare",
+  "tried": [
+   "page:https://careers.tenet.com",
+   "page:https://jobs.tenet.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.tenet.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.tenet.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #261",
+  "company": "Aflac",
+  "tried": [
+   "page:https://careers.aflac.com",
+   "page:https://jobs.aflac.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.aflac.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.aflac.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #86",
+  "company": "American Airlines Group",
+  "tried": [
+   "page:https://careers.americanairlines.com",
+   "page:https://jobs.americanairlines.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.americanairlines.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.americanairlines.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #235",
+  "company": "Aramark",
+  "tried": [
+   "page:https://careers.aramark.com",
+   "page:https://jobs.aramark.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.aramark.com",
+    "jobs": 0,
+    "error": "the page returned HTTP 403"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.aramark.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #287",
+  "company": "Principal Financial",
+  "tried": [
+   "page:https://careers.principal.com",
+   "page:https://jobs.principal.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.principal.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.principal.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #75",
+  "company": "ConocoPhillips",
+  "tried": [
+   "page:https://careers.conocophillips.com",
+   "page:https://jobs.conocophillips.com"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "conocophillips|wd1|External",
+   "jobs": 25
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.conocophillips.com",
+    "jobs": 0,
+    "links": [
+     [
+      "workday",
+      "conocophillips|wd1|External"
+     ]
+    ]
+   },
+   {
+    "kind": "workday",
+    "identifier": "conocophillips|wd1|External",
+    "jobs": 25
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.conocophillips.com",
+    "jobs": 0,
+    "error": "timed out"
+   }
+  ]
+ },
+ {
+  "category": "F500 #174",
+  "company": "Marriott International",
+  "tried": [
+   "page:https://careers.marriott.com",
+   "page:https://careers.marriott.com",
+   "page:https://jobs.marriott.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.marriott.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.marriott.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.marriott.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #227",
+  "company": "General Mills",
+  "tried": [
+   "page:https://careers.generalmills.com",
+   "page:https://jobs.generalmills.com"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "genmills|wd1|GMI_External_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.generalmills.com",
+    "jobs": 0,
+    "links": [
+     [
+      "workday",
+      "genmills|wd1|GMI_External_Careers"
+     ]
+    ]
+   },
+   {
+    "kind": "workday",
+    "identifier": "genmills|wd1|GMI_External_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.generalmills.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #280",
+  "company": "Ecolab",
+  "tried": [
+   "page:https://careers.ecolab.com",
+   "page:https://jobs.ecolab.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.ecolab.com",
+    "jobs": 0,
+    "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local "
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.ecolab.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #57",
+  "company": "Albertsons",
+  "tried": [
+   "page:https://careers.albertsons.com",
+   "page:https://jobs.albertsons.com"
+  ],
+  "best": {
+   "kind": "oraclehcm",
+   "identifier": "eofd.fa.us6.oraclecloud.com|CX_1001",
+   "jobs": 4
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.albertsons.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.albertsons.com",
+    "jobs": 0,
+    "links": [
+     [
+      "oraclehcm",
+      "eofd.fa.us6.oraclecloud.com|CX_1001"
+     ]
+    ]
+   },
+   {
+    "kind": "oraclehcm",
+    "identifier": "eofd.fa.us6.oraclecloud.com|CX_1001",
+    "jobs": 4
+   }
+  ]
+ },
+ {
+  "category": "F500 #146",
+  "company": "United Natural Foods",
+  "tried": [
+   "page:https://careers.unfi.com",
+   "page:https://jobs.unfi.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.unfi.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.unfi.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #228",
+  "company": "Edison International",
+  "tried": [
+   "page:https://careers.edison.com",
+   "page:https://jobs.edison.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.edison.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.edison.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #281",
+  "company": "Illinois Tool Works",
+  "tried": [
+   "page:https://careers.itw.com",
+   "page:https://jobs.itw.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.itw.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.itw.com",
+    "jobs": 0,
+    "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local "
+   }
+  ]
+ },
+ {
+  "category": "F500 #58",
+  "company": "Archer Daniels Midland",
+  "tried": [
+   "page:https://www.adm.com/en-us/careers/",
+   "page:https://careers.adm.com",
+   "page:https://jobs.adm.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://www.adm.com/en-us/careers/",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.adm.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.adm.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #157",
+  "company": "Quanta Services",
+  "tried": [
+   "page:https://careers.quanta.com",
+   "page:https://jobs.quanta.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.quanta.com",
+    "jobs": 0,
+    "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, c"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.quanta.com",
+    "jobs": 0,
+    "error": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, c"
+   }
+  ]
+ },
+ {
+  "category": "F500 #221",
+  "company": "Altria Group",
+  "tried": [
+   "page:https://careers.altria.com",
+   "page:https://jobs.altria.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.altria.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.altria.com",
+    "jobs": 0,
+    "error": "timed out"
+   }
+  ]
+ },
+ {
+  "category": "F500 #290",
+  "company": "Tractor Supply",
+  "tried": [
+   "page:https://careers.tractorsupply.com",
+   "page:https://jobs.tractorsupply.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.tractorsupply.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.tractorsupply.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #148",
+  "company": "Arrow Electronics",
+  "tried": [
+   "page:https://careers.arrow.com",
+   "page:https://jobs.arrow.com"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "arrow|wd1|AC",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.arrow.com",
+    "jobs": 0,
+    "links": [
+     [
+      "workday",
+      "arrow|wd1|AC"
+     ]
+    ]
+   },
+   {
+    "kind": "workday",
+    "identifier": "arrow|wd1|AC",
+    "jobs": 40
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.arrow.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   }
+  ]
+ },
+ {
+  "category": "F500 #200",
+  "company": "Newmont",
+  "tried": [
+   "page:https://careers.newmont.com",
+   "page:https://jobs.newmont.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.newmont.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.newmont.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #266",
+  "company": "Kinder Morgan",
+  "tried": [
+   "page:https://careers.kindermorgan.com",
+   "page:https://jobs.kindermorgan.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.kindermorgan.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.kindermorgan.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #80",
+  "company": "Performance Food Group",
+  "tried": [
+   "page:https://careers.pfgc.com",
+   "page:https://jobs.pfgc.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.pfgc.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.pfgc.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #149",
+  "company": "NRG Energy",
+  "tried": [
+   "page:https://careers.nrg.com",
+   "page:https://jobs.nrg.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.nrg.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.nrg.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   }
+  ]
+ },
+ {
+  "category": "F500 #223",
+  "company": "Cheniere Energy",
+  "tried": [
+   "page:https://careers.cheniere.com",
+   "page:https://jobs.cheniere.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.cheniere.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.cheniere.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #284",
+  "company": "PPG Industries",
+  "tried": [
+   "page:https://careers.ppg.com",
+   "page:https://jobs.ppg.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.ppg.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.ppg.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #81",
+  "company": "United Airlines Holdings",
+  "tried": [
+   "page:https://careers.unitedairlines.com",
+   "page:https://jobs.unitedairlines.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.unitedairlines.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.unitedairlines.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #179",
+  "company": "Waste Management",
+  "tried": [
+   "page:https://careers.wm.com",
+   "page:https://jobs.wm.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.wm.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.wm.com",
+    "jobs": 0,
+    "error": "timed out"
+   }
+  ]
+ },
+ {
+  "category": "F500 #242",
+  "company": "Kiewit",
+  "tried": [
+   "page:https://careers.kiewit.com",
+   "page:https://jobs.kiewit.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.kiewit.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.kiewit.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #52",
+  "company": "Lowe's",
+  "tried": [
+   "page:https://talent.lowes.com/us/en",
+   "page:https://careers.lowes.com",
+   "page:https://jobs.lowes.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://talent.lowes.com/us/en",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.lowes.com",
+    "jobs": 0,
+    "error": "timed out"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.lowes.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #130",
+  "company": "CHS",
+  "tried": [
+   "page:https://careers.chsinc.com",
+   "page:https://jobs.chsinc.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.chsinc.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.chsinc.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #225",
+  "company": "Kimberly-Clark",
+  "tried": [
+   "page:https://careers.kimberlyclark.com",
+   "page:https://jobs.kimberlyclark.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.kimberlyclark.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.kimberlyclark.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #286",
+  "company": "Corning",
+  "tried": [
+   "page:https://careers.corning.com",
+   "page:https://jobs.corning.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.corning.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.corning.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   }
+  ]
+ },
+ {
+  "category": "F500 #144",
+  "company": "Penske Automotive Group",
+  "tried": [
+   "page:https://careers.penske.com",
+   "page:https://jobs.penske.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.penske.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.penske.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #244",
+  "company": "Steel Dynamics",
+  "tried": [
+   "page:https://careers.steeldynamics.com",
+   "page:https://jobs.steeldynamics.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.steeldynamics.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.steeldynamics.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #297",
+  "company": "Sonic Automotive",
+  "tried": [
+   "page:https://careers.sonicautomotive.com",
+   "page:https://jobs.sonicautomotive.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.sonicautomotive.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.sonicautomotive.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #121",
+  "company": "US Foods",
+  "tried": [
+   "page:https://careers.usfoods.com",
+   "page:https://jobs.usfoods.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.usfoods.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.usfoods.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #184",
+  "company": "Kraft Heinz",
+  "tried": [
+   "page:https://careers.kraftheinz.com",
+   "page:https://jobs.kraftheinz.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.kraftheinz.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.kraftheinz.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #245",
+  "company": "Emerson Electric",
+  "tried": [
+   "page:https://www.emerson.com/en-us/careers",
+   "page:https://careers.emerson.com",
+   "page:https://jobs.emerson.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://www.emerson.com/en-us/careers",
+    "jobs": 0,
+    "error": "the page returned HTTP 403"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.emerson.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.emerson.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #288",
+  "company": "Mutual of Omaha",
+  "tried": [
+   "page:https://careers.mutualofomaha.com",
+   "page:https://jobs.mutualofomaha.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.mutualofomaha.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.mutualofomaha.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #76",
+  "company": "Galaxy Digital",
+  "tried": [
+   "page:https://careers.galaxydigital.com",
+   "page:https://jobs.galaxydigital.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.galaxydigital.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.galaxydigital.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #156",
+  "company": "KKR",
+  "tried": [
+   "page:https://careers.kkr.com",
+   "page:https://jobs.kkr.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.kkr.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.kkr.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #237",
+  "company": "Loews",
+  "tried": [
+   "page:https://careers.loews.com",
+   "page:https://jobs.loews.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.loews.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.loews.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #289",
+  "company": "Kohl's",
+  "tried": [
+   "page:https://careers.kohls.com",
+   "page:https://jobs.kohls.com"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "kohls|wd504|kohlscareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.kohls.com",
+    "jobs": 0,
+    "links": [
+     [
+      "workday",
+      "kohls|wd504|kohlscareers"
+     ]
+    ]
+   },
+   {
+    "kind": "workday",
+    "identifier": "kohls|wd504|kohlscareers",
+    "jobs": 40
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.kohls.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #77",
+  "company": "AbbVie",
+  "tried": [
+   "page:https://careers.abbvie.com",
+   "page:https://jobs.abbvie.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.abbvie.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.abbvie.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #168",
+  "company": "Marsh McLennan",
+  "tried": [
+   "page:https://careers.mmc.com",
+   "page:https://jobs.mmc.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.mmc.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.mmc.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #229",
+  "company": "AutoZone",
+  "tried": [
+   "page:https://careers.autozone.com",
+   "page:https://jobs.autozone.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.autozone.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.autozone.com",
+    "jobs": 0,
+    "error": "timed out"
+   }
+  ]
+ },
+ {
+  "category": "F500 #22",
+  "company": "Ford Motor",
+  "tried": [
+   "page:https://www.careers.ford.com/en/home.html",
+   "page:https://careers.ford.com",
+   "page:https://jobs.ford.com"
+  ],
+  "best": {
+   "kind": "oraclehcm",
+   "identifier": "efds.fa.em5.oraclecloud.com|CX_1",
+   "jobs": 25
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://www.careers.ford.com/en/home.html",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.ford.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.ford.com",
+    "jobs": 0,
+    "links": [
+     [
+      "oraclehcm",
+      "efds.fa.em5.oraclecloud.com|CX_1"
+     ]
+    ]
+   },
+   {
+    "kind": "oraclehcm",
+    "identifier": "efds.fa.em5.oraclecloud.com|CX_1",
+    "jobs": 25
+   }
+  ]
+ },
+ {
+  "category": "F500 #158",
+  "company": "Paccar",
+  "tried": [
+   "page:https://careers.paccar.com",
+   "page:https://jobs.paccar.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.paccar.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.paccar.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #210",
+  "company": "L3Harris Technologies",
+  "tried": [
+   "page:https://careers.l3harris.com",
+   "page:https://jobs.l3harris.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.l3harris.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.l3harris.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #291",
+  "company": "Whirlpool",
+  "tried": [
+   "page:https://careers.whirlpool.com",
+   "page:https://jobs.whirlpool.com"
+  ],
+  "best": {
+   "kind": "eightfold",
+   "identifier": "whirlpool.eightfold.ai|whirlpool.com",
+   "jobs": 30
+  },
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.whirlpool.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.whirlpool.com",
+    "jobs": 0,
+    "links": [
+     [
+      "eightfold",
+      "whirlpool.eightfold.ai|whirlpool.com"
+     ]
+    ]
+   },
+   {
+    "kind": "eightfold",
+    "identifier": "whirlpool.eightfold.ai|whirlpool.com",
+    "jobs": 30
+   }
+  ]
+ },
+ {
+  "category": "F500 #95",
+  "company": "Liberty Mutual Insurance",
+  "tried": [
+   "page:https://jobs.libertymutualgroup.com",
+   "page:https://careers.libertymutual.com",
+   "page:https://jobs.libertymutual.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://jobs.libertymutualgroup.com",
+    "jobs": 0,
+    "error": "the page returned HTTP 403"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.libertymutual.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.libertymutual.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #170",
+  "company": "McDonald's",
+  "tried": [
+   "page:https://careers.mcdonalds.com",
+   "page:https://careers.mcdonalds.com",
+   "page:https://jobs.mcdonalds.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.mcdonalds.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://careers.mcdonalds.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.mcdonalds.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #241",
+  "company": "Auto-Owners Insurance",
+  "tried": [
+   "page:https://careers.autoowners.com",
+   "page:https://jobs.autoowners.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.autoowners.com",
+    "jobs": 0,
+    "error": "timed out"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.autoowners.com",
+    "jobs": 0,
+    "error": "timed out"
+   }
+  ]
+ },
+ {
+  "category": "F500 #292",
+  "company": "Fluor",
+  "tried": [
+   "page:https://careers.fluor.com",
+   "page:https://jobs.fluor.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.fluor.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.fluor.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #100",
+  "company": "MassMutual",
+  "tried": [
+   "page:https://careers.massmutual.com",
+   "page:https://jobs.massmutual.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.massmutual.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.massmutual.com",
+    "jobs": 0,
+    "error": "[Errno -5] No address associated with hostname"
+   }
+  ]
+ },
+ {
+  "category": "F500 #193",
+  "company": "Reinsurance Group of America",
+  "tried": [
+   "page:https://careers.rgare.com",
+   "page:https://jobs.rgare.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.rgare.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.rgare.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #259",
+  "company": "Devon Energy",
+  "tried": [
+   "page:https://careers.devon.com",
+   "page:https://jobs.devon.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.devon.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.devon.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ },
+ {
+  "category": "F500 #72",
+  "company": "Publix Super Markets",
+  "tried": [
+   "page:https://careers.publix.com",
+   "page:https://jobs.publix.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.publix.com",
+    "jobs": 0,
+    "error": "timed out"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.publix.com",
+    "jobs": 0,
+    "links": []
+   }
+  ]
+ },
+ {
+  "category": "F500 #152",
+  "company": "Southern Company",
+  "tried": [
+   "page:https://careers.southerncompany.com",
+   "page:https://jobs.southerncompany.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.southerncompany.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.southerncompany.com",
+    "jobs": 0,
+    "error": "the page returned HTTP 403"
+   }
+  ]
+ },
+ {
+  "category": "F500 #234",
+  "company": "Global Partners",
+  "tried": [
+   "page:https://careers.globalpartners.com",
+   "page:https://jobs.globalpartners.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.globalpartners.com",
+    "jobs": 0,
+    "error": "[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1035)"
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.globalpartners.com",
+    "jobs": 0,
+    "error": "[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1035)"
+   }
+  ]
+ },
+ {
+  "category": "F500 #296",
+  "company": "Builders FirstSource",
+  "tried": [
+   "page:https://careers.bldr.com",
+   "page:https://jobs.bldr.com"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "page",
+    "identifier": "https://careers.bldr.com",
+    "jobs": 0,
+    "links": []
+   },
+   {
+    "kind": "page",
+    "identifier": "https://jobs.bldr.com",
+    "jobs": 0,
+    "error": "[Errno -2] Name or service not known"
+   }
+  ]
+ }
+]
