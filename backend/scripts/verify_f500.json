@@ -1,0 +1,959 @@
+[
+ {
+  "company": "TD Synnex",
+  "rank": 74,
+  "kind": "workday",
+  "identifier": "synnex|wd5|tdsynnexcareers",
+  "keywords": [
+   "td synnex"
+  ]
+ },
+ {
+  "company": "Plains GP Holdings",
+  "rank": 103,
+  "kind": "workday",
+  "identifier": "plains|wd1|Plains",
+  "keywords": [
+   "plains"
+  ]
+ },
+ {
+  "company": "Dow",
+  "rank": 120,
+  "kind": "workday",
+  "identifier": "dow|wd1|ExternalCareers",
+  "keywords": [
+   "dow"
+  ]
+ },
+ {
+  "company": "Coupang",
+  "rank": 132,
+  "kind": "greenhouse",
+  "identifier": "coupang",
+  "keywords": [
+   "coupang"
+  ]
+ },
+ {
+  "company": "PBF Energy",
+  "rank": 154,
+  "kind": "workday",
+  "identifier": "pbfenergy|wd1|PBF",
+  "keywords": [
+   "pbf energy"
+  ]
+ },
+ {
+  "company": "Baker Hughes",
+  "rank": 164,
+  "kind": "workday",
+  "identifier": "bakerhughes|wd5|BakerHughes",
+  "keywords": [
+   "baker hughes"
+  ]
+ },
+ {
+  "company": "Occidental Petroleum",
+  "rank": 173,
+  "kind": "workday",
+  "identifier": "oxy|wd5|Corporate",
+  "keywords": [
+   "occidental",
+   "oxy"
+  ]
+ },
+ {
+  "company": "Dollar Tree",
+  "rank": 182,
+  "kind": "workday",
+  "identifier": "dollartree|wd5|dollartreeus",
+  "keywords": [
+   "dollar tree"
+  ]
+ },
+ {
+  "company": "American Family Insurance",
+  "rank": 226,
+  "kind": "workday",
+  "identifier": "amfam|wd1|Careers",
+  "keywords": [
+   "american family"
+  ]
+ },
+ {
+  "company": "United Rentals",
+  "rank": 279,
+  "kind": "workday",
+  "identifier": "ur|wd1|URcareers",
+  "keywords": [
+   "united rentals"
+  ]
+ },
+ {
+  "company": "Henry Schein",
+  "rank": 335,
+  "kind": "workday",
+  "identifier": "henryschein|wd1|External_Careers",
+  "keywords": [
+   "henry schein"
+  ]
+ },
+ {
+  "company": "Alcoa",
+  "rank": 344,
+  "kind": "workday",
+  "identifier": "alcoa|wd5|Careers",
+  "keywords": [
+   "alcoa"
+  ]
+ },
+ {
+  "company": "J.B. Hunt Transport Services",
+  "rank": 371,
+  "kind": "workday",
+  "identifier": "jbhunt|wd501|Careers",
+  "keywords": [
+   "j.b. hunt transport"
+  ]
+ },
+ {
+  "company": "Baxter International",
+  "rank": 382,
+  "kind": "workday",
+  "identifier": "baxter|wd1|baxter",
+  "keywords": [
+   "baxter"
+  ]
+ },
+ {
+  "company": "Ace Hardware",
+  "rank": 419,
+  "kind": "workday",
+  "identifier": "acehardware|wd1|External",
+  "keywords": [
+   "ace hardware"
+  ]
+ },
+ {
+  "company": "PVH",
+  "rank": 446,
+  "kind": "workday",
+  "identifier": "pvh|wd1|PVH_Careers",
+  "keywords": [
+   "pvh"
+  ]
+ },
+ {
+  "company": "DuPont",
+  "rank": 481,
+  "kind": "workday",
+  "identifier": "dupont|wd5|Jobs",
+  "keywords": [
+   "dupont"
+  ]
+ },
+ {
+  "company": "Sonoco Products",
+  "rank": 489,
+  "kind": "workday",
+  "identifier": "sonoco|wd1|CorporateCareers",
+  "keywords": [
+   "sonoco products"
+  ]
+ },
+ {
+  "company": "Tyson Foods",
+  "rank": 87,
+  "kind": "workday",
+  "identifier": "tysonfoods|wd5|TSN",
+  "keywords": [
+   "tyson foods"
+  ]
+ },
+ {
+  "company": "Northwestern Mutual",
+  "rank": 109,
+  "kind": "workday",
+  "identifier": "northwesternmutual|wd5|CORPORATE-CAREERS",
+  "keywords": [
+   "northwestern mutual"
+  ]
+ },
+ {
+  "company": "Duke Energy",
+  "rank": 145,
+  "kind": "workday",
+  "identifier": "dukeenergy|wd1|Search",
+  "keywords": [
+   "duke energy"
+  ]
+ },
+ {
+  "company": "Corebridge Financial",
+  "rank": 236,
+  "kind": "workday",
+  "identifier": "corebridgefinancial|wd1|CorebridgeFinancial",
+  "keywords": [
+   "corebridge"
+  ]
+ },
+ {
+  "company": "BorgWarner",
+  "rank": 316,
+  "kind": "workday",
+  "identifier": "borgwarner|wd5|BorgWarner_Careers",
+  "keywords": [
+   "borgwarner"
+  ]
+ },
+ {
+  "company": "Assurant",
+  "rank": 345,
+  "kind": "workday",
+  "identifier": "assurant|wd1|Assurant_Careers",
+  "keywords": [
+   "assurant"
+  ]
+ },
+ {
+  "company": "Williams Companies",
+  "rank": 373,
+  "kind": "workday",
+  "identifier": "williams|wd5|External",
+  "keywords": [
+   "williams"
+  ]
+ },
+ {
+  "company": "Burlington Stores",
+  "rank": 383,
+  "kind": "workday",
+  "identifier": "burlington|wd5|BurlingtonCareers",
+  "keywords": [
+   "burlington"
+  ]
+ },
+ {
+  "company": "Old Republic International",
+  "rank": 439,
+  "kind": "workday",
+  "identifier": "oldrepublic|wd1|oldrepublictitle",
+  "keywords": [
+   "old republic"
+  ]
+ },
+ {
+  "company": "Ovintiv",
+  "rank": 447,
+  "kind": "workday",
+  "identifier": "ovintiv|wd3|ovintivcareers",
+  "keywords": [
+   "ovintiv"
+  ]
+ },
+ {
+  "company": "Lennar",
+  "rank": 135,
+  "kind": "workday",
+  "identifier": "lennar|wd1|Lennar_Jobs",
+  "keywords": [
+   "lennar"
+  ]
+ },
+ {
+  "company": "JLL",
+  "rank": 175,
+  "kind": "workday",
+  "identifier": "jll|wd1|jllcareers",
+  "keywords": [
+   "jll",
+   "jones lang"
+  ]
+ },
+ {
+  "company": "Super Micro Computer",
+  "rank": 208,
+  "kind": "workday",
+  "identifier": "super|wd103|EXT",
+  "keywords": [
+   "supermicro",
+   "super micro"
+  ]
+ },
+ {
+  "company": "Carvana",
+  "rank": 220,
+  "kind": "greenhouse",
+  "identifier": "carvana",
+  "keywords": [
+   "carvana"
+  ]
+ },
+ {
+  "company": "LPL Financial",
+  "rank": 264,
+  "kind": "workday",
+  "identifier": "lplfinancial|wd1|External",
+  "keywords": [
+   "lpl"
+  ]
+ },
+ {
+  "company": "Viatris",
+  "rank": 318,
+  "kind": "workday",
+  "identifier": "viatris|wd5|External",
+  "keywords": [
+   "viatris"
+  ]
+ },
+ {
+  "company": "Ryder System",
+  "rank": 346,
+  "kind": "workday",
+  "identifier": "ryder|wd5|RyderCareers",
+  "keywords": [
+   "ryder system"
+  ]
+ },
+ {
+  "company": "Chipotle Mexican Grill",
+  "rank": 374,
+  "kind": "workday",
+  "identifier": "chipotle|wd5|ChipotleCareers",
+  "keywords": [
+   "chipotle mexican grill"
+  ]
+ },
+ {
+  "company": "Comfort Systems USA",
+  "rank": 440,
+  "kind": "workday",
+  "identifier": "comfortsystemsusa|wd1|Corpcareers",
+  "keywords": [
+   "comfort systems usa"
+  ]
+ },
+ {
+  "company": "J.M. Smucker",
+  "rank": 456,
+  "kind": "workday",
+  "identifier": "smucker|wd5|US_External_Careers",
+  "keywords": [
+   "smucker"
+  ]
+ },
+ {
+  "company": "Taylor Morrison",
+  "rank": 483,
+  "kind": "workday",
+  "identifier": "taylormorrison|wd1|TaylorMorrisonCareers",
+  "keywords": [
+   "taylor morrison"
+  ]
+ },
+ {
+  "company": "Ingram Micro",
+  "rank": 90,
+  "kind": "workday",
+  "identifier": "ingrammicro|wd5|IngramMicro",
+  "keywords": [
+   "ingram micro"
+  ]
+ },
+ {
+  "company": "Ferguson Enterprises",
+  "rank": 147,
+  "kind": "workday",
+  "identifier": "ferguson|wd1|Ferguson_Experienced",
+  "keywords": [
+   "ferguson enterprises"
+  ]
+ },
+ {
+  "company": "American Electric Power",
+  "rank": 209,
+  "kind": "workday",
+  "identifier": "aep|wd1|AEPCareerSite",
+  "keywords": [
+   "american electric power"
+  ]
+ },
+ {
+  "company": "Goodyear Tire & Rubber",
+  "rank": 239,
+  "kind": "workday",
+  "identifier": "goodyear|wd1|GoodyearCareers",
+  "keywords": [
+   "goodyear tire & rubber"
+  ]
+ },
+ {
+  "company": "PulteGroup",
+  "rank": 256,
+  "kind": "workday",
+  "identifier": "pultegroup|wd1|PGI",
+  "keywords": [
+   "pultegroup"
+  ]
+ },
+ {
+  "company": "Land O'Lakes",
+  "rank": 273,
+  "kind": "workday",
+  "identifier": "landolakes|wd1|LandOLakes",
+  "keywords": [
+   "land o'lakes"
+  ]
+ },
+ {
+  "company": "Diamondback Energy",
+  "rank": 301,
+  "kind": "workday",
+  "identifier": "diamondbackenergy|wd12|DBE",
+  "keywords": [
+   "diamondback energy"
+  ]
+ },
+ {
+  "company": "Blackstone",
+  "rank": 310,
+  "kind": "workday",
+  "identifier": "blackstone|wd1|Blackstone_Careers",
+  "keywords": [
+   "blackstone"
+  ]
+ },
+ {
+  "company": "Unum Group",
+  "rank": 338,
+  "kind": "workday",
+  "identifier": "unum|wd1|External",
+  "keywords": [
+   "unum"
+  ]
+ },
+ {
+  "company": "Owens Corning",
+  "rank": 385,
+  "kind": "workday",
+  "identifier": "owens|wd1|OCC",
+  "keywords": [
+   "owens corning"
+  ]
+ },
+ {
+  "company": "Campbell's",
+  "rank": 413,
+  "kind": "workday",
+  "identifier": "campbellsoup|wd5|ExternalCareers_GlobalSite",
+  "keywords": [
+   "campbell"
+  ]
+ },
+ {
+  "company": "News Corp",
+  "rank": 422,
+  "kind": "workday",
+  "identifier": "dowjones|wd1|Dow_Jones_Career",
+  "keywords": [
+   "dow jones",
+   "news corp"
+  ]
+ },
+ {
+  "company": "Ameren",
+  "rank": 466,
+  "kind": "workday",
+  "identifier": "ameren|wd1|External",
+  "keywords": [
+   "ameren"
+  ]
+ },
+ {
+  "company": "Dover",
+  "rank": 484,
+  "kind": "workday",
+  "identifier": "dover|wd103|Dover",
+  "keywords": [
+   "dover"
+  ]
+ },
+ {
+  "company": "UPS",
+  "rank": 48,
+  "kind": "workday",
+  "identifier": "hcmportal|wd5|Search",
+  "keywords": [
+   "ups"
+  ]
+ },
+ {
+  "company": "TIAA",
+  "rank": 94,
+  "kind": "workday",
+  "identifier": "tiaa|wd1|Search",
+  "keywords": [
+   "tiaa"
+  ]
+ },
+ {
+  "company": "GE Vernova",
+  "rank": 124,
+  "kind": "workday",
+  "identifier": "gevernova|wd5|Vernova_ExternalSite",
+  "keywords": [
+   "ge vernova"
+  ]
+ },
+ {
+  "company": "Oneok",
+  "rank": 138,
+  "kind": "workday",
+  "identifier": "oneok|wd1|ONEOK",
+  "keywords": [
+   "oneok"
+  ]
+ },
+ {
+  "company": "Ameriprise Financial",
+  "rank": 230,
+  "kind": "workday",
+  "identifier": "ameriprise|wd5|Ameriprise",
+  "keywords": [
+   "ameriprise"
+  ]
+ },
+ {
+  "company": "Pacific Life",
+  "rank": 240,
+  "kind": "workday",
+  "identifier": "pacificlife|wd1|PacificLifeCareers",
+  "keywords": [
+   "pacific life"
+  ]
+ },
+ {
+  "company": "IQVIA",
+  "rank": 274,
+  "kind": "workday",
+  "identifier": "iqvia|wd1|IQVIA",
+  "keywords": [
+   "iqvia"
+  ]
+ },
+ {
+  "company": "Raymond James Financial",
+  "rank": 283,
+  "kind": "workday",
+  "identifier": "raymondjames|wd1|RaymondJamesCareers",
+  "keywords": [
+   "raymond james"
+  ]
+ },
+ {
+  "company": "Las Vegas Sands",
+  "rank": 339,
+  "kind": "workday",
+  "identifier": "sands|wd1|sands_careers",
+  "keywords": [
+   "sands"
+  ]
+ },
+ {
+  "company": "Crown Holdings",
+  "rank": 356,
+  "kind": "workday",
+  "identifier": "crownholdings|wd501|CrownHoldings",
+  "keywords": [
+   "crown"
+  ]
+ },
+ {
+  "company": "Mosaic",
+  "rank": 366,
+  "kind": "workday",
+  "identifier": "mosaic|wd5|mosaic",
+  "keywords": [
+   "mosaic"
+  ]
+ },
+ {
+  "company": "KeyCorp",
+  "rank": 386,
+  "kind": "workday",
+  "identifier": "keybank|wd5|External_Career_Site",
+  "keywords": [
+   "key",
+   "keybank"
+  ]
+ },
+ {
+  "company": "Rockwell Automation",
+  "rank": 467,
+  "kind": "workday",
+  "identifier": "rockwellautomation|wd1|External_Rockwell_Automation",
+  "keywords": [
+   "rockwell automation"
+  ]
+ },
+ {
+  "company": "Continental Resources",
+  "rank": 493,
+  "kind": "workday",
+  "identifier": "clr|wd5|CLR_Careers",
+  "keywords": [
+   "continental resources"
+  ]
+ },
+ {
+  "company": "Medline",
+  "rank": 159,
+  "kind": "workday",
+  "identifier": "medline|wd5|Medline",
+  "keywords": [
+   "medline"
+  ]
+ },
+ {
+  "company": "Carrier Global",
+  "rank": 212,
+  "kind": "workday",
+  "identifier": "carrier|wd5|jobs",
+  "keywords": [
+   "carrier"
+  ]
+ },
+ {
+  "company": "Guardian Life",
+  "rank": 232,
+  "kind": "workday",
+  "identifier": "guardianlife|wd5|Guardian-Life-Careers",
+  "keywords": [
+   "guardian life"
+  ]
+ },
+ {
+  "company": "Dick's Sporting Goods",
+  "rank": 258,
+  "kind": "workday",
+  "identifier": "dickssportinggoods|wd1|DSG",
+  "keywords": [
+   "dick sporting goods"
+  ]
+ },
+ {
+  "company": "DaVita",
+  "rank": 331,
+  "kind": "workday",
+  "identifier": "davita|wd1|DKC_External",
+  "keywords": [
+   "davita"
+  ]
+ },
+ {
+  "company": "Air Products",
+  "rank": 368,
+  "kind": "workday",
+  "identifier": "airproducts|wd5|AP0001",
+  "keywords": [
+   "air products"
+  ]
+ },
+ {
+  "company": "Accendra Health",
+  "rank": 407,
+  "kind": "workday",
+  "identifier": "owensminor|wd1|OMCareers",
+  "keywords": [
+   "owens & minor",
+   "owens and minor",
+   "accendra"
+  ]
+ },
+ {
+  "company": "Constellation Brands",
+  "rank": 416,
+  "kind": "workday",
+  "identifier": "cbrands|wd5|CBI_External_Careers",
+  "keywords": [
+   "constellation brands"
+  ]
+ },
+ {
+  "company": "Zoetis",
+  "rank": 434,
+  "kind": "workday",
+  "identifier": "zoetis|wd5|zoetis",
+  "keywords": [
+   "zoetis"
+  ]
+ },
+ {
+  "company": "Prologis",
+  "rank": 451,
+  "kind": "workday",
+  "identifier": "prologis|wd5|Prologis_External_Careers",
+  "keywords": [
+   "prologis"
+  ]
+ },
+ {
+  "company": "World Kinect",
+  "rank": 128,
+  "kind": "workday",
+  "identifier": "wfscorp|wd5|wfscareers",
+  "keywords": [
+   "world kinect",
+   "world fuel"
+  ]
+ },
+ {
+  "company": "Jabil",
+  "rank": 151,
+  "kind": "workday",
+  "identifier": "jabil|wd5|Jabil_Careers",
+  "keywords": [
+   "jabil"
+  ]
+ },
+ {
+  "company": "CarMax",
+  "rank": 162,
+  "kind": "workday",
+  "identifier": "carmax|wd1|External",
+  "keywords": [
+   "carmax"
+  ]
+ },
+ {
+  "company": "BJ's Wholesale Club",
+  "rank": 213,
+  "kind": "workday",
+  "identifier": "bjswholesaleclub|wd1|BJsCareers",
+  "keywords": [
+   "bj wholesale club"
+  ]
+ },
+ {
+  "company": "O'Reilly Automotive",
+  "rank": 250,
+  "kind": "workday",
+  "identifier": "oreillyauto|wd1|oreilly",
+  "keywords": [
+   "o'reilly automotive"
+  ]
+ },
+ {
+  "company": "C.H. Robinson",
+  "rank": 277,
+  "kind": "workday",
+  "identifier": "chrobinson|wd5|CHRobinson",
+  "keywords": [
+   "robinson"
+  ]
+ },
+ {
+  "company": "Eversource Energy",
+  "rank": 332,
+  "kind": "workday",
+  "identifier": "eversource|wd1|ExternalSite",
+  "keywords": [
+   "eversource energy"
+  ]
+ },
+ {
+  "company": "Fifth Third Bancorp",
+  "rank": 341,
+  "kind": "workday",
+  "identifier": "fifththird|wd5|53careers",
+  "keywords": [
+   "fifth third"
+  ]
+ },
+ {
+  "company": "Avis Budget Group",
+  "rank": 380,
+  "kind": "workday",
+  "identifier": "avisbudget|wd1|ABG_Careers",
+  "keywords": [
+   "avis budget"
+  ]
+ },
+ {
+  "company": "Westlake",
+  "rank": 388,
+  "kind": "workday",
+  "identifier": "westlake|wd1|westlake",
+  "keywords": [
+   "westlake"
+  ]
+ },
+ {
+  "company": "VF Corporation",
+  "rank": 425,
+  "kind": "workday",
+  "identifier": "vfc|wd5|vfc_careers",
+  "keywords": [
+   "vf corporation",
+   "vf "
+  ]
+ },
+ {
+  "company": "Core & Main",
+  "rank": 495,
+  "kind": "workday",
+  "identifier": "coreandmain|wd1|coreandmain",
+  "keywords": [
+   "core & main"
+  ]
+ },
+ {
+  "company": "Marathon Petroleum",
+  "rank": 30,
+  "kind": "workday",
+  "identifier": "mpc|wd1|MPCCareers",
+  "keywords": [
+   "marathon"
+  ]
+ },
+ {
+  "company": "Apollo Global Management",
+  "rank": 143,
+  "kind": "workday",
+  "identifier": "athene|wd5|Apollo_Careers",
+  "keywords": [
+   "apollo",
+   "athene"
+  ]
+ },
+ {
+  "company": "AIG",
+  "rank": 172,
+  "kind": "workday",
+  "identifier": "aig|wd1|aig",
+  "keywords": [
+   "aig"
+  ]
+ },
+ {
+  "company": "Live Nation Entertainment",
+  "rank": 180,
+  "kind": "workday",
+  "identifier": "livenation|wd503|LNExternalSite",
+  "keywords": [
+   "live nation",
+   "ticketmaster"
+  ]
+ },
+ {
+  "company": "CDW",
+  "rank": 205,
+  "kind": "workday",
+  "identifier": "cdw|wd5|Careers",
+  "keywords": [
+   "cdw"
+  ]
+ },
+ {
+  "company": "Republic Services",
+  "rank": 269,
+  "kind": "workday",
+  "identifier": "republic|wd5|Republic",
+  "keywords": [
+   "republic services"
+  ]
+ },
+ {
+  "company": "BitGo",
+  "rank": 278,
+  "kind": "greenhouse",
+  "identifier": "bitgo",
+  "keywords": [
+   "bitgo"
+  ]
+ },
+ {
+  "company": "Xcel Energy",
+  "rank": 306,
+  "kind": "workday",
+  "identifier": "xcelenergy|wd1|External",
+  "keywords": [
+   "xcel energy"
+  ]
+ },
+ {
+  "company": "Regeneron Pharmaceuticals",
+  "rank": 314,
+  "kind": "workday",
+  "identifier": "regeneron|wd1|Careers",
+  "keywords": [
+   "regeneron pharmaceuticals"
+  ]
+ },
+ {
+  "company": "M&T Bank",
+  "rank": 334,
+  "kind": "workday",
+  "identifier": "mtb|wd5|MTB",
+  "keywords": [
+   "m&t",
+   "m&amp;t"
+  ]
+ },
+ {
+  "company": "Graybar Electric",
+  "rank": 342,
+  "kind": "workday",
+  "identifier": "graybar|wd1|Careers",
+  "keywords": [
+   "graybar electric"
+  ]
+ },
+ {
+  "company": "Huntington Bancshares",
+  "rank": 350,
+  "kind": "workday",
+  "identifier": "huntington|wd12|HNBcareers",
+  "keywords": [
+   "huntington"
+  ]
+ },
+ {
+  "company": "Vertex Pharmaceuticals",
+  "rank": 370,
+  "kind": "workday",
+  "identifier": "vrtx|wd501|Vertex_Careers",
+  "keywords": [
+   "vertex pharmaceuticals"
+  ]
+ },
+ {
+  "company": "Conagra Brands",
+  "rank": 381,
+  "kind": "workday",
+  "identifier": "conagrabrands|wd1|Careers_US",
+  "keywords": [
+   "conagra brands"
+  ]
+ },
+ {
+  "company": "International Flavors & Fragrances",
+  "rank": 400,
+  "kind": "workday",
+  "identifier": "iff|wd5|IFF_Careers",
+  "keywords": [
+   "flavors & fragrances"
+  ]
+ },
+ {
+  "company": "KBR",
+  "rank": 488,
+  "kind": "workday",
+  "identifier": "kbr|wd5|KBR_Careers",
+  "keywords": [
+   "kbr"
+  ]
+ }
+]

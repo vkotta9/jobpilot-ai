@@ -11,7 +11,7 @@ from ..security import audit, current_user, rate_limit
 from ..services.discovery import pause_between_sources, run_source, score_unscored
 from ..services.matching import score_jobs
 from ..services.sources import COMPANY_KINDS
-from ..services.sources.catalog import POPULAR, TOP_TECH
+from ..services.sources.catalog import FORTUNE_500, POPULAR, TOP_TECH
 from ..services.sources.detect import detect_many
 
 router = APIRouter(prefix="/api/companies", tags=["companies"])
@@ -28,7 +28,7 @@ class FollowItem(BaseModel):
 
 
 class FollowIn(BaseModel):
-    items: list[FollowItem] = Field(min_length=1, max_length=400)
+    items: list[FollowItem] = Field(min_length=1, max_length=600)
     run_now: bool = True
 
 
@@ -119,12 +119,22 @@ def popular(user: User = Depends(current_user), db: Session = Depends(get_db)):
     return [dict(c, following=(c["kind"], c["identifier"].lower()) in followed) for c in POPULAR]
 
 
-@router.get("/top-tech")
-def top_tech(user: User = Depends(current_user), db: Session = Depends(get_db)):
-    """Top tech, finance and consulting companies: direct careers feeds where available, Google Jobs (JSearch) for the rest."""
+def _company_list(db: Session, user: User, companies: list[dict]) -> dict:
     from ..models import IntegrationSetting
 
     followed = {(s.kind, s.identifier.lower()) for s in db.query(JobSource).filter(JobSource.user_id == user.id).all()}
     has_jsearch = db.query(IntegrationSetting).filter_by(user_id=user.id, provider="jsearch").count() > 0
     return {"jsearch_connected": has_jsearch,
-            "companies": [dict(c, following=(c["kind"], c["identifier"].lower()) in followed) for c in TOP_TECH]}
+            "companies": [dict(c, following=(c["kind"], c["identifier"].lower()) in followed) for c in companies]}
+
+
+@router.get("/top-tech")
+def top_tech(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Top tech, finance and consulting companies: direct careers feeds where available, Google Jobs (JSearch) for the rest."""
+    return _company_list(db, user, TOP_TECH)
+
+
+@router.get("/fortune-500")
+def fortune_500(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """The 2026 Fortune 500 by rank: direct careers feeds where available, Google Jobs (JSearch) for the rest."""
+    return _company_list(db, user, FORTUNE_500)

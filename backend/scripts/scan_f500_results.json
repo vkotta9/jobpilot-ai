@@ -1,0 +1,6122 @@
+[
+ {
+  "category": "F500 #7",
+  "company": "Berkshire Hathaway",
+  "tried": [
+   "berkshirehathaway",
+   "bhhc",
+   "berkshire-hathaway",
+   "berkshire"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "bhhc",
+   "jobs": 25,
+   "reported": "Bhhc"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "bhhc",
+    "jobs": 25,
+    "reported": "Bhhc"
+   }
+  ]
+ },
+ {
+  "category": "F500 #31",
+  "company": "StoneX Group",
+  "tried": [
+   "stonex",
+   "stonexgroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #53",
+  "company": "Energy Transfer",
+  "tried": [
+   "energytransfer",
+   "energy-transfer"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #74",
+  "company": "TD Synnex",
+  "tried": [
+   "tdsynnex",
+   "synnex",
+   "td-synnex"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "synnex|wd5|tdsynnexcareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "synnex|wd5|tdsynnexcareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "synnex|wd5|hyvecareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #86",
+  "company": "American Airlines Group",
+  "tried": [
+   "americanairlines",
+   "aa",
+   "americanairlinesgroup",
+   "american-airlines"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #103",
+  "company": "Plains GP Holdings",
+  "tried": [
+   "plains",
+   "plainsallamerican",
+   "plainsgp",
+   "plainsgpholdings"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "plains|wd1|Plains",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "plains|wd1|Plains",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "plains|wd1|Plains_Trucking",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "plains|wd1|Rancho",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #120",
+  "company": "Dow",
+  "tried": [
+   "dow"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "dow|wd1|ExternalCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "dow|wd1|ExternalCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "dow|wd1|DiamondExternalCareers",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #132",
+  "company": "Coupang",
+  "tried": [
+   "coupang"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "coupang",
+   "jobs": 672,
+   "reported": "Coupang"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "coupang",
+    "jobs": 672,
+    "reported": "Coupang"
+   }
+  ]
+ },
+ {
+  "category": "F500 #144",
+  "company": "Penske Automotive Group",
+  "tried": [
+   "penske",
+   "penskeautomotive",
+   "penskeautomotivegroup",
+   "penske-automotive"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #154",
+  "company": "PBF Energy",
+  "tried": [
+   "pbfenergy",
+   "pbf-energy"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "pbfenergy|wd1|PBF",
+   "jobs": 37
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "pbfenergy|wd1|PBF",
+    "jobs": 37
+   },
+   {
+    "kind": "workday",
+    "identifier": "pbfenergy|wd1|JobFair",
+    "jobs": 3
+   },
+   {
+    "kind": "workday",
+    "identifier": "pbfenergy|wd1|PBF",
+    "jobs": 37
+   },
+   {
+    "kind": "workday",
+    "identifier": "pbfenergy|wd1|JobFair",
+    "jobs": 3
+   }
+  ]
+ },
+ {
+  "category": "F500 #164",
+  "company": "Baker Hughes",
+  "tried": [
+   "bakerhughes",
+   "baker-hughes",
+   "baker"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "bakerhughes|wd5|BakerHughes",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "bakerhughes|wd5|BakerHughes",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "bakerhughes|wd5|BakerHughes",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #173",
+  "company": "Occidental Petroleum",
+  "tried": [
+   "oxy",
+   "occidental",
+   "occidentalpetroleum",
+   "occidental-petroleum"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "oxy|wd5|Corporate",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "oxy|wd5|OmanPetroJobs",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "oxy|wd5|Corporate",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "oxy|wd5|UniversityRelations",
+    "jobs": 20
+   }
+  ]
+ },
+ {
+  "category": "F500 #182",
+  "company": "Dollar Tree",
+  "tried": [
+   "dollartree",
+   "dollar-tree",
+   "dollar"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "dollartree|wd5|dollartreeus",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "dollartree|wd5|dollartreeus",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "dollartree|wd5|dollartreeca",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "dollartree|wd5|dollartreeus",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "dollartree|wd5|dollartreeca",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #195",
+  "company": "WESCO International",
+  "tried": [
+   "wesco",
+   "wescointernational"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #206",
+  "company": "Avnet",
+  "tried": [
+   "avnet"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #218",
+  "company": "ADP",
+  "tried": [
+   "adp"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #226",
+  "company": "American Family Insurance",
+  "tried": [
+   "amfam",
+   "americanfamily",
+   "americanfamilyinsurance",
+   "american-family"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "amfam|wd1|Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "amfam|wd1|Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "amfam|wd1|Agent-Staff",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #235",
+  "company": "Aramark",
+  "tried": [
+   "aramark"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #244",
+  "company": "Steel Dynamics",
+  "tried": [
+   "steeldynamics",
+   "steel-dynamics",
+   "steel"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "steel",
+   "jobs": 1,
+   "reported": "Steel"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "steel",
+    "jobs": 1,
+    "reported": "Steel"
+   }
+  ]
+ },
+ {
+  "category": "F500 #253",
+  "company": "MGM Resorts International",
+  "tried": [
+   "mgmresorts",
+   "mgm",
+   "mgmresortsinternational",
+   "mgm-resorts"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "mgmresorts|wd5|Pool-Hiring-2021",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "mgmresorts|wd5|Pool-Hiring-2021",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #262",
+  "company": "Targa Resources",
+  "tried": [
+   "targa",
+   "targaresources",
+   "targa-resources"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #270",
+  "company": "Markel Group",
+  "tried": [
+   "markel",
+   "markelgroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #279",
+  "company": "United Rentals",
+  "tried": [
+   "unitedrentals",
+   "ur",
+   "united-rentals"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "ur|wd1|URcareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "ur|wd1|URcareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "ur|wd1|ANZCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "ur|wd1|UnitedRentals-France",
+    "jobs": 6
+   }
+  ]
+ },
+ {
+  "category": "F500 #287",
+  "company": "Principal Financial",
+  "tried": [
+   "principal",
+   "principalfinancial"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #297",
+  "company": "Sonic Automotive",
+  "tried": [
+   "sonicautomotive",
+   "sonic-automotive",
+   "sonic"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "sonic",
+   "jobs": 12,
+   "reported": "Sonic Internet + Phone"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "sonic",
+    "jobs": 12,
+    "reported": "Sonic Internet + Phone"
+   }
+  ]
+ },
+ {
+  "category": "F500 #307",
+  "company": "FirstEnergy",
+  "tried": [
+   "firstenergy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #315",
+  "company": "Estee Lauder",
+  "tried": [
+   "elcompanies",
+   "esteelauder",
+   "estee-lauder",
+   "estee"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #324",
+  "company": "CSX",
+  "tried": [
+   "csx"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #335",
+  "company": "Henry Schein",
+  "tried": [
+   "henryschein",
+   "henry-schein",
+   "henry"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "henryschein|wd1|External_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "henryschein|wd1|External_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "henryschein|wd1|External_Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #344",
+  "company": "Alcoa",
+  "tried": [
+   "alcoa"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "alcoa|wd5|Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "alcoa|wd5|Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #352",
+  "company": "Huntington Ingalls Industries",
+  "tried": [
+   "hii",
+   "huntingtoningalls",
+   "huntingtoningallsindustries",
+   "huntington-ingalls"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #362",
+  "company": "Expand Energy",
+  "tried": [
+   "expandenergy",
+   "expand-energy",
+   "expand"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #371",
+  "company": "J.B. Hunt Transport Services",
+  "tried": [
+   "jbhunt",
+   "jbhunttransport",
+   "jbhunttransportservices",
+   "j-b-hunt-transport"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "jbhunt|wd501|Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "jbhunt|wd501|Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #382",
+  "company": "Baxter International",
+  "tried": [
+   "baxter",
+   "baxterinternational"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "baxter|wd1|baxter",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "baxter|wd1|baxter",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #390",
+  "company": "Molson Coors Beverage",
+  "tried": [
+   "molsoncoors",
+   "molsoncoorsbeverage",
+   "molson-coors-beverage",
+   "molson"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #401",
+  "company": "Welltower",
+  "tried": [
+   "welltower"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #410",
+  "company": "Interactive Brokers Group",
+  "tried": [
+   "interactivebrokers",
+   "ibkr",
+   "interactivebrokersgroup",
+   "interactive-brokers"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #419",
+  "company": "Ace Hardware",
+  "tried": [
+   "acehardware",
+   "ace-hardware"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "acehardware|wd1|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "acehardware|wd1|External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "acehardware|wd1|EJDExternal",
+    "jobs": 5
+   },
+   {
+    "kind": "workday",
+    "identifier": "acehardware|wd1|GLA_External",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "acehardware|wd1|External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "acehardware|wd1|EJDExternal",
+    "jobs": 5
+   },
+   {
+    "kind": "workday",
+    "identifier": "acehardware|wd1|GLA_External",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #427",
+  "company": "Icahn Enterprises",
+  "tried": [
+   "icahn",
+   "ielp",
+   "icahnenterprises"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #438",
+  "company": "APA",
+  "tried": [
+   "apacorp",
+   "apache",
+   "apa"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #446",
+  "company": "PVH",
+  "tried": [
+   "pvh"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "pvh|wd1|PVH_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "pvh|wd1|PVH_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "pvh|wd1|broadbean_external",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #454",
+  "company": "ABM Industries",
+  "tried": [
+   "abm",
+   "abmindustries"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #463",
+  "company": "Sirius XM",
+  "tried": [
+   "siriusxm",
+   "sirius-xm",
+   "sirius"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #472",
+  "company": "Insight Enterprises",
+  "tried": [
+   "insight",
+   "insightenterprises"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "insight",
+   "jobs": 11,
+   "reported": "Insight"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "insight",
+    "jobs": 11,
+    "reported": "Insight"
+   }
+  ]
+ },
+ {
+  "category": "F500 #481",
+  "company": "DuPont",
+  "tried": [
+   "dupont"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "dupont|wd5|Jobs",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "dupont|wd5|Jobs",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "dupont|wd5|Jobs_Swiss",
+    "jobs": 3
+   },
+   {
+    "kind": "workday",
+    "identifier": "dupont|wd5|Confidential",
+    "jobs": 4
+   }
+  ]
+ },
+ {
+  "category": "F500 #489",
+  "company": "Sonoco Products",
+  "tried": [
+   "sonoco",
+   "sonocoproducts",
+   "sonoco-products"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "sonoco|wd1|CorporateCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "sonoco|wd1|CorporateCareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #497",
+  "company": "Primoris Services",
+  "tried": [
+   "primoris",
+   "primorisservices"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #9",
+  "company": "Exxon Mobil",
+  "tried": [
+   "exxonmobil",
+   "exxon",
+   "exxon-mobil"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #32",
+  "company": "State Farm Insurance",
+  "tried": [
+   "statefarm",
+   "statefarminsurance",
+   "state-farm",
+   "state"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #55",
+  "company": "Sysco",
+  "tried": [
+   "sysco"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #75",
+  "company": "ConocoPhillips",
+  "tried": [
+   "conocophillips"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "conocophillips|wd1|ExternalCWAU",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "conocophillips|wd1|eQuest",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #87",
+  "company": "Tyson Foods",
+  "tried": [
+   "tysonfoods",
+   "tyson",
+   "tyson-foods"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "tysonfoods|wd5|TSN",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "tysonfoods|wd5|TSN",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "tysonfoods|wd5|TSN1",
+    "jobs": 14
+   },
+   {
+    "kind": "workday",
+    "identifier": "tysonfoods|wd5|CVT",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "tysonfoods|wd5|TSN",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "tysonfoods|wd5|TSN1",
+    "jobs": 14
+   },
+   {
+    "kind": "workday",
+    "identifier": "tysonfoods|wd5|CVT",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #109",
+  "company": "Northwestern Mutual",
+  "tried": [
+   "northwesternmutual",
+   "nm",
+   "northwestern"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "northwesternmutual|wd5|CORPORATE-CAREERS",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "northwesternmutual|wd5|CORPORATE-CAREERS",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "northwesternmutual|wd5|CORPORATE-CAREERS-PRIVATE",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #121",
+  "company": "US Foods",
+  "tried": [
+   "usfoods",
+   "us-foods"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #134",
+  "company": "D.R. Horton",
+  "tried": [
+   "drhorton",
+   "d-r-horton"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #145",
+  "company": "Duke Energy",
+  "tried": [
+   "dukeenergy",
+   "duke-energy"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "dukeenergy|wd1|Search",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "dukeenergy|wd1|Search",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "dukeenergy|wd1|nosearch",
+    "jobs": 5
+   },
+   {
+    "kind": "workday",
+    "identifier": "dukeenergy|wd1|Search",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "dukeenergy|wd1|nosearch",
+    "jobs": 5
+   }
+  ]
+ },
+ {
+  "category": "F500 #155",
+  "company": "Paramount Skydance",
+  "tried": [
+   "paramount",
+   "paramountskydance",
+   "paramount-skydance"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #166",
+  "company": "AutoNation",
+  "tried": [
+   "autonation"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #174",
+  "company": "Marriott International",
+  "tried": [
+   "marriott",
+   "marriottinternational"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #184",
+  "company": "Kraft Heinz",
+  "tried": [
+   "kraftheinz",
+   "kraft-heinz",
+   "kraft"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #196",
+  "company": "Lear",
+  "tried": [
+   "lear"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #207",
+  "company": "Halliburton",
+  "tried": [
+   "halliburton"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #219",
+  "company": "Colgate-Palmolive",
+  "tried": [
+   "colgate",
+   "colgatepalmolive",
+   "colgate-palmolive"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #227",
+  "company": "General Mills",
+  "tried": [
+   "generalmills",
+   "general-mills"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #236",
+  "company": "Corebridge Financial",
+  "tried": [
+   "corebridge",
+   "corebridgefinancial"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "corebridgefinancial|wd1|CorebridgeFinancial",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "corebridgefinancial|wd1|CorebridgeFinancial",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "corebridgefinancial|wd1|early_careers",
+    "jobs": 6
+   },
+   {
+    "kind": "workday",
+    "identifier": "corebridgefinancial|wd1|valic",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #245",
+  "company": "Emerson Electric",
+  "tried": [
+   "emerson",
+   "emersonelectric",
+   "emerson-electric"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "emerson|wd5|Emerson_College_Staff",
+   "jobs": 33
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "emerson|wd5|Emerson_College_Staff",
+    "jobs": 33
+   },
+   {
+    "kind": "workday",
+    "identifier": "emerson|wd5|Emerson_College_Affiliated_Faculty",
+    "jobs": 11
+   },
+   {
+    "kind": "workday",
+    "identifier": "emerson|wd5|Emerson_College_FT_Faculty",
+    "jobs": 5
+   }
+  ]
+ },
+ {
+  "category": "F500 #254",
+  "company": "Corteva",
+  "tried": [
+   "corteva"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #263",
+  "company": "Murphy USA",
+  "tried": [
+   "murphyusa",
+   "murphy-usa",
+   "murphy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #271",
+  "company": "Farmers Insurance",
+  "tried": [
+   "farmers",
+   "farmersinsurance"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #280",
+  "company": "Ecolab",
+  "tried": [
+   "ecolab"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #288",
+  "company": "Mutual of Omaha",
+  "tried": [
+   "mutualofomaha",
+   "omaha"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #298",
+  "company": "Stanley Black & Decker",
+  "tried": [
+   "sbd",
+   "stanleyblackdecker",
+   "stanleyblackanddecker",
+   "stanley-black-decker"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #308",
+  "company": "Erie Insurance Group",
+  "tried": [
+   "erieinsurance",
+   "erie",
+   "erieinsurancegroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #316",
+  "company": "BorgWarner",
+  "tried": [
+   "borgwarner"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "borgwarner|wd5|BorgWarner_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "borgwarner|wd5|BorgWarner_Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #325",
+  "company": "LKQ",
+  "tried": [
+   "lkq"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #336",
+  "company": "GXO Logistics",
+  "tried": [
+   "gxo",
+   "gxologistics",
+   "gxo-logistics"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #345",
+  "company": "Assurant",
+  "tried": [
+   "assurant"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "assurant|wd1|Assurant_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "assurant|wd1|Assurant_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "assurant|wd1|iSmash_External_Career_Site",
+    "jobs": 8
+   }
+  ]
+ },
+ {
+  "category": "F500 #353",
+  "company": "Wayfair",
+  "tried": [
+   "wayfair"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #363",
+  "company": "Hormel Foods",
+  "tried": [
+   "hormel",
+   "hormelfoods",
+   "hormel-foods"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #373",
+  "company": "Williams Companies",
+  "tried": [
+   "williams",
+   "williamscompanies"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "williams|wd5|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "williams|wd5|External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "williams|wd5|ContingentWorkerConvCareers",
+    "jobs": 1
+   },
+   {
+    "kind": "workday",
+    "identifier": "williams|wd5|PowerExternal",
+    "jobs": 24
+   }
+  ]
+ },
+ {
+  "category": "F500 #383",
+  "company": "Burlington Stores",
+  "tried": [
+   "burlington",
+   "burlingtonstores",
+   "burlington-stores"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "burlington|wd5|BurlingtonCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "burlington|wd5|BurlingtonCareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #391",
+  "company": "Lululemon",
+  "tried": [
+   "lululemon"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #402",
+  "company": "Jefferies Financial Group",
+  "tried": [
+   "jefferies",
+   "jefferiesfinancialgroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #411",
+  "company": "Oshkosh",
+  "tried": [
+   "oshkoshcorp",
+   "oshkosh"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #420",
+  "company": "Dana",
+  "tried": [
+   "dana"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #428",
+  "company": "Regions Financial",
+  "tried": [
+   "regions",
+   "regionsfinancial"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #439",
+  "company": "Old Republic International",
+  "tried": [
+   "oldrepublic",
+   "oldrepublicinternational",
+   "old-republic"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "oldrepublic|wd1|oldrepublictitle",
+   "jobs": 25
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "oldrepublic|wd1|oldrepublictitle",
+    "jobs": 25
+   },
+   {
+    "kind": "workday",
+    "identifier": "oldrepublic|wd1|oldrepublictitle",
+    "jobs": 25
+   }
+  ]
+ },
+ {
+  "category": "F500 #447",
+  "company": "Ovintiv",
+  "tried": [
+   "ovintiv"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "ovintiv|wd3|ovintivcareers",
+   "jobs": 2
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "ovintiv|wd3|ovintivcareers",
+    "jobs": 2
+   }
+  ]
+ },
+ {
+  "category": "F500 #455",
+  "company": "NOV",
+  "tried": [
+   "nov"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #464",
+  "company": "CMS Energy",
+  "tried": [
+   "cmsenergy",
+   "consumersenergy",
+   "cms-energy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #473",
+  "company": "Zimmer Biomet",
+  "tried": [
+   "zimmerbiomet",
+   "zimmer-biomet",
+   "zimmer"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #482",
+  "company": "Sanmina",
+  "tried": [
+   "sanmina"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #490",
+  "company": "Williams-Sonoma",
+  "tried": [
+   "williamssonoma",
+   "wsi",
+   "williams-sonoma",
+   "williams"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "williams|wd5|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "williams|wd5|External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "williams|wd5|ContingentWorkerConvCareers",
+    "jobs": 1
+   },
+   {
+    "kind": "workday",
+    "identifier": "williams|wd5|PowerExternal",
+    "jobs": 24
+   }
+  ]
+ },
+ {
+  "category": "F500 #498",
+  "company": "Masco",
+  "tried": [
+   "masco"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "masco|wd1|MascoHomeProductsIndia",
+   "jobs": 2
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "masco|wd1|MascoHomeProductsIndia",
+    "jobs": 2
+   }
+  ]
+ },
+ {
+  "category": "F500 #10",
+  "company": "Cencora",
+  "tried": [
+   "cencora",
+   "amerisourcebergen"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #40",
+  "company": "Valero Energy",
+  "tried": [
+   "valero",
+   "valeroenergy",
+   "valero-energy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #57",
+  "company": "Albertsons",
+  "tried": [
+   "albertsons",
+   "eofd"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #76",
+  "company": "Galaxy Digital",
+  "tried": [
+   "galaxydigital",
+   "galaxy",
+   "galaxy-digital"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "galaxy",
+   "jobs": 2,
+   "reported": "Galaxy Integrated Technologies "
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "galaxy",
+    "jobs": 2,
+    "reported": "Galaxy Integrated Technologies "
+   }
+  ]
+ },
+ {
+  "category": "F500 #89",
+  "company": "Enterprise Products Partners",
+  "tried": [
+   "eprod",
+   "enterpriseproducts",
+   "enterpriseproductspartners",
+   "enterprise-products-partners"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #111",
+  "company": "Dollar General",
+  "tried": [
+   "dollargeneral",
+   "dg",
+   "dollar-general",
+   "dollar"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #122",
+  "company": "Mondelez International",
+  "tried": [
+   "mdlz",
+   "mondelez",
+   "mondelezinternational"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #135",
+  "company": "Lennar",
+  "tried": [
+   "lennar"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "lennar|wd1|Lennar_Jobs",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "lennar|wd1|Lennar_Jobs",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "lennar|wd1|Early_Careers",
+    "jobs": 22
+   }
+  ]
+ },
+ {
+  "category": "F500 #146",
+  "company": "United Natural Foods",
+  "tried": [
+   "unfi",
+   "unitednaturalfoods",
+   "united-natural-foods"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #156",
+  "company": "KKR",
+  "tried": [
+   "kkr"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #167",
+  "company": "NextEra Energy",
+  "tried": [
+   "nexteraenergy",
+   "nee",
+   "nextera-energy",
+   "nextera"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #175",
+  "company": "JLL",
+  "tried": [
+   "jll"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "jll|wd1|jllcareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "jll|wd1|jllcareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "jll|wd1|jllcareerschina",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "jll|wd1|lasallecareers",
+    "jobs": 10
+   }
+  ]
+ },
+ {
+  "category": "F500 #185",
+  "company": "PG&E",
+  "tried": [
+   "pge",
+   "pgande",
+   "pg-e"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #198",
+  "company": "Amphenol",
+  "tried": [
+   "amphenol"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #208",
+  "company": "Super Micro Computer",
+  "tried": [
+   "supermicro",
+   "supermicrocomputer",
+   "super-micro-computer",
+   "super"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "super|wd103|EXT",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "super|wd103|EXT",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "super|wd103|search",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "super|wd103|EXTDisForm",
+    "jobs": 5
+   },
+   {
+    "kind": "greenhouse",
+    "identifier": "super",
+    "jobs": 15,
+    "reported": "Super Technologies"
+   },
+   {
+    "kind": "lever",
+    "identifier": "super",
+    "jobs": 2,
+    "reported": "Super"
+   }
+  ]
+ },
+ {
+  "category": "F500 #220",
+  "company": "Carvana",
+  "tried": [
+   "carvana"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "carvana",
+   "jobs": 1684,
+   "reported": "Carvana"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "carvana",
+    "jobs": 1684,
+    "reported": "Carvana"
+   }
+  ]
+ },
+ {
+  "category": "F500 #228",
+  "company": "Edison International",
+  "tried": [
+   "edison",
+   "sce",
+   "edisoninternational"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #237",
+  "company": "Loews",
+  "tried": [
+   "loews"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #246",
+  "company": "Asbury Automotive Group",
+  "tried": [
+   "asbury",
+   "asburyauto",
+   "asburyautomotive",
+   "asburyautomotivegroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #255",
+  "company": "Universal Health Services",
+  "tried": [
+   "uhs",
+   "universalhealth",
+   "universalhealthservices",
+   "universal-health"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #264",
+  "company": "LPL Financial",
+  "tried": [
+   "lpl",
+   "lplfinancial"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "lplfinancial|wd1|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "lpl",
+    "jobs": 6,
+    "reported": "Little People's Landing"
+   },
+   {
+    "kind": "workday",
+    "identifier": "lplfinancial|wd1|External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "lplfinancial|wd1|BD_Partners",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "lplfinancial|wd1|India_Ext",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #272",
+  "company": "Dominion Energy",
+  "tried": [
+   "dominionenergy",
+   "dominion",
+   "dominion-energy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #281",
+  "company": "Illinois Tool Works",
+  "tried": [
+   "itw",
+   "illinoistoolworks",
+   "illinois-tool-works",
+   "illinois"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #289",
+  "company": "Kohl's",
+  "tried": [
+   "kohls",
+   "kohl-s"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #299",
+  "company": "Kenvue",
+  "tried": [
+   "kenvue"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #309",
+  "company": "First Citizens BancShares",
+  "tried": [
+   "firstcitizens",
+   "firstcitizensbancshares",
+   "first-citizens-bancshares"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #318",
+  "company": "Viatris",
+  "tried": [
+   "viatris"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "viatris|wd5|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "viatris|wd5|External",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #327",
+  "company": "Arthur J. Gallagher",
+  "tried": [
+   "ajg",
+   "gallagher",
+   "arthurjgallagher",
+   "arthur-j-gallagher"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #337",
+  "company": "Ball",
+  "tried": [
+   "ball",
+   "ballcorp"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #346",
+  "company": "Ryder System",
+  "tried": [
+   "ryder",
+   "rydersystem",
+   "ryder-system"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "ryder|wd5|RyderCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "ryder|wd5|RyderCareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #354",
+  "company": "Lumen Technologies",
+  "tried": [
+   "lumen",
+   "lumentechnologies"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #364",
+  "company": "Darden Restaurants",
+  "tried": [
+   "darden",
+   "dardenrestaurants",
+   "darden-restaurants"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #374",
+  "company": "Chipotle Mexican Grill",
+  "tried": [
+   "chipotle",
+   "chipotlemexicangrill",
+   "chipotle-mexican-grill"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "chipotle|wd5|ChipotleCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "chipotle|wd5|ChipotleCareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #384",
+  "company": "Caesars Entertainment",
+  "tried": [
+   "caesars",
+   "caesarsentertainment",
+   "caesars-entertainment"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #392",
+  "company": "FM",
+  "tried": [
+   "fmglobal",
+   "fm"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #403",
+  "company": "Autoliv",
+  "tried": [
+   "autoliv"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #412",
+  "company": "Cintas",
+  "tried": [
+   "cintas"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #421",
+  "company": "Biogen",
+  "tried": [
+   "biogen"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #429",
+  "company": "Thor Industries",
+  "tried": [
+   "thor",
+   "thorindustries"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #440",
+  "company": "Comfort Systems USA",
+  "tried": [
+   "comfortsystemsusa",
+   "comfortusa",
+   "comfort-usa",
+   "comfort"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "comfortsystemsusa|wd1|Amteckcareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "comfortsystemsusa|wd1|Amteckcareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "comfortsystemsusa|wd1|Corpcareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "comfortsystemsusa|wd1|EAScareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #448",
+  "company": "Avery Dennison",
+  "tried": [
+   "averydennison",
+   "avery-dennison",
+   "avery"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #456",
+  "company": "J.M. Smucker",
+  "tried": [
+   "smucker",
+   "jmsmucker",
+   "j-m-smucker"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "smucker|wd5|US_External_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "smucker|wd5|US_External_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "smucker|wd5|Canada_External_Careers",
+    "jobs": 1
+   }
+  ]
+ },
+ {
+  "category": "F500 #465",
+  "company": "Hertz",
+  "tried": [
+   "hertz"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #474",
+  "company": "Yum Brands",
+  "tried": [
+   "yumbrands",
+   "yum"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #483",
+  "company": "Taylor Morrison",
+  "tried": [
+   "taylormorrison",
+   "taylor-morrison",
+   "taylor"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "taylormorrison|wd1|TaylorMorrisonCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "taylormorrison|wd1|TaylorMorrisonCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "taylormorrison|wd1|TaylorMorrisonConfidential",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "taylormorrison|wd1|TaylorMorrisonCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "taylormorrison|wd1|TaylorMorrisonConfidential",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "taylor|wd1|External",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #491",
+  "company": "Commercial Metals",
+  "tried": [
+   "cmc",
+   "commercialmetals",
+   "commercial-metals",
+   "commercial"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #499",
+  "company": "Somnigroup International",
+  "tried": [
+   "somnigroup",
+   "tempursealy",
+   "somnigroupinternational"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #13",
+  "company": "Costco Wholesale",
+  "tried": [
+   "costco",
+   "costcowholesale",
+   "costco-wholesale"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #46",
+  "company": "PepsiCo",
+  "tried": [
+   "pepsico"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #58",
+  "company": "Archer Daniels Midland",
+  "tried": [
+   "adm",
+   "archerdanielsmidland",
+   "archer-daniels-midland",
+   "archer"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "archer",
+   "jobs": 1,
+   "reported": "Archer Veterinary Clinic"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "archer",
+    "jobs": 1,
+    "reported": "Archer Veterinary Clinic"
+   }
+  ]
+ },
+ {
+  "category": "F500 #77",
+  "company": "AbbVie",
+  "tried": [
+   "abbvie"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #90",
+  "company": "Ingram Micro",
+  "tried": [
+   "ingrammicro",
+   "ingram-micro",
+   "ingram"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "ingrammicro|wd5|IngramMicro",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "ingrammicro|wd5|IngramMicro",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "ingrammicro|wd5|IngramMicro",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #113",
+  "company": "Best Buy",
+  "tried": [
+   "bestbuy",
+   "best-buy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #123",
+  "company": "Lithia Motors",
+  "tried": [
+   "lithia",
+   "driveway",
+   "lithiamotors",
+   "lithia-motors"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #137",
+  "company": "Cummins",
+  "tried": [
+   "cummins"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #147",
+  "company": "Ferguson Enterprises",
+  "tried": [
+   "ferguson",
+   "fergusonenterprises"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "ferguson|wd1|Ferguson_Experienced",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "ferguson|wd1|Ferguson_Experienced",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "ferguson|wd1|Wholesale_Group",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "ferguson|wd1|Signature_Hardware",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #157",
+  "company": "Quanta Services",
+  "tried": [
+   "quanta",
+   "quantaservices"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "quanta",
+   "jobs": 4,
+   "reported": "Quanta"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "quanta",
+    "jobs": 4,
+    "reported": "Quanta"
+   }
+  ]
+ },
+ {
+  "category": "F500 #168",
+  "company": "Marsh McLennan",
+  "tried": [
+   "mmc",
+   "marshmclennan",
+   "marsh-mclennan",
+   "marsh"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #176",
+  "company": "International Paper",
+  "tried": [
+   "internationalpaper",
+   "ipaper",
+   "paper"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "paper|wd3|Paper_Careers",
+   "jobs": 1
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "paper|wd3|Paper_Careers",
+    "jobs": 1
+   }
+  ]
+ },
+ {
+  "category": "F500 #187",
+  "company": "Union Pacific",
+  "tried": [
+   "unionpacific",
+   "up",
+   "union-pacific",
+   "union"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "up",
+   "jobs": 1,
+   "reported": "Up"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "up",
+    "jobs": 1,
+    "reported": "Up"
+   }
+  ]
+ },
+ {
+  "category": "F500 #199",
+  "company": "Ross Stores",
+  "tried": [
+   "ross",
+   "rossstores",
+   "ross-stores"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #209",
+  "company": "American Electric Power",
+  "tried": [
+   "aep",
+   "americanelectricpower",
+   "american-electric-power"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "aep|wd1|AEPCareerSite",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "aep|wd1|AEPCareerSite",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #221",
+  "company": "Altria Group",
+  "tried": [
+   "altria",
+   "altriagroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #229",
+  "company": "AutoZone",
+  "tried": [
+   "autozone"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #239",
+  "company": "Goodyear Tire & Rubber",
+  "tried": [
+   "goodyear",
+   "goodyeartirerubber",
+   "goodyeartireandrubber",
+   "goodyear-tire-rubber"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "goodyear|wd1|GoodyearCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "goodyear|wd1|GoodyearCareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #247",
+  "company": "ManpowerGroup",
+  "tried": [
+   "manpowergroup",
+   "manpower"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #256",
+  "company": "PulteGroup",
+  "tried": [
+   "pultegroup",
+   "pulte"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "pultegroup|wd1|PGI",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "pultegroup|wd1|PGI",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #265",
+  "company": "EMCOR Group",
+  "tried": [
+   "emcor",
+   "emcorgroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #273",
+  "company": "Land O'Lakes",
+  "tried": [
+   "landolakes",
+   "land-o-lakes"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "landolakes|wd1|LandOLakes",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "landolakes|wd1|LandOLakes",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "landolakes|wd1|LandOLakes",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #282",
+  "company": "Casey's General Stores",
+  "tried": [
+   "caseys",
+   "caseysgeneralstores",
+   "casey-s-general-stores",
+   "casey"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #290",
+  "company": "Tractor Supply",
+  "tried": [
+   "tractorsupply",
+   "tractor-supply",
+   "tractor"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #301",
+  "company": "Diamondback Energy",
+  "tried": [
+   "diamondbackenergy",
+   "fang",
+   "diamondback-energy",
+   "diamondback"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "diamondbackenergy|wd12|DBE",
+   "jobs": 32
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "diamondbackenergy|wd12|DBE",
+    "jobs": 32
+   },
+   {
+    "kind": "workday",
+    "identifier": "diamondbackenergy|wd12|DBE",
+    "jobs": 32
+   }
+  ]
+ },
+ {
+  "category": "F500 #310",
+  "company": "Blackstone",
+  "tried": [
+   "blackstone"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "blackstone|wd1|Blackstone_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "blackstone|wd1|Blackstone_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "blackstone|wd1|Blackstone_Technology",
+    "jobs": 19
+   },
+   {
+    "kind": "workday",
+    "identifier": "blackstone|wd1|BX_External_Site",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #319",
+  "company": "MasTec",
+  "tried": [
+   "mastec"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #328",
+  "company": "Venture Global",
+  "tried": [
+   "ventureglobal",
+   "venture-global",
+   "venture"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #338",
+  "company": "Unum Group",
+  "tried": [
+   "unum",
+   "unumgroup"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "unum|wd1|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "unum|wd1|External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "unum|wd1|Confidential",
+    "jobs": 2
+   }
+  ]
+ },
+ {
+  "category": "F500 #347",
+  "company": "Intercontinental Exchange",
+  "tried": [
+   "ice",
+   "intercontinentalexchange",
+   "intercontinental-exchange",
+   "intercontinental"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #355",
+  "company": "Ulta Beauty",
+  "tried": [
+   "ulta",
+   "ultabeauty",
+   "ulta-beauty"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #365",
+  "company": "Citizens Financial Group",
+  "tried": [
+   "citizens",
+   "citizensbank",
+   "citizensfinancialgroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #375",
+  "company": "Yum China",
+  "tried": [
+   "yumchina",
+   "yum-china"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #385",
+  "company": "Owens Corning",
+  "tried": [
+   "owenscorning",
+   "owens-corning",
+   "owens"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "owens|wd1|OCC",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "owens|wd1|OCC",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "owens|wd1|OCCoj",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #394",
+  "company": "Expeditors International",
+  "tried": [
+   "expeditors",
+   "expeditorsinternational"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #404",
+  "company": "Mohawk Industries",
+  "tried": [
+   "mohawkind",
+   "mohawk",
+   "mohawkindustries"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #413",
+  "company": "Campbell's",
+  "tried": [
+   "campbells",
+   "campbellsoup",
+   "campbell-s",
+   "campbell"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "campbellsoup|wd5|ExternalCareers_GlobalSite",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "campbellsoup|wd5|ExternalCareers_GlobalSite",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "campbellsoup|wd5|ExternalCareer_ContingentWorkforce",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #422",
+  "company": "News Corp",
+  "tried": [
+   "newscorp",
+   "dowjones",
+   "news"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "dowjones|wd1|Dow_Jones_Career",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "dowjones|wd1|Dow_Jones_Career",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "dowjones|wd1|News_Corp_Careers",
+    "jobs": 20
+   },
+   {
+    "kind": "workday",
+    "identifier": "dowjones|wd1|DNU_News_Technology_Services_Career",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #431",
+  "company": "Celanese",
+  "tried": [
+   "celanese"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #441",
+  "company": "JetBlue Airways",
+  "tried": [
+   "jetblue",
+   "jetblueairways",
+   "jetblue-airways"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #449",
+  "company": "TransDigm Group",
+  "tried": [
+   "transdigm",
+   "transdigmgroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #457",
+  "company": "Securian Financial Group",
+  "tried": [
+   "securian",
+   "securianfinancialgroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #466",
+  "company": "Ameren",
+  "tried": [
+   "ameren"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "ameren|wd1|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "ameren|wd1|External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "ameren|wd1|Collegiate",
+    "jobs": 13
+   }
+  ]
+ },
+ {
+  "category": "F500 #475",
+  "company": "Fastenal",
+  "tried": [
+   "fastenal"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #484",
+  "company": "Dover",
+  "tried": [
+   "dovercorporation",
+   "dover"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "dover|wd103|Dover",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "dover|wd103|Dover",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #492",
+  "company": "Moody's",
+  "tried": [
+   "moodys",
+   "moody-s",
+   "moody"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #500",
+  "company": "Resideo Technologies",
+  "tried": [
+   "resideo",
+   "resideotechnologies"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #22",
+  "company": "Ford Motor",
+  "tried": [
+   "ford",
+   "fordmotor",
+   "ford-motor"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #48",
+  "company": "UPS",
+  "tried": [
+   "ups",
+   "hcmportal"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "hcmportal|wd5|Search",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "hcmportal|wd5|Search",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #60",
+  "company": "HCA Healthcare",
+  "tried": [
+   "hcahealthcare",
+   "hca",
+   "hca-healthcare"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #79",
+  "company": "TJX",
+  "tried": [
+   "tjx"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #94",
+  "company": "TIAA",
+  "tried": [
+   "tiaa"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "tiaa|wd1|Search",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "tiaa|wd1|Search",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #115",
+  "company": "BNY",
+  "tried": [
+   "bny",
+   "bnymellon"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #124",
+  "company": "GE Vernova",
+  "tried": [
+   "gevernova",
+   "ge-vernova"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "gevernova|wd5|Vernova_ExternalSite",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "gevernova|wd5|Vernova_ExternalSite",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "gevernova|wd5|Vernova_ExternalSite",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #138",
+  "company": "Oneok",
+  "tried": [
+   "oneok"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "oneok|wd1|ONEOK",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "oneok|wd1|ONEOK",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #148",
+  "company": "Arrow Electronics",
+  "tried": [
+   "arrow",
+   "arrowelectronics",
+   "arrow-electronics"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #158",
+  "company": "Paccar",
+  "tried": [
+   "paccar"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #169",
+  "company": "Booking Holdings",
+  "tried": [
+   "booking",
+   "bookingholdings"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #177",
+  "company": "Freeport-McMoRan",
+  "tried": [
+   "fcx",
+   "freeportmcmoran",
+   "freeport-mcmoran",
+   "freeport"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #188",
+  "company": "Genuine Parts",
+  "tried": [
+   "genuineparts",
+   "napa",
+   "genuine-parts",
+   "genuine"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #200",
+  "company": "Newmont",
+  "tried": [
+   "newmont"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #210",
+  "company": "L3Harris Technologies",
+  "tried": [
+   "l3harris",
+   "l3harristechnologies"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #222",
+  "company": "Boston Scientific",
+  "tried": [
+   "bostonscientific",
+   "boston-scientific",
+   "boston"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #230",
+  "company": "Ameriprise Financial",
+  "tried": [
+   "ameriprise",
+   "ameriprisefinancial"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "ameriprise|wd5|Ameriprise",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "ameriprise|wd5|Ameriprise",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #240",
+  "company": "Pacific Life",
+  "tried": [
+   "pacificlife",
+   "pacific-life",
+   "pacific"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "pacificlife|wd1|PacificLifeCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "pacificlife|wd1|PacificLifeCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "pacificlife|wd1|PacificLifeReCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "pacificlife|wd1|UnderwriteMeCareers",
+    "jobs": 7
+   },
+   {
+    "kind": "workday",
+    "identifier": "pacificlife|wd1|PacificLifeCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "pacificlife|wd1|PacificLifeReCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "pacificlife|wd1|UnderwriteMeCareers",
+    "jobs": 7
+   }
+  ]
+ },
+ {
+  "category": "F500 #248",
+  "company": "W.W. Grainger",
+  "tried": [
+   "grainger",
+   "wwgrainger",
+   "w-w-grainger"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #257",
+  "company": "Omnicom Group",
+  "tried": [
+   "omnicom",
+   "omnicomgroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #266",
+  "company": "Kinder Morgan",
+  "tried": [
+   "kindermorgan",
+   "kinder-morgan",
+   "kinder"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #274",
+  "company": "IQVIA",
+  "tried": [
+   "iqvia"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "iqvia|wd1|IQVIA",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "iqvia|wd1|IQVIA",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #283",
+  "company": "Raymond James Financial",
+  "tried": [
+   "raymondjames",
+   "rjf",
+   "raymondjamesfinancial",
+   "raymond-james"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "raymondjames|wd1|RaymondJamesCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "raymondjames|wd1|RaymondJamesEarlyCareers",
+    "jobs": 10
+   },
+   {
+    "kind": "workday",
+    "identifier": "raymondjames|wd1|RaymondJamesCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "raymondjames|wd1|RaymondJamesEarlyCareers",
+    "jobs": 10
+   },
+   {
+    "kind": "workday",
+    "identifier": "raymondjames|wd1|RaymondJamesCareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #291",
+  "company": "Whirlpool",
+  "tried": [
+   "whirlpool"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #302",
+  "company": "EchoStar",
+  "tried": [
+   "echostar",
+   "dish"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "echostar|wd501|echostar",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #311",
+  "company": "Fidelity National Financial",
+  "tried": [
+   "fnf",
+   "fidelitynational",
+   "fidelitynationalfinancial",
+   "fidelity-national"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #320",
+  "company": "Reliance",
+  "tried": [
+   "reliance",
+   "rsac"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #330",
+  "company": "Sempra",
+  "tried": [
+   "sempra"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #339",
+  "company": "Las Vegas Sands",
+  "tried": [
+   "sands",
+   "lvs",
+   "lasvegassands",
+   "las-vegas-sands"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "sands|wd1|sands_careers",
+   "jobs": 19
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "sands|wd1|sands_careers",
+    "jobs": 19
+   }
+  ]
+ },
+ {
+  "category": "F500 #348",
+  "company": "Cincinnati Financial",
+  "tried": [
+   "cinfin",
+   "cincinnati",
+   "cincinnatifinancial"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #356",
+  "company": "Crown Holdings",
+  "tried": [
+   "crowncork",
+   "crown",
+   "crownholdings"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "crownholdings|wd501|CrownHoldings",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "crownholdings|wd501|CrownHoldings",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #366",
+  "company": "Mosaic",
+  "tried": [
+   "mosaic"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "mosaic|wd5|mosaic",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "mosaic|wd5|mosaic",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "mosaic|wd5|broadbean_external",
+    "jobs": 14
+   },
+   {
+    "kind": "ashby",
+    "identifier": "mosaic",
+    "jobs": 5,
+    "reported": "Mosaic"
+   }
+  ]
+ },
+ {
+  "category": "F500 #377",
+  "company": "Hershey",
+  "tried": [
+   "hershey"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #386",
+  "company": "KeyCorp",
+  "tried": [
+   "key",
+   "keybank",
+   "keycorp"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "keybank|wd5|External_Career_Site",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "keybank|wd5|External_Career_Site",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "keybank|wd5|Scout",
+    "jobs": 6
+   }
+  ]
+ },
+ {
+  "category": "F500 #397",
+  "company": "The Andersons",
+  "tried": [
+   "andersons",
+   "theandersons"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #405",
+  "company": "Delek US Holdings",
+  "tried": [
+   "delekus",
+   "delek",
+   "delekusholdings",
+   "delek-us"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #414",
+  "company": "Vertiv",
+  "tried": [
+   "vertiv"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #423",
+  "company": "Concentrix",
+  "tried": [
+   "concentrix"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #433",
+  "company": "QVC Group",
+  "tried": [
+   "qvc",
+   "qurate",
+   "qvcgroup"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "qvc|wd5|QVC-Japan",
+   "jobs": 24
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "qvc|wd5|QVC-China",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "qvc|wd5|QVC-Japan",
+    "jobs": 24
+   },
+   {
+    "kind": "workday",
+    "identifier": "qvc|wd5|QVC-Private",
+    "jobs": 7
+   }
+  ]
+ },
+ {
+  "category": "F500 #442",
+  "company": "PPL",
+  "tried": [
+   "pplweb",
+   "ppl"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #450",
+  "company": "Sprouts Farmers Market",
+  "tried": [
+   "sprouts",
+   "sproutsfarmersmarket",
+   "sprouts-farmers-market"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "sprouts|wd5|sprouts",
+   "jobs": 1
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "sprouts|wd5|sprouts",
+    "jobs": 1
+   }
+  ]
+ },
+ {
+  "category": "F500 #458",
+  "company": "EQT",
+  "tried": [
+   "eqt"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #467",
+  "company": "Rockwell Automation",
+  "tried": [
+   "rockwellautomation",
+   "rockwell",
+   "rockwell-automation"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "rockwellautomation|wd1|External_Rockwell_Automation",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "rockwellautomation|wd1|External_Rockwell_Automation",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "rockwellautomation|wd1|External-Rockwell-Automation-Early-Careers",
+    "jobs": 37
+   },
+   {
+    "kind": "workday",
+    "identifier": "rockwellautomation|wd1|External-ERGs",
+    "jobs": 3
+   },
+   {
+    "kind": "workday",
+    "identifier": "rockwellautomation|wd1|External_Rockwell_Automation",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "rockwellautomation|wd1|External-Rockwell-Automation-Early-Careers",
+    "jobs": 37
+   },
+   {
+    "kind": "workday",
+    "identifier": "rockwellautomation|wd1|External-ERGs",
+    "jobs": 3
+   }
+  ]
+ },
+ {
+  "category": "F500 #477",
+  "company": "Voya Financial",
+  "tried": [
+   "voya",
+   "voyafinancial"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #485",
+  "company": "Vulcan Materials",
+  "tried": [
+   "vulcanmaterials",
+   "vmc",
+   "vulcan-materials",
+   "vulcan"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #493",
+  "company": "Continental Resources",
+  "tried": [
+   "clr",
+   "continentalresources",
+   "continental-resources",
+   "continental"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "clr|wd5|CLR_Careers",
+   "jobs": 30
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "clr|wd5|CLR_Careers",
+    "jobs": 30
+   },
+   {
+    "kind": "workday",
+    "identifier": "clr|wd5|CLR_Site2",
+    "jobs": 5
+   },
+   {
+    "kind": "workday",
+    "identifier": "clr|wd5|College_Recruiting",
+    "jobs": 1
+   }
+  ]
+ },
+ {
+  "category": "F500 #27",
+  "company": "Kroger",
+  "tried": [
+   "kroger"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #50",
+  "company": "FedEx",
+  "tried": [
+   "fedex"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "fedex|wd1|FXE-Canada_External_Career_Site",
+   "jobs": 37
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "fedex|wd1|FSC_Canada_Career_Site",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "fedex|wd1|FTN_External_Career_Site",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "fedex|wd1|FXE-Canada_External_Career_Site",
+    "jobs": 37
+   }
+  ]
+ },
+ {
+  "category": "F500 #62",
+  "company": "New York Life Insurance",
+  "tried": [
+   "newyorklife",
+   "nyl",
+   "newyorklifeinsurance",
+   "new-york-life"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #80",
+  "company": "Performance Food Group",
+  "tried": [
+   "pfgc",
+   "performancefoodgroup",
+   "performancefood",
+   "performance-food"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #95",
+  "company": "Liberty Mutual Insurance",
+  "tried": [
+   "libertymutual",
+   "lm",
+   "liberty",
+   "libertymutualinsurance"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "liberty|wd5|lu_job_board_staff",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "liberty|wd5|lu_job_board_staff",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "liberty|wd5|lu_job_board_faculty",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "liberty|wd5|lu_job_board_student",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #116",
+  "company": "Honeywell",
+  "tried": [
+   "honeywell"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #127",
+  "company": "Starbucks",
+  "tried": [
+   "starbucks"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #140",
+  "company": "GuideWell Mutual Holding",
+  "tried": [
+   "guidewell",
+   "floridablue",
+   "guidewellmutualholding"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #149",
+  "company": "NRG Energy",
+  "tried": [
+   "nrg",
+   "nrgenergy",
+   "nrg-energy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #159",
+  "company": "Medline",
+  "tried": [
+   "medline"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "medline|wd5|Medline",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "medline|wd5|Medline",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #170",
+  "company": "McDonald's",
+  "tried": [
+   "mcdonalds",
+   "mcd",
+   "mcdonald-s",
+   "mcdonald"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #178",
+  "company": "Constellation Energy",
+  "tried": [
+   "constellationenergy",
+   "constellation",
+   "constellation-energy"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "constellation",
+   "jobs": 7,
+   "reported": "Constellation"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "constellation",
+    "jobs": 7,
+    "reported": "Constellation"
+   }
+  ]
+ },
+ {
+  "category": "F500 #189",
+  "company": "Exelon",
+  "tried": [
+   "exelon"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #201",
+  "company": "EOG Resources",
+  "tried": [
+   "eog",
+   "eogresources",
+   "eog-resources"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #212",
+  "company": "Carrier Global",
+  "tried": [
+   "carrier",
+   "carrierglobal",
+   "carrier-global"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "carrier|wd5|jobs",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "carrier|wd5|jobs",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "carrier|wd5|Union_Workers_Career_Page",
+    "jobs": 11
+   },
+   {
+    "kind": "workday",
+    "identifier": "carrier|wd5|kgs_jobs",
+    "jobs": 20
+   }
+  ]
+ },
+ {
+  "category": "F500 #223",
+  "company": "Cheniere Energy",
+  "tried": [
+   "cheniere",
+   "cheniereenergy",
+   "cheniere-energy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #232",
+  "company": "Guardian Life",
+  "tried": [
+   "guardianlife",
+   "glic",
+   "guardian-life",
+   "guardian"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "guardianlife|wd5|Guardian-Life-Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "guardianlife|wd5|Guardian-Life-Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "guardianlife|wd5|Guardian-Life-Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #241",
+  "company": "Auto-Owners Insurance",
+  "tried": [
+   "autoowners",
+   "autoownersinsurance",
+   "auto-owners"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #249",
+  "company": "Edward Jones",
+  "tried": [
+   "edwardjones",
+   "ej",
+   "edward-jones",
+   "edward"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #258",
+  "company": "Dick's Sporting Goods",
+  "tried": [
+   "dickssportinggoods",
+   "dks",
+   "dick-s-sporting-goods"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "dickssportinggoods|wd1|DSG",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "dickssportinggoods|wd1|DSG",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "dickssportinggoods|wd1|DSG",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #267",
+  "company": "Consolidated Edison",
+  "tried": [
+   "coned",
+   "conedison",
+   "consolidatededison",
+   "consolidated-edison"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #276",
+  "company": "AECOM",
+  "tried": [
+   "aecom"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #284",
+  "company": "PPG Industries",
+  "tried": [
+   "ppg",
+   "ppgindustries"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #292",
+  "company": "Fluor",
+  "tried": [
+   "fluor"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #303",
+  "company": "Textron",
+  "tried": [
+   "textron"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #312",
+  "company": "Otis Worldwide",
+  "tried": [
+   "otis",
+   "otisworldwide"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #321",
+  "company": "Western & Southern Financial Group",
+  "tried": [
+   "westernsouthern",
+   "westernandsouthernfinancialgroup",
+   "western-southern"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #331",
+  "company": "DaVita",
+  "tried": [
+   "davita"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "davita|wd1|DKC_External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "davita|wd1|DaVita_UK",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "davita|wd1|DKC_External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "davita|wd1|GE_External",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #340",
+  "company": "Entergy",
+  "tried": [
+   "entergy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #349",
+  "company": "Chewy",
+  "tried": [
+   "chewy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #358",
+  "company": "AES",
+  "tried": [
+   "aes"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "aes|wd1|AES_ANDES",
+   "jobs": 9
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "aes|wd1|AES_ANDES",
+    "jobs": 9
+   },
+   {
+    "kind": "workday",
+    "identifier": "aes|wd1|AES_EURASIA",
+    "jobs": 2
+   },
+   {
+    "kind": "workday",
+    "identifier": "aes|wd1|AES_BRAZIL",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #368",
+  "company": "Air Products",
+  "tried": [
+   "airproducts",
+   "air-products"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "airproducts|wd5|AP0001",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "airproducts|wd5|AP0001",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "airproducts|wd5|AP0003",
+    "jobs": 4
+   },
+   {
+    "kind": "workday",
+    "identifier": "airproducts|wd5|AP0001",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "airproducts|wd5|AP0003",
+    "jobs": 4
+   }
+  ]
+ },
+ {
+  "category": "F500 #379",
+  "company": "Equitable Holdings",
+  "tried": [
+   "equitable",
+   "equitableholdings"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #387",
+  "company": "Thrivent Financial",
+  "tried": [
+   "thrivent",
+   "thriventfinancial"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "thrivent|wd5|CareerFair",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #398",
+  "company": "Gold.com",
+  "tried": [
+   "goldcom",
+   "gold-com"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #407",
+  "company": "Accendra Health",
+  "tried": [
+   "accendra",
+   "owensminor",
+   "accendrahealth",
+   "accendra-health"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "owensminor|wd1|OMCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "owensminor|wd1|OMCareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #416",
+  "company": "Constellation Brands",
+  "tried": [
+   "cbrands",
+   "constellationbrands",
+   "constellation"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "cbrands|wd5|CBI_External_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "cbrands|wd5|CBI_External_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "ashby",
+    "identifier": "constellation",
+    "jobs": 7,
+    "reported": "Constellation"
+   }
+  ]
+ },
+ {
+  "category": "F500 #424",
+  "company": "WEC Energy Group",
+  "tried": [
+   "wecenergygroup",
+   "wec",
+   "wecenergy",
+   "wec-energy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #434",
+  "company": "Zoetis",
+  "tried": [
+   "zoetis"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "zoetis|wd5|zoetis",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "zoetis|wd5|zoetis",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "zoetis|wd5|zoetis_intl",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "zoetis|wd5|broadbean_external",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #443",
+  "company": "Xylem",
+  "tried": [
+   "xylem"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #451",
+  "company": "Prologis",
+  "tried": [
+   "prologis"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "prologis|wd5|Prologis_External_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "prologis|wd5|Prologis_External_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "prologis|wd5|Broadbean_CareerSite",
+    "jobs": 4
+   }
+  ]
+ },
+ {
+  "category": "F500 #460",
+  "company": "Graphic Packaging",
+  "tried": [
+   "graphicpkg",
+   "graphicpackaging",
+   "graphic-packaging",
+   "graphic"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #468",
+  "company": "Solventum",
+  "tried": [
+   "solventum"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #478",
+  "company": "American Financial Group",
+  "tried": [
+   "afg",
+   "greatamerican",
+   "american",
+   "americanfinancialgroup"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "american|wd1|AU",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "american|wd1|AU",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #486",
+  "company": "APi Group",
+  "tried": [
+   "apigroup",
+   "api"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #494",
+  "company": "Ingersoll Rand",
+  "tried": [
+   "irco",
+   "ingersollrand",
+   "ingersoll-rand",
+   "ingersoll"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #29",
+  "company": "Phillips 66",
+  "tried": [
+   "phillips66",
+   "p66",
+   "phillips-66",
+   "phillips"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #51",
+  "company": "Progressive",
+  "tried": [
+   "progressive"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #71",
+  "company": "Delta Air Lines",
+  "tried": [
+   "delta",
+   "dal",
+   "deltaairlines",
+   "delta-air-lines"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #81",
+  "company": "United Airlines Holdings",
+  "tried": [
+   "unitedairlines",
+   "ual",
+   "unitedairlinesholdings",
+   "united-airlines"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #100",
+  "company": "MassMutual",
+  "tried": [
+   "massmutual"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "massmutual|wd1|MMINDCareersite",
+   "jobs": 8
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "massmutual|wd1|MMAscendCareers",
+    "jobs": 1
+   },
+   {
+    "kind": "workday",
+    "identifier": "massmutual|wd1|MMROCareerSite",
+    "jobs": 1
+   },
+   {
+    "kind": "workday",
+    "identifier": "massmutual|wd1|MMINDCareersite",
+    "jobs": 8
+   }
+  ]
+ },
+ {
+  "category": "F500 #117",
+  "company": "Philip Morris International",
+  "tried": [
+   "pmi",
+   "philipmorris",
+   "philipmorrisinternational",
+   "philip-morris"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #128",
+  "company": "World Kinect",
+  "tried": [
+   "worldkinect",
+   "wfscorp",
+   "world-kinect",
+   "world"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "wfscorp|wd5|wfscareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "wfscorp|wd5|wfscareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "wfscorp|wd5|wfscareers-uk",
+    "jobs": 1
+   },
+   {
+    "kind": "workday",
+    "identifier": "wfscorp|wd5|UKdrivers",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #142",
+  "company": "Nucor",
+  "tried": [
+   "nucor"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #151",
+  "company": "Jabil",
+  "tried": [
+   "jabil"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "jabil|wd5|Jabil_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "jabil|wd5|Jabil_Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #162",
+  "company": "CarMax",
+  "tried": [
+   "carmax"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "carmax|wd1|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "carmax|wd1|External",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #171",
+  "company": "HF Sinclair",
+  "tried": [
+   "hfsinclair",
+   "hf-sinclair"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #179",
+  "company": "Waste Management",
+  "tried": [
+   "wm",
+   "wastemanagement",
+   "waste-management",
+   "waste"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #193",
+  "company": "Reinsurance Group of America",
+  "tried": [
+   "rgare",
+   "rga",
+   "reinsuranceamerica",
+   "reinsurancegroupofamerica"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #204",
+  "company": "Group 1 Automotive",
+  "tried": [
+   "group1auto",
+   "1automotive",
+   "group1automotive",
+   "1-automotive"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #213",
+  "company": "BJ's Wholesale Club",
+  "tried": [
+   "bjs",
+   "bjswholesale",
+   "bjswholesaleclub",
+   "bj-s-wholesale-club"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "bjswholesaleclub|wd1|BJsCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "bjswholesaleclub|wd1|BJsCareers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "bjswholesaleclub|wd1|BJsCareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #224",
+  "company": "Parker-Hannifin",
+  "tried": [
+   "parker",
+   "parkerhannifin",
+   "parker-hannifin"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "parker",
+   "jobs": 13,
+   "reported": "Parker"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "parker",
+    "jobs": 13,
+    "reported": "Parker"
+   }
+  ]
+ },
+ {
+  "category": "F500 #233",
+  "company": "Cleveland-Cliffs",
+  "tried": [
+   "clevelandcliffs",
+   "cleveland-cliffs",
+   "cleveland"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #242",
+  "company": "Kiewit",
+  "tried": [
+   "kiewit"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #250",
+  "company": "O'Reilly Automotive",
+  "tried": [
+   "oreilly",
+   "oreillyauto",
+   "oreillyautomotive",
+   "o-reilly-automotive"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "oreillyauto|wd1|oreilly",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "oreillyauto|wd1|oreilly",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #259",
+  "company": "Devon Energy",
+  "tried": [
+   "devon",
+   "devonenergy",
+   "devon-energy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #268",
+  "company": "Keurig Dr Pepper",
+  "tried": [
+   "kdp",
+   "keurigdrpepper",
+   "keurig-dr-pepper",
+   "keurig"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #277",
+  "company": "C.H. Robinson",
+  "tried": [
+   "chrobinson",
+   "c-h-robinson"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "chrobinson|wd5|CHRobinson",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "chrobinson|wd5|CHRobinson",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "chrobinson|wd5|UNCFCareerSite",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "chrobinson|wd5|Contingent",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "chrobinson|wd5|CHRobinson",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "chrobinson|wd5|UNCFCareerSite",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "chrobinson|wd5|Contingent",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #285",
+  "company": "DTE Energy",
+  "tried": [
+   "dte",
+   "dteenergy",
+   "dte-energy"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #293",
+  "company": "Gap",
+  "tried": [
+   "gapinc",
+   "gap"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #305",
+  "company": "W.R. Berkley",
+  "tried": [
+   "wrberkley",
+   "berkley",
+   "w-r-berkley"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #313",
+  "company": "Amentum",
+  "tried": [
+   "amentum"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #322",
+  "company": "Alaska Air Group",
+  "tried": [
+   "alaskaair",
+   "alaskaairgroup",
+   "alaska-air",
+   "alaska"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #332",
+  "company": "Eversource Energy",
+  "tried": [
+   "eversource",
+   "eversourceenergy",
+   "eversource-energy"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "eversource|wd1|ExternalSite",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "eversource|wd1|Eversource_Confidential",
+    "jobs": 7
+   },
+   {
+    "kind": "workday",
+    "identifier": "eversource|wd1|ExternalSite",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "eversource|wd1|EPUT",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #341",
+  "company": "Fifth Third Bancorp",
+  "tried": [
+   "fifththird",
+   "53",
+   "fifththirdbancorp",
+   "fifth-third-bancorp"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "fifththird|wd5|53careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "fifththird|wd5|53careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "fifththird|wd5|Providecareers",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #350",
+  "company": "Community Health Systems",
+  "tried": [
+   "chs",
+   "communityhealthsystems",
+   "communityhealth",
+   "community-health"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #359",
+  "company": "Norfolk Southern",
+  "tried": [
+   "nscorp",
+   "norfolksouthern",
+   "norfolk-southern",
+   "norfolk"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #369",
+  "company": "Jacobs Solutions",
+  "tried": [
+   "jacobs",
+   "jacobssolutions"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #380",
+  "company": "Avis Budget Group",
+  "tried": [
+   "avisbudget",
+   "abg",
+   "avisbudgetgroup",
+   "avis-budget"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "avisbudget|wd1|ABG_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "avisbudget|wd1|ABG_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "avisbudget|wd1|Zipcar_Careers",
+    "jobs": 11
+   },
+   {
+    "kind": "workday",
+    "identifier": "avisbudget|wd1|ABGrade_Careers",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "avisbudget|wd1|ABG_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "avisbudget|wd1|Zipcar_Careers",
+    "jobs": 11
+   },
+   {
+    "kind": "workday",
+    "identifier": "avisbudget|wd1|ABGrade_Careers",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #388",
+  "company": "Westlake",
+  "tried": [
+   "westlake"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "westlake|wd1|westlake",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "westlake|wd1|westlake",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #399",
+  "company": "Toll Brothers",
+  "tried": [
+   "tollbrothers",
+   "toll-brothers"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #408",
+  "company": "American Tower",
+  "tried": [
+   "americantower",
+   "amt",
+   "american-tower"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #417",
+  "company": "AGCO",
+  "tried": [
+   "agco"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #425",
+  "company": "VF Corporation",
+  "tried": [
+   "vfc",
+   "vf",
+   "vfcorporation"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "vfc|wd5|vfc_careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "vfc|wd5|vfc_careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "vfc|wd5|vfc_usca_invite",
+    "jobs": 5
+   },
+   {
+    "kind": "workday",
+    "identifier": "vfc|wd5|northface_careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #435",
+  "company": "CenterPoint Energy",
+  "tried": [
+   "centerpointenergy",
+   "centerpoint-energy",
+   "centerpoint"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #444",
+  "company": "Arista Networks",
+  "tried": [
+   "arista",
+   "aristanetworks",
+   "arista-networks"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #452",
+  "company": "Franklin Templeton",
+  "tried": [
+   "franklintempleton",
+   "franklin",
+   "franklin-templeton"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "franklintempleton|wd5|Jobs-Clarion",
+   "jobs": 15
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "franklintempleton|wd5|Jobs-WAM",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "franklintempleton|wd5|Jobs-Clarion",
+    "jobs": 15
+   },
+   {
+    "kind": "workday",
+    "identifier": "franklintempleton|wd5|Jobs-ClearBridge-Private",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "franklintempleton|wd5|Jobs-WAM",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "franklintempleton|wd5|Jobs-Clarion",
+    "jobs": 15
+   },
+   {
+    "kind": "workday",
+    "identifier": "franklintempleton|wd5|Jobs-ClearBridge-Private",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #461",
+  "company": "Advance Auto Parts",
+  "tried": [
+   "advanceautoparts",
+   "aap",
+   "advance-auto-parts",
+   "advance"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #469",
+  "company": "Monster Beverage",
+  "tried": [
+   "monsterbevcorp",
+   "monster",
+   "monsterbeverage",
+   "monster-beverage"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #479",
+  "company": "Post Holdings",
+  "tried": [
+   "postholdings",
+   "post"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "post",
+   "jobs": 4,
+   "reported": "Post"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "post",
+    "jobs": 4,
+    "reported": "Post"
+   }
+  ]
+ },
+ {
+  "category": "F500 #487",
+  "company": "Roper Technologies",
+  "tried": [
+   "roper",
+   "ropertechnologies"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #495",
+  "company": "Core & Main",
+  "tried": [
+   "coreandmain",
+   "coremain",
+   "core-main"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "coreandmain|wd1|coreandmain",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "coreandmain|wd1|coreandmain",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #30",
+  "company": "Marathon Petroleum",
+  "tried": [
+   "mpc",
+   "marathonpetroleum",
+   "marathon-petroleum",
+   "marathon"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "mpc|wd1|MPCCareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "mpc|wd1|MPCCareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #52",
+  "company": "Lowe's",
+  "tried": [
+   "lowes",
+   "lowe-s"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #72",
+  "company": "Publix Super Markets",
+  "tried": [
+   "publix",
+   "publixsupermarkets",
+   "publix-super-markets"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #85",
+  "company": "Charter Communications",
+  "tried": [
+   "charter",
+   "spectrum",
+   "chartercommunications",
+   "charter-communications"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "spectrum",
+   "jobs": 1,
+   "reported": "Spectrum"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "spectrum",
+    "jobs": 1,
+    "reported": "Spectrum"
+   }
+  ]
+ },
+ {
+  "category": "F500 #102",
+  "company": "Deere",
+  "tried": [
+   "johndeere",
+   "deere"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #118",
+  "company": "CBRE Group",
+  "tried": [
+   "cbre",
+   "cbregroup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #130",
+  "company": "CHS",
+  "tried": [
+   "chsinc",
+   "chs"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #143",
+  "company": "Apollo Global Management",
+  "tried": [
+   "apollo",
+   "athene",
+   "apolloglobalmanagement",
+   "apollo-global-management"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "athene|wd5|Apollo_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "athene|wd5|athene_careers",
+    "jobs": 25
+   },
+   {
+    "kind": "workday",
+    "identifier": "athene|wd5|athene_careers_ext",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "athene|wd5|Apollo_Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #152",
+  "company": "Southern Company",
+  "tried": [
+   "southerncompany",
+   "southernco",
+   "southern"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #163",
+  "company": "Southwest Airlines",
+  "tried": [
+   "southwest",
+   "swa",
+   "southwestairlines",
+   "southwest-airlines"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #172",
+  "company": "AIG",
+  "tried": [
+   "aig"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "aig|wd1|aig",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "aig|wd1|aig",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "aig|wd1|early_careers",
+    "jobs": 5
+   },
+   {
+    "kind": "workday",
+    "identifier": "aig|wd1|japan",
+    "jobs": 20
+   }
+  ]
+ },
+ {
+  "category": "F500 #180",
+  "company": "Live Nation Entertainment",
+  "tried": [
+   "livenation",
+   "ticketmaster",
+   "livenationentertainment",
+   "live-nation-entertainment"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "livenation|wd503|LNExternalSite",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "livenation|wd503|LNExternalSite",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "livenation|wd503|TMExternalSite",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "livenation|wd503|InsomniacExternalSite",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #194",
+  "company": "Sherwin-Williams",
+  "tried": [
+   "sherwinwilliams",
+   "sherwin-williams",
+   "sherwin"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #205",
+  "company": "CDW",
+  "tried": [
+   "cdw"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "cdw|wd5|Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "cdw|wd5|Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #214",
+  "company": "Tenet Healthcare",
+  "tried": [
+   "tenet",
+   "tenethealth",
+   "tenethealthcare",
+   "tenet-healthcare"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #225",
+  "company": "Kimberly-Clark",
+  "tried": [
+   "kimberlyclark",
+   "kcc",
+   "kimberly-clark",
+   "kimberly"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "kimberlyclark|wd1|XXX_EMEA",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "kimberlyclark|wd1|XXX_LAO",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "kimberlyclark|wd1|XXX_NA",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "kimberlyclark|wd1|XXX_EMEA",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "kimberlyclark|wd1|XXX_LAO",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "kimberlyclark|wd1|XXX_NA",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #234",
+  "company": "Global Partners",
+  "tried": [
+   "globalpartners",
+   "gpmi",
+   "global-partners"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #243",
+  "company": "Lincoln Financial",
+  "tried": [
+   "lincolnfinancial",
+   "lfg",
+   "lincoln"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "lincoln",
+   "jobs": 15,
+   "reported": "Lincoln Property Company through LinkedIn"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "lincoln",
+    "jobs": 15,
+    "reported": "Lincoln Property Company through LinkedIn"
+   }
+  ]
+ },
+ {
+  "category": "F500 #251",
+  "company": "Vistra",
+  "tried": [
+   "vistra"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #261",
+  "company": "Aflac",
+  "tried": [
+   "aflac"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #269",
+  "company": "Republic Services",
+  "tried": [
+   "republicservices",
+   "rsg",
+   "republic"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "republic|wd5|Republic",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "republic|wd5|Republic",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "republic|wd5|RSI_External_Quebec",
+    "jobs": 1
+   },
+   {
+    "kind": "workday",
+    "identifier": "republic|wd5|Sprint",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #278",
+  "company": "BitGo",
+  "tried": [
+   "bitgo"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "bitgo",
+   "jobs": 54,
+   "reported": "BitGo"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "bitgo",
+    "jobs": 54,
+    "reported": "BitGo"
+   }
+  ]
+ },
+ {
+  "category": "F500 #286",
+  "company": "Corning",
+  "tried": [
+   "corning"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #296",
+  "company": "Builders FirstSource",
+  "tried": [
+   "bldr",
+   "buildersfirstsource",
+   "builders-firstsource",
+   "builders"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #306",
+  "company": "Xcel Energy",
+  "tried": [
+   "xcelenergy",
+   "xcel-energy"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "xcelenergy|wd1|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "xcelenergy|wd1|External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "xcelenergy|wd1|External",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #314",
+  "company": "Regeneron Pharmaceuticals",
+  "tried": [
+   "regeneron",
+   "regeneronpharmaceuticals",
+   "regeneron-pharmaceuticals"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "regeneron|wd1|Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "regeneron|wd1|Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "regeneron|wd1|IrelandPrivate",
+    "jobs": 2
+   },
+   {
+    "kind": "workday",
+    "identifier": "regeneron|wd1|US_Only_University_Relations_Career",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #323",
+  "company": "BrightSpring Health Services",
+  "tried": [
+   "brightspring",
+   "brightspringhealth",
+   "brightspringhealthservices",
+   "brightspring-health"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #334",
+  "company": "M&T Bank",
+  "tried": [
+   "mtb",
+   "mtbank",
+   "mandtbank",
+   "m-t-bank"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "mtb|wd5|MTB",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "mtb|wd5|MTB",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "mtb|wd5|WTExternal",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "mtb|wd5|Restructure",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #342",
+  "company": "Graybar Electric",
+  "tried": [
+   "graybar",
+   "graybarelectric",
+   "graybar-electric"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "graybar|wd1|Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "graybar|wd1|Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "graybar|wd1|Cape_Careers",
+    "jobs": 6
+   },
+   {
+    "kind": "workday",
+    "identifier": "graybar|wd1|Shingle_Careers",
+    "jobs": 6
+   }
+  ]
+ },
+ {
+  "category": "F500 #350",
+  "company": "Huntington Bancshares",
+  "tried": [
+   "huntington",
+   "huntingtonbancshares",
+   "huntington-bancshares"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "huntington|wd12|HNBcareers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "huntington|wd12|HNBcareers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #360",
+  "company": "PSEG",
+  "tried": [
+   "pseg"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #370",
+  "company": "Vertex Pharmaceuticals",
+  "tried": [
+   "vrtx",
+   "vertex",
+   "vertexpharmaceuticals",
+   "vertex-pharmaceuticals"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "vrtx|wd501|Vertex_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "vrtx|wd501|Vertex_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "vrtx|wd501|Vertex_co-op",
+    "jobs": 27
+   },
+   {
+    "kind": "workday",
+    "identifier": "vrtx|wd501|vertex_physician_investigator",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #381",
+  "company": "Conagra Brands",
+  "tried": [
+   "conagra",
+   "conagrabrands"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "conagrabrands|wd1|Careers_US",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "conagrabrands|wd1|Careers_US",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "conagrabrands|wd1|Careers_CAN",
+    "jobs": 10
+   },
+   {
+    "kind": "workday",
+    "identifier": "conagrabrands|wd1|Careers_MEX",
+    "jobs": 3
+   }
+  ]
+ },
+ {
+  "category": "F500 #389",
+  "company": "Wabtec",
+  "tried": [
+   "wabtec"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #400",
+  "company": "International Flavors & Fragrances",
+  "tried": [
+   "iff",
+   "flavorsfragrances",
+   "internationalflavorsandfragrances",
+   "flavors-fragrances"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "iff|wd5|IFF_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "iff|wd5|IFF_Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "F500 #409",
+  "company": "NVR",
+  "tried": [
+   "nvr"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #418",
+  "company": "Intuitive Surgical",
+  "tried": [
+   "intuitive",
+   "intuitivesurgical",
+   "intuitive-surgical"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "intuitive|wd1|irtc_careers",
+   "jobs": 32
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "intuitive|wd1|irtc_careers",
+    "jobs": 32
+   }
+  ]
+ },
+ {
+  "category": "F500 #426",
+  "company": "Seaboard",
+  "tried": [
+   "seaboard"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #436",
+  "company": "Equinix",
+  "tried": [
+   "equinix"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "equinix|wd1|Career_Design_Center",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "equinix|wd1|Recruit_Career",
+    "jobs": 0
+   },
+   {
+    "kind": "workday",
+    "identifier": "equinix|wd1|Golden_Searches_Information_Consultant",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "F500 #445",
+  "company": "Packaging Corp. of America",
+  "tried": [
+   "pca",
+   "packagingcorp",
+   "packagingamerica",
+   "packagingcorpofamerica"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #453",
+  "company": "Eastman Chemical",
+  "tried": [
+   "eastman",
+   "eastmanchemical",
+   "eastman-chemical"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #462",
+  "company": "Optimum Communications",
+  "tried": [
+   "optimum",
+   "alticeusa",
+   "optimumcommunications",
+   "optimum-communications"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #471",
+  "company": "Howmet Aerospace",
+  "tried": [
+   "howmet",
+   "howmetaerospace",
+   "howmet-aerospace"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #480",
+  "company": "XPO",
+  "tried": [
+   "xpo"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "F500 #488",
+  "company": "KBR",
+  "tried": [
+   "kbr"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "kbr|wd5|KBR_Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "kbr|wd5|KBR_Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "kbr|wd5|Frazer_Nash_Careers",
+    "jobs": 26
+   }
+  ]
+ },
+ {
+  "category": "F500 #496",
+  "company": "Coterra Energy",
+  "tried": [
+   "coterra",
+   "coterraenergy",
+   "coterra-energy"
+  ],
+  "best": null,
+  "candidates": []
+ }
+]

@@ -1,0 +1,145 @@
+F500 #7|Berkshire Hathaway|page:https://careers.berkshirehathaway.com,page:https://jobs.berkshirehathaway.com
+F500 #31|StoneX Group|page:https://careers.stonex.com,page:https://jobs.stonex.com
+F500 #53|Energy Transfer|page:https://careers.energytransfer.com,page:https://jobs.energytransfer.com
+F500 #86|American Airlines Group|page:https://careers.americanairlines.com,page:https://jobs.americanairlines.com
+F500 #144|Penske Automotive Group|page:https://careers.penske.com,page:https://jobs.penske.com
+F500 #195|WESCO International|page:https://careers.wesco.com,page:https://jobs.wesco.com
+F500 #206|Avnet|page:https://careers.avnet.com,page:https://jobs.avnet.com
+F500 #218|ADP|page:https://careers.adp.com,page:https://jobs.adp.com
+F500 #235|Aramark|page:https://careers.aramark.com,page:https://jobs.aramark.com
+F500 #244|Steel Dynamics|page:https://careers.steeldynamics.com,page:https://jobs.steeldynamics.com
+F500 #253|MGM Resorts International|page:https://careers.mgmresorts.com,page:https://jobs.mgmresorts.com
+F500 #262|Targa Resources|page:https://careers.targa.com,page:https://jobs.targa.com
+F500 #270|Markel Group|page:https://careers.markel.com,page:https://jobs.markel.com
+F500 #287|Principal Financial|page:https://careers.principal.com,page:https://jobs.principal.com
+F500 #297|Sonic Automotive|page:https://careers.sonicautomotive.com,page:https://jobs.sonicautomotive.com
+F500 #9|Exxon Mobil|page:https://jobs.exxonmobil.com,page:https://careers.exxonmobil.com,page:https://jobs.exxonmobil.com
+F500 #32|State Farm Insurance|page:https://jobs.statefarm.com,page:https://careers.statefarm.com,page:https://jobs.statefarm.com
+F500 #55|Sysco|page:https://careers.sysco.com,page:https://jobs.sysco.com
+F500 #75|ConocoPhillips|page:https://careers.conocophillips.com,page:https://jobs.conocophillips.com
+F500 #121|US Foods|page:https://careers.usfoods.com,page:https://jobs.usfoods.com
+F500 #134|D.R. Horton|page:https://careers.drhorton.com,page:https://jobs.drhorton.com
+F500 #155|Paramount Skydance|page:https://careers.paramount.com,page:https://jobs.paramount.com
+F500 #166|AutoNation|page:https://careers.autonation.com,page:https://jobs.autonation.com
+F500 #174|Marriott International|page:https://careers.marriott.com,page:https://careers.marriott.com,page:https://jobs.marriott.com
+F500 #184|Kraft Heinz|page:https://careers.kraftheinz.com,page:https://jobs.kraftheinz.com
+F500 #196|Lear|page:https://careers.lear.com,page:https://jobs.lear.com
+F500 #207|Halliburton|page:https://careers.halliburton.com,page:https://jobs.halliburton.com
+F500 #219|Colgate-Palmolive|page:https://careers.colgate.com,page:https://jobs.colgate.com
+F500 #227|General Mills|page:https://careers.generalmills.com,page:https://jobs.generalmills.com
+F500 #245|Emerson Electric|page:https://www.emerson.com/en-us/careers,page:https://careers.emerson.com,page:https://jobs.emerson.com
+F500 #254|Corteva|page:https://careers.corteva.com,page:https://jobs.corteva.com
+F500 #263|Murphy USA|page:https://careers.murphyusa.com,page:https://jobs.murphyusa.com
+F500 #271|Farmers Insurance|page:https://careers.farmers.com,page:https://jobs.farmers.com
+F500 #280|Ecolab|page:https://careers.ecolab.com,page:https://jobs.ecolab.com
+F500 #288|Mutual of Omaha|page:https://careers.mutualofomaha.com,page:https://jobs.mutualofomaha.com
+F500 #298|Stanley Black & Decker|page:https://careers.sbd.com,page:https://jobs.sbd.com
+F500 #10|Cencora|page:https://careers.cencora.com,page:https://jobs.cencora.com
+F500 #40|Valero Energy|page:https://careers.valero.com,page:https://jobs.valero.com
+F500 #57|Albertsons|page:https://careers.albertsons.com,page:https://jobs.albertsons.com
+F500 #76|Galaxy Digital|page:https://careers.galaxydigital.com,page:https://jobs.galaxydigital.com
+F500 #89|Enterprise Products Partners|page:https://careers.eprod.com,page:https://jobs.eprod.com
+F500 #111|Dollar General|page:https://careers.dollargeneral.com,page:https://jobs.dollargeneral.com
+F500 #122|Mondelez International|page:https://careers.mdlz.com,page:https://jobs.mdlz.com
+F500 #146|United Natural Foods|page:https://careers.unfi.com,page:https://jobs.unfi.com
+F500 #156|KKR|page:https://careers.kkr.com,page:https://jobs.kkr.com
+F500 #167|NextEra Energy|page:https://careers.nexteraenergy.com,page:https://jobs.nexteraenergy.com
+F500 #185|PG&E|page:https://careers.pge.com,page:https://jobs.pge.com
+F500 #198|Amphenol|page:https://careers.amphenol.com,page:https://jobs.amphenol.com
+F500 #228|Edison International|page:https://careers.edison.com,page:https://jobs.edison.com
+F500 #237|Loews|page:https://careers.loews.com,page:https://jobs.loews.com
+F500 #246|Asbury Automotive Group|page:https://careers.asbury.com,page:https://jobs.asbury.com
+F500 #255|Universal Health Services|page:https://careers.uhs.com,page:https://jobs.uhs.com
+F500 #272|Dominion Energy|page:https://careers.dominionenergy.com,page:https://jobs.dominionenergy.com
+F500 #281|Illinois Tool Works|page:https://careers.itw.com,page:https://jobs.itw.com
+F500 #289|Kohl's|page:https://careers.kohls.com,page:https://jobs.kohls.com
+F500 #299|Kenvue|page:https://careers.kenvue.com,page:https://jobs.kenvue.com
+F500 #13|Costco Wholesale|page:https://www.costco.com/jobs.html,page:https://careers.costco.com,page:https://jobs.costco.com
+F500 #46|PepsiCo|page:https://www.pepsicojobs.com/main,page:https://careers.pepsico.com,page:https://jobs.pepsico.com
+F500 #58|Archer Daniels Midland|page:https://www.adm.com/en-us/careers/,page:https://careers.adm.com,page:https://jobs.adm.com
+F500 #77|AbbVie|page:https://careers.abbvie.com,page:https://jobs.abbvie.com
+F500 #113|Best Buy|page:https://careers.bestbuy.com,page:https://jobs.bestbuy.com
+F500 #123|Lithia Motors|page:https://careers.lithia.com,page:https://jobs.lithia.com
+F500 #137|Cummins|page:https://careers.cummins.com,page:https://jobs.cummins.com
+F500 #157|Quanta Services|page:https://careers.quanta.com,page:https://jobs.quanta.com
+F500 #168|Marsh McLennan|page:https://careers.mmc.com,page:https://jobs.mmc.com
+F500 #176|International Paper|page:https://careers.internationalpaper.com,page:https://jobs.internationalpaper.com
+F500 #187|Union Pacific|page:https://up.jobs,page:https://careers.unionpacific.com,page:https://jobs.unionpacific.com
+F500 #199|Ross Stores|page:https://careers.ross.com,page:https://jobs.ross.com
+F500 #221|Altria Group|page:https://careers.altria.com,page:https://jobs.altria.com
+F500 #229|AutoZone|page:https://careers.autozone.com,page:https://jobs.autozone.com
+F500 #247|ManpowerGroup|page:https://careers.manpowergroup.com,page:https://jobs.manpowergroup.com
+F500 #265|EMCOR Group|page:https://careers.emcor.com,page:https://jobs.emcor.com
+F500 #282|Casey's General Stores|page:https://careers.caseys.com,page:https://jobs.caseys.com
+F500 #290|Tractor Supply|page:https://careers.tractorsupply.com,page:https://jobs.tractorsupply.com
+F500 #22|Ford Motor|page:https://www.careers.ford.com/en/home.html,page:https://careers.ford.com,page:https://jobs.ford.com
+F500 #60|HCA Healthcare|page:https://careers.hcahealthcare.com,page:https://jobs.hcahealthcare.com
+F500 #79|TJX|page:https://careers.tjx.com,page:https://jobs.tjx.com
+F500 #115|BNY|page:https://careers.bny.com,page:https://jobs.bny.com
+F500 #148|Arrow Electronics|page:https://careers.arrow.com,page:https://jobs.arrow.com
+F500 #158|Paccar|page:https://careers.paccar.com,page:https://jobs.paccar.com
+F500 #169|Booking Holdings|page:https://careers.booking.com,page:https://jobs.booking.com
+F500 #177|Freeport-McMoRan|page:https://careers.fcx.com,page:https://jobs.fcx.com
+F500 #188|Genuine Parts|page:https://careers.genuineparts.com,page:https://jobs.genuineparts.com
+F500 #200|Newmont|page:https://careers.newmont.com,page:https://jobs.newmont.com
+F500 #210|L3Harris Technologies|page:https://careers.l3harris.com,page:https://jobs.l3harris.com
+F500 #222|Boston Scientific|page:https://careers.bostonscientific.com,page:https://jobs.bostonscientific.com
+F500 #248|W.W. Grainger|page:https://careers.grainger.com,page:https://jobs.grainger.com
+F500 #257|Omnicom Group|page:https://careers.omnicom.com,page:https://jobs.omnicom.com
+F500 #266|Kinder Morgan|page:https://careers.kindermorgan.com,page:https://jobs.kindermorgan.com
+F500 #291|Whirlpool|page:https://careers.whirlpool.com,page:https://jobs.whirlpool.com
+F500 #27|Kroger|page:https://www.krogerfamilycareers.com,page:https://jobs.kroger.com,page:https://careers.kroger.com
+F500 #50|FedEx|page:https://careers.fedex.com,page:https://careers.fedex.com,page:https://jobs.fedex.com
+F500 #62|New York Life Insurance|page:https://careers.newyorklife.com,page:https://jobs.newyorklife.com
+F500 #80|Performance Food Group|page:https://careers.pfgc.com,page:https://jobs.pfgc.com
+F500 #95|Liberty Mutual Insurance|page:https://jobs.libertymutualgroup.com,page:https://careers.libertymutual.com,page:https://jobs.libertymutual.com
+F500 #116|Honeywell|page:https://careers.honeywell.com,page:https://careers.honeywell.com,page:https://jobs.honeywell.com
+F500 #127|Starbucks|page:https://careers.starbucks.com,page:https://careers.starbucks.com,page:https://jobs.starbucks.com
+F500 #140|GuideWell Mutual Holding|page:https://careers.guidewell.com,page:https://jobs.guidewell.com
+F500 #149|NRG Energy|page:https://careers.nrg.com,page:https://jobs.nrg.com
+F500 #170|McDonald's|page:https://careers.mcdonalds.com,page:https://careers.mcdonalds.com,page:https://jobs.mcdonalds.com
+F500 #178|Constellation Energy|page:https://careers.constellationenergy.com,page:https://jobs.constellationenergy.com
+F500 #189|Exelon|page:https://careers.exelon.com,page:https://jobs.exelon.com
+F500 #201|EOG Resources|page:https://careers.eog.com,page:https://jobs.eog.com
+F500 #223|Cheniere Energy|page:https://careers.cheniere.com,page:https://jobs.cheniere.com
+F500 #241|Auto-Owners Insurance|page:https://careers.autoowners.com,page:https://jobs.autoowners.com
+F500 #249|Edward Jones|page:https://careers.edwardjones.com,page:https://jobs.edwardjones.com
+F500 #267|Consolidated Edison|page:https://careers.coned.com,page:https://jobs.coned.com
+F500 #276|AECOM|page:https://careers.aecom.com,page:https://jobs.aecom.com
+F500 #284|PPG Industries|page:https://careers.ppg.com,page:https://jobs.ppg.com
+F500 #292|Fluor|page:https://careers.fluor.com,page:https://jobs.fluor.com
+F500 #29|Phillips 66|page:https://careers.phillips66.com,page:https://jobs.phillips66.com
+F500 #51|Progressive|page:https://careers.progressive.com,page:https://careers.progressive.com,page:https://jobs.progressive.com
+F500 #71|Delta Air Lines|page:https://www.delta.com/us/en/careers/overview,page:https://careers.delta.com,page:https://jobs.delta.com
+F500 #81|United Airlines Holdings|page:https://careers.unitedairlines.com,page:https://jobs.unitedairlines.com
+F500 #100|MassMutual|page:https://careers.massmutual.com,page:https://jobs.massmutual.com
+F500 #117|Philip Morris International|page:https://careers.pmi.com,page:https://jobs.pmi.com
+F500 #142|Nucor|page:https://careers.nucor.com,page:https://jobs.nucor.com
+F500 #171|HF Sinclair|page:https://careers.hfsinclair.com,page:https://jobs.hfsinclair.com
+F500 #179|Waste Management|page:https://careers.wm.com,page:https://jobs.wm.com
+F500 #193|Reinsurance Group of America|page:https://careers.rgare.com,page:https://jobs.rgare.com
+F500 #204|Group 1 Automotive|page:https://careers.group1auto.com,page:https://jobs.group1auto.com
+F500 #224|Parker-Hannifin|page:https://careers.parker.com,page:https://jobs.parker.com
+F500 #233|Cleveland-Cliffs|page:https://careers.clevelandcliffs.com,page:https://jobs.clevelandcliffs.com
+F500 #242|Kiewit|page:https://careers.kiewit.com,page:https://jobs.kiewit.com
+F500 #259|Devon Energy|page:https://careers.devon.com,page:https://jobs.devon.com
+F500 #268|Keurig Dr Pepper|page:https://careers.kdp.com,page:https://jobs.kdp.com
+F500 #285|DTE Energy|page:https://careers.dte.com,page:https://jobs.dte.com
+F500 #293|Gap|page:https://careers.gapinc.com,page:https://jobs.gapinc.com
+F500 #52|Lowe's|page:https://talent.lowes.com/us/en,page:https://careers.lowes.com,page:https://jobs.lowes.com
+F500 #72|Publix Super Markets|page:https://careers.publix.com,page:https://jobs.publix.com
+F500 #85|Charter Communications|page:https://careers.charter.com,page:https://jobs.charter.com
+F500 #102|Deere|page:https://careers.deere.com,page:https://careers.johndeere.com,page:https://jobs.johndeere.com
+F500 #118|CBRE Group|page:https://careers.cbre.com,page:https://jobs.cbre.com
+F500 #130|CHS|page:https://careers.chsinc.com,page:https://jobs.chsinc.com
+F500 #152|Southern Company|page:https://careers.southerncompany.com,page:https://jobs.southerncompany.com
+F500 #163|Southwest Airlines|page:https://careers.southwest.com,page:https://jobs.southwest.com
+F500 #194|Sherwin-Williams|page:https://careers.sherwinwilliams.com,page:https://jobs.sherwinwilliams.com
+F500 #214|Tenet Healthcare|page:https://careers.tenet.com,page:https://jobs.tenet.com
+F500 #225|Kimberly-Clark|page:https://careers.kimberlyclark.com,page:https://jobs.kimberlyclark.com
+F500 #234|Global Partners|page:https://careers.globalpartners.com,page:https://jobs.globalpartners.com
+F500 #243|Lincoln Financial|page:https://careers.lincolnfinancial.com,page:https://jobs.lincolnfinancial.com
+F500 #251|Vistra|page:https://careers.vistra.com,page:https://jobs.vistra.com
+F500 #261|Aflac|page:https://careers.aflac.com,page:https://jobs.aflac.com
+F500 #286|Corning|page:https://careers.corning.com,page:https://jobs.corning.com
+F500 #296|Builders FirstSource|page:https://careers.bldr.com,page:https://jobs.bldr.com

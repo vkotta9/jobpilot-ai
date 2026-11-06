@@ -7,6 +7,7 @@ Greenhouse / Lever / Ashby boards for each slug, and keeps the feed with the mos
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -23,7 +24,8 @@ def wd_count(ident: str) -> int:
     try:
         a = WorkdayAdapter(ident, sleep=lambda s: None)
         a.timeout_s, a.detail_limit = 12, 0
-        a.queries = ["software engineer"]
+        q = os.getenv("SCAN_QUERY", "software engineer")  # empty: count every open role
+        a.queries = [q] if q else []
         return len(a.fetch())
     except Exception:  # noqa: BLE001
         return -1
@@ -84,9 +86,12 @@ def scan(line: str) -> dict:
 
 def main() -> None:
     lines = [l.strip() for l in Path(sys.argv[1]).read_text().splitlines() if l.strip() and not l.startswith("#")]
+    if len(sys.argv) > 3:  # chunk i of n, for parallel runs
+        i, n = int(sys.argv[2]), int(sys.argv[3])
+        lines = lines[i::n]
     with ThreadPoolExecutor(max_workers=12) as pool:
         results = list(pool.map(scan, lines))
-    Path("scan.json").write_text(json.dumps(results, indent=1))
+    Path(os.getenv("SCAN_OUT", "scan.json")).write_text(json.dumps(results, indent=1))
     for r in results:  # also in the log (artifacts can't always be downloaded)
         print("SCAN " + json.dumps(r))
     found = sum(1 for r in results if r["best"])

@@ -316,10 +316,13 @@ ALIASES = {"cvs": "cvshealth", "cvspharmacy": "cvshealth", "aetna": "cvshealth",
 def _top_tech() -> dict:
     """Verified top-tech companies keyed by normalized name (see catalog.TOP_TECH)."""
     if not _TOP_INDEX:
-        from .catalog import TOP_TECH
+        from .catalog import FORTUNE_500, TOP_TECH
 
         for t in TOP_TECH:
             _TOP_INDEX[re.sub(r"[^a-z]", "", t["company"].lower())] = t
+        for t in FORTUNE_500:  # Fortune 500 names (and their aliases) for companies not in the top-tech list
+            for name in [t["company"], *t.get("aliases", [])]:
+                _TOP_INDEX.setdefault(re.sub(r"[^a-z]", "", name.lower()), t)
     return _TOP_INDEX
 
 
