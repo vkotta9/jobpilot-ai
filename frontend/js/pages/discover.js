@@ -15,9 +15,9 @@ const VIEWS = [
 
 export async function render(root) {
   mount(root, loading());
-  const [allSources, catalog, saved, auto, following, popular, top, prio] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
+  const [allSources, catalog, saved, auto, following, popular, top, prio, f500] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
     api.get("/api/saved-searches"), api.get("/api/discovery/auto"), api.get("/api/companies"), api.get("/api/companies/popular"),
-    api.get("/api/companies/top-tech"), api.get("/api/priority")]);
+    api.get("/api/companies/top-tech"), api.get("/api/priority"), api.get("/api/companies/fortune-500")]);
   const sources = allSources.filter((s) => s.kind === "mock");
   const results = h("div", { class: "card", style: { padding: 0 } }, loading());
 
@@ -240,6 +240,7 @@ export async function render(root) {
     autoCard(auto, root),
     priorityCard(prio, following, root),
     topTechCard(top, root),
+    fortune500Card(f500, root),
     companiesCard(following, popular, root),
     catalog.some((c) => c.kind === "mock") && h("details", { class: "card", style: { marginTop: "16px" } },
       h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Demo data (simulated listings for trying the app)"),
@@ -285,9 +286,14 @@ function followToast(out) {
   toast(`Following ${out.added} new compan${out.added === 1 ? "y" : "ies"} · ${n} matching job${n === 1 ? "" : "s"} found.` + (out.pending ? ` ${out.pending} more will be checked on the next scheduled run.` : ""));
 }
 
-function topTechCard(top, root) {
+// ~4 Google Jobs searches a month per company (each is checked weekly); JSearch's free plan has ~200
+const JSEARCH_PER_COMPANY_MONTH = 4.3;
+const JSEARCH_FREE_MONTH = 200;
+
+function companyListCard(top, root, { title, intro, defaultDirectOnly = false }) {
   const all = top.companies;
   const direct = all.filter((c) => c.via === "direct");
+  const google = all.filter((c) => c.via === "google_jobs");
   const followingN = all.filter((c) => c.following).length;
   const cats = {};
   all.forEach((c) => (cats[c.category] = cats[c.category] || []).push(c));
@@ -298,11 +304,14 @@ function topTechCard(top, root) {
     render(root);
     if (out.background) setTimeout(() => render(root), 90000);
   };
+  const label = (c) => (c.rank ? `#${c.rank} ${c.company}` : c.company);
+  // big lists: "Follow all" in a group takes its direct feeds; Google Jobs companies are picked one by one (JSearch quota)
+  const groupTodo = (items) => items.filter((c) => !c.following && (c.via === "direct" || (!defaultDirectOnly && top.jsearch_connected)));
   const picks = [];
   const catButton = (items) => {
-    const todo = items.filter((c) => !c.following && (c.via === "direct" || top.jsearch_connected));
+    const todo = groupTodo(items);
     if (!todo.length) return h("span", { class: "faint small" }, items.every((c) => c.following) ? "all followed" : "");
-    const b = h("button", { class: "small" }, `Follow all ${todo.length}`);
+    const b = h("button", { class: "small" }, defaultDirectOnly ? `Follow ${todo.length} direct feeds` : `Follow all ${todo.length}`);
     b.addEventListener("click", busy(b, () => follow(todo)));
     return b;
   };
@@ -312,24 +321,51 @@ function topTechCard(top, root) {
       const cb = h("input", { type: "checkbox", checked: c.following, disabled: c.following });
       cb._c = c;
       picks.push(cb);
-      return h("label", { class: "check small", style: { minWidth: "190px" }, title: `${PLATFORM[c.kind] || c.kind}` }, cb, c.company,
+      return h("label", { class: "check small", style: { minWidth: "190px" }, title: `${PLATFORM[c.kind] || c.kind}` }, cb, label(c),
         c.via === "google_jobs" ? h("span", { class: "faint" }, " · Google Jobs") : null);
     }))));
-  const bDirect = h("button", {}, `Follow all ${direct.length} direct feeds`);
+  const bDirect = h("button", { class: defaultDirectOnly ? "btn-primary" : "" }, `Follow all ${direct.length} direct feeds`);
   bDirect.addEventListener("click", busy(bDirect, () => follow(direct.filter((c) => !c.following))));
-  const bAll = h("button", { class: "btn-primary" }, `Follow all ${all.length}`);
+  const bAll = h("button", { class: defaultDirectOnly ? "" : "btn-primary" }, `Follow all ${all.length}`);
   bAll.addEventListener("click", busy(bAll, () => follow(all.filter((c) => !c.following && (c.via === "direct" || top.jsearch_connected)))));
   const bSel = h("button", {}, "Follow selected");
-  bSel.addEventListener("click", busy(bSel, () => follow(picks.filter((b) => b.checked && !b.disabled).map((b) => b._c))));
+  const selected = () => picks.filter((b) => b.checked && !b.disabled).map((b) => b._c);
+  const cost = h("span", { class: "small faint" });
+  const updateCost = () => {
+    const n = selected().filter((c) => c.via === "google_jobs").length;
+    cost.textContent = n ? `${n} Google Jobs compan${n === 1 ? "y" : "ies"} selected ≈ ${Math.round(n * JSEARCH_PER_COMPANY_MONTH)} JSearch searches/month` : "";
+  };
+  picks.forEach((b) => b.addEventListener("change", updateCost));
+  bSel.addEventListener("click", busy(bSel, () => follow(selected())));
+  const googleMonthly = Math.round(google.length * JSEARCH_PER_COMPANY_MONTH);
   return h("div", { class: "card", style: { marginTop: "16px" } },
-    h("div", { class: "card-head" }, h("h2", {}, "Top companies"), h("span", { class: "faint" }, `Following ${followingN} of ${all.length}`)),
-    h("p", { class: "small muted" }, `${direct.length} are searched directly on the company's own careers site or job board (Amazon, Microsoft, Google, NVIDIA, JPMorgan, CVS Health, Home Depot, Stripe…). `,
-      `The other ${all.length - direct.length} (Meta, Tesla, Goldman Sachs, UnitedHealth…) don't offer a feed JobPilot may use, so they're followed through Google Jobs, which is checked weekly per company to stay within JSearch's free plan.`),
+    h("div", { class: "card-head" }, h("h2", {}, title), h("span", { class: "faint" }, `Following ${followingN} of ${all.length}`)),
+    h("p", { class: "small muted" }, intro(direct.length, google.length)),
+    googleMonthly > JSEARCH_FREE_MONTH ? h("div", { class: "alert warn small" },
+      `Following all ${google.length} Google Jobs companies would use about ${googleMonthly} JSearch searches a month — JSearch's free plan has about ${JSEARCH_FREE_MONTH}. `,
+      "Pick the ones you care about, or use a paid JSearch plan.") : null,
     top.jsearch_connected ? null : h("div", { class: "alert warn small" }, "Google Jobs companies need your free JSearch key — ", h("a", { href: "#/settings" }, "Settings → Connections"),
       ". Until then, “Follow all” follows the direct feeds only."),
     h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px", margin: "8px 0" } }, bDirect, bAll),
     h("details", {}, h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Choose individual companies"),
-      h("div", { style: { marginTop: "10px" } }, groups, h("div", { class: "row", style: { justifyContent: "flex-end" } }, bSel))));
+      h("div", { style: { marginTop: "10px" } }, groups, h("div", { class: "row", style: { justifyContent: "flex-end", gap: "10px", alignItems: "center" } }, cost, bSel))));
+}
+
+function topTechCard(top, root) {
+  return companyListCard(top, root, {
+    title: "Top companies",
+    intro: (d, g) => [`${d} are searched directly on the company's own careers site or job board (Amazon, Microsoft, Google, NVIDIA, JPMorgan, CVS Health, Home Depot, Stripe…). `,
+      `The other ${g} (Meta, Tesla, Goldman Sachs, UnitedHealth…) don't offer a feed JobPilot may use, so they're followed through Google Jobs, which is checked weekly per company to stay within JSearch's free plan.`],
+  });
+}
+
+function fortune500Card(f500, root) {
+  return companyListCard(f500, root, {
+    title: "Fortune 500 (2026)",
+    defaultDirectOnly: true,
+    intro: (d, g) => [`America's 500 largest companies by revenue, from Fortune's 2026 list. ${d} have a careers feed JobPilot searches directly (Workday, Oracle, Greenhouse…), checked daily. `,
+      `The other ${g} are followed through Google Jobs, checked weekly — choose those individually so you stay within your JSearch plan.`],
+  });
 }
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];

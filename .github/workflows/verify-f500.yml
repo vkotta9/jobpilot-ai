@@ -1,0 +1,59 @@
+name: Verify Fortune 500 feeds
+on:
+  workflow_dispatch:
+  push:
+    branches: [f500-scan]
+    paths: ["backend/scripts/verify_f500.json", "backend/scripts/scan_f500b.txt", ".github/workflows/verify-f500.yml"]
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [verify, scan0, scan1, scan2, scan3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r backend/requirements.txt
+      - name: Verify feed identities
+        if: matrix.task == 'verify'
+        working-directory: backend
+        env:
+          VERIFY_OUT: out_verify.json
+        run: python scripts/verify_feeds.py scripts/verify_f500.json
+      - name: Second-pass scan
+        if: matrix.task != 'verify'
+        working-directory: backend
+        env:
+          SCAN_QUERY: ""
+          SCAN_OUT: out_${{ matrix.task }}.json
+        run: python scripts/scan_companies.py scripts/scan_f500b.txt ${{ strategy.job-index }} 5 > /dev/null || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: out-${{ matrix.task }}
+          path: backend/out_*.json
+  commit:
+    needs: run
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: parts
+      - run: |
+          cp parts/out-verify/out_verify.json backend/scripts/verify_f500_results.json || true
+          python - <<'PY'
+          import glob, json
+          rows = [r for f in sorted(glob.glob("parts/out-scan*/*.json")) for r in json.load(open(f))]
+          json.dump(rows, open("backend/scripts/scan_f500b_results.json", "w"), indent=1)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add backend/scripts/*_results.json
+          git commit -m "Fortune 500 verification results" && git push
