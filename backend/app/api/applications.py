@@ -74,7 +74,7 @@ def _invalidate_for_job(db: Session, job_id: int, user_id: int, reason: str) -> 
 def generate_resume(jid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     job = owned(db, Job, jid, user)
     p = _profile(db, user)
-    resume = db.query(Resume).filter_by(user_id=user.id, is_primary=True).one_or_none()
+    resume = appsvc.master_resume(db, user.id, job.id)  # the job's role-track resume (else your primary one)
     if resume is not None and resume.mime_type in ("pdf", "docx") and tailor_inplace.resume_bytes(resume) is not None:
         # keep the user's own file and format; only re-word lines and add skills
         try:
@@ -102,8 +102,9 @@ def generate_resume(jid: int, user: User = Depends(current_user), db: Session = 
 def generate_letter(jid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     job = owned(db, Job, jid, user)
     p = _profile(db, user)
-    resume = db.query(Resume).filter_by(user_id=user.id, is_primary=True).one_or_none()
-    a = assess(job, p, resume.text if resume else "")
+    resume = appsvc.master_resume(db, user.id, job.id)
+    t = appsvc.track_for_job(db, user.id, job.id)
+    a = assess(job, p, resume.text if resume else "", (t.target_titles or None) if t else None)
     content, flags, generator = cover_letter(p, job, a, cfg=llm.config_for(db, user.id))
     d = Document(user_id=user.id, job_id=job.id, kind="cover_letter", version=_next_version(db, job.id, "cover_letter"),
                  content=content, flags=flags, generator=generator)

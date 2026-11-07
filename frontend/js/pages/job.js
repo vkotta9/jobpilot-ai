@@ -3,7 +3,7 @@ import { h, mount, loading, scoreRing, recBadge, simBadge, statusBadge, money, f
 
 export async function render(root, id) {
   mount(root, loading());
-  const j = await api.get(`/api/jobs/${id}`);
+  const [j, trk] = await Promise.all([api.get(`/api/jobs/${id}`), api.get("/api/tracks")]);
   const m = j.match;
   const sal = money(j.salary_min, j.salary_max, j.salary_currency, j.salary_interval);
 
@@ -68,6 +68,7 @@ export async function render(root, id) {
           h("p", { class: "faint" }, "Shown as plain text exactly as published. It is treated as untrusted data by the AI features."),
           h("div", { class: "desc" }, j.description_text || "No description provided."))),
       h("div", { class: "stack" },
+        trackCard(j, trk.tracks, root, id),
         h("div", { class: "card" }, h("h2", {}, "Materials for this job"),
           j.documents.length ? j.documents.map((d) => h("a", { class: "list-item", href: `#/documents/${d.id}`, style: { color: "inherit" } },
             h("div", {}, h("strong", {}, d.kind === "resume" ? "Resume" : "Cover letter"), ` v${d.version}`, h("div", { class: "faint" }, `${d.generator} · ${fmtDate(d.created_at)}`)),
@@ -134,3 +135,29 @@ function pasteBtn(j, root, id) {
 }
 
 const kv = (k, v) => h("div", { class: "list-item small" }, h("span", { class: "muted" }, k), h("span", { style: { textAlign: "right" } }, v || "—"));
+
+const REASON = { role: "matches this job's role", closest: "closest fit — this title fits none of your tracks", chosen: "your choice" };
+
+function trackCard(j, tracks, root, id) {
+  if (!tracks.length) {
+    return h("div", { class: "card" }, h("h2", {}, "Resume for this job"),
+      h("p", { class: "small muted" }, "Targeting more than one kind of role (e.g. SDE and ML)? Keep a focused resume for each in ",
+        h("a", { href: "#/roles" }, "Role tracks"), " and every job is scored and tailored with the right one."));
+  }
+  const info = (j.match && j.match.breakdown && j.match.breakdown._track) || null;
+  const sel = h("select", { "aria-label": "Role track for this job" },
+    h("option", { value: "" }, "Let JobPilot choose"),
+    tracks.map((t) => h("option", { value: t.id, selected: j.resume_track && j.resume_track.chosen && j.resume_track.id === t.id }, t.name)));
+  sel.addEventListener("change", async () => {
+    const r = await api.post(`/api/jobs/${id}/track`, { track_id: sel.value ? Number(sel.value) : null });
+    toast(`Now using “${r.track ? r.track.name : "best fit"}” — ATS ${r.score}.` + (j.documents.some((d) => d.kind === "resume") ? " Tailor again to use this resume." : ""));
+    render(root, id);
+  });
+  return h("div", { class: "card" }, h("h2", {}, "Resume for this job"),
+    j.resume_track ? h("p", {}, h("strong", {}, j.resume_track.name), ` · ${j.resume_track.resume || "primary resume"}`,
+      info ? h("div", { class: "faint small" }, REASON[info.reason] || "") : null) : h("p", { class: "muted small" }, "Not scored against a track yet."),
+    info && info.scores.length > 1 ? h("div", { class: "small", style: { margin: "6px 0" } }, "ATS by track: ",
+      info.scores.map((s) => h("span", { class: `badge ${s.id === info.id ? "good" : ""}`, style: { marginRight: "4px" } }, `${s.name} ${s.score}`))) : null,
+    h("div", { class: "row", style: { alignItems: "center", gap: "8px", marginTop: "6px" } }, h("span", { class: "small" }, "Use:"), sel),
+    h("p", { class: "faint small", style: { marginTop: "6px" } }, "Tailoring, the cover letter and ⚡ Apply use this track's resume."));
+}

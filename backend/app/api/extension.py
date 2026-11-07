@@ -92,7 +92,7 @@ def _form_facts(db: Session, user: User, app: Application, p: CandidateProfile) 
     countries = auth.get("authorized_countries") or []
     exp = (p.experience or [{}])[0] if p.experience else {}
     edu = (p.education or [{}])[0] if p.education else {}
-    master = appsvc.master_resume(db, user.id)
+    master = appsvc.master_resume(db, user.id, app.job_id)
     years = ats.resume_years(master.text or "") if master is not None else None
     answers = db.query(ScreeningAnswer).filter(ScreeningAnswer.user_id == user.id, ScreeningAnswer.status == "approved",
                                                (ScreeningAnswer.application_id == app.id) | ScreeningAnswer.reusable.is_(True)).all()

@@ -173,7 +173,7 @@ def effective_weights(saved: dict, resume_text: str = "", profile: Optional[Cand
     return w
 
 
-def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
+def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: Optional[list[str]] = None) -> dict:
     """ATS match of the resume against the posting + preference checks.
 
     `score` is the ATS-style match (see services/ats.py). Location, salary,
@@ -187,7 +187,8 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
     jd = f"{job.title}\n{job.description_text}".lower()
     degrees = [" ".join(x for x in (e.get("degree", ""), e.get("field", "")) if x) for e in (profile.education or [])]
     weights = effective_weights(profile.match_weights or {}, text, profile)
-    a = ats.score(text, job.title, job.description_text or "", job.company, weights, prefs.get("target_titles") or [],
+    a = ats.score(text, job.title, job.description_text or "", job.company, weights,
+                  targets if targets is not None else (prefs.get("target_titles") or []),
                   degrees=[d for d in degrees if d])
     score = a["score"]
     matched, missing = a["matched"], a["missing"]
@@ -273,17 +274,59 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "") -> dict:
     }
 
 
-def score_job(db: Session, job: Job, profile: Optional[CandidateProfile] = None) -> Optional[MatchAssessment]:
+def load_tracks(db: Session, user_id: int) -> list:
+    """The user's role tracks as scoring views: each with its own resume text (the primary resume if none is set)."""
+    from ..models import Resume, RoleTrack
+    from .roles import BY_KEY, TrackView
+
+    rows = db.query(RoleTrack).filter_by(user_id=user_id).order_by(RoleTrack.position, RoleTrack.id).all()
+    if not rows:
+        return []
+    primary = db.query(Resume).filter_by(user_id=user_id, is_primary=True).one_or_none()
+    out = []
+    for t in rows:
+        r = db.get(Resume, t.resume_id) if t.resume_id else None
+        fam = BY_KEY.get(t.family)
+        titles = [x for x in (t.target_titles or []) if x.strip()] or (list(fam.titles[:5]) if fam else [t.name])
+        out.append(TrackView(id=t.id, name=t.name, family=t.family, titles=titles,
+                             resume_text=(r or primary).text if (r or primary) else ""))
+    return out
+
+
+def assess_tracks(job: Job, profile: CandidateProfile, tracks: list) -> tuple[dict, Optional[int]]:
+    """Score a job against the role track(s) it belongs to and keep the best.
+
+    Only tracks of the job's role family are scored (an ML posting against the ML resume), unless you picked a
+    track for this job yourself; a title that fits no track is scored against every track and goes to the closest.
+    """
+    from .roles import candidate_tracks
+
+    chosen = [t for t in tracks if t.id == job.resume_track_id]
+    cands, reason = (chosen, "chosen") if chosen else candidate_tracks(tracks, job.title)
+    results = [(t, assess(job, profile, t.resume_text, t.titles)) for t in cands]
+    best_t, best = max(results, key=lambda r: r[1]["score"])
+    best["breakdown"]["_track"] = {"id": best_t.id, "name": best_t.name, "family": best_t.family, "reason": reason,
+                                   "scores": [{"id": t.id, "name": t.name, "score": a["score"]} for t, a in results]}
+    return best, best_t.id
+
+
+def score_job(db: Session, job: Job, profile: Optional[CandidateProfile] = None,
+              tracks: Optional[list] = None) -> Optional[MatchAssessment]:
     profile = profile or db.query(CandidateProfile).filter_by(user_id=job.user_id).one_or_none()
     if profile is None:
         return None
     from ..models import Resume
 
-    resume = db.query(Resume).filter_by(user_id=job.user_id, is_primary=True).one_or_none()
-    result = assess(job, profile, resume.text if resume else "")
+    tracks = load_tracks(db, job.user_id) if tracks is None else tracks
+    track_id = None
+    if tracks:
+        result, track_id = assess_tracks(job, profile, tracks)
+    else:
+        resume = db.query(Resume).filter_by(user_id=job.user_id, is_primary=True).one_or_none()
+        result = assess(job, profile, resume.text if resume else "")
     result.pop("relevant_experience")
     result.pop("years_experience")
-    m = MatchAssessment(user_id=job.user_id, job_id=job.id, **result)
+    m = MatchAssessment(user_id=job.user_id, job_id=job.id, track_id=track_id, **result)
     db.add(m)
     db.flush()
     return m
@@ -299,9 +342,10 @@ def score_jobs(db: Session, user_id: int, job_ids: Optional[Iterable[int]] = Non
         if not ids:
             return 0
         q = q.filter(Job.id.in_(ids))
+    tracks = load_tracks(db, user_id)
     n = 0
     for job in q.all():
-        score_job(db, job, profile)
+        score_job(db, job, profile, tracks)
         n += 1
     db.commit()
     return n

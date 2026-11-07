@@ -75,6 +75,15 @@ def _m008_application_details(conn: Connection) -> None:
         conn.execute(text("ALTER TABLE candidate_profiles ADD COLUMN application_details JSON"))
 
 
+def _m009_role_tracks(conn: Connection) -> None:
+    models.RoleTrack.__table__.create(bind=conn, checkfirst=True)
+    cols = {c["name"] for c in inspect(conn).get_columns("match_assessments")}
+    if "track_id" not in cols:
+        conn.execute(text("ALTER TABLE match_assessments ADD COLUMN track_id INTEGER"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_match_assessments_track_id ON match_assessments (track_id)"))
+    if "resume_track_id" not in {c["name"] for c in inspect(conn).get_columns("jobs")}:
+        conn.execute(text("ALTER TABLE jobs ADD COLUMN resume_track_id INTEGER"))
+
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "initial schema", _m001_initial),
     (2, "store resume file bytes in database", _m002_resume_file_data),
@@ -84,6 +93,7 @@ MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (6, "interview prep plans", _m006_interview_prep),
     (7, "priority companies and email alerts", _m007_priority_alerts),
     (8, "application form details (name parts, address)", _m008_application_details),
+    (9, "role tracks (one resume per kind of role)", _m009_role_tracks),
 ]
 
 

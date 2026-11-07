@@ -93,7 +93,7 @@ def generate_outreach(cid: int, body: OutreachGenerateIn, user: User = Depends(c
     generator, note = "template", ""
     if cfg is not None:
         app = db.query(Application).filter_by(user_id=user.id, job_id=c.job_id).one_or_none() if c.job_id else None
-        master = appsvc.master_resume(db, user.id)
+        master = appsvc.master_resume(db, user.id, c.job_id)
         try:
             subject, text = networking.ai_draft(cfg, p, master.text if master is not None else "", c, job, body.channel,
                                                 body.kind, body.hook, applied=bool(app and app.submitted_at))

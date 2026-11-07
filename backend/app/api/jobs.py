@@ -130,6 +130,7 @@ def list_jobs(
     salary_min: Optional[float] = None, status: str = "active", source: str = "",
     pipeline: str = "", include_duplicates: bool = False, include_simulated: bool = True,
     sort: str = "score", limit: int = Query(100, le=500), offset: int = 0,
+    track: str = Query("", pattern=r"^(|none|\d+)$"),  # a role track's id, or "none" for jobs fitting no track
     view: str = Query("all", pattern="^(new|later|applied|skipped|all)$"),
     user: User = Depends(current_user), db: Session = Depends(get_db),
 ):
@@ -165,10 +166,14 @@ def list_jobs(
     if salary_min:
         qry = qry.filter(or_(Job.salary_max >= salary_min, Job.salary_max.is_(None)))
     jobs = qry.all()
-    latest: dict[int, tuple[int, int, Optional[str]]] = {}  # job_id -> (assessment id, score, education fit), newest wins
-    for jid_, aid, sc, edu in db.query(MatchAssessment.job_id, MatchAssessment.id, MatchAssessment.score, MatchAssessment.edu_status) \
+    latest: dict[int, tuple[int, int, Optional[str], Optional[int]]] = {}  # job_id -> (assessment id, score, education fit, track)
+    for jid_, aid, sc, edu, tid in db.query(MatchAssessment.job_id, MatchAssessment.id, MatchAssessment.score,
+                                            MatchAssessment.edu_status, MatchAssessment.track_id) \
             .filter(MatchAssessment.user_id == user.id).order_by(MatchAssessment.id):
-        latest[jid_] = (aid, sc, edu)
+        latest[jid_] = (aid, sc, edu, tid)
+    if track:
+        want_t = None if track == "none" else int(track)
+        jobs = [j for j in jobs if j.id in latest and latest[j.id][3] == want_t]
     if posted_within:
         from datetime import timedelta
 
@@ -247,9 +252,12 @@ def job_detail(jid: int, user: User = Depends(current_user), db: Session = Depen
         score_job(db, job, profile)
         db.commit()
         m = latest_assessment(db, job.id)
-    resume = db.query(Resume).filter_by(user_id=user.id, is_primary=True).one_or_none()
-    live = assess(job, profile, resume.text if resume else "") if profile else None
+    resume = appsvc.master_resume(db, user.id, job.id)
+    track = appsvc.track_for_job(db, user.id, job.id)
+    live = assess(job, profile, resume.text if resume else "", (track.target_titles or None) if track else None) if profile else None
     out = job_out(job, m, full=True)
+    out["resume_track"] = {"id": track.id, "name": track.name, "chosen": job.resume_track_id == track.id,
+                           "resume": resume.original_filename if resume else None} if track else None
     out["relevant_experience"] = live["relevant_experience"] if live else []
     out["years_experience"] = live["years_experience"] if live else None
     out["history"] = [{"captured_at": s.captured_at.isoformat() + "Z", "hash": s.content_hash[:10]}

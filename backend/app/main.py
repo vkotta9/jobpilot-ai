@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import __version__
-from .api import alerts, applications, auth, companies, extension, integrations, jobs, misc, network, prep, profile
+from .api import alerts, applications, auth, companies, extension, integrations, jobs, misc, network, prep, profile, tracks
 from .config import PROJECT_DIR, settings
 from .migrations import run_migrations
 
@@ -93,7 +93,7 @@ async def unhandled(_: Request, exc: Exception):  # never leak internals or secr
 
 
 for r in (auth.router, alerts.router, profile.router, jobs.router, applications.router, network.router, misc.router, integrations.router,
-          companies.router, extension.router, prep.router):  # alerts first: its /integrations/email routes are more specific
+          companies.router, extension.router, prep.router, tracks.router):  # alerts first: its /integrations/email routes are more specific
     app.include_router(r)
 
 if FRONTEND_DIR.exists():

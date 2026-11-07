@@ -13,11 +13,13 @@ import * as followups from "./pages/followups.js";
 import * as analytics from "./pages/analytics.js";
 import * as settings from "./pages/settings.js";
 import * as prep from "./pages/prep.js";
+import * as roles from "./pages/roles.js";
 
 const NAV = [
   ["Workspace"],
   ["#/dashboard", "◧", "Dashboard"],
   ["#/discover", "⌕", "Discover jobs"],
+  ["#/roles", "◎", "Role tracks"],
   ["#/tracker", "▤", "Tracker"],
   ["#/networking", "☍", "Networking"],
   ["#/followups", "◷", "Follow-ups"],
@@ -30,7 +32,7 @@ const NAV = [
 
 const ROUTES = [
   [/^#\/dashboard$/, dashboard], [/^#\/profile$/, profile], [/^#\/resumes$/, resumes],
-  [/^#\/discover$/, discover], [/^#\/jobs\/(\d+)$/, job], [/^#\/documents\/(\d+)$/, documentPage],
+  [/^#\/discover$/, discover], [/^#\/roles$/, roles], [/^#\/jobs\/(\d+)$/, job], [/^#\/documents\/(\d+)$/, documentPage],
   [/^#\/applications\/(\d+)$/, application], [/^#\/applications\/(\d+)\/prep$/, prep], [/^#\/tracker$/, tracker], [/^#\/networking$/, networking],
   [/^#\/followups$/, followups], [/^#\/analytics$/, analytics], [/^#\/settings$/, settings],
 ];

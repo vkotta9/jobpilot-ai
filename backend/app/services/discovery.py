@@ -126,7 +126,8 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
     adapter = adapter_cls(source.identifier, transport=transport, context=context if adapter_cls.keyword else None)
     # company boards list every opening; keep only roles matching the user's target titles
     queries = (context or {}).get("queries", []) if source.kind in COMPANY_KINDS else []
-    keep = (lambda t: title_matches(t, queries)) if queries else None
+    terms = (context or {}).get("title_terms") or queries if source.kind in COMPANY_KINDS else []
+    keep = (lambda t: title_matches(t, terms)) if terms else None
     if keep and hasattr(adapter, "title_filter"):
         adapter.title_filter = keep
     if hasattr(adapter, "queries") and not adapter_cls.keyword:
@@ -181,16 +182,29 @@ def run_source(db: Session, source: JobSource, *, transport: Optional[httpx.Base
     return stats
 
 
-def search_queries(profile, resume_text: str = "") -> list[str]:
+def search_queries(profile, resume_text: str = "", tracks: Optional[list] = None) -> list[str]:
+    """What to search job sites for (at most 3): your role tracks' titles take turns, then your target titles."""
     prefs = (profile.preferences or {}) if profile else {}
-    qs = [t.strip() for t in prefs.get("target_titles") or [] if t.strip()]
+    qs: list[str] = []
+    for i in range(5):  # one title from each track before a second from any
+        for t in tracks or []:
+            if i < len(t.titles):
+                qs.append(t.titles[i].strip())
+    qs += [t.strip() for t in prefs.get("target_titles") or [] if t.strip()]
     if not qs and profile:
         if profile.headline and len(profile.headline) < 60:
             qs.append(profile.headline)
         for e in profile.experience or []:
             if e.get("title") and e["title"] not in qs:
                 qs.append(e["title"])
-    return list(dict.fromkeys(qs))[:3]
+    return list(dict.fromkeys(q for q in qs if q))[:3]
+
+
+def title_terms(profile, tracks: Optional[list] = None) -> list[str]:
+    """Every title worth keeping from a company board: all tracks' titles plus your target titles."""
+    prefs = (profile.preferences or {}) if profile else {}
+    terms = [x for t in tracks or [] for x in t.titles] + [t for t in prefs.get("target_titles") or [] if t.strip()]
+    return list(dict.fromkeys(terms)) or search_queries(profile)
 
 
 def search_context(db: Session, user_id: int) -> dict:
@@ -204,7 +218,11 @@ def search_context(db: Session, user_id: int) -> dict:
         if row.provider not in ("ai", "email"):  # provider fields use distinct names (app_id, rapidapi_key, usajobs_key, …)
             creds.update(unseal(row.data_encrypted))
     locations = [l for l in prefs.get("locations") or [] if l.strip()]
-    return {"queries": search_queries(profile), "locations": locations, "credentials": creds}
+    from .matching import load_tracks
+
+    tracks = load_tracks(db, user_id)
+    return {"queries": search_queries(profile, tracks=tracks), "title_terms": title_terms(profile, tracks),
+            "locations": locations, "credentials": creds}
 
 
 MIN_DESC = 200  # shorter than this is a summary, not a job description

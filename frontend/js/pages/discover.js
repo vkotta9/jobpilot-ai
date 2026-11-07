@@ -3,7 +3,7 @@ import { h, mount, loading, empty, scoreRing, simBadge, statusBadge, money, ago,
 
 const savedCountry = (() => { try { return localStorage.getItem("jp_country"); } catch { return null; } })();
 const filters = { q: "", location: "", country: savedCountry ?? "US", company: "", remote: "", seniority: "", min_score: "", max_score: "", posted_within: "", qualified_only: true,
-  sort: "score", status: "active", include_simulated: true,
+  sort: "score", status: "active", include_simulated: true, track: "",
   view: (() => { try { return sessionStorage.getItem("jp_view") || "new"; } catch { return "new"; } })() };
 
 const VIEWS = [
@@ -15,10 +15,13 @@ const VIEWS = [
 
 export async function render(root) {
   mount(root, loading());
-  const [allSources, catalog, saved, auto, following, popular, top, prio, f500] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
+  const [allSources, catalog, saved, auto, following, popular, top, prio, f500, trk] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
     api.get("/api/saved-searches"), api.get("/api/discovery/auto"), api.get("/api/companies"), api.get("/api/companies/popular"),
-    api.get("/api/companies/top-tech"), api.get("/api/priority"), api.get("/api/companies/fortune-500")]);
+    api.get("/api/companies/top-tech"), api.get("/api/priority"), api.get("/api/companies/fortune-500"), api.get("/api/tracks")]);
   const sources = allSources.filter((s) => s.kind === "mock");
+  // arriving from Role tracks → "All N in Discover": show that track's jobs
+  try { const t = sessionStorage.getItem("jp_track"); if (t) { filters.track = t; filters.view = "all"; sessionStorage.removeItem("jp_track"); } } catch { /* */ }
+  if (filters.track && !trk.tracks.some((t) => String(t.id) === filters.track) && filters.track !== "none") filters.track = "";
   const results = h("div", { class: "card", style: { padding: 0 } }, loading());
 
   const tabsBox = h("div", { class: "tabs", role: "tablist" });
@@ -223,6 +226,7 @@ export async function render(root) {
         sel("seniority", [["", "Any seniority"], ["junior", "Junior"], ["mid", "Mid"], ["senior", "Senior"], ["staff,lead", "Staff / lead"], ["manager,director", "Manager+"]], "Seniority"),
         scoreRange(),
         sel("posted_within", [["", "Posted: any time"], ["24", "Last 24 hours"], ["48", "Last 2 days"], ["72", "Last 3 days"], ["168", "Last week"], ["336", "Last 2 weeks"], ["720", "Last month"]], "Posted within"),
+        trk.tracks.length ? sel("track", [["", "All role tracks"], ...trk.tracks.map((t) => [String(t.id), `Track: ${t.name}`]), ["none", "Fits no track"]], "Role track") : null,
         sel("sort", [["score", "Sort: best ATS match"], ["posted", "Sort: newest posted"], ["discovered", "Sort: recently found"], ["score_asc", "Sort: lowest match first"], ["salary", "Sort: highest salary"], ["company", "Sort: company A–Z"]], "Sort"),
         sel("status", [["active", "Active listings"], ["closed", "Closed listings"], ["all", "All listings"]], "Listing status")),
       h("div", { class: "row between", style: { marginTop: "10px" } },
@@ -533,7 +537,8 @@ function jobRow(j) {
         j.remote_type !== "unknown" && h("span", { class: "badge" }, j.remote_type), sal && h("span", { class: "badge good" }, sal),
         j.is_simulated && simBadge(), j.listing_status === "closed" && h("span", { class: "badge bad" }, "Closed"),
         m && (m.flags || []).some((f) => f.startsWith("Work authorization")) && h("span", { class: "badge warn" }, "Sponsorship conflict"),
-        m && eduBadge(m.edu_status)),
+        m && eduBadge(m.edu_status),
+        m && m.breakdown && m.breakdown._track && h("span", { class: "badge", title: "Scored against this role track's resume" }, "◎ " + m.breakdown._track.name)),
       h("div", { class: "faint row", style: { marginTop: "3px", gap: "6px" } }, sourceCredit(j.source_kind) || j.source_kind, `· checked ${ago(j.last_checked_at)}`, j.posted_at ? ` · posted ${ago(j.posted_at)}` : "")),
     h("div", { style: { textAlign: "right" } }, j.application ? statusBadge(j.application.status) : m && h("span", { class: `badge ${m.recommendation === "apply" ? "good" : m.recommendation === "review" ? "warn" : ""}` }, m.recommendation)));
 }

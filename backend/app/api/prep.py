@@ -16,7 +16,7 @@ router = APIRouter(prefix="/api", tags=["prep"])
 
 
 def _resume_text(db: Session, app: Application) -> str:
-    r = appsvc.master_resume(db, app.user_id)
+    r = appsvc.master_resume(db, app.user_id, app.job_id)
     return r.text if r is not None else ""
 
 

@@ -109,9 +109,30 @@ def approved_tailored(db: Session, job_id: int) -> Optional[Document]:
             .order_by(Document.version.desc()).first())
 
 
-def master_resume(db: Session, user_id: int):
+def track_for_job(db: Session, user_id: int, job_id: Optional[int]):
+    """The role track a job uses: the one you picked for it, else the one it was scored against."""
+    from ..models import Job, MatchAssessment, RoleTrack
+
+    if not job_id:
+        return None
+    job = db.get(Job, job_id)
+    tid = job.resume_track_id if job is not None else None
+    if tid is None:
+        m = db.query(MatchAssessment).filter_by(job_id=job_id).order_by(MatchAssessment.id.desc()).first()
+        tid = m.track_id if m is not None else None
+    t = db.get(RoleTrack, tid) if tid else None
+    return t if t is not None and t.user_id == user_id else None
+
+
+def master_resume(db: Session, user_id: int, job_id: Optional[int] = None):
+    """The resume to use: for a job, its role track's resume; otherwise (or if the track has none) the primary one."""
     from ..models import Resume
 
+    t = track_for_job(db, user_id, job_id)
+    if t is not None and t.resume_id:
+        r = db.get(Resume, t.resume_id)
+        if r is not None:
+            return r
     return db.query(Resume).filter_by(user_id=user_id, is_primary=True).one_or_none()
 
 
@@ -120,7 +141,7 @@ def resume_choice(db: Session, app: Application) -> dict:
     doc = approved_tailored(db, app.job_id)
     if doc is not None:
         return {"type": "tailored", "doc_id": doc.id, "version": doc.version}
-    r = master_resume(db, app.user_id)
+    r = master_resume(db, app.user_id, app.job_id)
     if r is not None:
         return {"type": "master", "resume_id": r.id, "filename": r.original_filename}
     return {"type": "none"}
@@ -128,7 +149,7 @@ def resume_choice(db: Session, app: Application) -> dict:
 
 def package_hash(db: Session, app: Application) -> str:
     resume = db.get(Document, app.resume_doc_id) if app.resume_doc_id else None
-    master = master_resume(db, app.user_id) if resume is None else None
+    master = master_resume(db, app.user_id, app.job_id) if resume is None else None
     letter = db.get(Document, app.cover_letter_doc_id) if app.cover_letter_doc_id else None
     answers = db.query(ScreeningAnswer).filter_by(application_id=app.id).order_by(ScreeningAnswer.id).all()
     return sha256(
@@ -143,7 +164,7 @@ def package_problems(db: Session, app: Application) -> list[str]:
     problems = []
     resume = approved_tailored(db, app.job_id)  # a tailored resume is optional; drafts don't block approval
     letter = latest_doc(db, app.job_id, "cover_letter")
-    if resume is None and master_resume(db, app.user_id) is None:
+    if resume is None and master_resume(db, app.user_id, app.job_id) is None:
         problems.append("Upload your resume in the Resume library (or tailor one for this job).")
     if letter and letter.status != "approved":
         problems.append("Approve the latest cover letter (or delete it).")

@@ -198,6 +198,8 @@ class Job(Base):
     triage: Mapped[Optional[str]] = mapped_column(String(20), nullable=True, index=True)
     triaged_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     alerted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)  # emailed to you as a new priority job
+    # your choice of which role track (resume) to use for this job; None = JobPilot picks the best fit
+    resume_track_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     application: Mapped[Optional["Application"]] = relationship(
         back_populates="job", uselist=False, cascade="all, delete-orphan"
@@ -219,6 +221,20 @@ class JobSnapshot(Base):
     data: Mapped[dict] = mapped_column(JSON)
 
 
+class RoleTrack(Base):
+    """One resume aimed at one kind of role (e.g. Software Engineer, ML Engineer). At most three per user."""
+
+    __tablename__ = "role_tracks"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    name: Mapped[str] = mapped_column(String(80))
+    family: Mapped[str] = mapped_column(String(20), default="custom")  # services/roles.py family key, or "custom"
+    target_titles: Mapped[list] = mapped_column(JSON, default=list)
+    resume_id: Mapped[Optional[int]] = mapped_column(ForeignKey("resumes.id", ondelete="SET NULL"), nullable=True)
+    position: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
 class MatchAssessment(Base):
     __tablename__ = "match_assessments"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -233,6 +249,7 @@ class MatchAssessment(Base):
     explanation: Mapped[str] = mapped_column(Text, default="")
     weights: Mapped[dict] = mapped_column(JSON, default=dict)
     edu_status: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # none|meets|exceeds|equivalent|below|unknown
+    track_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, index=True)  # role track (resume) it was scored against
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
