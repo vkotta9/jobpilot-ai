@@ -250,6 +250,7 @@ class MatchAssessment(Base):
     weights: Mapped[dict] = mapped_column(JSON, default=dict)
     edu_status: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # none|meets|exceeds|equivalent|below|unknown
     track_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, index=True)  # role track (resume) it was scored against
+    scoring_version: Mapped[int] = mapped_column(Integer, default=1)  # services/matching.py SCORING_VERSION when scored
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 

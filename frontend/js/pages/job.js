@@ -58,6 +58,7 @@ export async function render(root, id) {
     h("div", { class: "grid side" },
       h("div", { class: "stack" },
         m ? atsCard(m, rescore) : h("div", { class: "alert" }, "Upload your resume (or fill in your profile) to see an ATS match score for this job."),
+        m && preferredCard(m),
         m && keywordCard(m),
         (j.relevant_experience || []).length > 0 && h("div", { class: "card" }, h("h2", {}, "Your most relevant experience"),
           j.relevant_experience.map((r) => h("div", { class: "list-item" }, h("div", {}, h("div", { class: "small muted" }, `${r.title} · ${r.company}`), h("div", {}, r.bullet)),
@@ -108,20 +109,44 @@ function atsCard(m, rescore) {
     Object.keys(prefs).length > 0 && h("div", { style: { marginTop: "8px" } }, h("h3", {}, "Your preferences (not part of the ATS score)"),
       Object.entries(prefs).map(([k, v]) => h("div", { class: "small", style: { margin: "3px 0" } },
         h("span", { class: `badge ${v.score >= 0.75 ? "good" : v.score >= 0.4 ? "" : "warn"}`, style: { marginRight: "6px", textTransform: "capitalize" } }, k), v.note))),
-    h("p", { class: "faint", style: { marginTop: "8px" } }, "An estimate of how applicant tracking systems rank resumes: keyword overlap with the posting (required items count double), job title, years, education and soft skills. Change the weights in your profile. Protected characteristics are never used."));
+    h("p", { class: "faint", style: { marginTop: "8px" } }, "An estimate of how applicant tracking systems rank resumes: keyword overlap with the posting, job title, years, education and soft skills — measured against the preferred qualifications too, since companies shortlist from that bar. Change the weights in your profile. Protected characteristics are never used."));
 }
 
 function keywordCard(m) {
   const kws = m.breakdown._keywords || [];
-  const req = kws.filter((k) => k.required && k.kind === "hard"), other = kws.filter((k) => !k.required && k.kind === "hard");
+  const hard = kws.filter((k) => k.kind === "hard");
+  const req = hard.filter((k) => k.required);
+  const pref = hard.filter((k) => !k.required && k.section === "pref");
+  const other = hard.filter((k) => !k.required && k.section !== "pref");
   const soft = kws.filter((k) => k.kind === "soft");
-  const chips = (list) => list.map((k) => h("span", { class: `chip ${k.found ? "good" : "bad"}`, title: k.found ? "in your resume" : "not in your resume" }, k.term));
+  const chips = (list) => list.map((k) => h("span", { class: `chip ${k.found ? "good" : "bad"}`,
+    title: (k.found ? "in your resume" : "not in your resume") + (k.any_of ? " · one of a list — any of them counts" : "") }, k.term + (k.any_of ? " ∗" : "")));
   return h("div", { class: "card" }, h("h2", {}, "Keywords from the posting"),
     req.length > 0 && h("div", {}, h("h3", {}, "Required"), chips(req)),
-    other.length > 0 && h("div", { style: { marginTop: "8px" } }, h("h3", {}, "Also mentioned / preferred"), chips(other)),
+    pref.length > 0 && h("div", { style: { marginTop: "8px" } }, h("h3", {}, "Preferred"), chips(pref)),
+    other.length > 0 && h("div", { style: { marginTop: "8px" } }, h("h3", {}, "Also mentioned"), chips(other)),
     soft.length > 0 && h("div", { style: { marginTop: "8px" } }, h("h3", {}, "Soft skills"), chips(soft)),
     !kws.length && h("p", { class: "muted small" }, "No keywords found — paste the full description."),
-    h("p", { class: "faint", style: { marginTop: "6px" } }, "Green = found in your resume, red = missing. “Tailor resume” can add the ones you truly have to your skills section."));
+    h("p", { class: "faint", style: { marginTop: "6px" } }, "Green = found in your resume, red = missing. ∗ = one of an “A, B, or C” list: any of them meets it. ",
+      "“Tailor resume” can add the ones you truly have to your skills section."));
+}
+
+function preferredCard(m) {
+  const p = m.breakdown._preferred;
+  if (!p || !(p.skills_total || p.years || p.degree)) return null;
+  const row = (ok, text) => h("div", { class: "small", style: { margin: "4px 0" } },
+    h("span", { class: `badge ${ok ? "good" : "warn"}`, style: { marginRight: "6px" } }, ok ? "✓" : "gap"), text);
+  return h("div", { class: "card" }, h("h2", {}, "Preferred qualifications"),
+    h("p", { class: "small muted" }, "Companies shortlist from candidates who meet the preferred bar, not just the minimum — the ATS score counts these."),
+    p.skills_total ? row(p.skills_found === p.skills_total, `You meet ${p.skills_found} of ${p.skills_total} preferred qualifications.`) : null,
+    p.years ? row(p.meets_years, `${p.years}+ years preferred for your degree` + (p.meets_years ? " — you have it." : " — not yet.")) : null,
+    p.degree ? row(p.meets_degree && (!p.degree_route_years || p.meets_years),
+      `${{ 1: "A bachelor's", 2: "A master's", 3: "A PhD" }[p.degree] || "A degree"} preferred` +
+      (p.degree_route_years ? ` — or your degree with ${p.degree_route_years}+ years` + (p.meets_years ? " (you have that)." : ".")
+        : p.meets_degree ? " — you have it." : " — you have a lower degree.")) : null,
+    (p.missing || []).length ? h("div", { style: { marginTop: "6px" } }, h("h3", {}, "Not in your resume yet"),
+      h("ul", { class: "small", style: { margin: "4px 0 0 18px" } }, p.missing.map((x) => h("li", {}, x)))) : null,
+    h("p", { class: "faint small", style: { marginTop: "6px" } }, "Only add what you've really done — tailoring never invents experience."));
 }
 
 function pasteBtn(j, root, id) {

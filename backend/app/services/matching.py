@@ -173,6 +173,20 @@ def effective_weights(saved: dict, resume_text: str = "", profile: Optional[Cand
     return w
 
 
+def _preferred_sentence(p: dict) -> str:
+    """'Meets 1 of 4 preferred qualifications; 8+ years preferred.' — companies shortlist from the preferred bar."""
+    if not p or not (p.get("skills_total") or p.get("years") or p.get("degree")):
+        return ""
+    bits = []
+    if p.get("skills_total"):
+        bits.append(f"meets {p['skills_found']} of {p['skills_total']} preferred qualifications")
+    if p.get("years") and p.get("meets_years") is False:
+        bits.append(f"{p['years']}+ years preferred")
+    if p.get("degree") and p.get("meets_degree") is False:
+        bits.append({2: "a master's", 3: "a PhD"}.get(p["degree"], "a higher degree") + " preferred")
+    return (bits[0][0].upper() + "; ".join(bits)[1:] + ".") if bits else ""
+
+
 def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: Optional[list[str]] = None) -> dict:
     """ATS match of the resume against the posting + preference checks.
 
@@ -241,7 +255,8 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: 
         f"ATS match {score}/100. "
         + (f"Strong on {', '.join(strengths)}. " if strengths else "")
         + (f"Weak on {', '.join(weak)}. " if weak else "")
-        + (f"Missing required keywords: {', '.join(a['missing_required'][:8])}." if a["missing_required"] else "")
+        + (f"Missing required keywords: {', '.join(a['missing_required'][:8])}. " if a["missing_required"] else "")
+        + _preferred_sentence(a.get("preferred") or {})
     ).strip()
 
     relevant = []
@@ -258,6 +273,8 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: 
     breakdown["_missing_required"] = a["missing_required"]
     breakdown["_resume_source"] = "uploaded resume" if resume_text.strip() else "profile"
     breakdown["_education"] = edu
+    breakdown["_preferred"] = a.get("preferred")
+    breakdown["_experience_bars"] = a.get("experience_bars")
 
     return {
         "score": score,
@@ -272,6 +289,11 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: 
         "relevant_experience": relevant[:6],
         "years_experience": yoe,
     }
+
+
+# Bump when scoring changes so existing jobs are re-scored in the background (scheduler → score_unscored).
+# 2: scored against preferred qualifications (preferred years/degree/skills), any-of lists, example lists.
+SCORING_VERSION = 2
 
 
 def load_tracks(db: Session, user_id: int) -> list:
@@ -326,7 +348,7 @@ def score_job(db: Session, job: Job, profile: Optional[CandidateProfile] = None,
         result = assess(job, profile, resume.text if resume else "")
     result.pop("relevant_experience")
     result.pop("years_experience")
-    m = MatchAssessment(user_id=job.user_id, job_id=job.id, track_id=track_id, **result)
+    m = MatchAssessment(user_id=job.user_id, job_id=job.id, track_id=track_id, scoring_version=SCORING_VERSION, **result)
     db.add(m)
     db.flush()
     return m

@@ -298,8 +298,12 @@ def score_unscored(db: Session, user_id: int, limit: int = 500) -> int:
     from ..models import MatchAssessment
     from .matching import score_jobs
 
-    # "scored" = has an assessment from the current model (older ones lack the education check)
-    scored = db.query(MatchAssessment.job_id).filter(MatchAssessment.user_id == user_id, MatchAssessment.edu_status.isnot(None))
+    from .matching import SCORING_VERSION
+
+    # "scored" = has an assessment from the current scoring model; active jobs first
+    scored = db.query(MatchAssessment.job_id).filter(MatchAssessment.user_id == user_id,
+                                                     MatchAssessment.scoring_version >= SCORING_VERSION)
     ids = [jid for (jid,) in db.query(Job.id).filter(Job.user_id == user_id, Job.duplicate_of_id.is_(None),
-                                                      ~Job.id.in_(scored)).limit(limit)]
+                                                      ~Job.id.in_(scored))
+           .order_by((Job.listing_status == "active").desc(), Job.id.desc()).limit(limit)]
     return score_jobs(db, user_id, ids) if ids else 0

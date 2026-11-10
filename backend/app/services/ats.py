@@ -10,8 +10,11 @@ standard algorithm, so this is a transparent estimate built the same way:
     education               (default 15)  degree level / field required vs. resume
     soft skills             (default 10)
 
-Requirements listed under "Requirements / Qualifications / Must have" weigh
-twice as much as "Preferred / Nice to have". Matching runs against the actual
+Companies shortlist the strongest candidates, not the ones who just clear the bar, so the score measures
+you against both the required and the preferred qualifications: preferred skills count almost as much as
+required ones, experience is full only at the preferred years (for your degree: "MS + 6 years OR BS + 8
+years"), and education is full only at the preferred degree. "C, C++, Java, or Python" lists count once, as
+any-of. Matching runs against the actual
 resume text (the uploaded file, or the tailored version), never against
 anything the candidate hasn't written.
 """
@@ -78,6 +81,8 @@ class Keyword:
     weight: float
     required: bool
     count: int
+    group: str = ""  # one listed qualification: "any…" = "A, B, or C" (any member meets it); "all…" = examples (partial credit)
+    section: str = "general"  # req | pref | general
 
 
 def _variants(term: str) -> list[str]:
@@ -142,6 +147,69 @@ def _dynamic_terms(line: str, company: str) -> list[str]:
     return terms
 
 
+LIST_TRIGGER = re.compile(r"\b(?:such as|including(?:,? but not limited to,?)?|e\.g\.,?|for example|like)\s+", re.I)
+GENERIC_ITEMS = set("""planning design development management systems system tools tool experience knowledge languages
+language production software technologies technology techniques technique methods practices concepts skills areas
+things work projects products services solutions platforms frameworks environments etc others other similar related
+field fields degree years equivalent ability understanding familiarity proficiency applications application""".split())
+
+
+def _clean_item(raw: str) -> list[str]:
+    """'static analysis (SAST)' -> ['static analysis', 'sast']; drops generic words and filler."""
+    out = []
+    for acr in re.findall(r"\(([A-Za-z][A-Za-z0-9+#/ .-]{1,20})\)", raw):
+        out += [a.strip().lower() for a in re.split(r"[/,]", acr) if 2 <= len(a.strip()) <= 12]
+    t = re.sub(r"\([^)]*\)", " ", raw)
+    t = t.strip()
+    while True:  # 'or other program analysis tools' -> 'program analysis tools'
+        t2 = re.sub(r"^(?:and|or|other|the|a|an|any|some|various|etc)\b\s*", "", t, flags=re.I)
+        if t2 == t:
+            break
+        t = t2
+    if re.search(r"\b(?:tools?|systems?|techniques?|methods?)$", t, re.I) and raw.strip().lower().startswith(("or other", "and other", "other")):
+        return out  # 'other … tools' is filler, not a skill
+    t = re.sub(r"\b(?:etc|and so on)\.?$", "", t, flags=re.I).strip(" .;:-")
+    words = t.split()
+    if not words or len(words) > 4 or len(t) > 40 or re.search(r"\d{2,}|years?\b", t, re.I):
+        return out
+    low = t.lower()
+    if len(words) == 1:
+        if low in GENERIC_ITEMS or low in STOPWORDS or (len(low) < 6 and not re.fullmatch(r"[A-Z][A-Z0-9+#]{1,5}s?", t)):
+            if low not in SKILL_VOCAB:
+                return out
+    elif all(w.lower() in GENERIC_ITEMS or w.lower() in STOPWORDS for w in words):
+        return out
+    return [low] + out
+
+
+def list_items(line: str) -> tuple[list[str], str]:
+    """Items of an enumerated list in a requirement line, and whether it's an any-of ('…, or X') list.
+
+    'Experience with techniques such as taint analysis, fuzzing, or symbolic execution' ->
+    (['taint analysis', 'fuzzing', 'symbolic execution'], 'any'); an and-list of examples gives 'all';
+    lines without a list give ([], '').
+    """
+    for sent in re.split(r"(?<=[.;])\s+", line):
+        m = LIST_TRIGGER.search(sent)
+        body = sent[m.end():] if m else sent
+        if body.count(",") < (1 if m else 2):
+            continue
+        parts = [x for x in re.split(r",\s*|\s*;\s*", body.rstrip(". ")) if x.strip()]
+        if not m:  # 'Experience building or working on security scanners, static analysis, …': keep the head noun
+            parts[0] = " ".join(parts[0].split()[-2:])
+        any_of = bool(re.match(r"\s*or\b", parts[-1], re.I)) or bool(re.search(r",\s*or\s", body))
+        items = []
+        for part in parts:
+            for piece in re.split(r"^or\s+|\s+or\s+", part) if any_of else [part]:
+                halves = re.split(r"\s+and\s+", piece)  # 'authentication and authorization' -> both
+                for half in (halves if len(halves) == 2 and all(0 < len(x.split()) <= 3 for x in halves) else [piece]):
+                    items += _clean_item(half)
+        items = list(dict.fromkeys(items))
+        if len(items) >= 2:
+            return items, ("any" if any_of else "all" if len(items) >= 3 else "")
+    return [], ""
+
+
 def extract_keywords(jd_text: str, company: str = "", extra_vocab: tuple[str, ...] = ()) -> list[Keyword]:
     segs = _segments(jd_text or "")
     counts: Counter = Counter()
@@ -149,11 +217,21 @@ def extract_keywords(jd_text: str, company: str = "", extra_vocab: tuple[str, ..
     kinds: dict[str, str] = {}
     rank = {"req": 3, "general": 2, "pref": 1, "other": 0}
     vocab_extra = tuple(BUSINESS_VOCAB) + tuple(extra_vocab)
-    for cls, line in segs:
+    from_lists: set[str] = set()
+    groups: dict[str, set[str]] = {}  # term -> any-of lists it appears in ("" = appears on its own somewhere)
+    for li, (cls, line) in enumerate(segs):
         if cls == "other":
             continue
         low = line.lower()
         found = set(find_skills(low, extra=vocab_extra))
+        items, mode = list_items(line) if cls in ("req", "pref") else ([], "")
+        for it in items:
+            if not any(it == f or f" {it} " in f" {f} " for f in found):
+                found.add(it)
+                from_lists.add(it)
+        in_group = {t for t in found if mode and any(t == it or t in it or it in t for it in items)}
+        for t in found:
+            groups.setdefault(t, set()).add(f"{mode}{li}" if t in in_group else "")
         # drop terms that are substrings of longer found terms ("integrations" when "api integrations" present)
         found = {t for t in found if not any(t != o and f" {t} " in f" {o} " for o in found)}
         for t in found:
@@ -179,11 +257,14 @@ def extract_keywords(jd_text: str, company: str = "", extra_vocab: tuple[str, ..
     out = []
     for term, n in counts.items():
         cls = best_cls.get(term, "general")
-        w = {"req": 2.0, "general": 1.5, "pref": 1.0}.get(cls, 1.0) + (0.5 if n >= 3 else 0)
-        out.append(Keyword(term, kinds[term], w, cls == "req", n))
-    # dynamic one-off acronyms are noisy: keep them only if repeated or in requirements
+        # preferred qualifications are what separate shortlisted candidates, so they weigh nearly as much
+        w = {"req": 2.0, "general": 1.5, "pref": 1.6}.get(cls, 1.0) + (0.5 if n >= 3 else 0)
+        g = groups.get(term, {""})
+        group = sorted(g)[0] if "" not in g else ""
+        out.append(Keyword(term, kinds[term], w, cls == "req", n, group, cls))
+    # dynamic one-off acronyms are noisy: keep them only if repeated or in required/preferred lists
     out = [k for k in out if not (k.term not in SKILL_VOCAB and k.term not in vocab_extra and k.kind == "hard"
-                                  and k.count < 2 and not k.required)]
+                                  and k.count < 2 and k.section not in ("req", "pref") and k.term not in from_lists)]
     out.sort(key=lambda k: (-k.weight, -k.count, k.term))
     return out[:45]
 
@@ -347,12 +428,88 @@ def required_years(jd: str) -> Optional[int]:
     return min(vals) if vals else None
 
 
+_PREF_WORDS = re.compile(r"prefer|\bplus\b|nice to have|desired|desirable|ideally|bonus|advantage", re.I)
+_YEARS_RX = re.compile(r"(\d{1,2})\s*\+?\s*(?:-\s*\d{1,2}\s*)?(?:\+\s*)?(?:years|yrs)", re.I)
+
+
+def qualification_paths(jd: str) -> list[dict]:
+    """Each degree/years combination the posting states, e.g. a preferred section with "Master's AND 6+ years"
+    and "OR Bachelor's AND 8+ years" gives two preferred paths. section: req | pref."""
+    out = []
+    for cls, sent in _sentences(jd):
+        if cls == "other":
+            continue
+        yrs = [int(x) for x in _YEARS_RX.findall(sent) if 0 < int(x) <= 20]
+        if not yrs:
+            continue
+        lv = degree_levels(sent)
+        section = "pref" if cls == "pref" or _PREF_WORDS.search(sent) else "req"
+        out.append({"section": section, "degree": min(lv) if lv else 0, "years": min(yrs)})
+    return out
+
+
+def _years_for(paths: list[dict], have_degree: int) -> Optional[dict]:
+    """The easiest path open to you: the fewest years among paths whose degree you hold."""
+    if not paths:
+        return None
+    open_ = [p for p in paths if p["degree"] <= have_degree] or paths
+    best = min(open_, key=lambda p: p["years"])
+    alts = sorted({(p["degree"], p["years"]) for p in paths if (p["degree"], p["years"]) != (best["degree"], best["years"])})
+    return {**best, "alternatives": [{"degree": d, "years": y} for d, y in alts]}
+
+
+def experience_bars(jd: str, have_degree: int) -> dict:
+    """Required and preferred years for someone with your degree (None when the posting states none)."""
+    paths = qualification_paths(jd)
+    req = _years_for([p for p in paths if p["section"] == "req"], have_degree)
+    pref = _years_for([p for p in paths if p["section"] == "pref"], have_degree)
+    if req and pref and pref["years"] <= req["years"]:
+        pref = None
+    return {"required": req, "preferred": pref}
+
+
+def _path_text(p: dict) -> str:
+    deg = {1: " with a bachelor's", 2: " with a master's", 3: " with a PhD"}.get(p["degree"], "")
+    alts = [f"{a['years']}+ with {DEGREE_NAMES[a['degree']]}" for a in p.get("alternatives", []) if a["degree"]]
+    return f"{p['years']}+ years{deg}" + (f" (or {', '.join(alts)})" if alts else "")
+
+
+def experience_score(have_y: Optional[float], bars: dict) -> tuple[float, str]:
+    """Full marks only at the preferred years: clearing the minimum is ~75%, the rest comes with the preferred."""
+    req, pref = bars["required"], bars["preferred"]
+    if not req and not pref:
+        return 1.0, "Posting doesn't state years of experience."
+    ask = "; ".join(x for x in [f"requires {_path_text(req)}" if req else "", f"prefers {_path_text(pref)}" if pref else ""] if x)
+    ask = ask[0].upper() + ask[1:]
+    if have_y is None:
+        return 0.5, f"{ask}. No date ranges found in your resume to compare."
+    r = req["years"] if req else 0
+    if r and have_y < r:
+        return 0.75 * have_y / r, f"{ask}. Your resume's dates add up to about {have_y} years — below the minimum."
+    if not pref:
+        return 1.0, f"{ask}. You have about {have_y} years — meets it."
+    pf = pref["years"]
+    if have_y >= pf:
+        return 1.0, f"{ask}. You have about {have_y} years — meets the preferred bar."
+    s = 0.75 + 0.25 * max(0.0, (have_y - r) / (pf - r))
+    short = round(pf - have_y, 1)
+    return s, f"{ask}. You have about {have_y} years: {'meets the minimum, ' if r else ''}{short:g} short of the preferred."
+
+
 TITLE_NOISE = {"senior", "sr", "junior", "jr", "staff", "lead", "principal", "ii", "iii", "iv", "i", "associate",
                "intern", "internship", "remote", "hybrid", "contract", "full", "time", "part", "new", "grad"}
 
 
+def _role_part(job_title: str) -> str:
+    """'Senior Software Engineer - MDASH' -> 'Senior Software Engineer': a one-word suffix after a dash or in
+    parentheses is a team / product / requisition tag, not part of the role."""
+    t = re.sub(r"\s*\((?:[^()\s]+)\)\s*$", "", job_title or "")
+    m = re.match(r"^(.*\S)\s+[-–—|]\s+([^\s-]+)$", t)
+    return m.group(1) if m else t
+
+
 def _title_score(job_title: str, resume_text: str, targets: list[str]) -> tuple[float, str]:
-    core = [t for t in re.findall(r"[a-z0-9+#]+", job_title.lower()) if t not in TITLE_NOISE and t not in STOPWORDS]
+    core = [t for t in re.findall(r"[a-z0-9+#]+", _role_part(job_title).lower()) if t not in TITLE_NOISE and t not in STOPWORDS]
     if not core:
         return 0.5, "Job title has no distinctive words (neutral)."
     low = resume_text.lower()
@@ -370,6 +527,37 @@ def _title_score(job_title: str, resume_text: str, targets: list[str]) -> tuple[
     return round(ratio, 2), note
 
 
+def _units(items: list[Keyword]) -> list[list[Keyword]]:
+    """Keywords grouped for scoring: one unit per any-of list, one per standalone term."""
+    by_group: dict[str, list[Keyword]] = {}
+    units: list[list[Keyword]] = []
+    for k in items:
+        if k.group:
+            if k.group not in by_group:
+                by_group[k.group] = []
+                units.append(by_group[k.group])
+            by_group[k.group].append(k)
+        else:
+            units.append([k])
+    return units
+
+
+def _unit_weight(u: list[Keyword]) -> float:
+    """A listed qualification counts a bit more than one stray keyword, but far less than all its examples."""
+    return max(k.weight for k in u) * (1.5 if len(u) > 1 and u[0].group.startswith("all") else 1.0)
+
+
+def _unit_share(u: list[Keyword], got: list[Keyword]) -> float:
+    n = sum(1 for k in u if k in got)
+    if u[0].group.startswith("all") and len(u) > 1:
+        return min(1.0, n / max(2, (len(u) + 1) // 2))  # knowing half the examples is full marks
+    return 1.0 if n else 0.0
+
+
+def _found(norm: str, k: Keyword) -> bool:
+    return has_soft(norm, k.term) if k.kind == "soft" else has_term(norm, k.term)
+
+
 def score(resume_text: str, job_title: str, jd_text: str, company: str = "", weights: Optional[dict] = None,
           targets: Optional[list[str]] = None, degrees: Optional[list[str]] = None) -> dict:
     w = {"keywords": 45, "title": 15, "experience": 15, "education": 15, "soft_skills": 10}
@@ -381,32 +569,52 @@ def score(resume_text: str, job_title: str, jd_text: str, company: str = "", wei
     soft = [k for k in kws if k.kind == "soft"]
 
     def coverage(items):
+        """Weighted share of the posting's terms you have; an any-of list counts once, met by any member."""
         if not items:
             return None, [], []
-        got = [k for k in items if (has_soft(norm, k.term) if k.kind == "soft" else has_term(norm, k.term))]
-        miss = [k for k in items if k not in got]
-        return sum(k.weight for k in got) / sum(k.weight for k in items), got, miss
+        units = _units(items)
+        got = [k for k in items if _found(norm, k)]
+        miss = [k for u in units for k in u if k not in got and not (u[0].group.startswith("any") and any(x in got for x in u))]
+        total = sum(_unit_weight(u) for u in units)
+        return sum(_unit_weight(u) * _unit_share(u, got) for u in units) / total, got, miss
 
     hard_s, hard_got, hard_miss = coverage(hard)
     soft_s, soft_got, soft_miss = coverage(soft)
     title_s, title_note = _title_score(job_title, resume_text, targets or [])
 
-    req_y = required_years(jd_text)
     have_y = resume_years(resume_text)
-    if req_y is None:
-        exp_s, exp_note = 1.0, "Posting doesn't state required years."
-    elif have_y is None:
-        exp_s, exp_note = 0.5, f"Posting asks for {req_y}+ years; no date ranges found in your resume."
-    else:
-        exp_s = 1.0 if have_y >= req_y else max(0.0, have_y / req_y)
-        exp_note = f"Posting asks for {req_y}+ years; your resume's dates add up to about {have_y} years."
-
     edu = education_match(jd_text, resume_text, degrees)
+    bars = experience_bars(jd_text, edu["have"])
+    exp_s, exp_note = experience_score(have_y, bars)
     edu_s, edu_note = edu["score"], edu["note"]
+    pf = edu["preferred"]
+    pref_bar = bars["preferred"]
+    # a higher preferred degree is a gap unless a preferred path is open with your degree (e.g. "OR BS + 8 years")
+    degree_gap = bool(pf and edu["have"] and edu["have"] < pf and edu["status"] in ("meets", "exceeds", "none")
+                      and not (pref_bar and pref_bar["degree"] <= edu["have"] and pref_bar["degree"] > 0))
+    if degree_gap:
+        edu_s = min(edu_s, 0.8)
+        edu_note = edu_note.rstrip(".") + f"; {DEGREE_NAMES[pf]} is preferred."
+
+    pref_kw = [k for k in hard if k.section == "pref"]
+    pref_units = _units(pref_kw)
+    pref_got = [k for k in pref_kw if _found(norm, k)]
+    pref_found = [u for u in pref_units if _unit_share(u, pref_got) >= 0.5]
+    preferred = {
+        "skills_total": len(pref_units), "skills_found": len(pref_found),
+        "missing": [(" or " if u[0].group.startswith("any") else ", ").join(k.term for k in u if k not in pref_got)
+                    for u in pref_units if u not in pref_found],
+        "years": pref_bar["years"] if pref_bar else None,
+        "meets_years": (have_y is not None and have_y >= pref_bar["years"]) if pref_bar else None,
+        "degree": pf or None, "meets_degree": (not degree_gap) if pf else None,
+        # the preferred degree is above yours but a preferred path with your degree exists ("OR BS + 8 years")
+        "degree_route_years": pref_bar["years"] if (pf and edu["have"] and edu["have"] < pf and not degree_gap and pref_bar) else None,
+    }
 
     comps = {
         "keywords": (hard_s if hard_s is not None else 0.5,
-                     f"{len(hard_got)} of {len(hard)} skills/keywords from the posting appear in your resume." if hard else "No hard-skill keywords found in the posting."),
+                     f"{sum(1 for u in _units(hard) if _unit_share(u, hard_got) >= 0.5)} of {len(_units(hard))} qualifications and keywords "
+                     f"from the posting (required and preferred) appear in your resume." if hard else "No hard-skill keywords found in the posting."),
         "title": (title_s, title_note),
         "experience": (exp_s, exp_note),
         "education": (edu_s, edu_note),
@@ -424,10 +632,12 @@ def score(resume_text: str, job_title: str, jd_text: str, company: str = "", wei
         "missing_required": [k.term for k in hard_miss if k.required],
         "soft_matched": [k.term for k in soft_got],
         "soft_missing": [k.term for k in soft_miss],
-        "keywords": [{"term": k.term, "kind": k.kind, "required": k.required, "weight": k.weight,
-                      "found": has_soft(norm, k.term) if k.kind == "soft" else has_term(norm, k.term)} for k in kws],
+        "keywords": [{"term": k.term, "kind": k.kind, "required": k.required, "weight": k.weight, "section": k.section,
+                      "any_of": k.group.startswith("any"), "found": _found(norm, k)} for k in kws],
         "resume_years": have_y,
         "education": edu,
+        "experience_bars": bars,
+        "preferred": preferred,
         "weights": w,
         "computed_at": datetime.now(timezone.utc).isoformat(),
     }
