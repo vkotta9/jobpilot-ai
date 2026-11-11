@@ -1,0 +1,7173 @@
+[
+ {
+  "category": "AI & ML",
+  "company": "Cognition",
+  "tried": [
+   "cognition"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "cognition",
+   "jobs": 116,
+   "reported": "Cognition"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "cognition",
+    "jobs": 116,
+    "reported": "Cognition"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Black Forest Labs",
+  "tried": [
+   "blackforestlabs",
+   "blackforest",
+   "black-forest-labs"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "black-forest-labs",
+   "jobs": 14,
+   "reported": "Black Forest Labs"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "black-forest-labs",
+    "jobs": 14,
+    "reported": "Black Forest Labs"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Typeface",
+  "tried": [
+   "typeface"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "typeface",
+   "jobs": 18,
+   "reported": "Typeface"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "typeface",
+    "jobs": 18,
+    "reported": "Typeface"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "OpenEvidence",
+  "tried": [
+   "openevidence"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "openevidence",
+   "jobs": 8,
+   "reported": "Openevidence"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "openevidence",
+    "jobs": 8,
+    "reported": "Openevidence"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Reka",
+  "tried": [
+   "reka"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "reka",
+   "jobs": 9,
+   "reported": "Reka"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "reka",
+    "jobs": 9,
+    "reported": "Reka"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Imbue",
+  "tried": [
+   "imbue"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "imbue",
+   "jobs": 2,
+   "reported": "Imbue"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "imbue",
+    "jobs": 2,
+    "reported": "Imbue"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Tome",
+  "tried": [
+   "tome"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Hume AI",
+  "tried": [
+   "humeai",
+   "hume",
+   "hume-ai"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "humeai",
+   "jobs": 5,
+   "reported": "Hume AI"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "humeai",
+    "jobs": 5,
+    "reported": "Hume AI"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "hume-ai",
+    "jobs": 5,
+    "reported": "Hume Ai"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Together AI",
+  "tried": [
+   "togetherai",
+   "together",
+   "together-ai"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "togetherai",
+   "jobs": 80,
+   "reported": "Together AI"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "togetherai",
+    "jobs": 80,
+    "reported": "Together AI"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Lightmatter",
+  "tried": [
+   "lightmatter"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "lightmatter",
+   "jobs": 59,
+   "reported": "Lightmatter"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "lightmatter",
+    "jobs": 59,
+    "reported": "Lightmatter"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "LlamaIndex",
+  "tried": [
+   "llamaindex"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "llamaindex",
+   "jobs": 4,
+   "reported": "Llamaindex"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "llamaindex",
+    "jobs": 4,
+    "reported": "Llamaindex"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Braintrust",
+  "tried": [
+   "braintrust"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "braintrust",
+   "jobs": 32,
+   "reported": "Braintrust"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "braintrust",
+    "jobs": 32,
+    "reported": "Braintrust"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Voltage Park",
+  "tried": [
+   "voltagepark",
+   "voltage-park"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "WorkOS",
+  "tried": [
+   "workos"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "workos",
+   "jobs": 27,
+   "reported": "Workos"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "workos",
+    "jobs": 27,
+    "reported": "Workos"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Sigma Computing",
+  "tried": [
+   "sigmacomputing",
+   "sigma-computing"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "sigmacomputing",
+   "jobs": 82,
+   "reported": "Sigma Computing"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "sigmacomputing",
+    "jobs": 82,
+    "reported": "Sigma Computing"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Honeycomb",
+  "tried": [
+   "honeycomb"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "honeycomb",
+   "jobs": 22,
+   "reported": "Honeycomb.io"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "honeycomb",
+    "jobs": 22,
+    "reported": "Honeycomb.io"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "CodeRabbit",
+  "tried": [
+   "coderabbit"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "coderabbit",
+   "jobs": 54,
+   "reported": "Coderabbit"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "coderabbit",
+    "jobs": 54,
+    "reported": "Coderabbit"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "SingleStore",
+  "tried": [
+   "singlestore"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "singlestore",
+   "jobs": 39,
+   "reported": "SingleStore"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "singlestore",
+    "jobs": 39,
+    "reported": "SingleStore"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Bun",
+  "tried": [
+   "bun"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Hasura",
+  "tried": [
+   "hasura"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Pitch",
+  "tried": [
+   "pitch"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Sanity",
+  "tried": [
+   "sanity"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "sanity",
+   "jobs": 30,
+   "reported": "Sanity"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "sanity",
+    "jobs": 30,
+    "reported": "Sanity"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Bilt Rewards",
+  "tried": [
+   "biltrewards",
+   "bilt-rewards"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Fireblocks",
+  "tried": [
+   "fireblocks"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "fireblocks",
+   "jobs": 22,
+   "reported": "Fireblocks"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "fireblocks",
+    "jobs": 22,
+    "reported": "Fireblocks"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Consensys",
+  "tried": [
+   "consensys"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "consensys",
+   "jobs": 11,
+   "reported": "MetaMask"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "consensys",
+    "jobs": 11,
+    "reported": "MetaMask"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "consensys",
+    "jobs": 6,
+    "reported": "Consensys"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Airwallex",
+  "tried": [
+   "airwallex"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "airwallex",
+   "jobs": 485,
+   "reported": "Airwallex"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "airwallex",
+    "jobs": 485,
+    "reported": "Airwallex"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Capchase",
+  "tried": [
+   "capchase"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "capchase",
+   "jobs": 7,
+   "reported": "Capchase"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "capchase",
+    "jobs": 7,
+    "reported": "Capchase"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Wiz",
+  "tried": [
+   "wiz"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Security",
+  "company": "Huntress",
+  "tried": [
+   "huntress"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "huntress",
+   "jobs": 46,
+   "reported": "Huntress Labs"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "huntress",
+    "jobs": 46,
+    "reported": "Huntress Labs"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Aqua Security",
+  "tried": [
+   "aquasecurity",
+   "aqua",
+   "aqua-security"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Security",
+  "company": "Apiiro",
+  "tried": [
+   "apiiro"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "apiiro",
+   "jobs": 4,
+   "reported": "Apiiro"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "apiiro",
+    "jobs": 4,
+    "reported": "Apiiro"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Aikido",
+  "tried": [
+   "aikido"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Garner Health",
+  "tried": [
+   "garnerhealth",
+   "garner",
+   "garner-health"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "garnerhealth",
+   "jobs": 60,
+   "reported": "Garner Health"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "garnerhealth",
+    "jobs": 60,
+    "reported": "Garner Health"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Cerebral",
+  "tried": [
+   "cerebral"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Nourish",
+  "tried": [
+   "nourish"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Suki",
+  "tried": [
+   "suki"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "suki",
+   "jobs": 9,
+   "reported": "Suki"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "suki",
+    "jobs": 9,
+    "reported": "Suki"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Shield AI",
+  "tried": [
+   "shieldai",
+   "shield",
+   "shield-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "shield",
+   "jobs": 706,
+   "reported": "Shield"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "shieldai",
+    "jobs": 668,
+    "reported": "Shieldai"
+   },
+   {
+    "kind": "greenhouse",
+    "identifier": "shield",
+    "jobs": 1,
+    "reported": "S.H.I.E.L.D."
+   },
+   {
+    "kind": "ashby",
+    "identifier": "shield",
+    "jobs": 706,
+    "reported": "Shield"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Relativity Space",
+  "tried": [
+   "relativityspace",
+   "relativity",
+   "relativity-space"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "relativity",
+   "jobs": 410,
+   "reported": "Relativity Space"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "relativity",
+    "jobs": 410,
+    "reported": "Relativity Space"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Skild AI",
+  "tried": [
+   "skildai",
+   "skild",
+   "skild-ai"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Apex Space",
+  "tried": [
+   "apexspace",
+   "apex",
+   "apex-space"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "apex",
+   "jobs": 1,
+   "reported": "Apex Eye"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "apex",
+    "jobs": 1,
+    "reported": "Apex Eye"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Mach Industries",
+  "tried": [
+   "machindustries",
+   "mach",
+   "mach-industries"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "machindustries",
+   "jobs": 180,
+   "reported": "Mach Industries"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "machindustries",
+    "jobs": 180,
+    "reported": "Mach Industries"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Helion",
+  "tried": [
+   "helion"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "helion",
+   "jobs": 65,
+   "reported": "Helion"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "helion",
+    "jobs": 65,
+    "reported": "Helion"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Heirloom",
+  "tried": [
+   "heirloom"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Lilac Solutions",
+  "tried": [
+   "lilacsolutions",
+   "lilac-solutions"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Patreon",
+  "tried": [
+   "patreon"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "patreon",
+   "jobs": 21,
+   "reported": "Patreon"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "patreon",
+    "jobs": 21,
+    "reported": "Patreon"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Masterclass",
+  "tried": [
+   "masterclass"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "SevenRooms",
+  "tried": [
+   "sevenrooms"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Ashby",
+  "tried": [
+   "ashby"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "ashby",
+   "jobs": 75,
+   "reported": "Ashby"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "ashby",
+    "jobs": 75,
+    "reported": "Ashby"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Workrise",
+  "tried": [
+   "workrise"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Mural",
+  "tried": [
+   "mural"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "mural",
+   "jobs": 12,
+   "reported": "Mural"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "mural",
+    "jobs": 12,
+    "reported": "Mural"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Highspot",
+  "tried": [
+   "highspot"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Sierra",
+  "tried": [
+   "sierra"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "sierra",
+   "jobs": 201,
+   "reported": "Sierra"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "sierra",
+    "jobs": 201,
+    "reported": "Sierra"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Synthesia",
+  "tried": [
+   "synthesia"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "synthesia",
+   "jobs": 32,
+   "reported": "Synthesia"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "synthesia",
+    "jobs": 32,
+    "reported": "Synthesia"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Moveworks",
+  "tried": [
+   "moveworks"
+  ],
+  "best": null,
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "moveworks|wd12|Moveworks",
+    "jobs": 0
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Hippocratic AI",
+  "tried": [
+   "hippocraticai",
+   "hippocratic",
+   "hippocratic-ai"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Contextual AI",
+  "tried": [
+   "contextualai",
+   "contextual",
+   "contextual-ai"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Sakana AI",
+  "tried": [
+   "sakanaai",
+   "sakana",
+   "sakana-ai"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Read AI",
+  "tried": [
+   "readai",
+   "read",
+   "read-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "read-ai",
+   "jobs": 17,
+   "reported": "Read Ai"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "read-ai",
+    "jobs": 17,
+    "reported": "Read Ai"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Cartesia",
+  "tried": [
+   "cartesia"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "cartesia",
+   "jobs": 23,
+   "reported": "Cartesia"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "cartesia",
+    "jobs": 23,
+    "reported": "Cartesia"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Fireworks AI",
+  "tried": [
+   "fireworksai",
+   "fireworks",
+   "fireworks-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "fireworks",
+   "jobs": 93,
+   "reported": "Fireworks"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "fireworks",
+    "jobs": 93,
+    "reported": "Fireworks"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Tenstorrent",
+  "tried": [
+   "tenstorrent"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "tenstorrent",
+   "jobs": 122,
+   "reported": "Tenstorrent"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "tenstorrent",
+    "jobs": 122,
+    "reported": "Tenstorrent"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Weaviate",
+  "tried": [
+   "weaviate"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "weaviate",
+   "jobs": 2,
+   "reported": "Weaviate"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "weaviate",
+    "jobs": 2,
+    "reported": "Weaviate"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Humanloop",
+  "tried": [
+   "humanloop"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Netlify",
+  "tried": [
+   "netlify"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "netlify",
+   "jobs": 5,
+   "reported": "Netlify"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "netlify",
+    "jobs": 5,
+    "reported": "Netlify"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Stytch",
+  "tried": [
+   "stytch"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Hightouch",
+  "tried": [
+   "hightouch"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "hightouch",
+   "jobs": 1,
+   "reported": "Hightouch"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "hightouch",
+    "jobs": 1,
+    "reported": "Hightouch"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Chronosphere",
+  "tried": [
+   "chronosphere"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Retool",
+  "tried": [
+   "retool"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Timescale",
+  "tried": [
+   "timescale"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Deno",
+  "tried": [
+   "deno"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Apollo GraphQL",
+  "tried": [
+   "apollographql",
+   "apollo-graphql"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "apollo-graphql",
+   "jobs": 8,
+   "reported": "Apollo Graphql"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "apollo-graphql",
+    "jobs": 8,
+    "reported": "Apollo Graphql"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Mux",
+  "tried": [
+   "mux"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "mux",
+   "jobs": 2,
+   "reported": "Mux"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "mux",
+    "jobs": 2,
+    "reported": "Mux"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Contentful",
+  "tried": [
+   "contentful"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "contentful",
+   "jobs": 30,
+   "reported": "Contentful"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "contentful",
+    "jobs": 30,
+    "reported": "Contentful"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Alpaca",
+  "tried": [
+   "alpaca"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "alpaca",
+   "jobs": 72,
+   "reported": "Alpaca "
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "alpaca",
+    "jobs": 72,
+    "reported": "Alpaca "
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Anchorage Digital",
+  "tried": [
+   "anchoragedigital",
+   "anchorage-digital"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Circle",
+  "tried": [
+   "circle"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "circle|wd1|Circle",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "circle|wd1|Circle",
+    "jobs": 40
+   },
+   {
+    "kind": "ashby",
+    "identifier": "circle",
+    "jobs": 5,
+    "reported": "Circle"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Melio",
+  "tried": [
+   "melio"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Sardine",
+  "tried": [
+   "sardine"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "sardine",
+   "jobs": 39,
+   "reported": "Sardine"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "sardine",
+    "jobs": 39,
+    "reported": "Sardine"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Semgrep",
+  "tried": [
+   "semgrep"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "semgrep",
+   "jobs": 14,
+   "reported": "Semgrep"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "semgrep",
+    "jobs": 14,
+    "reported": "Semgrep"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Arctic Wolf",
+  "tried": [
+   "arcticwolf",
+   "arctic-wolf"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "arcticwolf|wd1|External",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "arcticwolf|wd1|External",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "arcticwolf|wd1|External",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Sysdig",
+  "tried": [
+   "sysdig"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "sysdig",
+   "jobs": 36,
+   "reported": "Sysdig"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "sysdig",
+    "jobs": 36,
+    "reported": "Sysdig"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Endor Labs",
+  "tried": [
+   "endorlabs",
+   "endor",
+   "endor-labs"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "endorlabs",
+   "jobs": 37,
+   "reported": "Endor Labs"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "endorlabs",
+    "jobs": 37,
+    "reported": "Endor Labs"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Cityblock Health",
+  "tried": [
+   "cityblockhealth",
+   "cityblock",
+   "cityblock-health"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "cityblockhealth|wd1|CityblockExternalCareerSite",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "cityblockhealth|wd1|CityblockExternalCareerSite",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "cityblockhealth|wd1|HomewardExternalCareerSite",
+    "jobs": 1
+   },
+   {
+    "kind": "workday",
+    "identifier": "cityblockhealth|wd1|CityblockExternalCareerSite",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "cityblockhealth|wd1|HomewardExternalCareerSite",
+    "jobs": 1
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Carbon Health",
+  "tried": [
+   "carbonhealth",
+   "carbon",
+   "carbon-health"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Maven Clinic",
+  "tried": [
+   "mavenclinic",
+   "maven-clinic"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "mavenclinic",
+   "jobs": 31,
+   "reported": "Maven Clinic"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "mavenclinic",
+    "jobs": 31,
+    "reported": "Maven Clinic"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Alma",
+  "tried": [
+   "alma"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "alma",
+   "jobs": 22,
+   "reported": "Alma"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "alma",
+    "jobs": 22,
+    "reported": "Alma"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Nabla",
+  "tried": [
+   "nabla"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "nabla",
+   "jobs": 10,
+   "reported": "Nabla"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "nabla",
+    "jobs": 10,
+    "reported": "Nabla"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Saronic",
+  "tried": [
+   "saronic"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "saronic",
+   "jobs": 272,
+   "reported": "Saronic"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "saronic",
+    "jobs": 272,
+    "reported": "Saronic"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Varda Space",
+  "tried": [
+   "vardaspace",
+   "varda",
+   "varda-space"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "vardaspace",
+   "jobs": 126,
+   "reported": "Varda Space Industries"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "vardaspace",
+    "jobs": 126,
+    "reported": "Varda Space Industries"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "1X",
+  "tried": [
+   "1x"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "1x",
+   "jobs": 100,
+   "reported": "1X"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "1x",
+    "jobs": 100,
+    "reported": "1X"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "K2 Space",
+  "tried": [
+   "k2space",
+   "k2",
+   "k2-space"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Neros",
+  "tried": [
+   "neros"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Form Energy",
+  "tried": [
+   "formenergy",
+   "form",
+   "form-energy"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "formenergy",
+   "jobs": 205,
+   "reported": "Formenergy"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "formenergy",
+    "jobs": 205,
+    "reported": "Formenergy"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Electric Hydrogen",
+  "tried": [
+   "electrichydrogen",
+   "electric-hydrogen"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Aurora Solar",
+  "tried": [
+   "aurorasolar",
+   "aurora-solar"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "aurorasolar",
+   "jobs": 7,
+   "reported": "Aurorasolar"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "aurorasolar",
+    "jobs": 7,
+    "reported": "Aurorasolar"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Substack",
+  "tried": [
+   "substack"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "substack",
+   "jobs": 20,
+   "reported": "Substack"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "substack",
+    "jobs": 20,
+    "reported": "Substack"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Outschool",
+  "tried": [
+   "outschool"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "outschool",
+   "jobs": 4,
+   "reported": "Outschool"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "outschool",
+    "jobs": 4,
+    "reported": "Outschool"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Hopper",
+  "tried": [
+   "hopper"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "hopper",
+   "jobs": 23,
+   "reported": "Hopper"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "hopper",
+    "jobs": 23,
+    "reported": "Hopper"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Checkr",
+  "tried": [
+   "checkr"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "checkr",
+   "jobs": 40,
+   "reported": "Checkr"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "checkr",
+    "jobs": 40,
+    "reported": "Checkr"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Wonolo",
+  "tried": [
+   "wonolo"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Lucid",
+  "tried": [
+   "lucid"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Seismic",
+  "tried": [
+   "seismic"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Hebbia",
+  "tried": [
+   "hebbia"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "HeyGen",
+  "tried": [
+   "heygen"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "heygen",
+   "jobs": 19,
+   "reported": "HeyGen"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "heygen",
+    "jobs": 19,
+    "reported": "HeyGen"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Harvey AI",
+  "tried": [
+   "harveyai",
+   "harvey",
+   "harvey-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "harvey",
+   "jobs": 378,
+   "reported": "Harvey"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "harvey",
+    "jobs": 378,
+    "reported": "Harvey"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Mercor",
+  "tried": [
+   "mercor"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "mercor",
+   "jobs": 88,
+   "reported": "Mercor"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "mercor",
+    "jobs": 88,
+    "reported": "Mercor"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Poolside",
+  "tried": [
+   "poolside"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "poolside",
+   "jobs": 4,
+   "reported": "Poolside"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "poolside",
+    "jobs": 4,
+    "reported": "Poolside"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Thinking Machines Lab",
+  "tried": [
+   "thinkingmachineslab",
+   "thinkingmachines",
+   "thinking-machines-lab"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "thinkingmachines",
+   "jobs": 56,
+   "reported": "Thinkingmachines"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "thinkingmachines",
+    "jobs": 56,
+    "reported": "Thinkingmachines"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Otter.ai",
+  "tried": [
+   "otterai",
+   "otter",
+   "otter-ai"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "otter",
+   "jobs": 22,
+   "reported": "Otter"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "otterai",
+    "jobs": 21,
+    "reported": "Otter.ai"
+   },
+   {
+    "kind": "greenhouse",
+    "identifier": "otter",
+    "jobs": 22,
+    "reported": "Otter"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Deepgram",
+  "tried": [
+   "deepgram"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "deepgram",
+   "jobs": 66,
+   "reported": "Deepgram"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "deepgram",
+    "jobs": 66,
+    "reported": "Deepgram"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Baseten",
+  "tried": [
+   "baseten"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "baseten",
+   "jobs": 103,
+   "reported": "Baseten"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "baseten",
+    "jobs": 103,
+    "reported": "Baseten"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "d-Matrix",
+  "tried": [
+   "dmatrix",
+   "d-matrix"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "d-matrix",
+   "jobs": 38,
+   "reported": "D Matrix"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "d-matrix",
+    "jobs": 38,
+    "reported": "D Matrix"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Chroma",
+  "tried": [
+   "chroma"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Vellum",
+  "tried": [
+   "vellum"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Render",
+  "tried": [
+   "render"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "render",
+   "jobs": 35,
+   "reported": "Render"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "render",
+    "jobs": 35,
+    "reported": "Render"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Resend",
+  "tried": [
+   "resend"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "resend",
+   "jobs": 14,
+   "reported": "Resend"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "resend",
+    "jobs": 14,
+    "reported": "Resend"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Census",
+  "tried": [
+   "census"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Cribl",
+  "tried": [
+   "cribl"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "cribl",
+   "jobs": 81,
+   "reported": "Cribl"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "cribl",
+    "jobs": 81,
+    "reported": "Cribl"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Framer",
+  "tried": [
+   "framer"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Redpanda",
+  "tried": [
+   "redpanda"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Expo",
+  "tried": [
+   "expo"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Stainless",
+  "tried": [
+   "stainless"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "LiveKit",
+  "tried": [
+   "livekit"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "livekit",
+   "jobs": 30,
+   "reported": "Livekit"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "livekit",
+    "jobs": 30,
+    "reported": "Livekit"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Strapi",
+  "tried": [
+   "strapi"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Pilot",
+  "tried": [
+   "pilot"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Paxos",
+  "tried": [
+   "paxos"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "paxos",
+   "jobs": 24,
+   "reported": "Paxos"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "paxos",
+    "jobs": 24,
+    "reported": "Paxos"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Deel",
+  "tried": [
+   "deel"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Tipalti",
+  "tried": [
+   "tipalti"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Alloy",
+  "tried": [
+   "alloy"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "alloy",
+   "jobs": 31,
+   "reported": "Alloy"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "alloy",
+    "jobs": 31,
+    "reported": "Alloy"
+   },
+   {
+    "kind": "lever",
+    "identifier": "alloy",
+    "jobs": 4,
+    "reported": "Alloy"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "alloy",
+    "jobs": 31,
+    "reported": "Alloy"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Socket",
+  "tried": [
+   "socket"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "socket",
+   "jobs": 25,
+   "reported": "Socket"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "socket",
+    "jobs": 1,
+    "reported": "Socket"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "socket",
+    "jobs": 25,
+    "reported": "Socket"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Coalition",
+  "tried": [
+   "coalition"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "coalition",
+   "jobs": 44,
+   "reported": "Coalition, Inc."
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "coalition",
+    "jobs": 44,
+    "reported": "Coalition, Inc."
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Axonius",
+  "tried": [
+   "axonius"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "axonius",
+   "jobs": 20,
+   "reported": "Axonius"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "axonius",
+    "jobs": 20,
+    "reported": "Axonius"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Oligo",
+  "tried": [
+   "oligo"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "oligo",
+   "jobs": 4,
+   "reported": "Oligo"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "oligo",
+    "jobs": 4,
+    "reported": "Oligo"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Devoted Health",
+  "tried": [
+   "devotedhealth",
+   "devoted",
+   "devoted-health"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "devoted|wd1|Devoted",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "devoted|wd1|Devoted",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Included Health",
+  "tried": [
+   "includedhealth",
+   "included",
+   "included-health"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "includedhealth",
+   "jobs": 46,
+   "reported": "Includedhealth"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "includedhealth",
+    "jobs": 46,
+    "reported": "Includedhealth"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Omada Health",
+  "tried": [
+   "omadahealth",
+   "omada",
+   "omada-health"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "omadahealth",
+   "jobs": 19,
+   "reported": "Omada Health"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "omadahealth",
+    "jobs": 19,
+    "reported": "Omada Health"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Grow Therapy",
+  "tried": [
+   "growtherapy",
+   "grow-therapy"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "grow-therapy",
+   "jobs": 31,
+   "reported": "Grow Therapy"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "grow-therapy",
+    "jobs": 31,
+    "reported": "Grow Therapy"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Freenome",
+  "tried": [
+   "freenome"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "freenome",
+   "jobs": 29,
+   "reported": "Freenome"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "freenome",
+    "jobs": 29,
+    "reported": "Freenome"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Hadrian",
+  "tried": [
+   "hadrian"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Hermeus",
+  "tried": [
+   "hermeus"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "hermeus",
+   "jobs": 80,
+   "reported": "Hermeus"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "hermeus",
+    "jobs": 80,
+    "reported": "Hermeus"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Apptronik",
+  "tried": [
+   "apptronik"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "apptronik",
+   "jobs": 88,
+   "reported": "Apptronik"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "apptronik",
+    "jobs": 88,
+    "reported": "Apptronik"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Impulse Space",
+  "tried": [
+   "impulsespace",
+   "impulse",
+   "impulse-space"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "impulse",
+   "jobs": 2,
+   "reported": "Impulse"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "impulse",
+    "jobs": 2,
+    "reported": "Impulse"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Overland AI",
+  "tried": [
+   "overlandai",
+   "overland",
+   "overland-ai"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Redwood Materials",
+  "tried": [
+   "redwoodmaterials",
+   "redwood-materials"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "redwoodmaterials",
+   "jobs": 123,
+   "reported": "Redwood Materials"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "redwoodmaterials",
+    "jobs": 123,
+    "reported": "Redwood Materials"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Fervo Energy",
+  "tried": [
+   "fervoenergy",
+   "fervo",
+   "fervo-energy"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "fervoenergy",
+   "jobs": 72,
+   "reported": "Fervo Energy"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "fervoenergy",
+    "jobs": 72,
+    "reported": "Fervo Energy"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Pachama",
+  "tried": [
+   "pachama"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Cameo",
+  "tried": [
+   "cameo"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "cameo",
+   "jobs": 1,
+   "reported": "Cameo"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "cameo",
+    "jobs": 1,
+    "reported": "Cameo"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Handshake",
+  "tried": [
+   "handshake"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "handshake",
+   "jobs": 77,
+   "reported": "Handshake"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "handshake",
+    "jobs": 77,
+    "reported": "Handshake"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Pacaso",
+  "tried": [
+   "pacaso"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "pacaso",
+   "jobs": 6,
+   "reported": "Pacaso "
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "pacaso",
+    "jobs": 6,
+    "reported": "Pacaso "
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Justworks",
+  "tried": [
+   "justworks"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "justworks",
+   "jobs": 108,
+   "reported": "Justworks"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "justworks",
+    "jobs": 108,
+    "reported": "Justworks"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Instawork",
+  "tried": [
+   "instawork"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "instawork",
+   "jobs": 53,
+   "reported": "Instawork"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "instawork",
+    "jobs": 53,
+    "reported": "Instawork"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Pylon",
+  "tried": [
+   "pylon"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "pylon",
+   "jobs": 26,
+   "reported": "Pylon"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "pylon",
+    "jobs": 26,
+    "reported": "Pylon"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Attio",
+  "tried": [
+   "attio"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "attio",
+   "jobs": 24,
+   "reported": "Attio"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "attio",
+    "jobs": 24,
+    "reported": "Attio"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Decagon",
+  "tried": [
+   "decagon"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "decagon",
+   "jobs": 127,
+   "reported": "Decagon"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "decagon",
+    "jobs": 127,
+    "reported": "Decagon"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Captions",
+  "tried": [
+   "captions"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "EvenUp",
+  "tried": [
+   "evenup"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Surge AI",
+  "tried": [
+   "surgeai",
+   "surge",
+   "surge-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "surge-ai",
+   "jobs": 35,
+   "reported": "Surge Ai"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "surge-ai",
+    "jobs": 35,
+    "reported": "Surge Ai"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Augment Code",
+  "tried": [
+   "augmentcode",
+   "augment-code"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Safe Superintelligence",
+  "tried": [
+   "safesuperintelligence",
+   "safe-superintelligence"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Fireflies.ai",
+  "tried": [
+   "firefliesai",
+   "fireflies",
+   "fireflies-ai"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "AssemblyAI",
+  "tried": [
+   "assemblyai"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "assemblyai",
+   "jobs": 19,
+   "reported": "AssemblyAI"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "assemblyai",
+    "jobs": 19,
+    "reported": "AssemblyAI"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Anyscale",
+  "tried": [
+   "anyscale"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "anyscale",
+   "jobs": 24,
+   "reported": "Anyscale"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "anyscale",
+    "jobs": 24,
+    "reported": "Anyscale"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Rain AI",
+  "tried": [
+   "rainai",
+   "rain",
+   "rain-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "rain",
+   "jobs": 42,
+   "reported": "Rain"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "rain",
+    "jobs": 42,
+    "reported": "Rain"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Qdrant",
+  "tried": [
+   "qdrant"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Predibase",
+  "tried": [
+   "predibase"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Railway",
+  "tried": [
+   "railway"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "railway",
+   "jobs": 7,
+   "reported": "Railway"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "railway",
+    "jobs": 7,
+    "reported": "Railway"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Inngest",
+  "tried": [
+   "inngest"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "inngest",
+   "jobs": 2,
+   "reported": "Inngest"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "inngest",
+    "jobs": 2,
+    "reported": "Inngest"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "RudderStack",
+  "tried": [
+   "rudderstack"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Postman",
+  "tried": [
+   "postman"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "postman|wd108|careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "postman|wd108|careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Coda",
+  "tried": [
+   "coda"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "StreamNative",
+  "tried": [
+   "streamnative"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "streamnative",
+   "jobs": 3,
+   "reported": "StreamNative"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "streamnative",
+    "jobs": 3,
+    "reported": "StreamNative"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Appsmith",
+  "tried": [
+   "appsmith"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Speakeasy",
+  "tried": [
+   "speakeasy"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "speakeasy",
+   "jobs": 5,
+   "reported": "Speakeasy"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "speakeasy",
+    "jobs": 5,
+    "reported": "Speakeasy"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Agora",
+  "tried": [
+   "agora"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Ramp",
+  "tried": [
+   "ramp"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "ramp",
+   "jobs": 176,
+   "reported": "Ramp"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "ramp",
+    "jobs": 1,
+    "reported": "RAMP"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "ramp",
+    "jobs": 176,
+    "reported": "Ramp"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Puzzle",
+  "tried": [
+   "puzzle"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Ripple",
+  "tried": [
+   "ripple"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "ripple",
+   "jobs": 115,
+   "reported": "Ripple "
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "ripple",
+    "jobs": 115,
+    "reported": "Ripple "
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Rippling",
+  "tried": [
+   "rippling"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Stash",
+  "tried": [
+   "stash"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Persona",
+  "tried": [
+   "persona"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "persona",
+   "jobs": 14,
+   "reported": "Persona"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "persona",
+    "jobs": 14,
+    "reported": "Persona"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Chainguard",
+  "tried": [
+   "chainguard"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "chainguard",
+   "jobs": 106,
+   "reported": "Chainguard"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "chainguard",
+    "jobs": 106,
+    "reported": "Chainguard"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Abnormal",
+  "tried": [
+   "abnormal"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Security",
+  "company": "Expel",
+  "tried": [
+   "expel"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "expel",
+   "jobs": 6,
+   "reported": "Expel"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "expel",
+    "jobs": 6,
+    "reported": "Expel"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Legit Security",
+  "tried": [
+   "legitsecurity",
+   "legit",
+   "legit-security"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Sword Health",
+  "tried": [
+   "swordhealth",
+   "sword",
+   "sword-health"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "swordhealth",
+   "jobs": 50,
+   "reported": "Sword"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "swordhealth",
+    "jobs": 50,
+    "reported": "Sword"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Nomi Health",
+  "tried": [
+   "nomihealth",
+   "nomi",
+   "nomi-health"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "nomihealth",
+   "jobs": 3,
+   "reported": "Nomihealth"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "nomihealth",
+    "jobs": 3,
+    "reported": "Nomihealth"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Virta Health",
+  "tried": [
+   "virtahealth",
+   "virta",
+   "virta-health"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "virtahealth",
+   "jobs": 23,
+   "reported": "Virtahealth"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "virtahealth",
+    "jobs": 23,
+    "reported": "Virtahealth"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Rula",
+  "tried": [
+   "rula"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "rula",
+   "jobs": 27,
+   "reported": "Rula"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "rula",
+    "jobs": 27,
+    "reported": "Rula"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Insitro",
+  "tried": [
+   "insitro"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "insitro",
+   "jobs": 13,
+   "reported": "Insitro"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "insitro",
+    "jobs": 13,
+    "reported": "Insitro"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Applied Intuition",
+  "tried": [
+   "appliedintuition",
+   "applied-intuition"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Castelion",
+  "tried": [
+   "castelion"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Agility Robotics",
+  "tried": [
+   "agilityrobotics",
+   "agility",
+   "agility-robotics"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "agilityrobotics",
+   "jobs": 78,
+   "reported": "Agility Robotics"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "agilityrobotics",
+    "jobs": 78,
+    "reported": "Agility Robotics"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Astranis",
+  "tried": [
+   "astranis"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "astranis",
+   "jobs": 184,
+   "reported": "Astranis"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "astranis",
+    "jobs": 184,
+    "reported": "Astranis"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Bedrock Robotics",
+  "tried": [
+   "bedrockrobotics",
+   "bedrock",
+   "bedrock-robotics"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "bedrock-robotics",
+   "jobs": 57,
+   "reported": "Bedrock Robotics"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "bedrock-robotics",
+    "jobs": 57,
+    "reported": "Bedrock Robotics"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Arcadia",
+  "tried": [
+   "arcadia"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Climate & energy",
+  "company": "X-energy",
+  "tried": [
+   "xenergy",
+   "x-energy"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "xenergy|wd5|X-energyUS",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "xenergy|wd5|X-energyUS",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "xenergy|wd5|X-energyUS",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Persefoni",
+  "tried": [
+   "persefoni"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Strava",
+  "tried": [
+   "strava"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "strava",
+   "jobs": 23,
+   "reported": "Strava"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "strava",
+    "jobs": 23,
+    "reported": "Strava"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Gorgias",
+  "tried": [
+   "gorgias"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "gorgias",
+   "jobs": 16,
+   "reported": "Gorgias"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "gorgias",
+    "jobs": 16,
+    "reported": "Gorgias"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Roofstock",
+  "tried": [
+   "roofstock"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "roofstock",
+   "jobs": 12,
+   "reported": "Roofstock"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "roofstock",
+    "jobs": 12,
+    "reported": "Roofstock"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Oyster",
+  "tried": [
+   "oyster"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "oyster",
+   "jobs": 17,
+   "reported": "Oyster"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "oyster",
+    "jobs": 17,
+    "reported": "Oyster"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Shiftsmart",
+  "tried": [
+   "shiftsmart"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "shiftsmart",
+   "jobs": 7,
+   "reported": "Shiftsmart"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "shiftsmart",
+    "jobs": 7,
+    "reported": "Shiftsmart"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Gong",
+  "tried": [
+   "gong"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Character.AI",
+  "tried": [
+   "characterai",
+   "character",
+   "character-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "character",
+   "jobs": 13,
+   "reported": "Character"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "character",
+    "jobs": 13,
+    "reported": "Character"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Descript",
+  "tried": [
+   "descript"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "descript",
+   "jobs": 9,
+   "reported": "Descript"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "descript",
+    "jobs": 9,
+    "reported": "Descript"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Clay",
+  "tried": [
+   "clay"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Snorkel AI",
+  "tried": [
+   "snorkelai",
+   "snorkel",
+   "snorkel-ai"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "snorkelai",
+   "jobs": 43,
+   "reported": "Snorkel AI"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "snorkelai",
+    "jobs": 43,
+    "reported": "Snorkel AI"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Sourcegraph",
+  "tried": [
+   "sourcegraph"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Physical Intelligence",
+  "tried": [
+   "physicalintelligence",
+   "physical-intelligence"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "physicalintelligence",
+   "jobs": 46,
+   "reported": "Physicalintelligence"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "physicalintelligence",
+    "jobs": 46,
+    "reported": "Physicalintelligence"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Grammarly",
+  "tried": [
+   "grammarly"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Vapi",
+  "tried": [
+   "vapi"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "vapi",
+   "jobs": 5,
+   "reported": "Vapi"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "vapi",
+    "jobs": 5,
+    "reported": "Vapi"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Crusoe",
+  "tried": [
+   "crusoe"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "crusoe",
+   "jobs": 325,
+   "reported": "Crusoe"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "crusoe",
+    "jobs": 325,
+    "reported": "Crusoe"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "MatX",
+  "tried": [
+   "matx"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "matx",
+   "jobs": 42,
+   "reported": "Matx"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "matx",
+    "jobs": 42,
+    "reported": "Matx"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Zilliz",
+  "tried": [
+   "zilliz"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "zilliz",
+   "jobs": 12,
+   "reported": "Zilliz"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "zilliz",
+    "jobs": 12,
+    "reported": "Zilliz"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Lamini",
+  "tried": [
+   "lamini"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Fly.io",
+  "tried": [
+   "flyio",
+   "fly-io"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Prefect",
+  "tried": [
+   "prefect"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "prefect",
+   "jobs": 6,
+   "reported": "Prefect"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "prefect",
+    "jobs": 6,
+    "reported": "Prefect"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Mixpanel",
+  "tried": [
+   "mixpanel"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "mixpanel",
+   "jobs": 41,
+   "reported": "Mixpanel"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "mixpanel",
+    "jobs": 41,
+    "reported": "Mixpanel"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Kong",
+  "tried": [
+   "kong"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "kong",
+   "jobs": 118,
+   "reported": "Kong"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "kong",
+    "jobs": 118,
+    "reported": "Kong"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "ClickUp",
+  "tried": [
+   "clickup"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "clickup",
+   "jobs": 48,
+   "reported": "Clickup"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "clickup",
+    "jobs": 48,
+    "reported": "Clickup"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Pulumi",
+  "tried": [
+   "pulumi"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Tines",
+  "tried": [
+   "tines"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "tines",
+   "jobs": 32,
+   "reported": "Tines"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "tines",
+    "jobs": 32,
+    "reported": "Tines"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Mintlify",
+  "tried": [
+   "mintlify"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "mintlify",
+   "jobs": 15,
+   "reported": "Mintlify"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "mintlify",
+    "jobs": 15,
+    "reported": "Mintlify"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Algolia",
+  "tried": [
+   "algolia"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "algolia",
+   "jobs": 29,
+   "reported": "Algolia"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "algolia",
+    "jobs": 29,
+    "reported": "Algolia"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Rho",
+  "tried": [
+   "rho"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "rho",
+   "jobs": 47,
+   "reported": "Rho"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "rho",
+    "jobs": 47,
+    "reported": "Rho"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Kalshi",
+  "tried": [
+   "kalshi"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "kalshi",
+   "jobs": 38,
+   "reported": "Kalshi"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "kalshi",
+    "jobs": 28,
+    "reported": "Kalshi"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "kalshi",
+    "jobs": 38,
+    "reported": "Kalshi"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Uniswap Labs",
+  "tried": [
+   "uniswaplabs",
+   "uniswap",
+   "uniswap-labs"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "uniswap",
+   "jobs": 9,
+   "reported": "Uniswap"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "uniswap",
+    "jobs": 9,
+    "reported": "Uniswap"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Navan",
+  "tried": [
+   "navan"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Acorns",
+  "tried": [
+   "acorns"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "acorns",
+   "jobs": 9,
+   "reported": "Acorns"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "acorns",
+    "jobs": 9,
+    "reported": "Acorns"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Socure",
+  "tried": [
+   "socure"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "socure",
+   "jobs": 90,
+   "reported": "Socure"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "socure",
+    "jobs": 90,
+    "reported": "Socure"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Teleport",
+  "tried": [
+   "teleport"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Security",
+  "company": "Material Security",
+  "tried": [
+   "materialsecurity",
+   "material",
+   "material-security"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "material|wd1|Material_External_Career_Site",
+   "jobs": 19
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "materialsecurity",
+    "jobs": 5,
+    "reported": "Materialsecurity"
+   },
+   {
+    "kind": "workday",
+    "identifier": "material|wd1|Material_External_Career_Site",
+    "jobs": 19
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Red Canary",
+  "tried": [
+   "redcanary",
+   "red-canary"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Security",
+  "company": "Nightfall AI",
+  "tried": [
+   "nightfallai",
+   "nightfall",
+   "nightfall-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "nightfall-ai",
+   "jobs": 26,
+   "reported": "Nightfall Ai"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "nightfall-ai",
+    "jobs": 26,
+    "reported": "Nightfall Ai"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Spring Health",
+  "tried": [
+   "springhealth",
+   "spring",
+   "spring-health"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Thirty Madison",
+  "tried": [
+   "thirtymadison",
+   "thirty-madison"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Calm",
+  "tried": [
+   "calm"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "calm",
+   "jobs": 2,
+   "reported": "Calm.com"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "calm",
+    "jobs": 2,
+    "reported": "Calm.com"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "SonderMind",
+  "tried": [
+   "sondermind"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "sondermind",
+   "jobs": 133,
+   "reported": "Sondermind"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "sondermind",
+    "jobs": 133,
+    "reported": "Sondermind"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Isomorphic Labs",
+  "tried": [
+   "isomorphiclabs",
+   "isomorphic",
+   "isomorphic-labs"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "isomorphiclabs",
+   "jobs": 42,
+   "reported": "Isomorphic Labs"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "isomorphiclabs",
+    "jobs": 42,
+    "reported": "Isomorphic Labs"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Wayve",
+  "tried": [
+   "wayve"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "wayve",
+   "jobs": 165,
+   "reported": "Wayve"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "wayve",
+    "jobs": 165,
+    "reported": "Wayve"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Epirus",
+  "tried": [
+   "epirus"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "epirus",
+   "jobs": 39,
+   "reported": "Epirus"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "epirus",
+    "jobs": 39,
+    "reported": "Epirus"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Dexterity",
+  "tried": [
+   "dexterity"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "dexterity",
+   "jobs": 13,
+   "reported": "Dexterity"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "dexterity",
+    "jobs": 13,
+    "reported": "Dexterity"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Muon Space",
+  "tried": [
+   "muonspace",
+   "muon",
+   "muon-space"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "muonspace",
+   "jobs": 142,
+   "reported": "Muon Space"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "muonspace",
+    "jobs": 142,
+    "reported": "Muon Space"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Sanctuary AI",
+  "tried": [
+   "sanctuaryai",
+   "sanctuary",
+   "sanctuary-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "sanctuary",
+   "jobs": 8,
+   "reported": "Sanctuary"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "sanctuary",
+    "jobs": 8,
+    "reported": "Sanctuary"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Watershed",
+  "tried": [
+   "watershed"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "watershed",
+   "jobs": 40,
+   "reported": "Watershed"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "watershed",
+    "jobs": 8,
+    "reported": "Watershed Informatics"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "watershed",
+    "jobs": 40,
+    "reported": "Watershed"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Kairos Power",
+  "tried": [
+   "kairospower",
+   "kairos-power"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "kairospower",
+   "jobs": 69,
+   "reported": "Kairos Power"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "kairospower",
+    "jobs": 69,
+    "reported": "Kairos Power"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Whatnot",
+  "tried": [
+   "whatnot"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Whoop",
+  "tried": [
+   "whoop"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "whoop",
+   "jobs": 117,
+   "reported": "Whoop"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "whoop",
+    "jobs": 117,
+    "reported": "Whoop"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Attentive",
+  "tried": [
+   "attentive"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "attentive",
+   "jobs": 28,
+   "reported": "Attentive"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "attentive",
+    "jobs": 28,
+    "reported": "Attentive"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Feeld",
+  "tried": [
+   "feeld"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Papaya Global",
+  "tried": [
+   "papayaglobal",
+   "papaya-global"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Jobber",
+  "tried": [
+   "jobber"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "jobber",
+   "jobs": 38,
+   "reported": "Jobber"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "jobber",
+    "jobs": 38,
+    "reported": "Jobber"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Outreach",
+  "tried": [
+   "outreach"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "outreach",
+   "jobs": 16,
+   "reported": "Outreach"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "outreach",
+    "jobs": 16,
+    "reported": "Outreach"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Pika",
+  "tried": [
+   "pika"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "pika",
+   "jobs": 18,
+   "reported": "Pika"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "pika",
+    "jobs": 18,
+    "reported": "Pika"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Gamma",
+  "tried": [
+   "gamma"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "gamma",
+   "jobs": 20,
+   "reported": "Gamma"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "gamma",
+    "jobs": 20,
+    "reported": "Gamma"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Rogo",
+  "tried": [
+   "rogo"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "rogo",
+   "jobs": 101,
+   "reported": "Rogo"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "rogo",
+    "jobs": 101,
+    "reported": "Rogo"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Labelbox",
+  "tried": [
+   "labelbox"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "labelbox",
+   "jobs": 10,
+   "reported": "Labelbox"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "labelbox",
+    "jobs": 10,
+    "reported": "Labelbox"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Tabnine",
+  "tried": [
+   "tabnine"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "World Labs",
+  "tried": [
+   "worldlabs",
+   "world",
+   "world-labs"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "worldlabs",
+   "jobs": 8,
+   "reported": "Worldlabs"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "worldlabs",
+    "jobs": 8,
+    "reported": "Worldlabs"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Speak",
+  "tried": [
+   "speak"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "speak",
+   "jobs": 31,
+   "reported": "Speak"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "speak",
+    "jobs": 31,
+    "reported": "Speak"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Bland AI",
+  "tried": [
+   "blandai",
+   "bland",
+   "bland-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "bland",
+   "jobs": 16,
+   "reported": "Bland"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "bland",
+    "jobs": 16,
+    "reported": "Bland"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Groq",
+  "tried": [
+   "groq"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Replicate",
+  "tried": [
+   "replicate"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Unstructured",
+  "tried": [
+   "unstructured"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "unstructured",
+   "jobs": 4,
+   "reported": "Unstructured"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "unstructured",
+    "jobs": 4,
+    "reported": "Unstructured"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Nomic",
+  "tried": [
+   "nomic"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "nomic",
+   "jobs": 7,
+   "reported": "Nomic"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "nomic",
+    "jobs": 7,
+    "reported": "Nomic"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Neon",
+  "tried": [
+   "neon"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "neon",
+   "jobs": 9,
+   "reported": "Neon"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "neon",
+    "jobs": 9,
+    "reported": "Neon"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "neon",
+    "jobs": 1,
+    "reported": "Neon"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Dagster Labs",
+  "tried": [
+   "dagsterlabs",
+   "dagster",
+   "dagster-labs"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Statsig",
+  "tried": [
+   "statsig"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Warp",
+  "tried": [
+   "warp"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "warp",
+   "jobs": 17,
+   "reported": "Warp"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "warp",
+    "jobs": 5,
+    "reported": "Warp"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "warp",
+    "jobs": 17,
+    "reported": "Warp"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "n8n",
+  "tried": [
+   "n8n"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "n8n",
+   "jobs": 54,
+   "reported": "N8N"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "n8n",
+    "jobs": 54,
+    "reported": "N8N"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Harness",
+  "tried": [
+   "harness"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Turso",
+  "tried": [
+   "turso"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Raycast",
+  "tried": [
+   "raycast"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Typesense",
+  "tried": [
+   "typesense"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Modern Treasury",
+  "tried": [
+   "moderntreasury",
+   "modern-treasury"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "moderntreasury",
+   "jobs": 7,
+   "reported": "Moderntreasury"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "moderntreasury",
+    "jobs": 7,
+    "reported": "Moderntreasury"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Polymarket",
+  "tried": [
+   "polymarket"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "polymarket",
+   "jobs": 33,
+   "reported": "Polymarket"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "polymarket",
+    "jobs": 33,
+    "reported": "Polymarket"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "OpenSea",
+  "tried": [
+   "opensea"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Treasury Prime",
+  "tried": [
+   "treasuryprime",
+   "treasury-prime"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "treasuryprime",
+   "jobs": 3,
+   "reported": "Treasury Prime"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "treasuryprime",
+    "jobs": 3,
+    "reported": "Treasury Prime"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Betterment",
+  "tried": [
+   "betterment"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "betterment",
+   "jobs": 28,
+   "reported": "Betterment"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "betterment",
+    "jobs": 28,
+    "reported": "Betterment"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Unit21",
+  "tried": [
+   "unit21"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Security",
+  "company": "Island",
+  "tried": [
+   "island"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "island",
+   "jobs": 21,
+   "reported": "Island"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "island",
+    "jobs": 21,
+    "reported": "Island"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Push Security",
+  "tried": [
+   "pushsecurity",
+   "push",
+   "push-security"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Security",
+  "company": "Netskope",
+  "tried": [
+   "netskope"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "netskope",
+   "jobs": 119,
+   "reported": "Netskope"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "netskope",
+    "jobs": 119,
+    "reported": "Netskope"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Doppler",
+  "tried": [
+   "doppler"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "doppler",
+   "jobs": 6,
+   "reported": "Doppler"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "doppler",
+    "jobs": 6,
+    "reported": "Doppler"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Zocdoc",
+  "tried": [
+   "zocdoc"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "zocdoc",
+   "jobs": 65,
+   "reported": "Zocdoc"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "zocdoc",
+    "jobs": 65,
+    "reported": "Zocdoc"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Function Health",
+  "tried": [
+   "functionhealth",
+   "function",
+   "function-health"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Noom",
+  "tried": [
+   "noom"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Brightline",
+  "tried": [
+   "brightline"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Xaira Therapeutics",
+  "tried": [
+   "xairatherapeutics",
+   "xaira-therapeutics"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "xairatherapeutics",
+   "jobs": 32,
+   "reported": "Xaira Therapeutics"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "xairatherapeutics",
+    "jobs": 32,
+    "reported": "Xaira Therapeutics"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Kodiak Robotics",
+  "tried": [
+   "kodiakrobotics",
+   "kodiak",
+   "kodiak-robotics"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "kodiak",
+   "jobs": 51,
+   "reported": "Kodiak"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "kodiak",
+    "jobs": 51,
+    "reported": "Kodiak"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Skydio",
+  "tried": [
+   "skydio"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "skydio",
+   "jobs": 189,
+   "reported": "Skydio"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "skydio",
+    "jobs": 189,
+    "reported": "Skydio"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Machina Labs",
+  "tried": [
+   "machinalabs",
+   "machina",
+   "machina-labs"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "machina-labs",
+   "jobs": 26,
+   "reported": "Machina Labs"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "machina-labs",
+    "jobs": 26,
+    "reported": "Machina Labs"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Vannevar Labs",
+  "tried": [
+   "vannevarlabs",
+   "vannevar",
+   "vannevar-labs"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "vannevarlabs",
+   "jobs": 29,
+   "reported": "Vannevar"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "vannevarlabs",
+    "jobs": 29,
+    "reported": "Vannevar"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Path Robotics",
+  "tried": [
+   "pathrobotics",
+   "path",
+   "path-robotics"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "pathrobotics",
+   "jobs": 59,
+   "reported": "Path Robotics"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "pathrobotics",
+    "jobs": 59,
+    "reported": "Path Robotics"
+   },
+   {
+    "kind": "workday",
+    "identifier": "path|wd1|External",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Span",
+  "tried": [
+   "span"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "span",
+   "jobs": 26,
+   "reported": "Span"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "span",
+    "jobs": 26,
+    "reported": "Span"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "TerraPower",
+  "tried": [
+   "terrapower"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Vinted",
+  "tried": [
+   "vinted"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Oura",
+  "tried": [
+   "oura"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "oura",
+   "jobs": 95,
+   "reported": "\u014cURA"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "oura",
+    "jobs": 95,
+    "reported": "\u014cURA"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Postscript",
+  "tried": [
+   "postscript"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "postscript",
+   "jobs": 3,
+   "reported": "Postscript"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "postscript",
+    "jobs": 3,
+    "reported": "Postscript"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Partiful",
+  "tried": [
+   "partiful"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "partiful",
+   "jobs": 11,
+   "reported": "Partiful"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "partiful",
+    "jobs": 11,
+    "reported": "Partiful"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Culture Amp",
+  "tried": [
+   "cultureamp",
+   "culture-amp"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "cultureamp",
+   "jobs": 33,
+   "reported": "Culture Amp"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "cultureamp",
+    "jobs": 33,
+    "reported": "Culture Amp"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Housecall Pro",
+  "tried": [
+   "housecallpro",
+   "housecall-pro"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Apollo.io",
+  "tried": [
+   "apolloio",
+   "apollo-io"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "apolloio",
+   "jobs": 46,
+   "reported": "Apollo.io"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "apolloio",
+    "jobs": 46,
+    "reported": "Apollo.io"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Suno",
+  "tried": [
+   "suno"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "suno",
+   "jobs": 66,
+   "reported": "Suno"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "suno",
+    "jobs": 66,
+    "reported": "Suno"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Writer",
+  "tried": [
+   "writer"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "writer",
+   "jobs": 43,
+   "reported": "Writer"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "writer",
+    "jobs": 43,
+    "reported": "Writer"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Abridge",
+  "tried": [
+   "abridge"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "abridge",
+   "jobs": 23,
+   "reported": "Abridge"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "abridge",
+    "jobs": 23,
+    "reported": "Abridge"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Turing",
+  "tried": [
+   "turing"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "turing",
+   "jobs": 49,
+   "reported": "Turing"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "turing",
+    "jobs": 49,
+    "reported": "Turing"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Lovable",
+  "tried": [
+   "lovable"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "lovable",
+   "jobs": 76,
+   "reported": "Lovable"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "lovable",
+    "jobs": 60,
+    "reported": "Lovable"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "lovable",
+    "jobs": 76,
+    "reported": "Lovable"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Liquid AI",
+  "tried": [
+   "liquidai",
+   "liquid",
+   "liquid-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "liquid-ai",
+   "jobs": 26,
+   "reported": "Liquid Ai"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "liquid",
+    "jobs": 2,
+    "reported": "Liquid"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "liquid-ai",
+    "jobs": 26,
+    "reported": "Liquid Ai"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Elicit",
+  "tried": [
+   "elicit"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "elicit",
+   "jobs": 12,
+   "reported": "Elicit"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "elicit",
+    "jobs": 12,
+    "reported": "Elicit"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Retell AI",
+  "tried": [
+   "retellai",
+   "retell",
+   "retell-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "retell-ai",
+   "jobs": 19,
+   "reported": "Retell Ai"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "retell-ai",
+    "jobs": 19,
+    "reported": "Retell Ai"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "SambaNova",
+  "tried": [
+   "sambanova"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Weights & Biases",
+  "tried": [
+   "weightsbiases",
+   "weights-biases"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Arize AI",
+  "tried": [
+   "arizeai",
+   "arize",
+   "arize-ai"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "arizeai",
+   "jobs": 28,
+   "reported": "Arize AI"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "arizeai",
+    "jobs": 28,
+    "reported": "Arize AI"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Runpod",
+  "tried": [
+   "runpod"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "runpod",
+   "jobs": 23,
+   "reported": "Runpod"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "runpod",
+    "jobs": 23,
+    "reported": "Runpod"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Convex",
+  "tried": [
+   "convex"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "dbt Labs",
+  "tried": [
+   "dbtlabs",
+   "dbt",
+   "dbt-labs"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "LaunchDarkly",
+  "tried": [
+   "launchdarkly"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "launchdarkly",
+   "jobs": 40,
+   "reported": "LaunchDarkly"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "launchdarkly",
+    "jobs": 40,
+    "reported": "LaunchDarkly"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Zed Industries",
+  "tried": [
+   "zedindustries",
+   "zed",
+   "zed-industries"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "zed",
+   "jobs": 2,
+   "reported": "Zed"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "zed",
+    "jobs": 2,
+    "reported": "Zed"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "MotherDuck",
+  "tried": [
+   "motherduck"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "motherduck",
+   "jobs": 6,
+   "reported": "Motherduck"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "motherduck",
+    "jobs": 6,
+    "reported": "Motherduck"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "CircleCI",
+  "tried": [
+   "circleci"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "circleci",
+   "jobs": 15,
+   "reported": "CircleCI"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "circleci",
+    "jobs": 15,
+    "reported": "CircleCI"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Xata",
+  "tried": [
+   "xata"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Superhuman",
+  "tried": [
+   "superhuman"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Meilisearch",
+  "tried": [
+   "meilisearch"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Increase",
+  "tried": [
+   "increase"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Kraken",
+  "tried": [
+   "kraken"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Phantom",
+  "tried": [
+   "phantom"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "phantom",
+   "jobs": 16,
+   "reported": "Phantom"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "phantom",
+    "jobs": 16,
+    "reported": "Phantom"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Synctera",
+  "tried": [
+   "synctera"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "synctera",
+   "jobs": 1,
+   "reported": "Synctera"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "synctera",
+    "jobs": 1,
+    "reported": "Synctera"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Wealthsimple",
+  "tried": [
+   "wealthsimple"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "wealthsimple",
+   "jobs": 38,
+   "reported": "Wealthsimple"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "wealthsimple",
+    "jobs": 38,
+    "reported": "Wealthsimple"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Middesk",
+  "tried": [
+   "middesk"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "middesk",
+   "jobs": 17,
+   "reported": "Middesk"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "middesk",
+    "jobs": 17,
+    "reported": "Middesk"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Cyera",
+  "tried": [
+   "cyera"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Security",
+  "company": "Torq",
+  "tried": [
+   "torq"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "torq",
+   "jobs": 21,
+   "reported": "Torq"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "torq",
+    "jobs": 21,
+    "reported": "Torq"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Illumio",
+  "tried": [
+   "illumio"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "illumio",
+   "jobs": 68,
+   "reported": "Illumio"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "illumio",
+    "jobs": 68,
+    "reported": "Illumio"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Bitwarden",
+  "tried": [
+   "bitwarden"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "bitwarden",
+   "jobs": 36,
+   "reported": "Bitwarden"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "bitwarden",
+    "jobs": 36,
+    "reported": "Bitwarden"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Komodo Health",
+  "tried": [
+   "komodohealth",
+   "komodo",
+   "komodo-health"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "komodohealth",
+   "jobs": 17,
+   "reported": "Komodo Health"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "komodohealth",
+    "jobs": 17,
+    "reported": "Komodo Health"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Commure",
+  "tried": [
+   "commure"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "commure",
+   "jobs": 71,
+   "reported": "Commure"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "commure",
+    "jobs": 71,
+    "reported": "Commure"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Crossover Health",
+  "tried": [
+   "crossoverhealth",
+   "crossover",
+   "crossover-health"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "crossoverhealth|wd1|Careers",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "crossoverhealth|wd1|Careers",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "crossoverhealth|wd1|Careers",
+    "jobs": 40
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Cedar",
+  "tried": [
+   "cedar"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "cedar",
+   "jobs": 1,
+   "reported": "Cedar"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "cedar",
+    "jobs": 1,
+    "reported": "Cedar"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Generate Biomedicines",
+  "tried": [
+   "generatebiomedicines",
+   "generate-biomedicines"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "generatebiomedicines",
+   "jobs": 26,
+   "reported": "Generate Biomedicines"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "generatebiomedicines",
+    "jobs": 26,
+    "reported": "Generate Biomedicines"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Gatik",
+  "tried": [
+   "gatik"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Flock Safety",
+  "tried": [
+   "flocksafety",
+   "flock-safety"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Divergent",
+  "tried": [
+   "divergent"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "divergent",
+   "jobs": 142,
+   "reported": "Divergent"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "divergent",
+    "jobs": 142,
+    "reported": "Divergent"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Rebellion Defense",
+  "tried": [
+   "rebelliondefense",
+   "rebellion-defense"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Bright Machines",
+  "tried": [
+   "brightmachines",
+   "bright-machines"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "brightmachines",
+   "jobs": 17,
+   "reported": "Brightmachines"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "brightmachines",
+    "jobs": 17,
+    "reported": "Brightmachines"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Palmetto",
+  "tried": [
+   "palmetto"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "palmetto",
+   "jobs": 1,
+   "reported": "Palmetto Animal Hospital"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "palmetto",
+    "jobs": 1,
+    "reported": "Palmetto Animal Hospital"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Antora Energy",
+  "tried": [
+   "antoraenergy",
+   "antora",
+   "antora-energy"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "antora",
+   "jobs": 41,
+   "reported": "Antora Energy"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "antora",
+    "jobs": 41,
+    "reported": "Antora Energy"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Depop",
+  "tried": [
+   "depop"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Quizlet",
+  "tried": [
+   "quizlet"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Yotpo",
+  "tried": [
+   "yotpo"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "yotpo",
+   "jobs": 19,
+   "reported": "Yotpo"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "yotpo",
+    "jobs": 19,
+    "reported": "Yotpo"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Beli",
+  "tried": [
+   "beli"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "15Five",
+  "tried": [
+   "15five"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "15five",
+   "jobs": 4,
+   "reported": "15Five"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "15five",
+    "jobs": 4,
+    "reported": "15Five"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Fieldwire",
+  "tried": [
+   "fieldwire"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "fieldwire",
+   "jobs": 23,
+   "reported": "Fieldwire"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "fieldwire",
+    "jobs": 23,
+    "reported": "Fieldwire"
+   }
+  ]
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Clari",
+  "tried": [
+   "clari"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Luma AI",
+  "tried": [
+   "lumaai",
+   "luma",
+   "luma-ai"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "lumaai",
+   "jobs": 17,
+   "reported": "Lumaai"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "lumaai",
+    "jobs": 17,
+    "reported": "Lumaai"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Jasper",
+  "tried": [
+   "jasper"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Ambience Healthcare",
+  "tried": [
+   "ambiencehealthcare",
+   "ambience-healthcare"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "ambiencehealthcare",
+   "jobs": 17,
+   "reported": "Ambiencehealthcare"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "ambiencehealthcare",
+    "jobs": 17,
+    "reported": "Ambiencehealthcare"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Invisible Technologies",
+  "tried": [
+   "invisibletechnologies",
+   "invisible",
+   "invisible-technologies"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "invisible",
+   "jobs": 5,
+   "reported": "Invisible General Opportunities"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "invisible",
+    "jobs": 5,
+    "reported": "Invisible General Opportunities"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Factory",
+  "tried": [
+   "factory"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "factory",
+   "jobs": 68,
+   "reported": "Factory"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "factory",
+    "jobs": 68,
+    "reported": "Factory"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "You.com",
+  "tried": [
+   "youcom",
+   "you-com"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "youcom",
+   "jobs": 8,
+   "reported": "You.com"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "youcom",
+    "jobs": 8,
+    "reported": "You.com"
+   }
+  ]
+ },
+ {
+  "category": "AI & ML",
+  "company": "Consensus",
+  "tried": [
+   "consensus"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "AI & ML",
+  "company": "Sesame",
+  "tried": [
+   "sesame"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "sesame",
+   "jobs": 17,
+   "reported": "Sesame"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "sesame",
+    "jobs": 17,
+    "reported": "Sesame"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Etched",
+  "tried": [
+   "etched"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "etched",
+   "jobs": 116,
+   "reported": "Etched"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "etched",
+    "jobs": 116,
+    "reported": "Etched"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "LangChain",
+  "tried": [
+   "langchain"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "langchain",
+   "jobs": 102,
+   "reported": "Langchain"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "langchain",
+    "jobs": 102,
+    "reported": "Langchain"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Galileo",
+  "tried": [
+   "galileo"
+  ],
+  "best": {
+   "kind": "workday",
+   "identifier": "galileo|wd3|galileo_career_site",
+   "jobs": 40
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "galileo|wd3|galileo_career_site",
+    "jobs": 40
+   },
+   {
+    "kind": "workday",
+    "identifier": "galileo|wd3|galileo_global_education_italia_career_site",
+    "jobs": 2
+   },
+   {
+    "kind": "workday",
+    "identifier": "galileo|wd3|galileo_career_site_STUDI",
+    "jobs": 0
+   },
+   {
+    "kind": "greenhouse",
+    "identifier": "galileo",
+    "jobs": 11,
+    "reported": "Galileo"
+   }
+  ]
+ },
+ {
+  "category": "AI infrastructure",
+  "company": "Vast.ai",
+  "tried": [
+   "vastai",
+   "vast",
+   "vast-ai"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "vast",
+   "jobs": 206,
+   "reported": "Vast"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "vastai",
+    "jobs": 15,
+    "reported": "Vastai"
+   },
+   {
+    "kind": "greenhouse",
+    "identifier": "vast",
+    "jobs": 206,
+    "reported": "Vast"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Clerk",
+  "tried": [
+   "clerk"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "clerk",
+   "jobs": 2,
+   "reported": "Clerk"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "clerk",
+    "jobs": 2,
+    "reported": "Clerk"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Hex",
+  "tried": [
+   "hex"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "hex",
+   "jobs": 37,
+   "reported": "Hex"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "hex",
+    "jobs": 37,
+    "reported": "Hex"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Sentry",
+  "tried": [
+   "sentry"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "sentry",
+   "jobs": 40,
+   "reported": "Sentry"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "sentry",
+    "jobs": 40,
+    "reported": "Sentry"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Graphite",
+  "tried": [
+   "graphite"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Materialize",
+  "tried": [
+   "materialize"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "materialize",
+   "jobs": 4,
+   "reported": "Materialize"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "materialize",
+    "jobs": 4,
+    "reported": "Materialize"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Buildkite",
+  "tried": [
+   "buildkite"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "buildkite",
+   "jobs": 8,
+   "reported": "Buildkite"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "buildkite",
+    "jobs": 8,
+    "reported": "Buildkite"
+   }
+  ]
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Grafbase",
+  "tried": [
+   "grafbase"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Loom",
+  "tried": [
+   "loom"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Developer tools & data",
+  "company": "Prisma",
+  "tried": [
+   "prisma"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Lithic",
+  "tried": [
+   "lithic"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "lithic",
+   "jobs": 10,
+   "reported": "Lithic"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "lithic",
+    "jobs": 10,
+    "reported": "Lithic"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Chainalysis",
+  "tried": [
+   "chainalysis"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Alchemy",
+  "tried": [
+   "alchemy"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "alchemy",
+   "jobs": 19,
+   "reported": "Alchemy"
+  },
+  "candidates": [
+   {
+    "kind": "workday",
+    "identifier": "alchemy|wd1|Alchemy",
+    "jobs": 5
+   },
+   {
+    "kind": "ashby",
+    "identifier": "alchemy",
+    "jobs": 19,
+    "reported": "Alchemy"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Checkout.com",
+  "tried": [
+   "checkoutcom",
+   "checkout-com"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "AngelList",
+  "tried": [
+   "angellist"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "angellist",
+   "jobs": 35,
+   "reported": "Angellist"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "angellist",
+    "jobs": 35,
+    "reported": "Angellist"
+   }
+  ]
+ },
+ {
+  "category": "Fintech & crypto",
+  "company": "Highnote",
+  "tried": [
+   "highnote"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "highnote",
+   "jobs": 5,
+   "reported": "Highnote"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "highnote",
+    "jobs": 5,
+    "reported": "Highnote"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Secureframe",
+  "tried": [
+   "secureframe"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "secureframe",
+   "jobs": 15,
+   "reported": "Secureframe"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "secureframe",
+    "jobs": 15,
+    "reported": "Secureframe"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "secureframe",
+    "jobs": 8,
+    "reported": "Secureframe"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Orca Security",
+  "tried": [
+   "orcasecurity",
+   "orca",
+   "orca-security"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "orcasecurity",
+   "jobs": 13,
+   "reported": "Orca Security"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "orcasecurity",
+    "jobs": 13,
+    "reported": "Orca Security"
+   },
+   {
+    "kind": "ashby",
+    "identifier": "orca",
+    "jobs": 1,
+    "reported": "Orca"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Thoropass",
+  "tried": [
+   "thoropass"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "thoropass",
+   "jobs": 8,
+   "reported": "Thoropass"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "thoropass",
+    "jobs": 8,
+    "reported": "Thoropass"
+   }
+  ]
+ },
+ {
+  "category": "Security",
+  "company": "Keeper Security",
+  "tried": [
+   "keepersecurity",
+   "keeper",
+   "keeper-security"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "keepersecurity",
+   "jobs": 99,
+   "reported": "Keeper Security"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "keepersecurity",
+    "jobs": 99,
+    "reported": "Keeper Security"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Color Health",
+  "tried": [
+   "colorhealth",
+   "color",
+   "color-health"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "color-health",
+   "jobs": 17,
+   "reported": "Color Health"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "color-health",
+    "jobs": 17,
+    "reported": "Color Health"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Headspace",
+  "tried": [
+   "headspace"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Health",
+  "company": "Pager Health",
+  "tried": [
+   "pagerhealth",
+   "pager",
+   "pager-health"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "pagerhealth",
+   "jobs": 4,
+   "reported": "Pager Health"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "pagerhealth",
+    "jobs": 4,
+    "reported": "Pager Health"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Infinitus",
+  "tried": [
+   "infinitus"
+  ],
+  "best": {
+   "kind": "ashby",
+   "identifier": "infinitus",
+   "jobs": 9,
+   "reported": "Infinitus"
+  },
+  "candidates": [
+   {
+    "kind": "ashby",
+    "identifier": "infinitus",
+    "jobs": 9,
+    "reported": "Infinitus"
+   }
+  ]
+ },
+ {
+  "category": "Health",
+  "company": "Inceptive",
+  "tried": [
+   "inceptive"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "inceptive",
+   "jobs": 7,
+   "reported": "Inceptive"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "inceptive",
+    "jobs": 7,
+    "reported": "Inceptive"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Zipline",
+  "tried": [
+   "zipline"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Figure AI",
+  "tried": [
+   "figureai",
+   "figure",
+   "figure-ai"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "figureai",
+   "jobs": 101,
+   "reported": "Figure"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "figureai",
+    "jobs": 101,
+    "reported": "Figure"
+   },
+   {
+    "kind": "greenhouse",
+    "identifier": "figure",
+    "jobs": 23,
+    "reported": "Figure Lending"
+   }
+  ]
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "True Anomaly",
+  "tried": [
+   "trueanomaly",
+   "true-anomaly"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Robotics, defense & hardware",
+  "company": "Chaos Industries",
+  "tried": [
+   "chaosindustries",
+   "chaos",
+   "chaos-industries"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "chaosindustries",
+   "jobs": 175,
+   "reported": "CHAOS Industries"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "chaosindustries",
+    "jobs": 175,
+    "reported": "CHAOS Industries"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Commonwealth Fusion Systems",
+  "tried": [
+   "commonwealthfusionsystems",
+   "commonwealthfusion",
+   "commonwealth-fusion-systems"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Sila",
+  "tried": [
+   "sila"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "sila",
+   "jobs": 224,
+   "reported": "Sila"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "sila",
+    "jobs": 224,
+    "reported": "Sila"
+   }
+  ]
+ },
+ {
+  "category": "Climate & energy",
+  "company": "Rondo Energy",
+  "tried": [
+   "rondoenergy",
+   "rondo",
+   "rondo-energy"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "rondoenergy",
+   "jobs": 12,
+   "reported": "Rondo Energy"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "rondoenergy",
+    "jobs": 12,
+    "reported": "Rondo Energy"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Glossier",
+  "tried": [
+   "glossier"
+  ],
+  "best": {
+   "kind": "greenhouse",
+   "identifier": "glossier",
+   "jobs": 21,
+   "reported": "Glossier"
+  },
+  "candidates": [
+   {
+    "kind": "greenhouse",
+    "identifier": "glossier",
+    "jobs": 21,
+    "reported": "Glossier"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Brilliant",
+  "tried": [
+   "brilliant"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "brilliant",
+   "jobs": 4,
+   "reported": "Brilliant"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "brilliant",
+    "jobs": 4,
+    "reported": "Brilliant"
+   }
+  ]
+ },
+ {
+  "category": "Consumer & commerce",
+  "company": "Rokt",
+  "tried": [
+   "rokt"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Gem",
+  "tried": [
+   "gem"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Leapsome",
+  "tried": [
+   "leapsome"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "Built Technologies",
+  "tried": [
+   "builttechnologies",
+   "built",
+   "built-technologies"
+  ],
+  "best": null,
+  "candidates": []
+ },
+ {
+  "category": "Work & HR tech",
+  "company": "People.ai",
+  "tried": [
+   "peopleai",
+   "people",
+   "people-ai"
+  ],
+  "best": {
+   "kind": "lever",
+   "identifier": "people-ai",
+   "jobs": 6,
+   "reported": "People Ai"
+  },
+  "candidates": [
+   {
+    "kind": "lever",
+    "identifier": "people-ai",
+    "jobs": 6,
+    "reported": "People Ai"
+   }
+  ]
+ }
+]

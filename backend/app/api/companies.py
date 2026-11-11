@@ -11,7 +11,7 @@ from ..security import audit, current_user, rate_limit
 from ..services.discovery import pause_between_sources, run_source, score_unscored
 from ..services.matching import score_jobs
 from ..services.sources import COMPANY_KINDS
-from ..services.sources.catalog import FORTUNE_500, POPULAR, TOP_TECH
+from ..services.sources.catalog import FORTUNE_500, POPULAR, STARTUPS, TOP_TECH
 from ..services.sources.detect import detect_many
 
 router = APIRouter(prefix="/api/companies", tags=["companies"])
@@ -138,3 +138,9 @@ def top_tech(user: User = Depends(current_user), db: Session = Depends(get_db)):
 def fortune_500(user: User = Depends(current_user), db: Session = Depends(get_db)):
     """The 2026 Fortune 500 by rank: direct careers feeds where available, Google Jobs (JSearch) for the rest."""
     return _company_list(db, user, FORTUNE_500)
+
+
+@router.get("/startups")
+def startups(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Venture-backed startups by sector, each searched directly on its own job board (no JSearch quota)."""
+    return _company_list(db, user, STARTUPS)

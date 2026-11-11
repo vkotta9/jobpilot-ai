@@ -15,9 +15,9 @@ const VIEWS = [
 
 export async function render(root) {
   mount(root, loading());
-  const [allSources, catalog, saved, auto, following, popular, top, prio, f500, trk] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
+  const [allSources, catalog, saved, auto, following, popular, top, prio, f500, trk, startups] = await Promise.all([api.get("/api/sources"), api.get("/api/sources/catalog"),
     api.get("/api/saved-searches"), api.get("/api/discovery/auto"), api.get("/api/companies"), api.get("/api/companies/popular"),
-    api.get("/api/companies/top-tech"), api.get("/api/priority"), api.get("/api/companies/fortune-500"), api.get("/api/tracks")]);
+    api.get("/api/companies/top-tech"), api.get("/api/priority"), api.get("/api/companies/fortune-500"), api.get("/api/tracks"), api.get("/api/companies/startups")]);
   const sources = allSources.filter((s) => s.kind === "mock");
   // arriving from Role tracks → "All N in Discover": show that track's jobs
   try { const t = sessionStorage.getItem("jp_track"); if (t) { filters.track = t; filters.view = "all"; sessionStorage.removeItem("jp_track"); } } catch { /* */ }
@@ -244,6 +244,7 @@ export async function render(root) {
     autoCard(auto, root),
     priorityCard(prio, following, root),
     topTechCard(top, root),
+    startupsCard(startups, root),
     fortune500Card(f500, root),
     companiesCard(following, popular, root),
     catalog.some((c) => c.kind === "mock") && h("details", { class: "card", style: { marginTop: "16px" } },
@@ -350,7 +351,7 @@ function companyListCard(top, root, { title, intro, defaultDirectOnly = false })
       "Pick the ones you care about, or use a paid JSearch plan.") : null,
     top.jsearch_connected ? null : h("div", { class: "alert warn small" }, "Google Jobs companies need your free JSearch key — ", h("a", { href: "#/settings" }, "Settings → Connections"),
       ". Until then, “Follow all” follows the direct feeds only."),
-    h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px", margin: "8px 0" } }, bDirect, bAll),
+    h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px", margin: "8px 0" } }, google.length ? bDirect : null, bAll),
     h("details", {}, h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Choose individual companies"),
       h("div", { style: { marginTop: "10px" } }, groups, h("div", { class: "row", style: { justifyContent: "flex-end", gap: "10px", alignItems: "center" } }, cost, bSel))));
 }
@@ -360,6 +361,15 @@ function topTechCard(top, root) {
     title: "Top companies",
     intro: (d, g) => [`${d} are searched directly on the company's own careers site or job board (Amazon, Microsoft, Google, NVIDIA, JPMorgan, CVS Health, Home Depot, Stripe…). `,
       `The other ${g} (Meta, Tesla, Goldman Sachs, UnitedHealth…) don't offer a feed JobPilot may use, so they're followed through Google Jobs, which is checked weekly per company to stay within JSearch's free plan.`],
+  });
+}
+
+function startupsCard(st, root) {
+  return companyListCard(st, root, {
+    title: "Startups",
+    intro: (d) => [`${d} venture-backed startups — AI labs, AI infrastructure, developer tools, fintech, security, health, robotics & defense, climate — `,
+      "each searched directly on its own job board (Ashby, Greenhouse, Lever), checked daily and free: no JSearch quota. ",
+      "For thousands more, keep Hacker News “Who is hiring?” switched on under Find jobs for me (it is by default)."],
   });
 }
 

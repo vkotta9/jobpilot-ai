@@ -51,6 +51,7 @@ class KeywordAdapter(JobSourceAdapter):
         super().__init__(identifier, **kw)
         ctx = context or {}
         self.queries: list[str] = [q for q in ctx.get("queries", []) if q.strip()][:3]
+        self.title_terms: list[str] = [t for t in ctx.get("title_terms", []) if t.strip()]  # every title worth keeping
         self.locations: list[str] = ctx.get("locations", [])[:2]
         self.credentials: dict = ctx.get("credentials", {}) or {}
 

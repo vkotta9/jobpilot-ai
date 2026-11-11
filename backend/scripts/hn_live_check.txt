@@ -1,0 +1,27 @@
+thread: 50338728 Ask HN: Who is hiring? (November 2026)
+matching jobs: 57
+- Hemant Singh | Software Engineer | India (REMOTE / ONSITE) | remote | https://simply-cinema-frontend.vercel.app/
+- RAIDS AI | Senior Technical Project Manager (Full Stack) | REMOTE | remote | https://www.linkedin.com/jobs/view/4483409995/
+- Polymath | Full-Stack | San Francisco; ONSITE (5 days) | onsite | https://polymathmade.com
+- Collabify | Senior Full-Stack Engineer (backend-heavy) | REMOTE (worldwide) | remote | https://forms.gle/yJAabKvLKtJmfz21A
+- Seal | Founding Product Engineer | London; ONSITE | onsite | https://seal.run
+- OpenTrain AI | Backend Engineer | REMOTE (US) | remote | https://app.opentrain.ai/api/out/cmu9linxg000o0bgm9xiw33b9?c
+- 3ive | Staff Software Engineer | REMOTE (Europe); Python, TypeScript, React, AI Agents | remote | https://jobs.ashbyhq.com/3ive/36d01a3c-94ac-4d6c-b872-4b0f9c
+- BuildQ | Founding Engineer | REMOTE (PT to ET overlap preferred) | remote | https://buildq.ai/careers/founding-engineer
+- Piramidal | Senior Backend Engineer | New York, NY; www.piramidal.ai | unknown | https://grnh.se/uwaqx1xc9us
+- Bikky | Bikky | Senior Software Engineer | Hybrid | Full time | NYC | Hybrid; NYC | unknown | https://bikky.com
+- Coder | [1]Senior Customer Support Engineer • North America • Full time |  | unknown | https://coder.com/
+- Radar Labs | full-stack | Remote (US), NYC | remote | https://radar.com
+- Thankly | Founding Engineer | REMOTE (US) | remote | https://thankly.ai/careers/founding-engineer
+- Clad | Software Engineer | NYC | unknown | https://news.ycombinator.com/item?id=50353098
+- IMC Trading | Machine Learning Engineer | Amsterdam OR London; ONSITE | onsite | https://www.imc.com/eu/careers/jobs/4567047101
+- Avoca | Full-Stack Engineers + FDEs | ONSITE (NYC,US) | onsite | https://www.avoca.ai/careers#open-roles
+- Taxnova | Founding product engineer | London; Hybrid | unknown | https://taxnova.notion.site/founding-product-engineer
+- Marker Learning | Senior Full-Stack Engineer (Frontend-Leaning) | Remote, US only | remote | https://www.markerlearning.com
+- PlantingSpace | Backend Software Engineer | Remote (EU time zone) + Quarterly Meet-ups | remote | https://planting.space
+- Proxima Fusion | Senior Software Engineer (Dev Platform) | ONSITE | onsite | https://jobs.ashbyhq.com/proxima-fusion/5aebfef0-0c2c-4c87-9
+- VALIS | Software Engineer | REMOTE (US, East Coast hours) | remote | https://apply.workable.com/valis-insights-1/j/9D0C64C055
+- KSC Trading | Senior Backend Software Engineer | Remote | remote | https://news.ycombinator.com/item?id=50347792
+- Reddit | Staff Full-stack Engineers | REMOTE(US) | remote | https://job-boards.greenhouse.io/reddit/jobs/8180636
+- Telescope Partners | Software Engineer | Remote - AMERICAS ONLY | remote | https://news.ycombinator.com/item?id=50346665
+- Hatch | Staff Backend Engineer | REMOTE (US/Canada, Pacific Time hours) | remote | https://hatch.co

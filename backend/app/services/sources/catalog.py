@@ -903,3 +903,270 @@ FORTUNE_500: list[dict] = [
      "identifier": i, "via": "google_jobs" if k == "jsearch" else "direct"}
     for r, n, al, k, i in (line.split("|", 4) for line in _F500.strip().splitlines())
 ]
+
+
+# Venture-backed startups (seed to late stage), by sector. Line format: category|company|kind|identifier.
+# Found by scanning ~400 startups' Ashby / Greenhouse / Lever / Workday boards from GitHub Actions in Nov 2026
+# (scripts/scan_startups.txt) and verified by opening postings (scripts/verify_feeds.py) and checking titles and
+# locations by hand; lookalikes were rejected (e.g. "Neon" was a Brazilian fintech, "Sila" an HVAC firm).
+# All are direct feeds: free, checked daily, no JSearch quota.
+_STARTUPS = """
+AI & ML|Abridge|ashby|abridge
+AI & ML|Ambience Healthcare|ashby|ambiencehealthcare
+AI & ML|AssemblyAI|greenhouse|assemblyai
+AI & ML|Black Forest Labs|ashby|black-forest-labs
+AI & ML|Bland AI|ashby|bland
+AI & ML|Cartesia|ashby|cartesia
+AI & ML|Character.AI|ashby|character
+AI & ML|Cognition|ashby|cognition
+AI & ML|Decagon|ashby|decagon
+AI & ML|Deepgram|ashby|deepgram
+AI & ML|Descript|greenhouse|descript
+AI & ML|Elicit|ashby|elicit
+AI & ML|Factory|ashby|factory
+AI & ML|Gamma|ashby|gamma
+AI & ML|Harvey AI|ashby|harvey
+AI & ML|HeyGen|greenhouse|heygen
+AI & ML|Hume AI|greenhouse|humeai
+AI & ML|Imbue|greenhouse|imbue
+AI & ML|Invisible Technologies|greenhouse|invisible
+AI & ML|Labelbox|greenhouse|labelbox
+AI & ML|Liquid AI|ashby|liquid-ai
+AI & ML|Lovable|ashby|lovable
+AI & ML|Luma AI|ashby|lumaai
+AI & ML|Mercor|ashby|mercor
+AI & ML|OpenEvidence|ashby|openevidence
+AI & ML|Physical Intelligence|ashby|physicalintelligence
+AI & ML|Pika|ashby|pika
+AI & ML|Poolside|ashby|poolside
+AI & ML|Read AI|ashby|read-ai
+AI & ML|Reka|ashby|reka
+AI & ML|Retell AI|ashby|retell-ai
+AI & ML|Rogo|ashby|rogo
+AI & ML|Sesame|ashby|sesame
+AI & ML|Sierra|ashby|sierra
+AI & ML|Snorkel AI|greenhouse|snorkelai
+AI & ML|Speak|ashby|speak
+AI & ML|Suno|ashby|suno
+AI & ML|Surge AI|ashby|surge-ai
+AI & ML|Synthesia|ashby|synthesia
+AI & ML|Thinking Machines Lab|ashby|thinkingmachines
+AI & ML|Turing|greenhouse|turing
+AI & ML|Typeface|greenhouse|typeface
+AI & ML|Vapi|ashby|vapi
+AI & ML|World Labs|ashby|worldlabs
+AI & ML|Writer|ashby|writer
+AI & ML|You.com|greenhouse|youcom
+AI infrastructure|Anyscale|ashby|anyscale
+AI infrastructure|Arize AI|greenhouse|arizeai
+AI infrastructure|Baseten|ashby|baseten
+AI infrastructure|Braintrust|ashby|braintrust
+AI infrastructure|Crusoe|ashby|crusoe
+AI infrastructure|d-Matrix|ashby|d-matrix
+AI infrastructure|Etched|ashby|etched
+AI infrastructure|Fireworks AI|ashby|fireworks
+AI infrastructure|LangChain|ashby|langchain
+AI infrastructure|Lightmatter|greenhouse|lightmatter
+AI infrastructure|LlamaIndex|ashby|llamaindex
+AI infrastructure|MatX|ashby|matx
+AI infrastructure|Nomic|ashby|nomic
+AI infrastructure|Runpod|ashby|runpod
+AI infrastructure|Tenstorrent|greenhouse|tenstorrent
+AI infrastructure|Together AI|greenhouse|togetherai
+AI infrastructure|Unstructured|ashby|unstructured
+AI infrastructure|Weaviate|ashby|weaviate
+AI infrastructure|Zilliz|lever|zilliz
+Developer tools & data|Algolia|greenhouse|algolia
+Developer tools & data|Apollo GraphQL|ashby|apollo-graphql
+Developer tools & data|Buildkite|greenhouse|buildkite
+Developer tools & data|CircleCI|greenhouse|circleci
+Developer tools & data|Clerk|ashby|clerk
+Developer tools & data|ClickUp|ashby|clickup
+Developer tools & data|CodeRabbit|ashby|coderabbit
+Developer tools & data|Contentful|greenhouse|contentful
+Developer tools & data|Cribl|greenhouse|cribl
+Developer tools & data|Hex|ashby|hex
+Developer tools & data|Hightouch|ashby|hightouch
+Developer tools & data|Honeycomb|greenhouse|honeycomb
+Developer tools & data|Inngest|ashby|inngest
+Developer tools & data|Kong|ashby|kong
+Developer tools & data|LaunchDarkly|greenhouse|launchdarkly
+Developer tools & data|LiveKit|ashby|livekit
+Developer tools & data|Materialize|ashby|materialize
+Developer tools & data|Mintlify|ashby|mintlify
+Developer tools & data|Mixpanel|greenhouse|mixpanel
+Developer tools & data|MotherDuck|ashby|motherduck
+Developer tools & data|Mux|ashby|mux
+Developer tools & data|n8n|ashby|n8n
+Developer tools & data|Netlify|greenhouse|netlify
+Developer tools & data|Postman|workday|postman|wd108|careers
+Developer tools & data|Prefect|ashby|prefect
+Developer tools & data|Railway|ashby|railway
+Developer tools & data|Render|ashby|render
+Developer tools & data|Resend|ashby|resend
+Developer tools & data|Sanity|ashby|sanity
+Developer tools & data|Sentry|ashby|sentry
+Developer tools & data|Sigma Computing|greenhouse|sigmacomputing
+Developer tools & data|SingleStore|greenhouse|singlestore
+Developer tools & data|Speakeasy|ashby|speakeasy
+Developer tools & data|StreamNative|greenhouse|streamnative
+Developer tools & data|Tines|greenhouse|tines
+Developer tools & data|WorkOS|ashby|workos
+Developer tools & data|Zed Industries|ashby|zed
+Security|Apiiro|greenhouse|apiiro
+Security|Arctic Wolf|workday|arcticwolf|wd1|External
+Security|Axonius|greenhouse|axonius
+Security|Bitwarden|greenhouse|bitwarden
+Security|Chainguard|greenhouse|chainguard
+Security|Coalition|greenhouse|coalition
+Security|Doppler|ashby|doppler
+Security|Endor Labs|greenhouse|endorlabs
+Security|Expel|greenhouse|expel
+Security|Huntress|greenhouse|huntress
+Security|Illumio|ashby|illumio
+Security|Island|greenhouse|island
+Security|Keeper Security|greenhouse|keepersecurity
+Security|Netskope|greenhouse|netskope
+Security|Nightfall AI|ashby|nightfall-ai
+Security|Oligo|ashby|oligo
+Security|Orca Security|greenhouse|orcasecurity
+Security|Secureframe|lever|secureframe
+Security|Semgrep|ashby|semgrep
+Security|Socket|ashby|socket
+Security|Sysdig|lever|sysdig
+Security|Thoropass|greenhouse|thoropass
+Security|Torq|greenhouse|torq
+Fintech & crypto|Acorns|ashby|acorns
+Fintech & crypto|Airwallex|ashby|airwallex
+Fintech & crypto|Alchemy|ashby|alchemy
+Fintech & crypto|Alloy|greenhouse|alloy
+Fintech & crypto|Alpaca|greenhouse|alpaca
+Fintech & crypto|AngelList|lever|angellist
+Fintech & crypto|Betterment|greenhouse|betterment
+Fintech & crypto|Capchase|ashby|capchase
+Fintech & crypto|Consensys|greenhouse|consensys
+Fintech & crypto|Fireblocks|greenhouse|fireblocks
+Fintech & crypto|Highnote|greenhouse|highnote
+Fintech & crypto|Kalshi|ashby|kalshi
+Fintech & crypto|Lithic|greenhouse|lithic
+Fintech & crypto|Middesk|ashby|middesk
+Fintech & crypto|Modern Treasury|ashby|moderntreasury
+Fintech & crypto|Paxos|ashby|paxos
+Fintech & crypto|Persona|ashby|persona
+Fintech & crypto|Phantom|ashby|phantom
+Fintech & crypto|Polymarket|ashby|polymarket
+Fintech & crypto|Ramp|ashby|ramp
+Fintech & crypto|Rho|ashby|rho
+Fintech & crypto|Ripple|greenhouse|ripple
+Fintech & crypto|Sardine|ashby|sardine
+Fintech & crypto|Socure|ashby|socure
+Fintech & crypto|Synctera|ashby|synctera
+Fintech & crypto|Treasury Prime|greenhouse|treasuryprime
+Fintech & crypto|Uniswap Labs|ashby|uniswap
+Fintech & crypto|Wealthsimple|ashby|wealthsimple
+Health|Calm|greenhouse|calm
+Health|Cityblock Health|workday|cityblockhealth|wd1|CityblockExternalCareerSite
+Health|Color Health|ashby|color-health
+Health|Commure|ashby|commure
+Health|Crossover Health|workday|crossoverhealth|wd1|Careers
+Health|Devoted Health|workday|devoted|wd1|Devoted
+Health|Freenome|greenhouse|freenome
+Health|Garner Health|greenhouse|garnerhealth
+Health|Generate Biomedicines|greenhouse|generatebiomedicines
+Health|Grow Therapy|ashby|grow-therapy
+Health|Inceptive|greenhouse|inceptive
+Health|Included Health|lever|includedhealth
+Health|Infinitus|ashby|infinitus
+Health|Insitro|ashby|insitro
+Health|Isomorphic Labs|greenhouse|isomorphiclabs
+Health|Komodo Health|greenhouse|komodohealth
+Health|Maven Clinic|greenhouse|mavenclinic
+Health|Nabla|ashby|nabla
+Health|Nomi Health|lever|nomihealth
+Health|Omada Health|greenhouse|omadahealth
+Health|Pager Health|greenhouse|pagerhealth
+Health|Rula|ashby|rula
+Health|SonderMind|ashby|sondermind
+Health|Suki|greenhouse|suki
+Health|Sword Health|greenhouse|swordhealth
+Health|Virta Health|ashby|virtahealth
+Health|Xaira Therapeutics|greenhouse|xairatherapeutics
+Health|Zocdoc|greenhouse|zocdoc
+Robotics, defense & space|1X|ashby|1x
+Robotics, defense & space|Agility Robotics|greenhouse|agilityrobotics
+Robotics, defense & space|Apptronik|greenhouse|apptronik
+Robotics, defense & space|Astranis|greenhouse|astranis
+Robotics, defense & space|Bedrock Robotics|ashby|bedrock-robotics
+Robotics, defense & space|Bright Machines|lever|brightmachines
+Robotics, defense & space|Chaos Industries|greenhouse|chaosindustries
+Robotics, defense & space|Dexterity|lever|dexterity
+Robotics, defense & space|Divergent|greenhouse|divergent
+Robotics, defense & space|Epirus|greenhouse|epirus
+Robotics, defense & space|Figure AI|greenhouse|figureai
+Robotics, defense & space|Hermeus|lever|hermeus
+Robotics, defense & space|Impulse Space|ashby|impulse
+Robotics, defense & space|Kodiak Robotics|greenhouse|kodiak
+Robotics, defense & space|Mach Industries|greenhouse|machindustries
+Robotics, defense & space|Machina Labs|ashby|machina-labs
+Robotics, defense & space|Muon Space|greenhouse|muonspace
+Robotics, defense & space|Path Robotics|greenhouse|pathrobotics
+Robotics, defense & space|Relativity Space|greenhouse|relativity
+Robotics, defense & space|Saronic|ashby|saronic
+Robotics, defense & space|Shield AI|ashby|shield
+Robotics, defense & space|Skydio|ashby|skydio
+Robotics, defense & space|Vannevar Labs|greenhouse|vannevarlabs
+Robotics, defense & space|Varda Space|greenhouse|vardaspace
+Robotics, defense & space|Vast|greenhouse|vast
+Robotics, defense & space|Wayve|ashby|wayve
+Climate & energy|Antora Energy|greenhouse|antora
+Climate & energy|Aurora Solar|ashby|aurorasolar
+Climate & energy|Fervo Energy|greenhouse|fervoenergy
+Climate & energy|Form Energy|ashby|formenergy
+Climate & energy|Helion|ashby|helion
+Climate & energy|Kairos Power|greenhouse|kairospower
+Climate & energy|Redwood Materials|greenhouse|redwoodmaterials
+Climate & energy|Rondo Energy|greenhouse|rondoenergy
+Climate & energy|Span|ashby|span
+Climate & energy|Watershed|ashby|watershed
+Climate & energy|X-energy|workday|xenergy|wd5|X-energyUS
+Work & HR tech|15Five|lever|15five
+Work & HR tech|Apollo.io|greenhouse|apolloio
+Work & HR tech|Ashby|ashby|ashby
+Work & HR tech|Attio|ashby|attio
+Work & HR tech|Checkr|greenhouse|checkr
+Work & HR tech|Culture Amp|greenhouse|cultureamp
+Work & HR tech|Fieldwire|greenhouse|fieldwire
+Work & HR tech|Instawork|greenhouse|instawork
+Work & HR tech|Jobber|ashby|jobber
+Work & HR tech|Justworks|greenhouse|justworks
+Work & HR tech|Mural|ashby|mural
+Work & HR tech|Outreach|lever|outreach
+Work & HR tech|Oyster|ashby|oyster
+Work & HR tech|People.ai|lever|people-ai
+Work & HR tech|Pylon|ashby|pylon
+Work & HR tech|Shiftsmart|ashby|shiftsmart
+Work & HR tech|Warp (payroll)|ashby|warp
+Consumer & commerce|Attentive|greenhouse|attentive
+Consumer & commerce|Brilliant|lever|brilliant
+Consumer & commerce|Cameo|greenhouse|cameo
+Consumer & commerce|Glossier|greenhouse|glossier
+Consumer & commerce|Gorgias|ashby|gorgias
+Consumer & commerce|Handshake|ashby|handshake
+Consumer & commerce|Hopper|ashby|hopper
+Consumer & commerce|Oura|greenhouse|oura
+Consumer & commerce|Outschool|ashby|outschool
+Consumer & commerce|Pacaso|greenhouse|pacaso
+Consumer & commerce|Partiful|ashby|partiful
+Consumer & commerce|Patreon|ashby|patreon
+Consumer & commerce|Postscript|greenhouse|postscript
+Consumer & commerce|Roofstock|greenhouse|roofstock
+Consumer & commerce|Strava|ashby|strava
+Consumer & commerce|Substack|ashby|substack
+Consumer & commerce|Whoop|ashby|whoop
+Consumer & commerce|Yotpo|greenhouse|yotpo
+"""
+
+STARTUPS: list[dict] = [
+    {"category": c, "company": n, "kind": k, "identifier": i, "via": "direct"}
+    for c, n, k, i in (line.split("|", 3) for line in _STARTUPS.strip().splitlines())
+]
