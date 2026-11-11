@@ -1,5 +1,6 @@
 """Job source adapters. Add a new source by subclassing `JobSourceAdapter`
 and registering it in `ADAPTERS` — nothing else in the platform changes."""
+from .hn import HNHiringAdapter
 from .base import JobSourceAdapter, NormalizedJob, SourceError
 from .careers_more import AvatureAdapter, JibeAdapter
 from .bigtech import AmazonAdapter, AppleAdapter, EightfoldAdapter, GoogleAdapter, MicrosoftAdapter, OracleHCMAdapter
@@ -37,11 +38,12 @@ ADAPTERS: dict[str, type[JobSourceAdapter]] = {
     "jsearch": JSearchAdapter,
     "usajobs": USAJobsAdapter,
     "adzuna": AdzunaAdapter,
+    "hn_hiring": HNHiringAdapter,
     # development only
     "mock": MockAdapter,
 }
 COMPANY_KINDS = ("greenhouse", "lever", "ashby", "smartrecruiters", "workable", "recruitee", "workday", "eightfold", "oraclehcm", "amazon", "google", "microsoft", "apple", "jibe", "avature")
-KEYWORD_KINDS = ("remotive", "muse", "himalayas", "jobicy", "arbeitnow", "jsearch", "usajobs", "adzuna")
-FREE_DEFAULT_KINDS = ("remotive", "muse", "himalayas", "jobicy")
+KEYWORD_KINDS = ("remotive", "muse", "himalayas", "jobicy", "arbeitnow", "hn_hiring", "jsearch", "usajobs", "adzuna")
+FREE_DEFAULT_KINDS = ("remotive", "muse", "himalayas", "jobicy", "hn_hiring")
 
 __all__ = ["ADAPTERS", "COMPANY_KINDS", "KEYWORD_KINDS", "FREE_DEFAULT_KINDS", "JobSourceAdapter", "NormalizedJob", "SourceError"]

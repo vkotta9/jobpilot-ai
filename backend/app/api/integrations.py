@@ -189,11 +189,12 @@ def test_integration(provider: str, user: User = Depends(current_user), db: Sess
 # ---------------------------------------------------------------- automatic job search
 
 
-KeywordKind = Literal["remotive", "muse", "himalayas", "jobicy", "arbeitnow", "jsearch", "usajobs", "adzuna"]
+KeywordKind = Literal["remotive", "muse", "himalayas", "jobicy", "arbeitnow", "hn_hiring", "jsearch", "usajobs", "adzuna"]
 NEEDS_KEY = {"adzuna": "adzuna", "jsearch": "jsearch", "usajobs": "usajobs"}
 NOTES = {
     "remotive": "Remote jobs · free", "muse": "Curated companies · free", "himalayas": "Remote jobs · free",
     "jobicy": "Remote jobs · free", "arbeitnow": "Mostly Europe (often visa sponsorship) · free",
+    "hn_hiring": "Startups posting in Hacker News' monthly “Who is hiring?” thread · free",
     "jsearch": "LinkedIn, Indeed, Glassdoor & more via Google Jobs · free key, ~200 searches/month",
     "usajobs": "US federal jobs (most need US citizenship) · free key",
     "adzuna": "Most US job boards · paid (£8/month) after 25 test calls",
@@ -210,8 +211,11 @@ def auto_status(user: User = Depends(current_user), db: Session = Depends(get_db
     prefs = (profile.preferences or {}) if profile else {}
     srcs = {s.kind: to_dict(s) for s in db.query(JobSource).filter(JobSource.user_id == user.id,
                                                                     JobSource.kind.in_(KEYWORD_KINDS)).all()}
+    from ..services.discovery import search_context
+
+    ctx = search_context(db, user.id)
     return {
-        "queries": search_queries(profile), "titles_from_profile": bool(prefs.get("target_titles")),
+        "queries": ctx["queries"], "titles_from_profile": bool(prefs.get("target_titles")),
         "locations": prefs.get("locations") or [],
         "sources": [{"kind": k, "label": ADAPTERS[k].label, "note": NOTES.get(k, ""), "needs_key": k in NEEDS_KEY,
                      "key_ok": k not in NEEDS_KEY or bool(_row(db, user, NEEDS_KEY[k])),
@@ -222,8 +226,10 @@ def auto_status(user: User = Depends(current_user), db: Session = Depends(get_db
 @router.post("/discovery/auto", dependencies=[Depends(rate_limit("discovery", 30, 3600))])
 def auto_run(body: AutoIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
     profile = db.query(CandidateProfile).filter_by(user_id=user.id).one_or_none()
-    if not search_queries(profile):
-        raise HTTPException(400, "Add the job titles you want (Profile → Job preferences → Target job titles) first.")
+    from ..services.discovery import search_context
+
+    if not search_context(db, user.id)["queries"]:
+        raise HTTPException(400, "Add the job titles you want (Profile → Job preferences → Target job titles, or a role track) first.")
     results = []
     changed: list[int] = []
     for kind in KEYWORD_KINDS:
@@ -247,7 +253,7 @@ def auto_run(body: AutoIn, user: User = Depends(current_user), db: Session = Dep
     db.commit()
     if changed:
         score_jobs(db, user.id, changed)
-    return {"results": results, "queries": search_queries(profile)}
+    return {"results": results, "queries": search_context(db, user.id)["queries"]}
 
 
 class DescriptionIn(BaseModel):

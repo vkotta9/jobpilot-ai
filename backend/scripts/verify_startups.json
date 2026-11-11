@@ -1,0 +1,2354 @@
+[
+ {
+  "company": "Cognition",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "cognition",
+  "keywords": [
+   "cognition"
+  ]
+ },
+ {
+  "company": "Black Forest Labs",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "black-forest-labs",
+  "keywords": [
+   "black forest"
+  ]
+ },
+ {
+  "company": "Typeface",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "typeface",
+  "keywords": [
+   "typeface"
+  ]
+ },
+ {
+  "company": "OpenEvidence",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "openevidence",
+  "keywords": [
+   "openevidence"
+  ]
+ },
+ {
+  "company": "Reka",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "reka",
+  "keywords": [
+   "reka"
+  ]
+ },
+ {
+  "company": "Imbue",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "imbue",
+  "keywords": [
+   "imbue"
+  ]
+ },
+ {
+  "company": "Hume AI",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "humeai",
+  "keywords": [
+   "hume"
+  ]
+ },
+ {
+  "company": "Together AI",
+  "category": "AI infrastructure",
+  "kind": "greenhouse",
+  "identifier": "togetherai",
+  "keywords": [
+   "together"
+  ]
+ },
+ {
+  "company": "Lightmatter",
+  "category": "AI infrastructure",
+  "kind": "greenhouse",
+  "identifier": "lightmatter",
+  "keywords": [
+   "lightmatter"
+  ]
+ },
+ {
+  "company": "LlamaIndex",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "llamaindex",
+  "keywords": [
+   "llamaindex"
+  ]
+ },
+ {
+  "company": "Braintrust",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "braintrust",
+  "keywords": [
+   "braintrust"
+  ]
+ },
+ {
+  "company": "WorkOS",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "workos",
+  "keywords": [
+   "workos"
+  ]
+ },
+ {
+  "company": "Sigma Computing",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "sigmacomputing",
+  "keywords": [
+   "sigma computing"
+  ]
+ },
+ {
+  "company": "Honeycomb",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "honeycomb",
+  "keywords": [
+   "honeycomb"
+  ]
+ },
+ {
+  "company": "CodeRabbit",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "coderabbit",
+  "keywords": [
+   "coderabbit"
+  ]
+ },
+ {
+  "company": "SingleStore",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "singlestore",
+  "keywords": [
+   "singlestore"
+  ]
+ },
+ {
+  "company": "Sanity",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "sanity",
+  "keywords": [
+   "sanity"
+  ]
+ },
+ {
+  "company": "Fireblocks",
+  "category": "Fintech & crypto",
+  "kind": "greenhouse",
+  "identifier": "fireblocks",
+  "keywords": [
+   "fireblocks"
+  ]
+ },
+ {
+  "company": "Consensys",
+  "category": "Fintech & crypto",
+  "kind": "greenhouse",
+  "identifier": "consensys",
+  "keywords": [
+   "consensys",
+   "metamask"
+  ]
+ },
+ {
+  "company": "Airwallex",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "airwallex",
+  "keywords": [
+   "airwallex"
+  ]
+ },
+ {
+  "company": "Capchase",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "capchase",
+  "keywords": [
+   "capchase"
+  ]
+ },
+ {
+  "company": "Huntress",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "huntress",
+  "keywords": [
+   "huntress"
+  ]
+ },
+ {
+  "company": "Apiiro",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "apiiro",
+  "keywords": [
+   "apiiro"
+  ]
+ },
+ {
+  "company": "Garner Health",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "garnerhealth",
+  "keywords": [
+   "garner"
+  ]
+ },
+ {
+  "company": "Suki",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "suki",
+  "keywords": [
+   "suki"
+  ]
+ },
+ {
+  "company": "Shield AI",
+  "category": "Robotics, defense & hardware",
+  "kind": "ashby",
+  "identifier": "shield",
+  "keywords": [
+   "shield"
+  ]
+ },
+ {
+  "company": "Relativity Space",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "relativity",
+  "keywords": [
+   "relativity"
+  ]
+ },
+ {
+  "company": "Mach Industries",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "machindustries",
+  "keywords": [
+   "mach"
+  ]
+ },
+ {
+  "company": "Helion",
+  "category": "Climate & energy",
+  "kind": "ashby",
+  "identifier": "helion",
+  "keywords": [
+   "helion"
+  ]
+ },
+ {
+  "company": "Patreon",
+  "category": "Consumer & commerce",
+  "kind": "ashby",
+  "identifier": "patreon",
+  "keywords": [
+   "patreon"
+  ]
+ },
+ {
+  "company": "Ashby",
+  "category": "Work & HR tech",
+  "kind": "ashby",
+  "identifier": "ashby",
+  "keywords": [
+   "ashby"
+  ]
+ },
+ {
+  "company": "Mural",
+  "category": "Work & HR tech",
+  "kind": "ashby",
+  "identifier": "mural",
+  "keywords": [
+   "mural"
+  ]
+ },
+ {
+  "company": "Sierra",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "sierra",
+  "keywords": [
+   "sierra"
+  ]
+ },
+ {
+  "company": "Synthesia",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "synthesia",
+  "keywords": [
+   "synthesia"
+  ]
+ },
+ {
+  "company": "Read AI",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "read-ai",
+  "keywords": [
+   "read"
+  ]
+ },
+ {
+  "company": "Cartesia",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "cartesia",
+  "keywords": [
+   "cartesia"
+  ]
+ },
+ {
+  "company": "Fireworks AI",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "fireworks",
+  "keywords": [
+   "fireworks"
+  ]
+ },
+ {
+  "company": "Tenstorrent",
+  "category": "AI infrastructure",
+  "kind": "greenhouse",
+  "identifier": "tenstorrent",
+  "keywords": [
+   "tenstorrent"
+  ]
+ },
+ {
+  "company": "Weaviate",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "weaviate",
+  "keywords": [
+   "weaviate"
+  ]
+ },
+ {
+  "company": "Netlify",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "netlify",
+  "keywords": [
+   "netlify"
+  ]
+ },
+ {
+  "company": "Hightouch",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "hightouch",
+  "keywords": [
+   "hightouch"
+  ]
+ },
+ {
+  "company": "Apollo GraphQL",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "apollo-graphql",
+  "keywords": [
+   "apollo graphql"
+  ]
+ },
+ {
+  "company": "Mux",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "mux",
+  "keywords": [
+   "mux"
+  ]
+ },
+ {
+  "company": "Contentful",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "contentful",
+  "keywords": [
+   "contentful"
+  ]
+ },
+ {
+  "company": "Alpaca",
+  "category": "Fintech & crypto",
+  "kind": "greenhouse",
+  "identifier": "alpaca",
+  "keywords": [
+   "alpaca"
+  ]
+ },
+ {
+  "company": "Sardine",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "sardine",
+  "keywords": [
+   "sardine"
+  ]
+ },
+ {
+  "company": "Semgrep",
+  "category": "Security",
+  "kind": "ashby",
+  "identifier": "semgrep",
+  "keywords": [
+   "semgrep"
+  ]
+ },
+ {
+  "company": "Arctic Wolf",
+  "category": "Security",
+  "kind": "workday",
+  "identifier": "arcticwolf|wd1|External",
+  "keywords": [
+   "arctic wolf"
+  ]
+ },
+ {
+  "company": "Sysdig",
+  "category": "Security",
+  "kind": "lever",
+  "identifier": "sysdig",
+  "keywords": [
+   "sysdig"
+  ]
+ },
+ {
+  "company": "Endor Labs",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "endorlabs",
+  "keywords": [
+   "endor"
+  ]
+ },
+ {
+  "company": "Cityblock Health",
+  "category": "Health",
+  "kind": "workday",
+  "identifier": "cityblockhealth|wd1|CityblockExternalCareerSite",
+  "keywords": [
+   "cityblock"
+  ]
+ },
+ {
+  "company": "Maven Clinic",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "mavenclinic",
+  "keywords": [
+   "maven clinic"
+  ]
+ },
+ {
+  "company": "Alma",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "alma",
+  "keywords": [
+   "alma"
+  ]
+ },
+ {
+  "company": "Nabla",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "nabla",
+  "keywords": [
+   "nabla"
+  ]
+ },
+ {
+  "company": "Saronic",
+  "category": "Robotics, defense & hardware",
+  "kind": "ashby",
+  "identifier": "saronic",
+  "keywords": [
+   "saronic"
+  ]
+ },
+ {
+  "company": "Varda Space",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "vardaspace",
+  "keywords": [
+   "varda"
+  ]
+ },
+ {
+  "company": "1X",
+  "category": "Robotics, defense & hardware",
+  "kind": "ashby",
+  "identifier": "1x",
+  "keywords": [
+   "1x"
+  ]
+ },
+ {
+  "company": "Form Energy",
+  "category": "Climate & energy",
+  "kind": "ashby",
+  "identifier": "formenergy",
+  "keywords": [
+   "form"
+  ]
+ },
+ {
+  "company": "Aurora Solar",
+  "category": "Climate & energy",
+  "kind": "ashby",
+  "identifier": "aurorasolar",
+  "keywords": [
+   "aurora solar"
+  ]
+ },
+ {
+  "company": "Substack",
+  "category": "Consumer & commerce",
+  "kind": "ashby",
+  "identifier": "substack",
+  "keywords": [
+   "substack"
+  ]
+ },
+ {
+  "company": "Outschool",
+  "category": "Consumer & commerce",
+  "kind": "ashby",
+  "identifier": "outschool",
+  "keywords": [
+   "outschool"
+  ]
+ },
+ {
+  "company": "Hopper",
+  "category": "Consumer & commerce",
+  "kind": "ashby",
+  "identifier": "hopper",
+  "keywords": [
+   "hopper"
+  ]
+ },
+ {
+  "company": "Checkr",
+  "category": "Work & HR tech",
+  "kind": "greenhouse",
+  "identifier": "checkr",
+  "keywords": [
+   "checkr"
+  ]
+ },
+ {
+  "company": "HeyGen",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "heygen",
+  "keywords": [
+   "heygen"
+  ]
+ },
+ {
+  "company": "Harvey AI",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "harvey",
+  "keywords": [
+   "harvey"
+  ]
+ },
+ {
+  "company": "Mercor",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "mercor",
+  "keywords": [
+   "mercor"
+  ]
+ },
+ {
+  "company": "Poolside",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "poolside",
+  "keywords": [
+   "poolside"
+  ]
+ },
+ {
+  "company": "Thinking Machines Lab",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "thinkingmachines",
+  "keywords": [
+   "thinking machines"
+  ]
+ },
+ {
+  "company": "Otter.ai",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "otter",
+  "keywords": [
+   "otter.ai",
+   "otter ai"
+  ]
+ },
+ {
+  "company": "Deepgram",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "deepgram",
+  "keywords": [
+   "deepgram"
+  ]
+ },
+ {
+  "company": "Baseten",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "baseten",
+  "keywords": [
+   "baseten"
+  ]
+ },
+ {
+  "company": "d-Matrix",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "d-matrix",
+  "keywords": [
+   "d-matrix"
+  ]
+ },
+ {
+  "company": "Render",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "render",
+  "keywords": [
+   "render"
+  ]
+ },
+ {
+  "company": "Resend",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "resend",
+  "keywords": [
+   "resend"
+  ]
+ },
+ {
+  "company": "Cribl",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "cribl",
+  "keywords": [
+   "cribl"
+  ]
+ },
+ {
+  "company": "LiveKit",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "livekit",
+  "keywords": [
+   "livekit"
+  ]
+ },
+ {
+  "company": "Paxos",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "paxos",
+  "keywords": [
+   "paxos"
+  ]
+ },
+ {
+  "company": "Alloy",
+  "category": "Fintech & crypto",
+  "kind": "greenhouse",
+  "identifier": "alloy",
+  "keywords": [
+   "alloy"
+  ]
+ },
+ {
+  "company": "Socket",
+  "category": "Security",
+  "kind": "ashby",
+  "identifier": "socket",
+  "keywords": [
+   "socket"
+  ]
+ },
+ {
+  "company": "Coalition",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "coalition",
+  "keywords": [
+   "coalition"
+  ]
+ },
+ {
+  "company": "Axonius",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "axonius",
+  "keywords": [
+   "axonius"
+  ]
+ },
+ {
+  "company": "Oligo",
+  "category": "Security",
+  "kind": "ashby",
+  "identifier": "oligo",
+  "keywords": [
+   "oligo"
+  ]
+ },
+ {
+  "company": "Devoted Health",
+  "category": "Health",
+  "kind": "workday",
+  "identifier": "devoted|wd1|Devoted",
+  "keywords": [
+   "devoted"
+  ]
+ },
+ {
+  "company": "Included Health",
+  "category": "Health",
+  "kind": "lever",
+  "identifier": "includedhealth",
+  "keywords": [
+   "included"
+  ]
+ },
+ {
+  "company": "Omada Health",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "omadahealth",
+  "keywords": [
+   "omada"
+  ]
+ },
+ {
+  "company": "Grow Therapy",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "grow-therapy",
+  "keywords": [
+   "grow therapy"
+  ]
+ },
+ {
+  "company": "Freenome",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "freenome",
+  "keywords": [
+   "freenome"
+  ]
+ },
+ {
+  "company": "Hermeus",
+  "category": "Robotics, defense & hardware",
+  "kind": "lever",
+  "identifier": "hermeus",
+  "keywords": [
+   "hermeus"
+  ]
+ },
+ {
+  "company": "Apptronik",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "apptronik",
+  "keywords": [
+   "apptronik"
+  ]
+ },
+ {
+  "company": "Impulse Space",
+  "category": "Robotics, defense & hardware",
+  "kind": "ashby",
+  "identifier": "impulse",
+  "keywords": [
+   "impulse"
+  ]
+ },
+ {
+  "company": "Redwood Materials",
+  "category": "Climate & energy",
+  "kind": "greenhouse",
+  "identifier": "redwoodmaterials",
+  "keywords": [
+   "redwood materials"
+  ]
+ },
+ {
+  "company": "Fervo Energy",
+  "category": "Climate & energy",
+  "kind": "greenhouse",
+  "identifier": "fervoenergy",
+  "keywords": [
+   "fervo"
+  ]
+ },
+ {
+  "company": "Cameo",
+  "category": "Consumer & commerce",
+  "kind": "greenhouse",
+  "identifier": "cameo",
+  "keywords": [
+   "cameo"
+  ]
+ },
+ {
+  "company": "Handshake",
+  "category": "Consumer & commerce",
+  "kind": "ashby",
+  "identifier": "handshake",
+  "keywords": [
+   "handshake"
+  ]
+ },
+ {
+  "company": "Pacaso",
+  "category": "Consumer & commerce",
+  "kind": "greenhouse",
+  "identifier": "pacaso",
+  "keywords": [
+   "pacaso"
+  ]
+ },
+ {
+  "company": "Justworks",
+  "category": "Work & HR tech",
+  "kind": "greenhouse",
+  "identifier": "justworks",
+  "keywords": [
+   "justworks"
+  ]
+ },
+ {
+  "company": "Instawork",
+  "category": "Work & HR tech",
+  "kind": "greenhouse",
+  "identifier": "instawork",
+  "keywords": [
+   "instawork"
+  ]
+ },
+ {
+  "company": "Pylon",
+  "category": "Work & HR tech",
+  "kind": "ashby",
+  "identifier": "pylon",
+  "keywords": [
+   "pylon"
+  ]
+ },
+ {
+  "company": "Attio",
+  "category": "Work & HR tech",
+  "kind": "ashby",
+  "identifier": "attio",
+  "keywords": [
+   "attio"
+  ]
+ },
+ {
+  "company": "Decagon",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "decagon",
+  "keywords": [
+   "decagon"
+  ]
+ },
+ {
+  "company": "Surge AI",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "surge-ai",
+  "keywords": [
+   "surge"
+  ]
+ },
+ {
+  "company": "AssemblyAI",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "assemblyai",
+  "keywords": [
+   "assemblyai"
+  ]
+ },
+ {
+  "company": "Anyscale",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "anyscale",
+  "keywords": [
+   "anyscale"
+  ]
+ },
+ {
+  "company": "Rain AI",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "rain",
+  "keywords": [
+   "rain"
+  ]
+ },
+ {
+  "company": "Railway",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "railway",
+  "keywords": [
+   "railway"
+  ]
+ },
+ {
+  "company": "Inngest",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "inngest",
+  "keywords": [
+   "inngest"
+  ]
+ },
+ {
+  "company": "Postman",
+  "category": "Developer tools & data",
+  "kind": "workday",
+  "identifier": "postman|wd108|careers",
+  "keywords": [
+   "postman"
+  ]
+ },
+ {
+  "company": "StreamNative",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "streamnative",
+  "keywords": [
+   "streamnative"
+  ]
+ },
+ {
+  "company": "Speakeasy",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "speakeasy",
+  "keywords": [
+   "speakeasy"
+  ]
+ },
+ {
+  "company": "Ramp",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "ramp",
+  "keywords": [
+   "ramp"
+  ]
+ },
+ {
+  "company": "Ripple",
+  "category": "Fintech & crypto",
+  "kind": "greenhouse",
+  "identifier": "ripple",
+  "keywords": [
+   "ripple"
+  ]
+ },
+ {
+  "company": "Persona",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "persona",
+  "keywords": [
+   "persona"
+  ]
+ },
+ {
+  "company": "Chainguard",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "chainguard",
+  "keywords": [
+   "chainguard"
+  ]
+ },
+ {
+  "company": "Expel",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "expel",
+  "keywords": [
+   "expel"
+  ]
+ },
+ {
+  "company": "Sword Health",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "swordhealth",
+  "keywords": [
+   "sword"
+  ]
+ },
+ {
+  "company": "Nomi Health",
+  "category": "Health",
+  "kind": "lever",
+  "identifier": "nomihealth",
+  "keywords": [
+   "nomi"
+  ]
+ },
+ {
+  "company": "Virta Health",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "virtahealth",
+  "keywords": [
+   "virta"
+  ]
+ },
+ {
+  "company": "Rula",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "rula",
+  "keywords": [
+   "rula"
+  ]
+ },
+ {
+  "company": "Insitro",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "insitro",
+  "keywords": [
+   "insitro"
+  ]
+ },
+ {
+  "company": "Agility Robotics",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "agilityrobotics",
+  "keywords": [
+   "agility"
+  ]
+ },
+ {
+  "company": "Astranis",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "astranis",
+  "keywords": [
+   "astranis"
+  ]
+ },
+ {
+  "company": "Bedrock Robotics",
+  "category": "Robotics, defense & hardware",
+  "kind": "ashby",
+  "identifier": "bedrock-robotics",
+  "keywords": [
+   "bedrock"
+  ]
+ },
+ {
+  "company": "X-energy",
+  "category": "Climate & energy",
+  "kind": "workday",
+  "identifier": "xenergy|wd5|X-energyUS",
+  "keywords": [
+   "x-energy",
+   "xenergy"
+  ]
+ },
+ {
+  "company": "Strava",
+  "category": "Consumer & commerce",
+  "kind": "ashby",
+  "identifier": "strava",
+  "keywords": [
+   "strava"
+  ]
+ },
+ {
+  "company": "Gorgias",
+  "category": "Consumer & commerce",
+  "kind": "ashby",
+  "identifier": "gorgias",
+  "keywords": [
+   "gorgias"
+  ]
+ },
+ {
+  "company": "Roofstock",
+  "category": "Consumer & commerce",
+  "kind": "greenhouse",
+  "identifier": "roofstock",
+  "keywords": [
+   "roofstock"
+  ]
+ },
+ {
+  "company": "Oyster",
+  "category": "Work & HR tech",
+  "kind": "ashby",
+  "identifier": "oyster",
+  "keywords": [
+   "oyster"
+  ]
+ },
+ {
+  "company": "Shiftsmart",
+  "category": "Work & HR tech",
+  "kind": "ashby",
+  "identifier": "shiftsmart",
+  "keywords": [
+   "shiftsmart"
+  ]
+ },
+ {
+  "company": "Character.AI",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "character",
+  "keywords": [
+   "character"
+  ]
+ },
+ {
+  "company": "Descript",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "descript",
+  "keywords": [
+   "descript"
+  ]
+ },
+ {
+  "company": "Snorkel AI",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "snorkelai",
+  "keywords": [
+   "snorkel"
+  ]
+ },
+ {
+  "company": "Physical Intelligence",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "physicalintelligence",
+  "keywords": [
+   "physical intelligence"
+  ]
+ },
+ {
+  "company": "Vapi",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "vapi",
+  "keywords": [
+   "vapi"
+  ]
+ },
+ {
+  "company": "Crusoe",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "crusoe",
+  "keywords": [
+   "crusoe"
+  ]
+ },
+ {
+  "company": "MatX",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "matx",
+  "keywords": [
+   "matx"
+  ]
+ },
+ {
+  "company": "Zilliz",
+  "category": "AI infrastructure",
+  "kind": "lever",
+  "identifier": "zilliz",
+  "keywords": [
+   "zilliz"
+  ]
+ },
+ {
+  "company": "Prefect",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "prefect",
+  "keywords": [
+   "prefect"
+  ]
+ },
+ {
+  "company": "Mixpanel",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "mixpanel",
+  "keywords": [
+   "mixpanel"
+  ]
+ },
+ {
+  "company": "Kong",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "kong",
+  "keywords": [
+   "kong"
+  ]
+ },
+ {
+  "company": "ClickUp",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "clickup",
+  "keywords": [
+   "clickup"
+  ]
+ },
+ {
+  "company": "Tines",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "tines",
+  "keywords": [
+   "tines"
+  ]
+ },
+ {
+  "company": "Mintlify",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "mintlify",
+  "keywords": [
+   "mintlify"
+  ]
+ },
+ {
+  "company": "Algolia",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "algolia",
+  "keywords": [
+   "algolia"
+  ]
+ },
+ {
+  "company": "Rho",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "rho",
+  "keywords": [
+   "rho"
+  ]
+ },
+ {
+  "company": "Kalshi",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "kalshi",
+  "keywords": [
+   "kalshi"
+  ]
+ },
+ {
+  "company": "Uniswap Labs",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "uniswap",
+  "keywords": [
+   "uniswap"
+  ]
+ },
+ {
+  "company": "Acorns",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "acorns",
+  "keywords": [
+   "acorns"
+  ]
+ },
+ {
+  "company": "Socure",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "socure",
+  "keywords": [
+   "socure"
+  ]
+ },
+ {
+  "company": "Material Security",
+  "category": "Security",
+  "kind": "workday",
+  "identifier": "material|wd1|Material_External_Career_Site",
+  "keywords": [
+   "material security"
+  ]
+ },
+ {
+  "company": "Nightfall AI",
+  "category": "Security",
+  "kind": "ashby",
+  "identifier": "nightfall-ai",
+  "keywords": [
+   "nightfall"
+  ]
+ },
+ {
+  "company": "Calm",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "calm",
+  "keywords": [
+   "calm"
+  ]
+ },
+ {
+  "company": "SonderMind",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "sondermind",
+  "keywords": [
+   "sondermind"
+  ]
+ },
+ {
+  "company": "Isomorphic Labs",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "isomorphiclabs",
+  "keywords": [
+   "isomorphic"
+  ]
+ },
+ {
+  "company": "Wayve",
+  "category": "Robotics, defense & hardware",
+  "kind": "ashby",
+  "identifier": "wayve",
+  "keywords": [
+   "wayve"
+  ]
+ },
+ {
+  "company": "Epirus",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "epirus",
+  "keywords": [
+   "epirus"
+  ]
+ },
+ {
+  "company": "Dexterity",
+  "category": "Robotics, defense & hardware",
+  "kind": "lever",
+  "identifier": "dexterity",
+  "keywords": [
+   "dexterity"
+  ]
+ },
+ {
+  "company": "Muon Space",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "muonspace",
+  "keywords": [
+   "muon"
+  ]
+ },
+ {
+  "company": "Sanctuary AI",
+  "category": "Robotics, defense & hardware",
+  "kind": "ashby",
+  "identifier": "sanctuary",
+  "keywords": [
+   "sanctuary"
+  ]
+ },
+ {
+  "company": "Watershed",
+  "category": "Climate & energy",
+  "kind": "ashby",
+  "identifier": "watershed",
+  "keywords": [
+   "watershed"
+  ]
+ },
+ {
+  "company": "Kairos Power",
+  "category": "Climate & energy",
+  "kind": "greenhouse",
+  "identifier": "kairospower",
+  "keywords": [
+   "kairos power"
+  ]
+ },
+ {
+  "company": "Whoop",
+  "category": "Consumer & commerce",
+  "kind": "ashby",
+  "identifier": "whoop",
+  "keywords": [
+   "whoop"
+  ]
+ },
+ {
+  "company": "Attentive",
+  "category": "Consumer & commerce",
+  "kind": "greenhouse",
+  "identifier": "attentive",
+  "keywords": [
+   "attentive"
+  ]
+ },
+ {
+  "company": "Jobber",
+  "category": "Work & HR tech",
+  "kind": "ashby",
+  "identifier": "jobber",
+  "keywords": [
+   "jobber"
+  ]
+ },
+ {
+  "company": "Outreach",
+  "category": "Work & HR tech",
+  "kind": "lever",
+  "identifier": "outreach",
+  "keywords": [
+   "outreach"
+  ]
+ },
+ {
+  "company": "Pika",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "pika",
+  "keywords": [
+   "pika"
+  ]
+ },
+ {
+  "company": "Gamma",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "gamma",
+  "keywords": [
+   "gamma"
+  ]
+ },
+ {
+  "company": "Rogo",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "rogo",
+  "keywords": [
+   "rogo"
+  ]
+ },
+ {
+  "company": "Labelbox",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "labelbox",
+  "keywords": [
+   "labelbox"
+  ]
+ },
+ {
+  "company": "World Labs",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "worldlabs",
+  "keywords": [
+   "world"
+  ]
+ },
+ {
+  "company": "Speak",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "speak",
+  "keywords": [
+   "speak"
+  ]
+ },
+ {
+  "company": "Bland AI",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "bland",
+  "keywords": [
+   "bland"
+  ]
+ },
+ {
+  "company": "Unstructured",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "unstructured",
+  "keywords": [
+   "unstructured"
+  ]
+ },
+ {
+  "company": "Nomic",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "nomic",
+  "keywords": [
+   "nomic"
+  ]
+ },
+ {
+  "company": "Neon",
+  "category": "Developer tools & data",
+  "kind": "lever",
+  "identifier": "neon",
+  "keywords": [
+   "neon"
+  ]
+ },
+ {
+  "company": "Warp",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "warp",
+  "keywords": [
+   "warp"
+  ]
+ },
+ {
+  "company": "n8n",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "n8n",
+  "keywords": [
+   "n8n"
+  ]
+ },
+ {
+  "company": "Modern Treasury",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "moderntreasury",
+  "keywords": [
+   "modern treasury"
+  ]
+ },
+ {
+  "company": "Polymarket",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "polymarket",
+  "keywords": [
+   "polymarket"
+  ]
+ },
+ {
+  "company": "Treasury Prime",
+  "category": "Fintech & crypto",
+  "kind": "greenhouse",
+  "identifier": "treasuryprime",
+  "keywords": [
+   "treasury prime"
+  ]
+ },
+ {
+  "company": "Betterment",
+  "category": "Fintech & crypto",
+  "kind": "greenhouse",
+  "identifier": "betterment",
+  "keywords": [
+   "betterment"
+  ]
+ },
+ {
+  "company": "Island",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "island",
+  "keywords": [
+   "island"
+  ]
+ },
+ {
+  "company": "Netskope",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "netskope",
+  "keywords": [
+   "netskope"
+  ]
+ },
+ {
+  "company": "Doppler",
+  "category": "Security",
+  "kind": "ashby",
+  "identifier": "doppler",
+  "keywords": [
+   "doppler"
+  ]
+ },
+ {
+  "company": "Zocdoc",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "zocdoc",
+  "keywords": [
+   "zocdoc"
+  ]
+ },
+ {
+  "company": "Xaira Therapeutics",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "xairatherapeutics",
+  "keywords": [
+   "xaira"
+  ]
+ },
+ {
+  "company": "Kodiak Robotics",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "kodiak",
+  "keywords": [
+   "kodiak"
+  ]
+ },
+ {
+  "company": "Skydio",
+  "category": "Robotics, defense & hardware",
+  "kind": "ashby",
+  "identifier": "skydio",
+  "keywords": [
+   "skydio"
+  ]
+ },
+ {
+  "company": "Machina Labs",
+  "category": "Robotics, defense & hardware",
+  "kind": "ashby",
+  "identifier": "machina-labs",
+  "keywords": [
+   "machina"
+  ]
+ },
+ {
+  "company": "Vannevar Labs",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "vannevarlabs",
+  "keywords": [
+   "vannevar"
+  ]
+ },
+ {
+  "company": "Path Robotics",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "pathrobotics",
+  "keywords": [
+   "path"
+  ]
+ },
+ {
+  "company": "Span",
+  "category": "Climate & energy",
+  "kind": "ashby",
+  "identifier": "span",
+  "keywords": [
+   "span"
+  ]
+ },
+ {
+  "company": "Oura",
+  "category": "Consumer & commerce",
+  "kind": "greenhouse",
+  "identifier": "oura",
+  "keywords": [
+   "oura"
+  ]
+ },
+ {
+  "company": "Postscript",
+  "category": "Consumer & commerce",
+  "kind": "greenhouse",
+  "identifier": "postscript",
+  "keywords": [
+   "postscript"
+  ]
+ },
+ {
+  "company": "Partiful",
+  "category": "Consumer & commerce",
+  "kind": "ashby",
+  "identifier": "partiful",
+  "keywords": [
+   "partiful"
+  ]
+ },
+ {
+  "company": "Culture Amp",
+  "category": "Work & HR tech",
+  "kind": "greenhouse",
+  "identifier": "cultureamp",
+  "keywords": [
+   "culture amp"
+  ]
+ },
+ {
+  "company": "Apollo.io",
+  "category": "Work & HR tech",
+  "kind": "greenhouse",
+  "identifier": "apolloio",
+  "keywords": [
+   "apollo.io"
+  ]
+ },
+ {
+  "company": "Suno",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "suno",
+  "keywords": [
+   "suno"
+  ]
+ },
+ {
+  "company": "Writer",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "writer",
+  "keywords": [
+   "writer"
+  ]
+ },
+ {
+  "company": "Abridge",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "abridge",
+  "keywords": [
+   "abridge"
+  ]
+ },
+ {
+  "company": "Turing",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "turing",
+  "keywords": [
+   "turing"
+  ]
+ },
+ {
+  "company": "Lovable",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "lovable",
+  "keywords": [
+   "lovable"
+  ]
+ },
+ {
+  "company": "Liquid AI",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "liquid-ai",
+  "keywords": [
+   "liquid"
+  ]
+ },
+ {
+  "company": "Elicit",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "elicit",
+  "keywords": [
+   "elicit"
+  ]
+ },
+ {
+  "company": "Retell AI",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "retell-ai",
+  "keywords": [
+   "retell"
+  ]
+ },
+ {
+  "company": "Arize AI",
+  "category": "AI infrastructure",
+  "kind": "greenhouse",
+  "identifier": "arizeai",
+  "keywords": [
+   "arize"
+  ]
+ },
+ {
+  "company": "Runpod",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "runpod",
+  "keywords": [
+   "runpod"
+  ]
+ },
+ {
+  "company": "LaunchDarkly",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "launchdarkly",
+  "keywords": [
+   "launchdarkly"
+  ]
+ },
+ {
+  "company": "Zed Industries",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "zed",
+  "keywords": [
+   "zed"
+  ]
+ },
+ {
+  "company": "MotherDuck",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "motherduck",
+  "keywords": [
+   "motherduck"
+  ]
+ },
+ {
+  "company": "CircleCI",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "circleci",
+  "keywords": [
+   "circleci"
+  ]
+ },
+ {
+  "company": "Phantom",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "phantom",
+  "keywords": [
+   "phantom"
+  ]
+ },
+ {
+  "company": "Synctera",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "synctera",
+  "keywords": [
+   "synctera"
+  ]
+ },
+ {
+  "company": "Wealthsimple",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "wealthsimple",
+  "keywords": [
+   "wealthsimple"
+  ]
+ },
+ {
+  "company": "Middesk",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "middesk",
+  "keywords": [
+   "middesk"
+  ]
+ },
+ {
+  "company": "Torq",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "torq",
+  "keywords": [
+   "torq"
+  ]
+ },
+ {
+  "company": "Illumio",
+  "category": "Security",
+  "kind": "ashby",
+  "identifier": "illumio",
+  "keywords": [
+   "illumio"
+  ]
+ },
+ {
+  "company": "Bitwarden",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "bitwarden",
+  "keywords": [
+   "bitwarden"
+  ]
+ },
+ {
+  "company": "Komodo Health",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "komodohealth",
+  "keywords": [
+   "komodo"
+  ]
+ },
+ {
+  "company": "Commure",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "commure",
+  "keywords": [
+   "commure"
+  ]
+ },
+ {
+  "company": "Crossover Health",
+  "category": "Health",
+  "kind": "workday",
+  "identifier": "crossoverhealth|wd1|Careers",
+  "keywords": [
+   "crossover"
+  ]
+ },
+ {
+  "company": "Cedar",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "cedar",
+  "keywords": [
+   "cedar"
+  ]
+ },
+ {
+  "company": "Generate Biomedicines",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "generatebiomedicines",
+  "keywords": [
+   "generate biomedicines"
+  ]
+ },
+ {
+  "company": "Divergent",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "divergent",
+  "keywords": [
+   "divergent"
+  ]
+ },
+ {
+  "company": "Bright Machines",
+  "category": "Robotics, defense & hardware",
+  "kind": "lever",
+  "identifier": "brightmachines",
+  "keywords": [
+   "bright machines"
+  ]
+ },
+ {
+  "company": "Antora Energy",
+  "category": "Climate & energy",
+  "kind": "greenhouse",
+  "identifier": "antora",
+  "keywords": [
+   "antora"
+  ]
+ },
+ {
+  "company": "Yotpo",
+  "category": "Consumer & commerce",
+  "kind": "greenhouse",
+  "identifier": "yotpo",
+  "keywords": [
+   "yotpo"
+  ]
+ },
+ {
+  "company": "15Five",
+  "category": "Work & HR tech",
+  "kind": "lever",
+  "identifier": "15five",
+  "keywords": [
+   "15five"
+  ]
+ },
+ {
+  "company": "Fieldwire",
+  "category": "Work & HR tech",
+  "kind": "greenhouse",
+  "identifier": "fieldwire",
+  "keywords": [
+   "fieldwire"
+  ]
+ },
+ {
+  "company": "Luma AI",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "lumaai",
+  "keywords": [
+   "luma"
+  ]
+ },
+ {
+  "company": "Ambience Healthcare",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "ambiencehealthcare",
+  "keywords": [
+   "ambience healthcare"
+  ]
+ },
+ {
+  "company": "Invisible Technologies",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "invisible",
+  "keywords": [
+   "invisible"
+  ]
+ },
+ {
+  "company": "Factory",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "factory",
+  "keywords": [
+   "factory"
+  ]
+ },
+ {
+  "company": "You.com",
+  "category": "AI & ML",
+  "kind": "greenhouse",
+  "identifier": "youcom",
+  "keywords": [
+   "you.com"
+  ]
+ },
+ {
+  "company": "Sesame",
+  "category": "AI & ML",
+  "kind": "ashby",
+  "identifier": "sesame",
+  "keywords": [
+   "sesame"
+  ]
+ },
+ {
+  "company": "Etched",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "etched",
+  "keywords": [
+   "etched"
+  ]
+ },
+ {
+  "company": "LangChain",
+  "category": "AI infrastructure",
+  "kind": "ashby",
+  "identifier": "langchain",
+  "keywords": [
+   "langchain"
+  ]
+ },
+ {
+  "company": "Vast.ai",
+  "category": "AI infrastructure",
+  "kind": "greenhouse",
+  "identifier": "vast",
+  "keywords": [
+   "vast"
+  ]
+ },
+ {
+  "company": "Clerk",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "clerk",
+  "keywords": [
+   "clerk"
+  ]
+ },
+ {
+  "company": "Hex",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "hex",
+  "keywords": [
+   "hex"
+  ]
+ },
+ {
+  "company": "Sentry",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "sentry",
+  "keywords": [
+   "sentry"
+  ]
+ },
+ {
+  "company": "Materialize",
+  "category": "Developer tools & data",
+  "kind": "ashby",
+  "identifier": "materialize",
+  "keywords": [
+   "materialize"
+  ]
+ },
+ {
+  "company": "Buildkite",
+  "category": "Developer tools & data",
+  "kind": "greenhouse",
+  "identifier": "buildkite",
+  "keywords": [
+   "buildkite"
+  ]
+ },
+ {
+  "company": "Lithic",
+  "category": "Fintech & crypto",
+  "kind": "greenhouse",
+  "identifier": "lithic",
+  "keywords": [
+   "lithic"
+  ]
+ },
+ {
+  "company": "Alchemy",
+  "category": "Fintech & crypto",
+  "kind": "ashby",
+  "identifier": "alchemy",
+  "keywords": [
+   "alchemy"
+  ]
+ },
+ {
+  "company": "AngelList",
+  "category": "Fintech & crypto",
+  "kind": "lever",
+  "identifier": "angellist",
+  "keywords": [
+   "angellist"
+  ]
+ },
+ {
+  "company": "Highnote",
+  "category": "Fintech & crypto",
+  "kind": "greenhouse",
+  "identifier": "highnote",
+  "keywords": [
+   "highnote"
+  ]
+ },
+ {
+  "company": "Secureframe",
+  "category": "Security",
+  "kind": "lever",
+  "identifier": "secureframe",
+  "keywords": [
+   "secureframe"
+  ]
+ },
+ {
+  "company": "Orca Security",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "orcasecurity",
+  "keywords": [
+   "orca"
+  ]
+ },
+ {
+  "company": "Thoropass",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "thoropass",
+  "keywords": [
+   "thoropass"
+  ]
+ },
+ {
+  "company": "Keeper Security",
+  "category": "Security",
+  "kind": "greenhouse",
+  "identifier": "keepersecurity",
+  "keywords": [
+   "keeper"
+  ]
+ },
+ {
+  "company": "Color Health",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "color-health",
+  "keywords": [
+   "color"
+  ]
+ },
+ {
+  "company": "Pager Health",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "pagerhealth",
+  "keywords": [
+   "pager"
+  ]
+ },
+ {
+  "company": "Infinitus",
+  "category": "Health",
+  "kind": "ashby",
+  "identifier": "infinitus",
+  "keywords": [
+   "infinitus"
+  ]
+ },
+ {
+  "company": "Inceptive",
+  "category": "Health",
+  "kind": "greenhouse",
+  "identifier": "inceptive",
+  "keywords": [
+   "inceptive"
+  ]
+ },
+ {
+  "company": "Figure AI",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "figureai",
+  "keywords": [
+   "figure"
+  ]
+ },
+ {
+  "company": "Chaos Industries",
+  "category": "Robotics, defense & hardware",
+  "kind": "greenhouse",
+  "identifier": "chaosindustries",
+  "keywords": [
+   "chaos"
+  ]
+ },
+ {
+  "company": "Sila",
+  "category": "Climate & energy",
+  "kind": "lever",
+  "identifier": "sila",
+  "keywords": [
+   "sila"
+  ]
+ },
+ {
+  "company": "Rondo Energy",
+  "category": "Climate & energy",
+  "kind": "greenhouse",
+  "identifier": "rondoenergy",
+  "keywords": [
+   "rondo"
+  ]
+ },
+ {
+  "company": "Glossier",
+  "category": "Consumer & commerce",
+  "kind": "greenhouse",
+  "identifier": "glossier",
+  "keywords": [
+   "glossier"
+  ]
+ },
+ {
+  "company": "Brilliant",
+  "category": "Consumer & commerce",
+  "kind": "lever",
+  "identifier": "brilliant",
+  "keywords": [
+   "brilliant"
+  ]
+ },
+ {
+  "company": "People.ai",
+  "category": "Work & HR tech",
+  "kind": "lever",
+  "identifier": "people-ai",
+  "keywords": [
+   "people"
+  ]
+ }
+]

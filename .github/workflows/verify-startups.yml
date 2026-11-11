@@ -1,0 +1,41 @@
+name: Verify startup feeds
+on:
+  push:
+    branches: [startups-scan]
+    paths: ["backend/scripts/verify_startups.json", ".github/workflows/verify-startups.yml"]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r backend/requirements.txt
+      - name: Verify feed identities
+        working-directory: backend
+        env:
+          VERIFY_OUT: scripts/verify_startups_results.json
+        run: python scripts/verify_feeds.py scripts/verify_startups.json
+      - name: Live check of the Hacker News source
+        working-directory: backend
+        run: |
+          python - <<'PY' > scripts/hn_live_check.txt 2>&1 || true
+          from app.services.sources.hn import HNHiringAdapter
+          a = HNHiringAdapter("auto", context={"queries": ["Software Engineer"], "title_terms": ["Software Engineer", "Backend Engineer", "Machine Learning Engineer", "Data Scientist", "Founding Engineer", "Full Stack Engineer"]}, sleep=lambda s: None)
+          sid, title = a.latest_thread()
+          print("thread:", sid, title)
+          jobs = a.fetch()
+          print("matching jobs:", len(jobs))
+          for j in jobs[:25]:
+              print("-", j.company, "|", j.title, "|", j.location, "|", j.remote_type, "|", j.apply_url[:60])
+          PY
+          cat scripts/hn_live_check.txt
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add backend/scripts/verify_startups_results.json backend/scripts/hn_live_check.txt
+          git commit -m "Startup verification results" && git push
