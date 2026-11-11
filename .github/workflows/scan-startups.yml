@@ -1,0 +1,53 @@
+name: Scan startup job boards
+on:
+  workflow_dispatch:
+  push:
+    branches: [startups-scan]
+    paths: ["backend/scripts/scan_startups.txt", ".github/workflows/scan-startups.yml"]
+permissions:
+  contents: write
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r backend/requirements.txt
+      - name: Scan
+        working-directory: backend
+        env:
+          SCAN_QUERY: ""
+          SCAN_OUT: scan_${{ matrix.chunk }}.json
+        run: python scripts/scan_companies.py scripts/scan_startups.txt ${{ matrix.chunk }} 8 > /dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: scan-${{ matrix.chunk }}
+          path: backend/scan_${{ matrix.chunk }}.json
+  commit:
+    needs: scan
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: parts
+      - name: Merge and commit results
+        run: |
+          python - <<'PY'
+          import glob, json
+          rows = [r for f in sorted(glob.glob("parts/*/*.json")) for r in json.load(open(f))]
+          json.dump(rows, open("backend/scripts/scan_startups_results.json", "w"), indent=1)
+          print(len(rows), "results;", sum(1 for r in rows if r["best"]), "with a direct feed")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add backend/scripts/scan_startups_results.json
+          git commit -m "Startup scan results" && git push

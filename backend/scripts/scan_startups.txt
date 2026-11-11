@@ -1,0 +1,403 @@
+AI & ML|Cognition|cognition
+AI & ML|Sierra|sierra
+AI & ML|Hebbia|hebbia
+AI & ML|Decagon|decagon
+AI & ML|Character.AI|characterai,character,character-ai
+AI & ML|Pika|pika
+AI & ML|Suno|suno
+AI & ML|Luma AI|lumaai,luma,luma-ai
+AI & ML|Black Forest Labs|blackforestlabs,blackforest,black-forest-labs
+AI & ML|Synthesia|synthesia
+AI & ML|HeyGen|heygen
+AI & ML|Captions|captions
+AI & ML|Descript|descript
+AI & ML|Gamma|gamma
+AI & ML|Writer|writer
+AI & ML|Jasper|jasper
+AI & ML|Typeface|typeface
+AI & ML|Moveworks|moveworks
+AI & ML|Harvey AI|harveyai,harvey,harvey-ai
+AI & ML|EvenUp|evenup
+AI & ML|Clay|clay
+AI & ML|Rogo|rogo
+AI & ML|Abridge|abridge
+AI & ML|Ambience Healthcare|ambiencehealthcare,ambience-healthcare
+AI & ML|OpenEvidence|openevidence
+AI & ML|Hippocratic AI|hippocraticai,hippocratic,hippocratic-ai
+AI & ML|Mercor|mercor
+AI & ML|Surge AI|surgeai,surge,surge-ai
+AI & ML|Snorkel AI|snorkelai,snorkel,snorkel-ai
+AI & ML|Labelbox|labelbox
+AI & ML|Turing|turing
+AI & ML|Invisible Technologies|invisibletechnologies,invisible,invisible-technologies
+AI & ML|Reka|reka
+AI & ML|Contextual AI|contextualai,contextual,contextual-ai
+AI & ML|Poolside|poolside
+AI & ML|Augment Code|augmentcode,augment-code
+AI & ML|Sourcegraph|sourcegraph
+AI & ML|Tabnine|tabnine
+AI & ML|Lovable|lovable
+AI & ML|Factory|factory
+AI & ML|Imbue|imbue
+AI & ML|Sakana AI|sakanaai,sakana,sakana-ai
+AI & ML|Thinking Machines Lab|thinkingmachineslab,thinkingmachines,thinking-machines-lab
+AI & ML|Safe Superintelligence|safesuperintelligence,safe-superintelligence
+AI & ML|Physical Intelligence|physicalintelligence,physical-intelligence
+AI & ML|World Labs|worldlabs,world,world-labs
+AI & ML|Liquid AI|liquidai,liquid,liquid-ai
+AI & ML|You.com|youcom,you-com
+AI & ML|Tome|tome
+AI & ML|Read AI|readai,read,read-ai
+AI & ML|Otter.ai|otterai,otter,otter-ai
+AI & ML|Fireflies.ai|firefliesai,fireflies,fireflies-ai
+AI & ML|Grammarly|grammarly
+AI & ML|Speak|speak
+AI & ML|Elicit|elicit
+AI & ML|Consensus|consensus
+AI & ML|Hume AI|humeai,hume,hume-ai
+AI & ML|Cartesia|cartesia
+AI & ML|Deepgram|deepgram
+AI & ML|AssemblyAI|assemblyai
+AI & ML|Vapi|vapi
+AI & ML|Bland AI|blandai,bland,bland-ai
+AI & ML|Retell AI|retellai,retell,retell-ai
+AI & ML|Sesame|sesame
+AI infrastructure|Together AI|togetherai,together,together-ai
+AI infrastructure|Fireworks AI|fireworksai,fireworks,fireworks-ai
+AI infrastructure|Baseten|baseten
+AI infrastructure|Anyscale|anyscale
+AI infrastructure|Crusoe|crusoe
+AI infrastructure|Groq|groq
+AI infrastructure|SambaNova|sambanova
+AI infrastructure|Etched|etched
+AI infrastructure|Lightmatter|lightmatter
+AI infrastructure|Tenstorrent|tenstorrent
+AI infrastructure|d-Matrix|dmatrix,d-matrix
+AI infrastructure|Rain AI|rainai,rain,rain-ai
+AI infrastructure|MatX|matx
+AI infrastructure|Replicate|replicate
+AI infrastructure|Weights & Biases|weightsbiases,weights-biases
+AI infrastructure|LangChain|langchain
+AI infrastructure|LlamaIndex|llamaindex
+AI infrastructure|Weaviate|weaviate
+AI infrastructure|Chroma|chroma
+AI infrastructure|Qdrant|qdrant
+AI infrastructure|Zilliz|zilliz
+AI infrastructure|Unstructured|unstructured
+AI infrastructure|Arize AI|arizeai,arize,arize-ai
+AI infrastructure|Galileo|galileo
+AI infrastructure|Braintrust|braintrust
+AI infrastructure|Humanloop|humanloop
+AI infrastructure|Vellum|vellum
+AI infrastructure|Predibase|predibase
+AI infrastructure|Lamini|lamini
+AI infrastructure|Nomic|nomic
+AI infrastructure|Runpod|runpod
+AI infrastructure|Vast.ai|vastai,vast,vast-ai
+AI infrastructure|Voltage Park|voltagepark,voltage-park
+Developer tools & data|Netlify|netlify
+Developer tools & data|Render|render
+Developer tools & data|Railway|railway
+Developer tools & data|Fly.io|flyio,fly-io
+Developer tools & data|Neon|neon
+Developer tools & data|Convex|convex
+Developer tools & data|Clerk|clerk
+Developer tools & data|WorkOS|workos
+Developer tools & data|Stytch|stytch
+Developer tools & data|Resend|resend
+Developer tools & data|Inngest|inngest
+Developer tools & data|Prefect|prefect
+Developer tools & data|Dagster Labs|dagsterlabs,dagster,dagster-labs
+Developer tools & data|dbt Labs|dbtlabs,dbt,dbt-labs
+Developer tools & data|Hex|hex
+Developer tools & data|Sigma Computing|sigmacomputing,sigma-computing
+Developer tools & data|Hightouch|hightouch
+Developer tools & data|Census|census
+Developer tools & data|RudderStack|rudderstack
+Developer tools & data|Mixpanel|mixpanel
+Developer tools & data|Statsig|statsig
+Developer tools & data|LaunchDarkly|launchdarkly
+Developer tools & data|Sentry|sentry
+Developer tools & data|Honeycomb|honeycomb
+Developer tools & data|Chronosphere|chronosphere
+Developer tools & data|Cribl|cribl
+Developer tools & data|Postman|postman
+Developer tools & data|Kong|kong
+Developer tools & data|Warp|warp
+Developer tools & data|Zed Industries|zedindustries,zed,zed-industries
+Developer tools & data|Graphite|graphite
+Developer tools & data|CodeRabbit|coderabbit
+Developer tools & data|Retool|retool
+Developer tools & data|Framer|framer
+Developer tools & data|Coda|coda
+Developer tools & data|ClickUp|clickup
+Developer tools & data|n8n|n8n
+Developer tools & data|MotherDuck|motherduck
+Developer tools & data|Materialize|materialize
+Developer tools & data|SingleStore|singlestore
+Developer tools & data|Timescale|timescale
+Developer tools & data|Redpanda|redpanda
+Developer tools & data|StreamNative|streamnative
+Developer tools & data|Pulumi|pulumi
+Developer tools & data|Harness|harness
+Developer tools & data|CircleCI|circleci
+Developer tools & data|Buildkite|buildkite
+Developer tools & data|Bun|bun
+Developer tools & data|Deno|deno
+Developer tools & data|Expo|expo
+Developer tools & data|Appsmith|appsmith
+Developer tools & data|Tines|tines
+Developer tools & data|Turso|turso
+Developer tools & data|Xata|xata
+Developer tools & data|Grafbase|grafbase
+Developer tools & data|Hasura|hasura
+Developer tools & data|Apollo GraphQL|apollographql,apollo-graphql
+Developer tools & data|Stainless|stainless
+Developer tools & data|Speakeasy|speakeasy
+Developer tools & data|Mintlify|mintlify
+Developer tools & data|Raycast|raycast
+Developer tools & data|Superhuman|superhuman
+Developer tools & data|Loom|loom
+Developer tools & data|Pitch|pitch
+Developer tools & data|Mux|mux
+Developer tools & data|LiveKit|livekit
+Developer tools & data|Agora|agora
+Developer tools & data|Algolia|algolia
+Developer tools & data|Typesense|typesense
+Developer tools & data|Meilisearch|meilisearch
+Developer tools & data|Prisma|prisma
+Developer tools & data|Sanity|sanity
+Developer tools & data|Contentful|contentful
+Developer tools & data|Strapi|strapi
+Fintech & crypto|Ramp|ramp
+Fintech & crypto|Rho|rho
+Fintech & crypto|Modern Treasury|moderntreasury,modern-treasury
+Fintech & crypto|Increase|increase
+Fintech & crypto|Lithic|lithic
+Fintech & crypto|Bilt Rewards|biltrewards,bilt-rewards
+Fintech & crypto|Alpaca|alpaca
+Fintech & crypto|Pilot|pilot
+Fintech & crypto|Puzzle|puzzle
+Fintech & crypto|Kalshi|kalshi
+Fintech & crypto|Polymarket|polymarket
+Fintech & crypto|Kraken|kraken
+Fintech & crypto|Chainalysis|chainalysis
+Fintech & crypto|Fireblocks|fireblocks
+Fintech & crypto|Anchorage Digital|anchoragedigital,anchorage-digital
+Fintech & crypto|Paxos|paxos
+Fintech & crypto|Ripple|ripple
+Fintech & crypto|Uniswap Labs|uniswaplabs,uniswap,uniswap-labs
+Fintech & crypto|OpenSea|opensea
+Fintech & crypto|Phantom|phantom
+Fintech & crypto|Alchemy|alchemy
+Fintech & crypto|Consensys|consensys
+Fintech & crypto|Circle|circle
+Fintech & crypto|Deel|deel
+Fintech & crypto|Rippling|rippling
+Fintech & crypto|Navan|navan
+Fintech & crypto|Treasury Prime|treasuryprime,treasury-prime
+Fintech & crypto|Synctera|synctera
+Fintech & crypto|Checkout.com|checkoutcom,checkout-com
+Fintech & crypto|Airwallex|airwallex
+Fintech & crypto|Melio|melio
+Fintech & crypto|Tipalti|tipalti
+Fintech & crypto|Stash|stash
+Fintech & crypto|Acorns|acorns
+Fintech & crypto|Betterment|betterment
+Fintech & crypto|Wealthsimple|wealthsimple
+Fintech & crypto|AngelList|angellist
+Fintech & crypto|Capchase|capchase
+Fintech & crypto|Sardine|sardine
+Fintech & crypto|Alloy|alloy
+Fintech & crypto|Persona|persona
+Fintech & crypto|Socure|socure
+Fintech & crypto|Unit21|unit21
+Fintech & crypto|Middesk|middesk
+Fintech & crypto|Highnote|highnote
+Security|Wiz|wiz
+Security|Semgrep|semgrep
+Security|Socket|socket
+Security|Chainguard|chainguard
+Security|Teleport|teleport
+Security|Island|island
+Security|Cyera|cyera
+Security|Secureframe|secureframe
+Security|Huntress|huntress
+Security|Arctic Wolf|arcticwolf,arctic-wolf
+Security|Coalition|coalition
+Security|Abnormal|abnormal
+Security|Material Security|materialsecurity,material,material-security
+Security|Push Security|pushsecurity,push,push-security
+Security|Torq|torq
+Security|Orca Security|orcasecurity,orca,orca-security
+Security|Aqua Security|aquasecurity,aqua,aqua-security
+Security|Sysdig|sysdig
+Security|Axonius|axonius
+Security|Expel|expel
+Security|Red Canary|redcanary,red-canary
+Security|Netskope|netskope
+Security|Illumio|illumio
+Security|Thoropass|thoropass
+Security|Apiiro|apiiro
+Security|Endor Labs|endorlabs,endor,endor-labs
+Security|Oligo|oligo
+Security|Legit Security|legitsecurity,legit,legit-security
+Security|Nightfall AI|nightfallai,nightfall,nightfall-ai
+Security|Doppler|doppler
+Security|Bitwarden|bitwarden
+Security|Keeper Security|keepersecurity,keeper,keeper-security
+Security|Aikido|aikido
+Health|Cityblock Health|cityblockhealth,cityblock,cityblock-health
+Health|Devoted Health|devotedhealth,devoted,devoted-health
+Health|Sword Health|swordhealth,sword,sword-health
+Health|Spring Health|springhealth,spring,spring-health
+Health|Zocdoc|zocdoc
+Health|Komodo Health|komodohealth,komodo,komodo-health
+Health|Color Health|colorhealth,color,color-health
+Health|Garner Health|garnerhealth,garner,garner-health
+Health|Carbon Health|carbonhealth,carbon,carbon-health
+Health|Included Health|includedhealth,included,included-health
+Health|Nomi Health|nomihealth,nomi,nomi-health
+Health|Thirty Madison|thirtymadison,thirty-madison
+Health|Function Health|functionhealth,function,function-health
+Health|Commure|commure
+Health|Headspace|headspace
+Health|Cerebral|cerebral
+Health|Maven Clinic|mavenclinic,maven-clinic
+Health|Omada Health|omadahealth,omada,omada-health
+Health|Virta Health|virtahealth,virta,virta-health
+Health|Calm|calm
+Health|Noom|noom
+Health|Crossover Health|crossoverhealth,crossover,crossover-health
+Health|Pager Health|pagerhealth,pager,pager-health
+Health|Nourish|nourish
+Health|Alma|alma
+Health|Grow Therapy|growtherapy,grow-therapy
+Health|Rula|rula
+Health|SonderMind|sondermind
+Health|Brightline|brightline
+Health|Cedar|cedar
+Health|Infinitus|infinitus
+Health|Suki|suki
+Health|Nabla|nabla
+Health|Freenome|freenome
+Health|Insitro|insitro
+Health|Isomorphic Labs|isomorphiclabs,isomorphic,isomorphic-labs
+Health|Xaira Therapeutics|xairatherapeutics,xaira-therapeutics
+Health|Generate Biomedicines|generatebiomedicines,generate-biomedicines
+Health|Inceptive|inceptive
+Robotics, defense & hardware|Shield AI|shieldai,shield,shield-ai
+Robotics, defense & hardware|Saronic|saronic
+Robotics, defense & hardware|Hadrian|hadrian
+Robotics, defense & hardware|Applied Intuition|appliedintuition,applied-intuition
+Robotics, defense & hardware|Wayve|wayve
+Robotics, defense & hardware|Kodiak Robotics|kodiakrobotics,kodiak,kodiak-robotics
+Robotics, defense & hardware|Gatik|gatik
+Robotics, defense & hardware|Zipline|zipline
+Robotics, defense & hardware|Relativity Space|relativityspace,relativity,relativity-space
+Robotics, defense & hardware|Varda Space|vardaspace,varda,varda-space
+Robotics, defense & hardware|Hermeus|hermeus
+Robotics, defense & hardware|Castelion|castelion
+Robotics, defense & hardware|Epirus|epirus
+Robotics, defense & hardware|Skydio|skydio
+Robotics, defense & hardware|Flock Safety|flocksafety,flock-safety
+Robotics, defense & hardware|Figure AI|figureai,figure,figure-ai
+Robotics, defense & hardware|Skild AI|skildai,skild,skild-ai
+Robotics, defense & hardware|1X|1x
+Robotics, defense & hardware|Apptronik|apptronik
+Robotics, defense & hardware|Agility Robotics|agilityrobotics,agility,agility-robotics
+Robotics, defense & hardware|Dexterity|dexterity
+Robotics, defense & hardware|Machina Labs|machinalabs,machina,machina-labs
+Robotics, defense & hardware|Divergent|divergent
+Robotics, defense & hardware|True Anomaly|trueanomaly,true-anomaly
+Robotics, defense & hardware|Apex Space|apexspace,apex,apex-space
+Robotics, defense & hardware|K2 Space|k2space,k2,k2-space
+Robotics, defense & hardware|Impulse Space|impulsespace,impulse,impulse-space
+Robotics, defense & hardware|Astranis|astranis
+Robotics, defense & hardware|Muon Space|muonspace,muon,muon-space
+Robotics, defense & hardware|Vannevar Labs|vannevarlabs,vannevar,vannevar-labs
+Robotics, defense & hardware|Rebellion Defense|rebelliondefense,rebellion-defense
+Robotics, defense & hardware|Chaos Industries|chaosindustries,chaos,chaos-industries
+Robotics, defense & hardware|Mach Industries|machindustries,mach,mach-industries
+Robotics, defense & hardware|Neros|neros
+Robotics, defense & hardware|Overland AI|overlandai,overland,overland-ai
+Robotics, defense & hardware|Bedrock Robotics|bedrockrobotics,bedrock,bedrock-robotics
+Robotics, defense & hardware|Sanctuary AI|sanctuaryai,sanctuary,sanctuary-ai
+Robotics, defense & hardware|Path Robotics|pathrobotics,path,path-robotics
+Robotics, defense & hardware|Bright Machines|brightmachines,bright-machines
+Climate & energy|Commonwealth Fusion Systems|commonwealthfusionsystems,commonwealthfusion,commonwealth-fusion-systems
+Climate & energy|Helion|helion
+Climate & energy|Form Energy|formenergy,form,form-energy
+Climate & energy|Redwood Materials|redwoodmaterials,redwood-materials
+Climate & energy|Arcadia|arcadia
+Climate & energy|Watershed|watershed
+Climate & energy|Span|span
+Climate & energy|Palmetto|palmetto
+Climate & energy|Sila|sila
+Climate & energy|Heirloom|heirloom
+Climate & energy|Electric Hydrogen|electrichydrogen,electric-hydrogen
+Climate & energy|Fervo Energy|fervoenergy,fervo,fervo-energy
+Climate & energy|X-energy|xenergy,x-energy
+Climate & energy|Kairos Power|kairospower,kairos-power
+Climate & energy|TerraPower|terrapower
+Climate & energy|Antora Energy|antoraenergy,antora,antora-energy
+Climate & energy|Rondo Energy|rondoenergy,rondo,rondo-energy
+Climate & energy|Lilac Solutions|lilacsolutions,lilac-solutions
+Climate & energy|Aurora Solar|aurorasolar,aurora-solar
+Climate & energy|Pachama|pachama
+Climate & energy|Persefoni|persefoni
+Consumer & commerce|Whatnot|whatnot
+Consumer & commerce|Vinted|vinted
+Consumer & commerce|Depop|depop
+Consumer & commerce|Glossier|glossier
+Consumer & commerce|Patreon|patreon
+Consumer & commerce|Substack|substack
+Consumer & commerce|Cameo|cameo
+Consumer & commerce|Strava|strava
+Consumer & commerce|Whoop|whoop
+Consumer & commerce|Oura|oura
+Consumer & commerce|Quizlet|quizlet
+Consumer & commerce|Brilliant|brilliant
+Consumer & commerce|Masterclass|masterclass
+Consumer & commerce|Outschool|outschool
+Consumer & commerce|Handshake|handshake
+Consumer & commerce|Gorgias|gorgias
+Consumer & commerce|Attentive|attentive
+Consumer & commerce|Postscript|postscript
+Consumer & commerce|Yotpo|yotpo
+Consumer & commerce|Rokt|rokt
+Consumer & commerce|SevenRooms|sevenrooms
+Consumer & commerce|Hopper|hopper
+Consumer & commerce|Pacaso|pacaso
+Consumer & commerce|Roofstock|roofstock
+Consumer & commerce|Feeld|feeld
+Consumer & commerce|Partiful|partiful
+Consumer & commerce|Beli|beli
+Work & HR tech|Gem|gem
+Work & HR tech|Ashby|ashby
+Work & HR tech|Checkr|checkr
+Work & HR tech|Justworks|justworks
+Work & HR tech|Oyster|oyster
+Work & HR tech|Papaya Global|papayaglobal,papaya-global
+Work & HR tech|Culture Amp|cultureamp,culture-amp
+Work & HR tech|15Five|15five
+Work & HR tech|Leapsome|leapsome
+Work & HR tech|Workrise|workrise
+Work & HR tech|Wonolo|wonolo
+Work & HR tech|Instawork|instawork
+Work & HR tech|Shiftsmart|shiftsmart
+Work & HR tech|Jobber|jobber
+Work & HR tech|Housecall Pro|housecallpro,housecall-pro
+Work & HR tech|Fieldwire|fieldwire
+Work & HR tech|Built Technologies|builttechnologies,built,built-technologies
+Work & HR tech|Mural|mural
+Work & HR tech|Lucid|lucid
+Work & HR tech|Pylon|pylon
+Work & HR tech|Gong|gong
+Work & HR tech|Outreach|outreach
+Work & HR tech|Apollo.io|apolloio,apollo-io
+Work & HR tech|Clari|clari
+Work & HR tech|People.ai|peopleai,people,people-ai
+Work & HR tech|Highspot|highspot
+Work & HR tech|Seismic|seismic
+Work & HR tech|Attio|attio
