@@ -19,6 +19,31 @@ from ..services.insights import analytics, attention_items, digest
 router = APIRouter(prefix="/api", tags=["misc"])
 
 
+_STARTED = __import__("time").time()
+
+
+def _runtime(db: Session) -> dict:
+    """Uptime (a restart resets it), memory in use and table sizes: what's needed to tell a crash loop from a slow wake."""
+    import resource
+    import time
+
+    out = {"uptime_s": int(time.time() - _STARTED),
+           "rss_mb": round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)}
+    try:
+        with open("/proc/self/status") as f:
+            for line in f:
+                if line.startswith("VmRSS:"):
+                    out["rss_now_mb"] = round(int(line.split()[1]) / 1024)
+    except OSError:
+        pass
+    try:
+        out["rows"] = {t: db.execute(text(f"SELECT count(*) FROM {t}")).scalar()
+                       for t in ("jobs", "match_assessments", "job_sources", "job_snapshots")}
+    except Exception:  # noqa: BLE001
+        pass
+    return out
+
+
 @router.get("/health")
 def health(db: Session = Depends(get_db)):
     try:
@@ -31,6 +56,7 @@ def health(db: Session = Depends(get_db)):
         "database": "ok" if db_ok else "error",
         "database_backend": settings.database_url.split(":", 1)[0],
         "latex": __import__("app.services.latex", fromlist=["available"]).available(),  # LaTeX resume tailoring
+        **_runtime(db),
         "llm": {"configured": llm.available(), "model": settings.openai_model if llm.available() else None,
                 "note": "Users can also connect their own AI key in Settings → Connections."},
         "simulated_sources_allowed": settings.allow_mock_sources,
