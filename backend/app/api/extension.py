@@ -67,7 +67,7 @@ def _resume_file(db: Session, app: Application, first: str, last: str) -> Option
         if d.content.get("format") == "inplace":
             r = db.get(Resume, d.content["resume_id"])
             data, _ = tailor_inplace.render(d.content, r)
-            kind = d.content["file_kind"]
+            kind = tailor_inplace.output_kind(d.content["file_kind"])
         else:
             data, kind = export.resume_pdf(d.content), "pdf"
     elif choice["type"] == "master":
@@ -75,6 +75,10 @@ def _resume_file(db: Session, app: Application, first: str, last: str) -> Option
         data = tailor_inplace.resume_bytes(r)
         if data is None:
             return None
+        if r.mime_type == "tex":  # employers get the compiled PDF, never the LaTeX source
+            from ..services import inplace_tex
+
+            data = inplace_tex.to_pdf(data)
         kind = r.mime_type if r.mime_type in ("pdf", "docx") else "pdf"
     else:
         return None

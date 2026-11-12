@@ -60,7 +60,7 @@ def test_pdf_parse():
 @pytest.mark.parametrize("name,data,msg", [
     ("cv.pdf", b"not a pdf at all", "not a valid PDF"),
     ("cv.docx", b"%PDF-1.4 fake", "not a valid DOCX"),
-    ("cv.exe", b"MZ....", "Only PDF and DOCX"),
+    ("cv.exe", b"MZ....", "Only PDF, DOCX and LaTeX"),
     ("cv.pdf", b"", "empty"),
 ])
 def test_upload_validation_rejects(name, data, msg):

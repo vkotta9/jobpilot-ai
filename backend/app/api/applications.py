@@ -38,7 +38,7 @@ from ..schemas import (
 )
 from ..security import audit, current_user, owned, rate_limit
 from ..services import applications as appsvc
-from ..services import export, inplace_pdf, llm, tailor_inplace
+from ..services import export, inplace_pdf, inplace_tex, llm, tailor_inplace
 from ..services.inplace_pdf import FitError
 from ..services.insights import latest_scores, next_best_action
 from ..services.matching import assess
@@ -75,7 +75,7 @@ def generate_resume(jid: int, user: User = Depends(current_user), db: Session = 
     job = owned(db, Job, jid, user)
     p = _profile(db, user)
     resume = appsvc.master_resume(db, user.id, job.id)  # the job's role-track resume (else your primary one)
-    if resume is not None and resume.mime_type in ("pdf", "docx") and tailor_inplace.resume_bytes(resume) is not None:
+    if resume is not None and resume.mime_type in ("pdf", "docx", "tex") and tailor_inplace.resume_bytes(resume) is not None:
         # keep the user's own file and format; only re-word lines and add skills
         try:
             content, flags, generator = tailor_inplace.build_plan(db, user.id, job, resume)
@@ -125,7 +125,11 @@ def get_document(did: int, user: User = Depends(current_user), db: Session = Dep
     if d.content.get("format") == "inplace":
         r = db.get(Resume, d.content["resume_id"])
         raw = tailor_inplace.resume_bytes(r) if r else None
-        out["pages"] = inplace_pdf.page_count(raw) if raw and d.content["file_kind"] == "pdf" else 1
+        kind = d.content["file_kind"]
+        try:
+            out["pages"] = inplace_pdf.page_count(raw if kind == "pdf" else inplace_tex.to_pdf(raw)) if raw and kind in ("pdf", "tex") else 1
+        except Exception:  # noqa: BLE001 - a LaTeX source that stopped compiling: one page is a safe default
+            out["pages"] = 1
         out["resume_available"] = r is not None
         return out
     if d.kind == "resume":
@@ -249,14 +253,14 @@ def download_document(did: int, format: str = "pdf", user: User = Depends(curren
     if format not in ("pdf", "docx"):
         raise HTTPException(400, "format must be pdf or docx")
     if d.content.get("format") == "inplace":
-        kind = d.content["file_kind"]
+        kind = tailor_inplace.output_kind(d.content["file_kind"])
         if format != kind:
             raise HTTPException(400, f"This resume keeps your original {kind.upper()} format — download it as {kind.upper()}.")
         try:
             data, _ = _render_inplace(d, db.get(Resume, d.content["resume_id"]))
         except FitError as e:
             raise HTTPException(400, _fit_message(d.content, str(e)))
-        stem = re.sub(r"\.(pdf|docx)$", "", d.content.get("resume_filename") or "resume", flags=re.I)
+        stem = re.sub(r"\.(pdf|docx|tex|zip)$", "", d.content.get("resume_filename") or "resume", flags=re.I)
         target = d.content.get("target", {})
         base = re.sub(r"[^A-Za-z0-9]+", "_", f"{stem}_{target.get('company', '')}").strip("_")
         if d.status != "approved":
@@ -286,7 +290,7 @@ def preview_document(did: int, page: int = 0, user: User = Depends(current_user)
         data, _ = _render_inplace(d, r)
     except FitError as e:
         raise HTTPException(400, _fit_message(d.content, str(e)))
-    if d.content["file_kind"] == "pdf":
+    if d.content["file_kind"] in ("pdf", "tex"):  # a LaTeX resume renders to its compiled PDF
         png = inplace_pdf.page_png(data, page)
     else:
         raise HTTPException(400, "Live preview is available for PDF resumes; download the DOCX to view it.")
@@ -297,9 +301,13 @@ def preview_document(did: int, page: int = 0, user: User = Depends(current_user)
 def preview_resume(rid: int, page: int = 0, user: User = Depends(current_user), db: Session = Depends(get_db)):
     r = owned(db, Resume, rid, user)
     data = tailor_inplace.resume_bytes(r)
-    if not data or r.mime_type != "pdf":
-        raise HTTPException(400, "Preview is available for PDF resumes.")
-    return Response(inplace_pdf.page_png(data, page), media_type="image/png")
+    if not data or r.mime_type not in ("pdf", "tex"):
+        raise HTTPException(400, "Preview is available for PDF and LaTeX resumes.")
+    try:
+        pdf = data if r.mime_type == "pdf" else inplace_tex.to_pdf(data)
+    except ValueError as e:
+        raise HTTPException(400, f"Your LaTeX resume didn't compile: {e}")
+    return Response(inplace_pdf.page_png(pdf, page), media_type="image/png")
 
 
 def _render_inplace(d: Document, r: Optional[Resume]):

@@ -18,7 +18,7 @@ from typing import Optional
 
 from ..config import settings
 from ..models import Job, Resume
-from . import ats, inplace_docx, inplace_pdf, llm
+from . import ats, inplace_docx, inplace_pdf, inplace_tex, llm
 from .inplace_pdf import FitError
 from .tailoring import fact_guard
 from .textutil import SKILL_VOCAB, pretty_skill
@@ -55,7 +55,13 @@ def resume_bytes(resume: Resume) -> Optional[bytes]:
 
 
 def engine(kind: str):
-    return inplace_pdf if kind == "pdf" else inplace_docx
+    """pdf → edit the PDF in place · docx → edit Word paragraphs · tex → edit the LaTeX source and compile it."""
+    return {"pdf": inplace_pdf, "docx": inplace_docx, "tex": inplace_tex}.get(kind, inplace_docx)
+
+
+def output_kind(kind: str) -> str:
+    """The file type a tailored resume is delivered as (a LaTeX resume is delivered as its compiled PDF)."""
+    return "pdf" if kind in ("pdf", "tex") else "docx"
 
 
 def to_md(rich: list) -> str:

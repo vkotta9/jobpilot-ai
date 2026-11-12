@@ -17,7 +17,8 @@ function atsBadge(label, a, prev) {
 export async function renderInplace(root, d) {
   const c = d.content;
   const id = d.id;
-  const pdf = c.file_kind === "pdf";
+  const pdf = c.file_kind === "pdf" || c.file_kind === "tex";  // a LaTeX resume is compiled to PDF
+  const outKind = pdf ? "pdf" : "docx";
   let page = 0;
   let showAll = false;
   const state = JSON.parse(JSON.stringify({ units: c.units, skills: c.skills, skill_removals: c.skill_removals || [] }));
@@ -149,7 +150,7 @@ export async function renderInplace(root, d) {
     toast("Approved.");
     render();
   }));
-  const dl = h("button", { onclick: () => api.file(`/api/documents/${id}/download?format=${c.file_kind}`, `resume.${c.file_kind}`) }, `⬇ Download ${c.file_kind.toUpperCase()}`);
+  const dl = h("button", { onclick: () => api.file(`/api/documents/${id}/download?format=${outKind}`, `resume.${outKind}`) }, `⬇ Download ${outKind.toUpperCase()}`);
 
   async function render() {
     const fresh = await api.get(`/api/documents/${id}`);

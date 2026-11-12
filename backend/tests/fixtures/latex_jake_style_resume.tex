@@ -1,0 +1,69 @@
+% Test fixture written for JobPilot in the style of popular one-page LaTeX resume templates
+% (custom item macros, titlesec headings, skills as \textbf{Label}{: items} rows). Fictional person.
+\documentclass[letterpaper,11pt]{article}
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\input{glyphtounicode}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+\titleformat{\section}{\vspace{-4pt}\scshape\raggedright\large}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+\pdfgentounicode=1
+\newcommand{\resumeItem}[1]{\item\small{{#1 \vspace{-2pt}}}}
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+\begin{document}
+\begin{center}
+    \textbf{\Huge \scshape Riley Sample} \\ \vspace{1pt}
+    \small 555-010-3000 $|$ \href{mailto:riley@example.com}{\underline{riley@example.com}}
+\end{center}
+
+\section{Summary}
+{\small Data engineer with 4 years of experience building batch and streaming pipelines in Python and SQL on GCP. Comfortable owning data models end to end, from ingestion to dashboards.}
+
+\section{Experience}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Data Engineer}{June 2021 -- Present}
+      {Sample Analytics}{Remote}
+      \resumeItemListStart
+        \resumeItem{Built \textbf{Airflow} pipelines that load 40M rows per day into BigQuery with 99.9\% on-time runs}
+        \resumeItem{Cut warehouse cost by 25\% by partitioning tables and rewriting the heaviest SQL queries}
+        % \resumeItem{This bullet is commented out and must never be edited}
+        \resumeItem{Mentored two analysts on dbt models and code review}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: Python, SQL, Bash} \\
+     \textbf{Tools}{: Airflow, dbt, BigQuery, Docker, Git}
+    }}
+ \end{itemize}
+\end{document}

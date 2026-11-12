@@ -3,6 +3,13 @@ FROM python:3.13-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 JOBPILOT_DATA_DIR=/data
 WORKDIR /app
 
+# LaTeX, so resumes uploaded as .tex / Overleaf .zip are tailored in their own source and compiled with pdflatex.
+# Covers common resume templates (titlesec, enumitem, marvosym, fullpage, hyperref, xcolor, fontenc T1 fonts).
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+    texlive-fonts-recommended lmodern cm-super-minimal \
+ && rm -rf /var/lib/apt/lists/* /usr/share/doc/* /usr/share/texmf/doc /usr/share/texlive/texmf-dist/doc
+
 COPY backend/requirements.txt backend/requirements.txt
 RUN pip install --no-cache-dir -r backend/requirements.txt
 

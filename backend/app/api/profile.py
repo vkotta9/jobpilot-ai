@@ -138,7 +138,7 @@ async def upload_resume(file: UploadFile = File(...), user: User = Depends(curre
     except resume_parser.UploadError as e:
         raise HTTPException(400, str(e))
     except Exception:
-        raise HTTPException(400, "Could not read this file. Try re-exporting it as PDF or DOCX.")
+        raise HTTPException(400, "Could not read this file. Try re-exporting it as PDF, DOCX or LaTeX (.tex).")
     digest = sha256(data.hex())
     existing = db.query(Resume).filter_by(user_id=user.id, sha256=digest).first()
     if existing:
@@ -199,8 +199,8 @@ def apply_to_profile(rid: int, overwrite: bool = False, user: User = Depends(cur
 @router.get("/resumes/{rid}/file")
 def download_resume(rid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     r = owned(db, Resume, rid, user)
-    media = "application/pdf" if r.mime_type == "pdf" else \
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    media = {"pdf": "application/pdf", "tex": "application/zip" if (r.file_data or b"")[:2] == b"PK" else "application/x-tex"}.get(
+        r.mime_type, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     if r.file_data:
         safe = re.sub(r'[^A-Za-z0-9._ -]', "_", r.original_filename)
         return Response(r.file_data, media_type=media, headers={"Content-Disposition": f'attachment; filename="{safe}"'})

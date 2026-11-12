@@ -4,10 +4,10 @@ import { h, mount, loading, empty, fmtDate, toast, busy, confirmDialog } from ".
 export async function render(root) {
   mount(root, loading());
   const resumes = await api.get("/api/resumes");
-  const file = h("input", { type: "file", accept: ".pdf,.docx", "aria-label": "Choose resume file" });
+  const file = h("input", { type: "file", accept: ".pdf,.docx,.tex,.zip", "aria-label": "Choose resume file" });
   const up = h("button", { class: "btn-primary" }, "Upload");
   up.addEventListener("click", busy(up, async () => {
-    if (!file.files[0]) return toast("Choose a PDF or DOCX file first.", "bad");
+    if (!file.files[0]) return toast("Choose a PDF, DOCX or LaTeX file first.", "bad");
     const fd = new FormData();
     fd.append("file", file.files[0]);
     const r = await api.post("/api/resumes", fd);
@@ -20,7 +20,7 @@ export async function render(root) {
       h("div", { class: "sub" }, "Master resumes are stored privately and never modified. Tailored versions live with each job."))),
     h("div", { class: "card", style: { marginBottom: "16px" } },
       h("h2", {}, "Upload a master resume"),
-      h("p", { class: "small muted" }, "PDF or DOCX, up to 5 MB. Text-based files work best (scanned images can't be read)."),
+      h("p", { class: "small muted" }, "PDF, DOCX or LaTeX, up to 5 MB. Made your resume in LaTeX / Overleaf? Upload the .tex file (or Overleaf → Menu → Download → Source .zip): tailored versions are then compiled with LaTeX itself — your template, fonts and spacing, exactly."),
       h("div", { class: "row" }, file, up)),
     resumes.length ? h("div", { class: "stack" }, resumes.map((r) => resumeCard(r, root)))
       : h("div", { class: "card" }, empty("▣", "No resumes yet", "Upload your resume to pre-fill your profile.")));
@@ -43,7 +43,7 @@ function resumeCard(r, root) {
   return h("div", { class: "card" },
     h("div", { class: "card-head" },
       h("div", {}, h("h2", {}, r.original_filename, " ", r.is_primary && h("span", { class: "badge accent" }, "Primary")),
-        h("div", { class: "faint" }, `${r.mime_type.toUpperCase()} · ${(r.size_bytes / 1024).toFixed(0)} KB · uploaded ${fmtDate(r.created_at)}`)),
+        h("div", { class: "faint" }, `${r.mime_type === "tex" ? "LaTeX" : r.mime_type.toUpperCase()} · ${(r.size_bytes / 1024).toFixed(0)} KB · uploaded ${fmtDate(r.created_at)}`)),
       h("div", { class: "row" },
         !r.is_primary && h("button", { class: "btn-sm", onclick: async () => { await api.post(`/api/resumes/${r.id}/primary`); render(root); } }, "Make primary"),
         h("button", { class: "btn-sm", onclick: () => api.file(`/api/resumes/${r.id}/file`, r.original_filename) }, "Download"),
@@ -52,7 +52,7 @@ function resumeCard(r, root) {
         } }, "Delete"))),
     (p.warnings || []).map((w) => h("div", { class: "alert warn", style: { marginBottom: "8px" } }, w)),
     r.is_primary && h("div", { class: "alert good", style: { marginBottom: "8px" } }, "This is the resume JobPilot tailors. Tailored versions keep this exact file's layout, fonts and contact details — only matching lines and skills change."),
-    r.mime_type === "pdf" && h("details", { style: { marginBottom: "10px" } }, h("summary", { style: { cursor: "pointer" } }, "Show the file"),
+    (r.mime_type === "pdf" || r.mime_type === "tex") && h("details", { style: { marginBottom: "10px" } }, h("summary", { style: { cursor: "pointer" } }, "Show the file"),
       h("img", { src: `/api/resumes/${r.id}/preview.png`, alt: "Resume preview", style: { width: "100%", maxWidth: "640px", border: "1px solid var(--border)", borderRadius: "8px", marginTop: "8px", background: "#fff" } })),
     h("div", { class: "grid cols-2" },
       h("div", {}, h("h3", {}, "Extracted details"),

@@ -49,7 +49,7 @@ class UploadError(ValueError):
 
 
 def validate_upload(filename: str, data: bytes, max_bytes: int) -> str:
-    """Return a normalized kind ('pdf'|'docx') or raise UploadError."""
+    """Return a normalized kind ('pdf'|'docx'|'tex') or raise UploadError. 'tex' = a .tex file or an Overleaf .zip."""
     if not data:
         raise UploadError("The file is empty.")
     if len(data) > max_bytes:
@@ -73,7 +73,17 @@ def validate_upload(filename: str, data: bytes, max_bytes: int) -> str:
         except zipfile.BadZipFile as e:
             raise UploadError("Corrupt DOCX file.") from e
         return "docx"
-    raise UploadError("Only PDF and DOCX resumes are supported.")
+    if name.endswith(".tex") or (name.endswith(".zip") and data.startswith(ZIP_MAGIC)):
+        from . import latex
+
+        if name.endswith(".tex") and (b"\\documentclass" not in data or b"\\begin{document}" not in data):
+            raise UploadError("This .tex file has no \\documentclass / \\begin{document}. Upload the main file of your resume.")
+        try:
+            latex.load_project(data)
+        except latex.LatexError as e:
+            raise UploadError(str(e))
+        return "tex"
+    raise UploadError("Only PDF, DOCX and LaTeX (.tex, or an Overleaf .zip) resumes are supported.")
 
 
 def extract_text(kind: str, data: bytes) -> str:
@@ -103,6 +113,17 @@ def extract_text(kind: str, data: bytes) -> str:
                 if cells:
                     lines.append(" | ".join(dict.fromkeys(cells)))
         text = "\n".join(lines)
+    elif kind == "tex":
+        from . import latex
+
+        try:
+            pdf = latex.compile_source(data)
+        except latex.LatexError as e:
+            pkg = latex.missing_package(str(e))
+            raise UploadError(
+                f"Your LaTeX resume uses the '{pkg}' package, which isn't installed on JobPilot's server — upload the PDF instead."
+                if pkg else f"Your LaTeX resume didn't compile: {e}. Check that it compiles on Overleaf, or upload the PDF.")
+        return extract_text("pdf", pdf)
     else:  # pragma: no cover
         raise UploadError("Unsupported file type")
     text = text.replace(" ", " ").replace("\r", "")
