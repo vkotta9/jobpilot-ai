@@ -80,3 +80,29 @@ def test_google_location_is_not_the_eeo_sentence():
 
     assert _google_location("Equal opportunity: workplace discrimination is illegal , Belonging at Google , and How we hire .") == ""
     assert _google_location("corporate_fare Google place Sunnyvale, CA, USA") == "Sunnyvale, CA, USA"
+
+
+def test_rescoring_keeps_one_assessment_per_job_and_dashboard_stays_light(client):
+    from app.db import SessionLocal
+    from app.models import MatchAssessment, User
+    from app.services.insights import latest_scores
+    from app.services.matching import score_job
+
+    from .conftest import make_user, setup_profile
+    from .test_api import _mock_jobs
+
+    h, email = make_user(client)
+    setup_profile(client, h)
+    jobs = _mock_jobs(client, h)
+    with SessionLocal() as db:
+        uid = db.query(User).filter_by(email=email).one().id
+        from app.models import Job
+        j = db.get(Job, jobs[0]["id"])
+        for _ in range(3):
+            score_job(db, j)
+        db.commit()
+        assert db.query(MatchAssessment).filter_by(job_id=j.id).count() == 1
+        sc = latest_scores(db, uid)
+        assert set(sc) >= {x["id"] for x in jobs} and isinstance(sc[j.id].score, int)
+        assert set(latest_scores(db, uid, [j.id])) == {j.id}
+    assert client.get("/api/dashboard", headers=h).status_code == 200

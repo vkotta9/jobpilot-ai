@@ -360,8 +360,8 @@ def list_applications(status: str = "", q: str = "", user: User = Depends(curren
     qry = db.query(Application).filter_by(user_id=user.id)
     if status:
         qry = qry.filter(Application.status.in_(status.split(",")))
-    scores = latest_scores(db, user.id)
     apps = qry.order_by(Application.updated_at.desc()).all()
+    scores = latest_scores(db, user.id, [a.job_id for a in apps])
     if q:
         ql = q.lower()
         apps = [a for a in apps if ql in a.job.title.lower() or ql in a.job.company.lower()]
@@ -406,7 +406,7 @@ def export_csv(user: User = Depends(current_user), db: Session = Depends(get_db)
 @router.get("/applications/{aid}")
 def application_detail(aid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     a = owned(db, Application, aid, user)
-    scores = latest_scores(db, user.id)
+    scores = latest_scores(db, user.id, [a.job_id])
     out = app_out(a, scores.get(a.job_id))
     resume = appsvc.latest_doc(db, a.job_id, "resume")
     letter = appsvc.latest_doc(db, a.job_id, "cover_letter")

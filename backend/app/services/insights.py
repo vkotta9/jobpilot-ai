@@ -6,6 +6,8 @@ real metrics unless asked.
 """
 from __future__ import annotations
 
+from typing import Iterable, Optional
+
 from collections import Counter, defaultdict
 from datetime import timedelta
 
@@ -36,17 +38,35 @@ def next_best_action(db: Session, app: Application) -> str:
     return ""
 
 
-def latest_scores(db: Session, user_id: int) -> dict[int, MatchAssessment]:
-    out: dict[int, MatchAssessment] = {}
-    for m in db.query(MatchAssessment).filter_by(user_id=user_id).order_by(MatchAssessment.id).all():
-        out[m.job_id] = m
+class Score:
+    """A job's latest ATS score — just the numbers (loading whole assessments with their breakdowns for thousands
+    of jobs used ~400 MB and crashed the 512 MB free server)."""
+    __slots__ = ("id", "score")
+
+    def __init__(self, id: int, score: int):
+        self.id, self.score = id, score
+
+
+def latest_scores(db: Session, user_id: int, job_ids: Optional[Iterable[int]] = None) -> dict[int, Score]:
+    q = db.query(MatchAssessment.job_id, MatchAssessment.id, MatchAssessment.score).filter(MatchAssessment.user_id == user_id)
+    wanted = None if job_ids is None else set(job_ids)
+    if wanted is not None:
+        if not wanted:
+            return {}
+        if len(wanted) <= 900:
+            q = q.filter(MatchAssessment.job_id.in_(wanted))
+    out: dict[int, Score] = {}
+    for jid, aid, sc in q.order_by(MatchAssessment.id):
+        if wanted is None or jid in wanted:
+            out[jid] = Score(aid, sc)
     return out
 
 
 def analytics(db: Session, user_id: int, include_simulated: bool = False) -> dict:
     st = db.get(UserSettings, user_id)
     threshold = st.high_match_threshold if st else 75
-    jq = db.query(Job).filter(Job.user_id == user_id, Job.duplicate_of_id.is_(None))
+    # only the columns the counts need: never whole jobs with their descriptions (thousands of them)
+    jq = db.query(Job.id, Job.discovered_at, Job.listing_status).filter(Job.user_id == user_id, Job.duplicate_of_id.is_(None))
     if not include_simulated:
         jq = jq.filter(Job.is_simulated.is_(False))
     jobs = jq.all()
@@ -139,8 +159,9 @@ def digest(db: Session, user_id: int, days: int = 7) -> dict:
     since = utcnow() - timedelta(days=days)
     st = db.get(UserSettings, user_id)
     threshold = st.high_match_threshold if st else 75
-    scores = latest_scores(db, user_id)
-    new_jobs = db.query(Job).filter(Job.user_id == user_id, Job.discovered_at >= since, Job.duplicate_of_id.is_(None)).all()
+    new_jobs = db.query(Job.id, Job.title, Job.company, Job.is_simulated).filter(
+        Job.user_id == user_id, Job.discovered_at >= since, Job.duplicate_of_id.is_(None)).all()
+    scores = latest_scores(db, user_id, [j.id for j in new_jobs] if len(new_jobs) <= 900 else None)
     high = sorted([j for j in new_jobs if j.id in scores and scores[j.id].score >= threshold],
                   key=lambda j: -scores[j.id].score)
     upcoming = db.query(FollowUpTask).filter(FollowUpTask.user_id == user_id, FollowUpTask.done.is_(False),

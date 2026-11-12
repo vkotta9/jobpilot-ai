@@ -96,6 +96,11 @@ def _m011_fit(conn: Connection) -> None:
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_match_assessments_fit ON match_assessments (fit)"))
 
 
+def _m012_prune_assessments(conn: Connection) -> None:
+    # keep only each job's latest assessment (history was never read and had grown to ~3 rows per job)
+    conn.execute(text("DELETE FROM match_assessments WHERE id NOT IN (SELECT MAX(id) FROM match_assessments GROUP BY job_id)"))
+
+
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "initial schema", _m001_initial),
     (2, "store resume file bytes in database", _m002_resume_file_data),
@@ -108,6 +113,7 @@ MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (9, "role tracks (one resume per kind of role)", _m009_role_tracks),
     (10, "scoring version on assessments (re-score after scoring changes)", _m010_scoring_version),
     (11, "fit verdict on assessments (good / stretch / poor)", _m011_fit),
+    (12, "keep only the latest assessment per job", _m012_prune_assessments),
 ]
 
 

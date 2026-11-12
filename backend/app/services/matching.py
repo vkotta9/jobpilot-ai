@@ -436,6 +436,9 @@ def score_job(db: Session, job: Job, profile: Optional[CandidateProfile] = None,
     m = MatchAssessment(user_id=job.user_id, job_id=job.id, track_id=track_id, scoring_version=SCORING_VERSION, **result)
     db.add(m)
     db.flush()
+    # keep only the latest assessment per job: older ones are never read, and every re-score used to add a row
+    # (25,000 rows for 9,400 jobs), slowing every page and filling the database
+    db.query(MatchAssessment).filter(MatchAssessment.job_id == job.id, MatchAssessment.id != m.id).delete(synchronize_session=False)
     return m
 
 
