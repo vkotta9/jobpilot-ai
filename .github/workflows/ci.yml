@@ -27,6 +27,8 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -r backend/requirements-dev.txt
+      - name: Install Ghostscript (strict PDF reader for the tailored-PDF font test)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ghostscript
       - name: Run tests
         working-directory: backend
         env:

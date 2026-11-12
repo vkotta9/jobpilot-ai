@@ -21,6 +21,8 @@ import statistics
 from dataclasses import dataclass, field
 from typing import Optional
 
+import logging
+
 import pymupdf
 
 BULLET_CHARS = set("•●▪◦‣∙·*–-")
@@ -38,6 +40,9 @@ SECTION_ALIASES = {
                      "leadership", "activities", "extracurricular activities", "volunteering"),
 }
 EDITABLE_SECTIONS = {"summary", "experience", "projects", "publications", "other"}
+
+
+log = logging.getLogger("jobpilot.inplace_pdf")
 
 
 class FitError(ValueError):
@@ -345,14 +350,27 @@ def _family(fontname: str) -> str:
     return "serif"
 
 
+# Only these embedded font programs can be written back into the PDF correctly. A Type 1 font ("pfa"/"pfb",
+# typical of LaTeX resumes) or bare CFF re-embedded by PyMuPDF becomes a CIDFontType0 whose font file isn't CFF —
+# against the PDF spec: Chrome/MuPDF guess right, but Ghostscript, Acrobat-style readers and ATS parsers show the
+# rewritten lines as garbage ("$ + ) 5 @ ..."). Anything else is redrawn in the matching standard font (Times,
+# Helvetica, Courier), which PyMuPDF embeds as proper CFF.
+REUSABLE_FONT_TYPES = ("ttf", "otf")
+
+
 class _FontKit:
-    def __init__(self, doc: pymupdf.Document, page: pymupdf.Page):
+    def __init__(self, doc: pymupdf.Document, page: pymupdf.Page, standard_only: bool = False):
         self.doc, self.page = doc, page
+        self.standard_only = standard_only
         self._embedded: dict[str, Optional[pymupdf.Font]] = {}
-        self._by_name = {_canon_font(f[3]): f[0] for f in page.get_fonts(full=True)}
+        fonts = page.get_fonts(full=True)
+        self._by_name = {_canon_font(f[3]): f[0] for f in fonts}
+        self._ext = {_canon_font(f[3]): (f[1] or "").lower() for f in fonts}
 
     def embedded(self, name: str) -> Optional[pymupdf.Font]:
         key = _canon_font(name)
+        if self.standard_only or self._ext.get(key) not in REUSABLE_FONT_TYPES:
+            return None
         if key not in self._embedded:
             font = None
             xref = self._by_name.get(key)
@@ -557,7 +575,42 @@ def render(data: bytes, units: list[Unit], edits: dict[str, list[tuple[str, bool
         tw.write_text(page)
     out = doc.tobytes(garbage=3, deflate=True)
     doc.close()
+    # never hand out a PDF whose rewritten lines some readers (and ATS parsers) would show as garbage
+    new_probs = sorted(set(font_problems(out)) - set(font_problems(data)))
+    if new_probs:
+        log.error("tailored PDF has invalid fonts: %s", new_probs)
+        raise FitError("fonts: the tailored PDF would contain a font that some PDF readers show as garbled text ("
+                       + "; ".join(new_probs[:3]) + "). The resume was not changed.")
     return out, warnings
+
+
+def font_problems(data: bytes) -> list[str]:
+    """Fonts the PDF spec doesn't allow — the cause of garbled text in strict readers and ATS parsers."""
+    import re as _re
+
+    doc = pymupdf.open(stream=data, filetype="pdf")
+    probs = []
+    try:
+        for x in range(1, doc.xref_length()):
+            try:
+                obj = doc.xref_object(x)
+            except Exception:  # noqa: BLE001
+                continue
+            if "/CIDFontType" not in obj or "/FontDescriptor" not in obj:
+                continue
+            m = _re.search(r"/FontDescriptor\s+(\d+)\s+0\s+R", obj)
+            desc = doc.xref_object(int(m.group(1))) if m else ""
+            name = (_re.search(r"/BaseFont\s*/(\S+)", obj) or [None, "?"])[1]
+            if "/CIDFontType0" in obj and "/FontFile3" not in desc and "/FontFile" in desc:
+                probs.append(f"{name}: Type 1 font program inside a CID font")
+            elif "/CIDFontType0" in obj and "/FontFile3" in desc:
+                ff = _re.search(r"/FontFile3\s+(\d+)", desc)
+                sub = doc.xref_object(int(ff.group(1))) if ff else ""
+                if "/Type1C" in sub:
+                    probs.append(f"{name}: Type1C font program inside a CID font")
+    finally:
+        doc.close()
+    return probs
 
 
 def free_width(unit: Unit, data: bytes, text: str) -> float:
