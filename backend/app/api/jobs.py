@@ -127,6 +127,7 @@ def list_jobs(
     q: str = "", location: str = "", company: str = "", remote: str = "", seniority: str = "",
     min_score: int = 0, max_score: Optional[int] = None, posted_within: int = Query(0, ge=0, le=24 * 365),
     qualified_only: bool = True, country: str = Query("", max_length=2),
+    fit: str = Query("", pattern="^(|good|stretch)$"),  # good = good fits only · stretch = good fits + stretch roles
     salary_min: Optional[float] = None, status: str = "active", source: str = "",
     pipeline: str = "", include_duplicates: bool = False, include_simulated: bool = True,
     sort: str = "score", limit: int = Query(100, le=500), offset: int = 0,
@@ -166,11 +167,15 @@ def list_jobs(
     if salary_min:
         qry = qry.filter(or_(Job.salary_max >= salary_min, Job.salary_max.is_(None)))
     jobs = qry.all()
-    latest: dict[int, tuple[int, int, Optional[str], Optional[int]]] = {}  # job_id -> (assessment id, score, education fit, track)
-    for jid_, aid, sc, edu, tid in db.query(MatchAssessment.job_id, MatchAssessment.id, MatchAssessment.score,
-                                            MatchAssessment.edu_status, MatchAssessment.track_id) \
+    latest: dict[int, tuple] = {}  # job_id -> (assessment id, score, education fit, track, fit verdict)
+    for jid_, aid, sc, edu, tid, fv in db.query(MatchAssessment.job_id, MatchAssessment.id, MatchAssessment.score,
+                                                MatchAssessment.edu_status, MatchAssessment.track_id, MatchAssessment.fit) \
             .filter(MatchAssessment.user_id == user.id).order_by(MatchAssessment.id):
-        latest[jid_] = (aid, sc, edu, tid)
+        latest[jid_] = (aid, sc, edu, tid, fv)
+    if fit == "good":
+        jobs = [j for j in jobs if j.id in latest and latest[j.id][4] == "good"]
+    elif fit == "stretch":  # hide poor fits; jobs not re-scored yet stay visible
+        jobs = [j for j in jobs if not (j.id in latest and latest[j.id][4] == "poor")]
     if track:
         want_t = None if track == "none" else int(track)
         jobs = [j for j in jobs if j.id in latest and latest[j.id][3] == want_t]
@@ -372,7 +377,7 @@ def saved(user: User = Depends(current_user), db: Session = Depends(get_db)):
 @router.post("/saved-searches")
 def save_search(body: SavedSearchIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
     allowed = {"q", "location", "country", "company", "remote", "seniority", "min_score", "max_score", "posted_within",
-               "qualified_only", "salary_min", "status", "source", "sort"}
+               "qualified_only", "fit", "salary_min", "status", "source", "sort"}
     s = SavedSearch(user_id=user.id, name=body.name, filters={k: v for k, v in body.filters.items() if k in allowed})
     db.add(s)
     db.commit()

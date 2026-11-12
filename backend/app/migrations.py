@@ -89,6 +89,13 @@ def _m010_scoring_version(conn: Connection) -> None:
     if "scoring_version" not in {c["name"] for c in inspect(conn).get_columns("match_assessments")}:
         conn.execute(text("ALTER TABLE match_assessments ADD COLUMN scoring_version INTEGER DEFAULT 1"))
 
+def _m011_fit(conn: Connection) -> None:
+    have = {c["name"] for c in inspect(conn).get_columns("match_assessments")}
+    if "fit" not in have:
+        conn.execute(text("ALTER TABLE match_assessments ADD COLUMN fit VARCHAR(10)"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_match_assessments_fit ON match_assessments (fit)"))
+
+
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "initial schema", _m001_initial),
     (2, "store resume file bytes in database", _m002_resume_file_data),
@@ -100,6 +107,7 @@ MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (8, "application form details (name parts, address)", _m008_application_details),
     (9, "role tracks (one resume per kind of role)", _m009_role_tracks),
     (10, "scoring version on assessments (re-score after scoring changes)", _m010_scoring_version),
+    (11, "fit verdict on assessments (good / stretch / poor)", _m011_fit),
 ]
 
 

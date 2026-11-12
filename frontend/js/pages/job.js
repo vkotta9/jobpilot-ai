@@ -98,6 +98,9 @@ function atsCard(m, rescore) {
   const prefs = m.breakdown._preferences || {};
   return h("div", { class: "card" },
     h("div", { class: "card-head" }, h("h2", {}, "ATS match"), h("div", { class: "row" }, h("span", { class: "faint" }, `scored ${ago(m.created_at)} against your ${m.breakdown._resume_source || "resume"}`), rescore)),
+    m.breakdown._fit && h("div", { class: `alert ${m.fit === "good" ? "good" : m.fit === "poor" ? "bad" : "warn"}`, style: { margin: "6px 0" } },
+      h("strong", {}, { good: "Good fit. ", stretch: "Stretch role. ", poor: "Poor fit. " }[m.fit] || ""),
+      (m.breakdown._fit.reasons || []).filter((r) => !r.startsWith("Good fit")).join(" ") || (m.breakdown._fit.reasons || [])[0]?.replace(/^Good fit: /, "") || ""),
     h("p", {}, m.explanation),
     (m.flags || []).map((f) => h("div", { class: `alert ${f.startsWith("SIMULATED") ? "sim" : "warn"}`, style: { margin: "6px 0" } }, f)),
     h("hr"),

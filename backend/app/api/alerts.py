@@ -53,6 +53,7 @@ class PriorityConfig(BaseModel):
     timezone: str = Field("America/New_York", max_length=60)
     min_score: int = Field(0, ge=0, le=100)
     email: bool = True
+    include_stretch: bool = False  # also email roles one level above you / a bit short on years
 
 
 @router.put("/priority")
@@ -152,12 +153,12 @@ def sample_email(user: User = Depends(current_user), db: Session = Depends(get_d
         if j.triage in ("skipped", "deleted"):
             continue
         m = db.query(MatchAssessment).filter_by(job_id=j.id).order_by(MatchAssessment.id.desc()).first()
-        rows.append((j, m.score if m else None, j.source_id in prio))
+        rows.append((j, m.score if m else None, j.source_id in prio, {"good": 0, "stretch": 1}.get(m.fit if m else "", 2)))
     if not rows:
         raise HTTPException(400, "You don't have any jobs yet — run a search in Discover first.")
-    rows.sort(key=lambda r: (not r[2], -(r[1] or 0)))
-    jobs = [(j, sc) for j, sc, _ in rows[:3]]
-    subject, html_body, text_body = priority.compose(jobs)
+    rows.sort(key=lambda r: (r[3], not r[2], -(r[1] or 0)))  # good fits first, like the real alert
+    jobs = [(j, sc) for j, sc, _, _ in rows[:3]]
+    subject, html_body, text_body = priority.compose(jobs, db)
     try:
         notify.send_email(cfg, "[Sample] " + subject,
                           '<p style="font:13px system-ui;color:#b45309">This is a sample of what JobPilot alerts look like, '

@@ -356,8 +356,20 @@ def _google_parse(page: str) -> tuple[str, str, str]:
     if i >= 0:
         end = min([k for k in (text.find("Google is proud to be", i), text.find("Information collected and processed", i)) if k > 0] or [i + 8000])
         desc = text[i:end].strip()
-    lm = re.search(r"place\s*([^\n]{3,160})", text)
-    return title, desc, (lm.group(1).strip() if lm else "")
+    return title, desc, _google_location(text)
+
+
+_NOT_A_PLACE = re.compile(r"(?i)discriminat|belonging|how we hire|equal opportunity|accommodat|privacy|apply|qualifications")
+
+
+def _google_location(text: str) -> str:
+    """The location shown after Google's "place" icon. Only a word on its own ("place Mountain View, CA, USA") counts —
+    not "work*place* discrimination is illegal…" — and only text that reads like a place."""
+    for m in re.finditer(r"(?<![A-Za-z])place\s+([A-Z][^\n]{2,160})", text):
+        loc = re.split(r"\s{2,}|\s(?:bar_chart|info|share|link)\b", m.group(1).strip())[0].strip(" ;.")
+        if loc and not _NOT_A_PLACE.search(loc) and len(loc.split()) <= 14:
+            return loc
+    return ""
 
 
 GoogleAdapter._parse_job = staticmethod(_google_parse)

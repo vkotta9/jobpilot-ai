@@ -251,6 +251,7 @@ class MatchAssessment(Base):
     edu_status: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)  # none|meets|exceeds|equivalent|below|unknown
     track_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, index=True)  # role track (resume) it was scored against
     scoring_version: Mapped[int] = mapped_column(Integer, default=1)  # services/matching.py SCORING_VERSION when scored
+    fit: Mapped[Optional[str]] = mapped_column(String(10), nullable=True, index=True)  # good|stretch|poor (matching.fit_verdict)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 

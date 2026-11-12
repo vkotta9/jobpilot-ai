@@ -23,7 +23,7 @@ from .matching import score_jobs
 log = logging.getLogger("jobpilot.priority")
 
 DEFAULTS = {"enabled": True, "start_hour": 10, "end_hour": 17, "days": [0, 1, 2, 3, 4], "timezone": "America/New_York",
-            "min_score": 0, "email": True}
+            "min_score": 0, "email": True, "include_stretch": False}
 MIN_GAP = timedelta(minutes=50)
 JSEARCH_HOURS = 3.0  # Google Jobs (JSearch) has a small free monthly quota
 
@@ -84,7 +84,7 @@ def run_for_user(db: Session, user_id: int, *, send: bool = True, transport=None
         else:
             new_ids += r.get("new_job_ids") or []
     db.commit()
-    jobs = alertable(db, user_id, new_ids, int(cfg.get("min_score") or 0))
+    jobs = alertable(db, user_id, new_ids, int(cfg.get("min_score") or 0), bool(cfg.get("include_stretch")))
     result["new"] = len(jobs)
     if jobs and send and cfg.get("email", True):
         ecfg = notify.email_config(db, user_id)
@@ -92,7 +92,7 @@ def run_for_user(db: Session, user_id: int, *, send: bool = True, transport=None
             result["email_error"] = "Email isn't set up — add a free Resend key in Settings → Connections to get these by email."
         else:
             try:
-                subject, body_html, body_text = compose(jobs)
+                subject, body_html, body_text = compose(jobs, db)
                 notify.send_email(ecfg, subject, body_html, body_text)
                 result["emailed"] = len(jobs)
             except notify.EmailError as e:
@@ -106,18 +106,24 @@ def run_for_user(db: Session, user_id: int, *, send: bool = True, transport=None
     return st.priority_last_result
 
 
-def alertable(db: Session, user_id: int, ids: list[int], min_score: int) -> list[tuple[Job, Optional[int]]]:
+def alertable(db: Session, user_id: int, ids: list[int], min_score: int,
+              include_stretch: bool = False) -> list[tuple[Job, Optional[int]]]:
+    """New roles worth an email: only those you FIT (right kind of role, level and years) — not every title that
+    shares a word with your targets. Stretch roles only when you ask for them."""
     if not ids:
         return []
+    ok_fit = {"good", "stretch"} if include_stretch else {"good"}
     out = []
     for j in db.query(Job).filter(Job.user_id == user_id, Job.id.in_(ids), Job.alerted_at.is_(None),
                                   Job.duplicate_of_id.is_(None), Job.listing_status == "active").all():
         if j.triage in ("skipped", "deleted") or j.application is not None:
             continue
         m = db.query(MatchAssessment).filter_by(job_id=j.id).order_by(MatchAssessment.id.desc()).first()
-        if m is not None and m.edu_status == "below":
-            continue  # needs a higher degree than yours
-        score = m.score if m else None
+        if m is None or m.edu_status == "below":
+            continue  # not scored yet, or needs a higher degree than yours
+        if (m.fit or "") not in ok_fit:
+            continue  # senior/manager/other-function roles, too many years, low match
+        score = m.score
         if min_score and (score is None or score < min_score):
             continue
         out.append((j, score))
@@ -125,7 +131,21 @@ def alertable(db: Session, user_id: int, ids: list[int], min_score: int) -> list
     return out
 
 
-def compose(jobs: list[tuple[Job, Optional[int]]]) -> tuple[str, str, str]:
+def _why(db: Optional[Session], j: Job) -> str:
+    if db is None:
+        return ""
+    m = db.query(MatchAssessment).filter_by(job_id=j.id).order_by(MatchAssessment.id.desc()).first()
+    if m is None:
+        return ""
+    f = (m.breakdown or {}).get("_fit") or {}
+    top = ", ".join((m.matched_skills or [])[:4])
+    bits = [" ".join(f.get("reasons") or [])]
+    if top:
+        bits.append(f"Your matching skills: {top}.")
+    return " ".join(b for b in bits if b)
+
+
+def compose(jobs: list[tuple[Job, Optional[int]]], db: Optional[Session] = None) -> tuple[str, str, str]:
     base = notify.PUBLIC_URL["value"]
     companies = sorted({j.company for j, _ in jobs})
     n = len(jobs)
@@ -136,21 +156,25 @@ def compose(jobs: list[tuple[Job, Optional[int]]]) -> tuple[str, str, str]:
         color = "#15803d" if (s or 0) >= 70 else "#b45309" if (s or 0) >= 50 else "#b91c1c"
         jp = f"{base}/#/jobs/{j.id}" if base else ""
         posted = j.posted_at.strftime("%b %d") if j.posted_at else "just now"
+        why = _why(db, j)
+        why_html = (f'<div style="font:13px system-ui,Segoe UI,Arial;color:#15803d;margin-top:4px">{html.escape(why)}</div>'
+                    if why else "")
         rows.append(
             f'<tr><td style="padding:12px 0;border-bottom:1px solid #eee">'
             f'<div style="font:600 15px system-ui,Segoe UI,Arial">{html.escape(j.title)}</div>'
             f'<div style="font:13px system-ui,Segoe UI,Arial;color:#555">{html.escape(j.company)} · {html.escape(j.location or "Location not listed")} · posted {posted}</div>'
+            f'{why_html}'
             f'<div style="margin-top:6px;font:13px system-ui,Segoe UI,Arial">'
             f'<span style="display:inline-block;padding:2px 8px;border-radius:99px;background:{color};color:#fff;font-weight:600">'
             f'ATS {s if s is not None else "–"}</span> '
             + (f'&nbsp;<a href="{html.escape(jp)}" style="color:#5b4fe9;font-weight:600">View &amp; apply in JobPilot →</a>' if jp else "")
             + (f'&nbsp;·&nbsp;<a href="{html.escape(j.url)}" style="color:#555">Official posting</a>' if j.url else "")
             + "</div></td></tr>")
-        lines.append(f"- {j.title} — {j.company} ({j.location or 'n/a'}) · ATS {s if s is not None else '-'}\n  {jp or j.url}")
+        lines.append(f"- {j.title} — {j.company} ({j.location or 'n/a'}) · ATS {s if s is not None else '-'}\n  {why}\n  {jp or j.url}")
     body_html = (
         '<div style="max-width:620px;margin:0 auto;padding:16px;font:14px system-ui,Segoe UI,Arial;color:#1f2337">'
-        f'<h2 style="margin:0 0 4px">{n} new role{"s" if n != 1 else ""} at your priority companies</h2>'
-        '<p style="color:#555;margin:0 0 8px">These match your target titles. The ATS score is how well your resume matches each posting.</p>'
+        f'<h2 style="margin:0 0 4px">{n} new role{"s" if n != 1 else ""} you fit at your priority companies</h2>'
+        '<p style="color:#555;margin:0 0 8px">Only roles at your level and in the kind of work you target, with how well your resume matches each posting (ATS).</p>'
         f'<table style="width:100%;border-collapse:collapse">{"".join(rows)}</table>'
         '<p style="color:#888;font-size:12px;margin-top:16px">You get this because these companies are marked ★ priority in JobPilot. '
         "Change the companies, hours or minimum score in Discover → Priority companies.</p></div>")

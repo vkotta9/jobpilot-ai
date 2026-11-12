@@ -3,6 +3,7 @@ import { h, mount, loading, empty, scoreRing, simBadge, statusBadge, money, ago,
 
 const savedCountry = (() => { try { return localStorage.getItem("jp_country"); } catch { return null; } })();
 const filters = { q: "", location: "", country: savedCountry ?? "US", company: "", remote: "", seniority: "", min_score: "", max_score: "", posted_within: "", qualified_only: true,
+  fit: (() => { try { return localStorage.getItem("jp_fit") ?? "stretch"; } catch { return "stretch"; } })(),
   sort: "score", status: "active", include_simulated: true, track: "",
   view: (() => { try { return sessionStorage.getItem("jp_view") || "new"; } catch { return "new"; } })() };
 
@@ -91,7 +92,7 @@ export async function render(root) {
           j.remote_type !== "unknown" && h("span", { class: "badge" }, j.remote_type), sal && h("span", { class: "badge good" }, sal),
           j.is_simulated && simBadge(), j.listing_status === "closed" && h("span", { class: "badge bad" }, "Closed"),
           m && (m.flags || []).some((f) => f.startsWith("Work authorization")) && h("span", { class: "badge warn" }, "Sponsorship conflict"),
-          m && eduBadge(m.edu_status), m && v !== "applied" && h("span", { class: `badge ${m.recommendation === "apply" ? "good" : m.recommendation === "review" ? "warn" : ""}` },
+          m && eduBadge(m.edu_status), m && fitBadge(m), m && fitBadge(m), m && v !== "applied" && h("span", { class: `badge ${m.recommendation === "apply" ? "good" : m.recommendation === "review" ? "warn" : ""}` },
             { apply: "strong match", review: "worth a look", skip: "weak match" }[m.recommendation] || m.recommendation)),
         h("div", { class: "faint row", style: { marginTop: "3px", gap: "6px" } }, sourceCredit(j.source_kind) || j.source_kind,
           `· checked ${ago(j.last_checked_at)}`, j.posted_at ? ` · posted ${ago(j.posted_at)}` : "",
@@ -196,6 +197,9 @@ export async function render(root) {
     el.addEventListener("change", () => { filters.country = el.value; try { localStorage.setItem("jp_country", el.value); } catch { /* private mode */ } load(); });
     return el;
   }
+  const fitSel = h("select", { "aria-label": "Fit", title: "Fit = your level, years of experience, the kind of role you target and your ATS match — not just shared keywords" },
+    [["good", "✓ Best fits only"], ["stretch", "Hide poor fits"], ["", "All roles"]].map(([v, l]) => h("option", { value: v, selected: filters.fit === v }, l)));
+  fitSel.addEventListener("change", () => { filters.fit = fitSel.value; try { localStorage.setItem("jp_fit", fitSel.value); } catch { /* private mode */ } load(); });
   const qual = h("input", { type: "checkbox", checked: filters.qualified_only });
   qual.addEventListener("change", () => { filters.qualified_only = qual.checked; load(); });
   const sim = h("input", { type: "checkbox", checked: filters.include_simulated });
@@ -231,6 +235,7 @@ export async function render(root) {
         sel("status", [["active", "Active listings"], ["closed", "Closed listings"], ["all", "All listings"]], "Listing status")),
       h("div", { class: "row between", style: { marginTop: "10px" } },
         h("div", { class: "row", style: { gap: "16px" } },
+          fitSel,
           h("label", { class: "check", title: "Hides roles whose required degree is higher than yours (e.g. PhD-only roles if you have a master's). Roles that accept your degree or higher are kept." }, qual, "Only jobs my degree qualifies for"),
           h("label", { class: "check" }, sim, "Include simulated demo listings")),
         h("div", { class: "row" },
@@ -395,10 +400,11 @@ function priorityCard(pr, following, root) {
     .map(([v, l]) => h("option", { value: v, selected: cfg.timezone === v }, l)));
   const minScore = h("select", {}, [[0, "Any ATS score"], [50, "50+"], [60, "60+"], [70, "70+"], [80, "80+"]].map(([v, l]) => h("option", { value: v, selected: cfg.min_score === v }, l)));
   const enabled = h("input", { type: "checkbox", checked: cfg.enabled });
+  const stretch = h("input", { type: "checkbox", checked: !!cfg.include_stretch });
   const save = h("button", { class: "btn-primary" }, "Save schedule");
   save.addEventListener("click", busy(save, async () => {
     await api.put("/api/priority", { enabled: enabled.checked, start_hour: Number(start.value), end_hour: Number(end.value), timezone: tz.value,
-      min_score: Number(minScore.value), email: true, days: days.map((l) => l.querySelector("input")).filter((i) => i.checked).map((i) => Number(i.value)) });
+      min_score: Number(minScore.value), email: true, include_stretch: stretch.checked, days: days.map((l) => l.querySelector("input")).filter((i) => i.checked).map((i) => Number(i.value)) });
     toast("Priority alert schedule saved."); render(root);
   }));
   const runNow = h("button", {}, "Check now");
@@ -435,6 +441,8 @@ function priorityCard(pr, following, root) {
       h("div", { class: "grid cols-4", style: { marginTop: "8px", alignItems: "end" } },
         h("label", {}, "From", start), h("label", {}, "To (last check)", end), h("label", {}, "Time zone", tz), h("label", {}, "Only email if ATS is", minScore)),
       h("div", { class: "row", style: { gap: "10px", margin: "8px 0" } }, days),
+      h("p", { class: "small muted", style: { margin: "4px 0" } }, "Only roles you fit are emailed: your level (not senior or manager roles above you), the years they ask for, the kind of role you target, and your ATS match."),
+      h("label", { class: "check small" }, stretch, "Also email stretch roles (one level up, or a little short on years)"),
       h("label", { class: "check small" }, enabled, "Alerts on")),
     h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px" } }, pr.email.configured && sample, stars.length > 0 && runNow, save));
 }
@@ -530,6 +538,13 @@ const EDU = {
   equivalent: ["warn", "Degree or equivalent", "Role asks for a degree or equivalent experience."],
   below: ["bad", "Needs higher degree", "This role requires a higher degree than yours."],
 };
+function fitBadge(m) {
+  const f = (m.breakdown || {})._fit;
+  if (!f || !m.fit) return null;
+  const [cls, label] = { good: ["good", "good fit"], stretch: ["warn", "stretch"], poor: ["bad", "poor fit"] }[m.fit] || [];
+  return label ? h("span", { class: `badge ${cls}`, title: (f.reasons || []).join(" ") }, label) : null;
+}
+
 function eduBadge(st) {
   const e = EDU[st];
   return e ? h("span", { class: `badge ${e[0]}`, title: e[2] }, e[1]) : null;
@@ -547,7 +562,7 @@ function jobRow(j) {
         j.remote_type !== "unknown" && h("span", { class: "badge" }, j.remote_type), sal && h("span", { class: "badge good" }, sal),
         j.is_simulated && simBadge(), j.listing_status === "closed" && h("span", { class: "badge bad" }, "Closed"),
         m && (m.flags || []).some((f) => f.startsWith("Work authorization")) && h("span", { class: "badge warn" }, "Sponsorship conflict"),
-        m && eduBadge(m.edu_status),
+        m && eduBadge(m.edu_status), m && fitBadge(m),
         m && m.breakdown && m.breakdown._track && h("span", { class: "badge", title: "Scored against this role track's resume" }, "◎ " + m.breakdown._track.name)),
       h("div", { class: "faint row", style: { marginTop: "3px", gap: "6px" } }, sourceCredit(j.source_kind) || j.source_kind, `· checked ${ago(j.last_checked_at)}`, j.posted_at ? ` · posted ${ago(j.posted_at)}` : "")),
     h("div", { style: { textAlign: "right" } }, j.application ? statusBadge(j.application.status) : m && h("span", { class: `badge ${m.recommendation === "apply" ? "good" : m.recommendation === "review" ? "warn" : ""}` }, m.recommendation)));
