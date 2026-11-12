@@ -30,6 +30,7 @@ def health(db: Session = Depends(get_db)):
         "status": "ok" if db_ok else "degraded",
         "database": "ok" if db_ok else "error",
         "database_backend": settings.database_url.split(":", 1)[0],
+        "latex": __import__("app.services.latex", fromlist=["available"]).available(),  # LaTeX resume tailoring
         "llm": {"configured": llm.available(), "model": settings.openai_model if llm.available() else None,
                 "note": "Users can also connect their own AI key in Settings → Connections."},
         "simulated_sources_allowed": settings.allow_mock_sources,
