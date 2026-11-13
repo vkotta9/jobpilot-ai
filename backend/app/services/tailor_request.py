@@ -96,6 +96,14 @@ def _verb(clause: str) -> tuple[Optional[str], str]:
             v = VERB_OF.get(w2) or VERB_OF.get(_fix_word(w2, ALL_VERBS, 0.75) or "")
             if v:
                 return v, m2.group(2) + " || " + c[: m2.start()]
+    if v is None:  # "in DevOps add Terraform": the action word isn't first
+        for m3 in re.finditer(r"\b([A-Za-z]+)\b", c):
+            if m3.start() == 0:
+                continue
+            w3 = m3.group(1).lower()
+            v3 = VERB_OF.get(w3) or (VERB_OF.get(_fix_word(w3, ALL_VERBS, 0.8) or "") if len(w3) > 3 else None)
+            if v3:
+                return v3, c[m3.end():].strip() + " || " + re.sub(r"^(?:in|on|for|under|to)\s+(?:the\s+|my\s+)?", "", c[: m3.start()].strip(" ,:"), flags=re.I)
     return v, rest
 
 
@@ -123,8 +131,44 @@ def _position(rest: str) -> tuple[Optional[dict], str]:
 
 def _split_items(obj: str) -> list[str]:
     obj = re.sub(r"^(?:the\s+)?(?:skills?|tools?|keywords?|words?|terms?)\s+", "", obj.strip(), flags=re.I)
-    items = [x.strip(" '\"“”‘’.") for x in re.split(r",\s*|\s+and\s+|\s*&\s*|\s*/\s*(?=[A-Z])", obj) if x.strip(" '\"“”‘’.")]
+    items = [x.strip(" '\"“”‘’.") for x in re.split(r",\s*|\s+(?:and|n|plus|\+)\s+|\s*&\s*|\s*/\s*(?=[A-Z])", obj, flags=re.I)
+             if x.strip(" '\"“”‘’.")]
     return items
+
+
+# words that describe the request, not the skill ("Terraform as a skill", "the Kafka skill", "Docker too")
+_AS_LINE = re.compile(r"\bas\s+(?:a|an|my|one\s+of\s+my)?\s*(?:new\s+)?(.{0,30}?)\s*(?:skills?|tools?|technolog(?:y|ies))\b", re.I)
+_NOISE = re.compile(r"^(?:the|a|an|new|my|skill|skills|tool|tech|technology)\s+|\s+(?:skills?|tools?|technolog(?:y|ies)|too|also|"
+                    r"as well|please|pls|again|line|section)$", re.I)
+GENERIC = {"skill", "skills", "it", "that", "this", "them", "something", "stuff", "things", "experience", "knowledge", "developing",
+           "development", "working", "using", "building", "line", "section", "resume", "cv", "list", "more", "new", "one", "same"}
+
+
+def _clean_item(item: str) -> tuple[str, str]:
+    """('Tearform as a devops skill') → ('Terraform', 'devops'): the skill, and a line it names (if any)."""
+    t = (item or "").strip(" '\"“”‘’.,:;!?")
+    hint = ""
+    m = _AS_LINE.search(t)
+    if m:
+        hint = m.group(1).strip()
+        t = (t[: m.start()] + " " + t[m.end():]).strip()
+    for _ in range(3):
+        t = _NOISE.sub("", t).strip(" '\"“”‘’.,:;")
+    return t, hint
+
+
+def valid_skill(name: str) -> bool:
+    """A skill name, not a phrase from the request: short, no action words, not a generic word or a stray -ing word."""
+    n = (name or "").strip()
+    words = n.lower().split()
+    if not n or len(n) > 40 or len(words) > 4 or n.lower() in GENERIC or n.lower() in PRONOUNS:
+        return False
+    if any(w in VERB_OF or w in ("as", "please", "should", "would", "could", "want", "need") for w in words):
+        return False
+    known = {_norm_item(v) for v in list(SKILL_VOCAB) + list(_PRETTY)}
+    if len(words) == 1 and n.lower().endswith("ing") and _norm_item(n) not in known:
+        return False  # "Developing", "Testing" (unless it's a known skill)
+    return True
 
 
 def _canon_skill(name: str) -> str:
@@ -136,7 +180,7 @@ def _canon_skill(name: str) -> str:
         v = known[_norm_item(n)]
         return n if (n != n.lower() and n != n.upper() and len(n) > 3) else pretty_skill(v)
     low = n.lower()
-    m = difflib.get_close_matches(low, list(known.values()), n=1, cutoff=0.86) if len(low) > 4 else []
+    m = difflib.get_close_matches(low, list(known.values()), n=1, cutoff=0.8 if len(low) > 6 else 0.86) if len(low) > 4 else []
     return pretty_skill(m[0]) if m else n
 
 
@@ -183,6 +227,23 @@ def _line_for(target: str, lines: list[dict]) -> Optional[dict]:
     return best
 
 
+def _home_line(skill: str, lines: list[dict]) -> Optional[dict]:
+    """The line a skill belongs on when none was named: by its kind (Terraform → a cloud/DevOps line). None if unsure."""
+    from .tailor_inplace import GROUPS, _group_of
+
+    g = _group_of(skill.lower())
+    if not g:
+        return None
+    rx = GROUPS[g][0]
+    for ln in lines:
+        if re.search(rx, ln["label"], re.I):
+            return ln
+    for ln in lines:  # a line already holding skills of the same kind
+        if any(_group_of(i.lower()) == g for i in ln["items"]):
+            return ln
+    return None
+
+
 def _line_with(item: str, lines: list[dict]) -> Optional[dict]:
     return next((ln for ln in lines if find_item(ln["items"], item) is not None), None)
 
@@ -192,6 +253,8 @@ def _line_with(item: str, lines: list[dict]) -> Optional[dict]:
 def _rules(request: str, content: dict, units: dict) -> tuple[list[dict], list[str]]:
     ops, unclear = [], []
     last: list[str] = []  # what "it / that / them" refers to
+    last_line = ""  # the skills line named last ("… from it")
+    pending_dest = ""  # a line named in a clause of its own
     lines = current_skill_lines(content, units)
     for clause in _clauses(request):
         v, rest = _verb(clause)
@@ -199,7 +262,17 @@ def _rules(request: str, content: dict, units: dict) -> tuple[list[dict], list[s
         if " || " in rest:
             rest, where_hint = rest.split(" || ", 1)
         if v is None:
-            unclear.append(clause)
+            # "I know Terraform, add it to DevOps": a clause without an action can still name what "it" means
+            from .textutil import find_skills
+
+            named = [pretty_skill(x) for x in find_skills(clause)]
+            place = re.match(r"(?:for|in|on|under|to|into)\s+(?:the\s+|my\s+)?(.+?)(?:\s+(?:line|section|row|skills?|list))?$", clause.strip(" ,:"), re.I)
+            if named:
+                last = named[:1]
+            elif place:
+                pending_dest = place.group(1)  # "for the cloud line, add Terraform"
+            else:
+                unclear.append(clause)
             continue
         pos, rest = _position(rest)
         if v == "replace":
@@ -225,12 +298,18 @@ def _rules(request: str, content: dict, units: dict) -> tuple[list[dict], list[s
         m = re.search(r"\b(?:from|form|frm|off)\s+(?:the\s+|my\s+)?(.+?)(?=\s+(?:to|in|into|under|on|onto)\s+|$)", rest, re.I)
         if m:
             src = m.group(1).strip()
+            if src.lower() in PRONOUNS and last_line:
+                src = last_line  # "add GraphQL to backend and remove Testing from it"
             rest = rest[: m.start()] + " " + rest[m.end():]
         m = re.search(r"\b(?:to|in|into|under|on|onto|inside|within)\s+(?:the\s+|my\s+)?(.+)$", rest, re.I)
         if m:
             dest = m.group(1).strip()
             rest = rest[: m.start()]
         obj = re.sub(r"\s+", " ", rest).strip(" ,")
+        if not dest and where_hint and not re.search(SECTION_WORDS, where_hint, re.I):
+            dest = where_hint.strip(" ,:")  # "DevOps: add Terraform"
+        if not dest and pending_dest:
+            dest, pending_dest = pending_dest, ""
         if v == "add" and re.search(r"\b(?:key\s?word|term|word|phrase)\b", obj, re.I) or (
                 v == "add" and re.search(SECTION_WORDS, dest + " " + where_hint, re.I) and not re.search(r"skill", dest, re.I)):
             kw = re.sub(r"\b(?:the|a|an|key\s?word|term|word|phrase)\b", " ", obj, flags=re.I).strip(" '\"“”‘’")
@@ -244,7 +323,20 @@ def _rules(request: str, content: dict, units: dict) -> tuple[list[dict], list[s
             continue
         items = _split_items(obj) if obj and obj.lower() not in PRONOUNS else list(last)
         items = [last[0] if i.lower() in PRONOUNS and last else i for i in items]
-        items = [i for i in items if i and i.lower() not in PRONOUNS and not re.fullmatch(r"(?:the|a|an|skill|skills)", i, re.I)]
+        cleaned = []
+        for i in items:
+            name, hint = _clean_item(i)
+            if hint and not dest:
+                dest = hint  # "add Terraform as a DevOps skill"
+            if name and name.lower() not in PRONOUNS:
+                cleaned.append(name)
+            elif name.lower() in PRONOUNS and last:
+                cleaned.append(last[0])
+        items = [i for i in cleaned if valid_skill(i)]
+        bad = [i for i in cleaned if not valid_skill(i)]
+        if bad and not items:
+            unclear.append(f"{clause} (“{bad[0]}” doesn't look like a skill name)")
+            continue
         if not items:
             unclear.append(clause + " (which skill?)")
             continue
@@ -262,6 +354,7 @@ def _rules(request: str, content: dict, units: dict) -> tuple[list[dict], list[s
                     p = {"where": "after", "ref": _canon_skill(items[k - 1])}
                 ops.append({"op": "add_skill", "skill": it, "where": dest, "position": p, "req": clause})
         last = items
+        last_line = dest or src or last_line
         lines = current_skill_lines(content, units)
     return ops, unclear
 
@@ -307,9 +400,15 @@ def _llm_plan(cfg, request: str, content: dict, units: dict, job) -> tuple[list[
                + llm.untrusted("job_description", f"{job.title} at {job.company}\n{job.description_text or ''}", 5000))
     out = llm.complete_json(task, payload, schema, cfg=cfg, name="resume_changes")
     ops = [{"op": "remove_skill", "skill": x["skill"], "line_id": x["line_id"], "req": request} for x in out.get("remove_skills", []) if x.get("skill")]
+    not_done = list(out.get("not_done", []))
     for x in out.get("add_skills", []):
         if not x.get("skill"):
             continue
+        name, _ = _clean_item(x["skill"])
+        if not valid_skill(name):
+            not_done.append(f"Skipped “{x['skill']}”: it doesn't look like a skill name.")
+            continue
+        x["skill"] = name
         p = (x.get("position") or "").strip()
         pos = None
         if p in ("start", "end"):
@@ -318,7 +417,7 @@ def _llm_plan(cfg, request: str, content: dict, units: dict, job) -> tuple[list[
             pos = {"where": p.split(":", 1)[0], "ref": p.split(":", 1)[1].strip()}
         ops.append({"op": "add_skill", "skill": x["skill"], "line_id": x["line_id"], "position": pos, "req": request})
     ops += [{"op": "set", "id": x["id"], "text": x["text"], "req": request} for x in out.get("edits", []) if x.get("id") and x.get("text")]
-    return ops, list(out.get("not_done", [])), "ai:" + cfg.model, out.get("understood_as", "")
+    return ops, not_done, "ai:" + cfg.model, out.get("understood_as", "")
 
 
 # ------------------------------------------------------------------ applying
@@ -433,8 +532,21 @@ def apply_request(db, user_id: int, content: dict, resume, job, request: str) ->
                 continue
             set_line(e, op["text"], f"Rewrote a {e.get('heading') or e.get('section')} line")
         elif o == "add_skill":
-            skill = _canon_skill(op["skill"])
-            target = next((ln for ln in lines if ln["id"] == op.get("line_id")), None) or _line_for(op.get("where", ""), lines)
+            name, _ = _clean_item(op["skill"])
+            if not valid_skill(name):
+                skipped.append(f"Didn't add “{op['skill']}”: it doesn't look like a skill name. Try e.g. 'add Terraform to Cloud & DevOps'.")
+                continue
+            skill = _canon_skill(name)
+            if skill == name and skill.islower() and " " not in skill and len(skill) > 2:
+                skill = skill[:1].upper() + skill[1:]  # "helm" → "Helm" on a skills line
+            where = op.get("where", "")
+            if re.fullmatch(r"\s*(?:the\s+|my\s+)?(?:skills?|skill\s+section|skills\s+section|technical\s+skills|resume|cv)\s*", where, re.I):
+                where = ""  # "to my skills": no particular line named
+            target = next((ln for ln in lines if ln["id"] == op.get("line_id")), None) or _line_for(where, lines)
+            if target is None and where.strip():
+                skipped.append(f"Didn't add {skill}: couldn't tell which skills line “{where.strip()}” is. Your lines are: "
+                               + ", ".join(ln["label"] for ln in lines) + ".")
+                continue
             if target is None:
                 owner = _line_with(skill, lines)
                 if owner is not None and op.get("position"):
@@ -443,9 +555,11 @@ def apply_request(db, user_id: int, content: dict, resume, job, request: str) ->
                     skipped.append(f"{skill} is already on your '{owner['label']}' line.")
                     continue
                 else:
-                    target = _line_for(skill, lines) or (lines[-1] if lines else None)
-                    if op.get("where"):
-                        skipped.append(f"Couldn't tell which skills line “{op['where']}” is, so {skill} went to '{(target or {}).get('label', '')}'.")
+                    target = _home_line(skill, lines) or (lines[0] if len(lines) == 1 else None)
+                    if target is None and lines:
+                        skipped.append(f"Didn't add {skill}: which line should it go on? Say e.g. 'add {skill} to "
+                                       f"{lines[0]['label'] if lines else 'Skills'}'.")
+                        continue
             if target is None:
                 skipped.append(f"Add {skill}: no skills section was found in your resume.")
                 continue
