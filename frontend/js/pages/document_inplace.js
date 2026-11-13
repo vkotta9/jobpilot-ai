@@ -103,39 +103,85 @@ export async function renderInplace(root, d) {
       h("div", { class: "small", style: { whiteSpace: "pre-line" } }, h("strong", {}, "You asked: "), r.text),
       r.understood_as && h("div", { class: "small", style: { color: "var(--accent)" } }, "Understood as: " + r.understood_as),
       (r.done || []).map((x) => h("div", { class: "small", style: { color: "var(--good)" } }, "✓ " + x)),
+      r.question && !(r.done || []).length ? h("div", { class: "small", style: { color: "var(--warn)" } }, "? " + r.question) : null,
       (r.notes || []).map((x) => h("div", { class: "small faint" }, "ℹ " + x)),
       (r.skipped || []).map((x) => h("div", { class: "small", style: { color: "var(--warn)" } }, "• " + x)),
-      h("div", { class: "faint" }, r.via && r.via.startsWith("ai:") ? `done by your AI model (${r.via.slice(3)})` : "done by JobPilot's built-in interpreter"))));
-  const reqBtn = h("button", { class: "btn-primary" }, "Apply my request");
+      h("div", { class: "faint" }, r.via === "undo" ? "undo" : r.via && r.via.startsWith("ai:") ? `done by your AI model (${r.via.slice(3)})` : "done by JobPilot's built-in interpreter"))));
+  const reqBtn = h("button", { class: "btn-primary" }, "Preview change");
   const reqWait = h("span", { class: "faint small", style: { marginRight: "8px" } });
+  const preview = h("div");
   reqBtn.addEventListener("click", busy(reqBtn, async () => {
     const text = reqBox.value.trim();
     if (text.length < 3) return toast("Type what you'd like changed.", "bad");
-    reqWait.textContent = "Working on it… if your AI model is busy this can take up to a minute.";
-    try { await doRequest(text); } finally { reqWait.textContent = ""; }
+    await runPreview(text);
   }));
-  async function doRequest(text) {
-    const r = await api.post(`/api/documents/${id}/request-change`, { request: text, content: state });
-    const res = r.result;
-    toast(res.done.length ? `Done: ${res.done.length} change(s).` + (res.skipped.length ? " Some parts need attention — see below." : "")
-      : "Nothing changed — see the note below.", res.done.length ? "" : "bad");
-    reqBox.value = "";
-    d = r.document;
-    Object.assign(c, r.document.content);
+  async function runPreview(text) {
+    reqWait.textContent = "Reading your request… if your AI model is busy this can take up to a minute.";
+    mount(preview);
+    let p;
+    try { p = (await api.post(`/api/documents/${id}/request-change`, { request: text, content: state, preview: true })).preview; }
+    finally { reqWait.textContent = ""; }
+    drawPreview(text, p);
+  }
+  const changeRow = (ch) => h("div", { class: "list-item", style: { display: "block" } },
+    h("div", { class: "small faint" }, ch.line),
+    ch.before ? h("div", { class: "small", style: { textDecoration: "line-through", color: "var(--bad, #b33)" } }, ch.before) : null,
+    h("div", { class: "small", style: { color: "var(--good)" } }, ch.after || "(removed)"));
+  function drawPreview(text, p) {
+    const apply = h("button", { class: "btn-primary" }, "✓ Apply");
+    apply.addEventListener("click", busy(apply, async () => {
+      const r = await api.post(`/api/documents/${id}/request-change/confirm`, { token: p.token });
+      reqBox.value = "";
+      mount(preview);
+      toast(`Applied ${r.result.done.length} change(s).`);
+      loadDoc(r.document);
+    }));
+    const cancel = h("button", {}, "Cancel");
+    cancel.addEventListener("click", busy(cancel, async () => {
+      await api.post(`/api/documents/${id}/request-change/cancel`, {});
+      mount(preview);
+      reqBox.focus();
+    }));
+    const ok = p.done.length > 0;
+    mount(preview, h("div", { class: "card", style: { border: "1px solid var(--accent)", marginTop: "8px" } },
+      h("div", { class: "small" }, h("strong", {}, "You asked: "), text),
+      p.understood_as ? h("div", { style: { color: "var(--accent)", margin: "4px 0" } }, "I understood: " + p.understood_as) : null,
+      ok ? h("div", {}, h("div", { class: "small muted", style: { margin: "6px 0 2px" } }, "Nothing is changed until you click Apply:"),
+        (p.changes || []).map(changeRow), (p.done || []).filter(() => !(p.changes || []).length).map((x) => h("div", { class: "small", style: { color: "var(--good)" } }, "✓ " + x))) : null,
+      (p.notes || []).map((x) => h("div", { class: "small faint" }, "ℹ " + x)),
+      (p.skipped || []).map((x) => h("div", { class: "small", style: { color: "var(--warn)" } }, "• " + x)),
+      p.question ? h("div", { style: { marginTop: "8px" } }, h("strong", { class: "small" }, p.question),
+        h("div", { class: "row", style: { flexWrap: "wrap", gap: "6px", marginTop: "4px" } },
+          (p.choices || []).map((c2) => h("button", { class: "btn-sm", onclick: () => { reqBox.value = c2; runPreview(c2); } }, c2)))) : null,
+      h("div", { class: "faint small", style: { marginTop: "6px" } }, p.via && p.via.startsWith("ai:") ? `read by your AI model (${p.via.slice(3)})` : "read by JobPilot's built-in interpreter — connect a free Gemini key in Settings for better understanding"),
+      h("div", { class: "row", style: { justifyContent: "flex-end", gap: "6px", marginTop: "8px" } },
+        ok ? [cancel, apply] : h("span", { class: "small muted" }, p.question ? "Pick one above, or rephrase your request." : "Nothing to apply — rephrase your request and preview again."))));
+  }
+  function loadDoc(doc) {
+    d = doc;
+    Object.assign(c, doc.content);
+    c.can_undo = !!doc.content.can_undo;
     state.units = JSON.parse(JSON.stringify(c.units));
     state.skills = JSON.parse(JSON.stringify(c.skills));
     state.skill_removals = JSON.parse(JSON.stringify(c.skill_removals || []));
     drawAll();
   }
+  const undoBtn = h("button", { class: "btn-ghost" }, "↶ Undo last change");
+  undoBtn.addEventListener("click", busy(undoBtn, async () => {
+    const r = await api.post(`/api/documents/${id}/undo`, {});
+    toast("Undone.");
+    loadDoc(r.document);
+  }));
   const requestCard = () => h("div", { class: "card" },
     h("div", { class: "card-head" }, h("h2", {}, "💬 Ask for a change"), h("span", { class: "faint" }, "your own edits, in plain words")),
     h("p", { class: "small muted" }, "Anything else you want changed for this job — skills to add or remove, a keyword to work into a bullet, a word to replace, or a rewrite. ",
-      "One request per line. Changes keep your layout and appear above for you to check."),
+      "Write it however you like. You'll see exactly what will change before anything is applied, and you can undo."),
     reqBox,
     h("div", { class: "row", style: { flexWrap: "wrap", gap: "6px", margin: "6px 0" } },
       ["Add Node.js to Languages after TypeScript", "Move PyTorch from AI/ML to Languages", "Add the keyword \"cross-functional\" to the bullet about collaboration", "Replace JBoss with WildFly", "Remove PHP from Web skills"].map((ex) =>
         h("button", { class: "btn-sm btn-ghost", onclick: () => { reqBox.value = (reqBox.value ? reqBox.value + "\n" : "") + ex; reqBox.focus(); } }, ex))),
-    h("div", { class: "row", style: { justifyContent: "flex-end", alignItems: "center" } }, reqWait, reqBtn),
+    h("div", { class: "row", style: { justifyContent: "flex-end", alignItems: "center", gap: "6px" } }, reqWait, c.can_undo ? undoBtn : null, reqBtn),
+    preview,
     reqLog);
 
   const saveBtn = h("button", {}, "Save & refresh preview");
@@ -155,6 +201,7 @@ export async function renderInplace(root, d) {
   async function render() {
     const fresh = await api.get(`/api/documents/${id}`);
     Object.assign(c, fresh.content);
+    c.can_undo = !!fresh.content.can_undo;
     d = fresh;
     drawAll();
   }

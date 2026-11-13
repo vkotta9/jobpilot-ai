@@ -112,3 +112,80 @@ def test_ai_plan_is_cleaned_too(monkeypatch):
     ai_line = next(l for l in out.splitlines() if l.startswith("AI/ML:"))
     assert c["requests"][-1]["via"] == "ai"
     assert "Terraform" in dev_line and "as a" not in dev_line and "Developing" not in ai_line, (res, out)
+
+
+# ---------------------------------------------------------------- preview → confirm → undo, through the API
+
+def _doc(client, monkeypatch):
+    from .test_api import make_user
+    from .test_v6 import _tailored_doc
+
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: None)
+    h, _ = make_user(client)
+    return h, _tailored_doc(client, h)
+
+
+def test_preview_changes_nothing_until_confirmed(client, monkeypatch):
+    h, d = _doc(client, monkeypatch)
+    before = client.get(f"/api/documents/{d['id']}", headers=h).json()["content"]
+    r = client.post(f"/api/documents/{d['id']}/request-change", headers=h,
+                    json={"request": "Add GraphQL to my skills", "preview": True})
+    assert r.status_code == 200, r.text
+    p = r.json()["preview"]
+    assert p["token"] and p["changes"] and "GraphQL" in p["changes"][0]["after"] and "GraphQL" not in p["changes"][0]["before"]
+    now = client.get(f"/api/documents/{d['id']}", headers=h).json()["content"]
+    assert now["skills"] == before["skills"] and len(now.get("requests") or []) == len(before.get("requests") or [])
+    assert "pending_change" not in now and "undo" not in now  # never sent to the page
+
+    assert client.post(f"/api/documents/{d['id']}/request-change/confirm", headers=h, json={"token": "wrong-token-123"}).status_code == 409
+    r = client.post(f"/api/documents/{d['id']}/request-change/confirm", headers=h, json={"token": p["token"]})
+    assert r.status_code == 200, r.text
+    doc = r.json()["document"]
+    assert any(s["display"] == "GraphQL" and s["selected"] for s in doc["content"]["skills"]) and doc["content"]["can_undo"]
+    assert client.post(f"/api/documents/{d['id']}/request-change/confirm", headers=h, json={"token": p["token"]}).status_code == 409
+
+    r = client.post(f"/api/documents/{d['id']}/undo", headers=h)
+    assert r.status_code == 200, r.text
+    back = r.json()["document"]["content"]
+    assert not any(s["display"] == "GraphQL" and s.get("selected") for s in back["skills"])
+    assert back["requests"][-1]["via"] == "undo" and not back.get("can_undo")
+    assert client.post(f"/api/documents/{d['id']}/undo", headers=h).status_code == 400
+
+
+def test_cancel_drops_the_preview(client, monkeypatch):
+    h, d = _doc(client, monkeypatch)
+    p = client.post(f"/api/documents/{d['id']}/request-change", headers=h,
+                    json={"request": "Add GraphQL to my skills", "preview": True}).json()["preview"]
+    assert client.post(f"/api/documents/{d['id']}/request-change/cancel", headers=h).status_code == 200
+    assert client.post(f"/api/documents/{d['id']}/request-change/confirm", headers=h, json={"token": p["token"]}).status_code == 409
+
+
+def test_unclear_line_offers_choices(monkeypatch):
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: None)
+    c, _, _ = tailor_inplace.build_plan(_NoDB(), 1, J(), R())
+    c, res = tailor_request.apply_request(_NoDB(), 1, c, R(), J(), "add Terraform to my blockchain line")
+    assert res["question"] and res["choices"][0] == "Add Terraform to Cloud & DevOps" and not res["changes"]
+
+
+def test_ai_question_makes_no_change(monkeypatch):
+    from types import SimpleNamespace
+
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: None)
+    c, _, _ = tailor_inplace.build_plan(_NoDB(), 1, J(), R())
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: SimpleNamespace(provider="gemini", model="x", api_key="k"))
+    monkeypatch.setattr(tailor_request, "_llm_plan", lambda *a: ([], [], "ai:x", "", {
+        "question": "Cloud & DevOps or Operating Systems?", "choices": ["Add AWS to Cloud & DevOps", "Add AWS to Operating Systems"]}))
+    c, res = tailor_request.apply_request(_NoDB(), 1, c, R(), J(), "add aws somewhere sensible")
+    assert res["question"].startswith("Cloud") and len(res["choices"]) == 2 and not res["done"] and not res["changes"]
+
+
+def test_track_takes_up_to_30_titles(client):
+    from .test_api import make_user
+
+    h, _ = make_user(client)
+    titles = [f"Engineer {i}" for i in range(30)]
+    r = client.post("/api/tracks", headers=h, json={"family": "custom", "name": "Wide", "target_titles": titles})
+    assert r.status_code == 200, r.text and r.json()["target_titles"] == titles
+    assert r.json()["target_titles"] == titles
+    r = client.post("/api/tracks", headers=h, json={"family": "custom", "name": "Too wide", "target_titles": titles + ["One more"]})
+    assert r.status_code == 400 and "30" in r.json()["detail"]

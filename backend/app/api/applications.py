@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -141,46 +141,124 @@ def get_document(did: int, user: User = Depends(current_user), db: Session = Dep
 class ChangeRequest(BaseModel):
     request: str = Field(min_length=3, max_length=2000)
     content: Optional[dict] = None  # unsaved edits on the page, merged first
+    preview: bool = False  # True: work out the change and show it; nothing is saved until you confirm
 
 
-@router.post("/documents/{did}/request-change", dependencies=[Depends(rate_limit("doc-request", 60, 3600))])
-def request_change(did: int, body: ChangeRequest, user: User = Depends(current_user), db: Session = Depends(get_db)):
-    """Apply your own instruction ("add Node.js to Backend skills", "add 'cross-functional' to the H&M bullet")."""
-    from ..services.tailor_request import apply_request
+class ConfirmChange(BaseModel):
+    token: str = Field(min_length=8, max_length=64)
 
+
+_TRANSIENT = ("pending_change", "undo")
+
+
+def _snapshot(content: dict) -> dict:
+    return {k: v for k, v in content.items() if k not in _TRANSIENT}
+
+
+def _inplace_doc(db: Session, did: int, user: User):
     d = owned(db, Document, did, user)
     if d.content.get("format") != "inplace":
         raise HTTPException(400, "Change requests work on resumes tailored from your uploaded file.")
-    content = _merge_inplace_edit(d.content, body.content) if body.content else d.content
-    r = db.get(Resume, content["resume_id"])
-    job = db.get(Job, d.job_id)
+    r = db.get(Resume, d.content["resume_id"])
     if r is None:
         raise HTTPException(400, "The original resume for this document was deleted. Upload it again and re-tailor.")
-    try:
-        content, result = apply_request(db, user.id, content, r, job, body.request)
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-    d.content = content
+    return d, r, db.get(Job, d.job_id)
+
+
+def _save_inplace(db: Session, d: Document, r: Resume, job, content: dict, undo: Optional[dict], action: str, **audit_kw) -> None:
+    """Render the new content (it must still fit), keep the previous version for Undo, and save it as a draft."""
+    old = d.content
+    d.content = {**_snapshot(content), **({"undo": undo} if undo else {})}
     try:
         out, warnings = _render_inplace(d, r)
     except FitError as e:
-        raise HTTPException(400, _fit_message(d.content, str(e)))
+        d.content = old
+        raise HTTPException(400, _fit_message(content, str(e)))
     content = dict(d.content)
     content["ats_after"] = tailor_inplace.ats_after(content, out, job)
     content["warnings"] = warnings
     d.content = content
     d.status, d.approved_at = "draft", None
-    _invalidate_for_job(db, d.job_id, user.id, "resume changed on your request")
-    audit(db, user.id, "document.request_change", "document", d.id, applied=len(result["done"]))
+    _invalidate_for_job(db, d.job_id, user_id=d.user_id, reason="resume changed on your request")
+    audit(db, d.user_id, action, "document", d.id, **audit_kw)
     db.commit()
+
+
+@router.post("/documents/{did}/request-change", dependencies=[Depends(rate_limit("doc-request", 60, 3600))])
+def request_change(did: int, body: ChangeRequest, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Your own instruction ("add Node.js to Backend skills", "add 'cross-functional' to the H&M bullet").
+    With preview, nothing changes yet: you get what JobPilot understood and each line before → after, then confirm."""
+    import secrets
+
+    from ..services.tailor_request import apply_request
+
+    d, r, job = _inplace_doc(db, did, user)
+    base = _merge_inplace_edit(d.content, body.content) if body.content else d.content
+    try:
+        content, result = apply_request(db, user.id, _snapshot(base), r, job, body.request)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    if body.preview:
+        if result["done"]:
+            try:  # it must still fit the page before it's offered
+                tailor_inplace.render(_snapshot(content), r)
+            except FitError as e:
+                raise HTTPException(400, _fit_message(content, str(e)))
+            except ValueError as e:
+                raise HTTPException(400, str(e))
+        token = secrets.token_urlsafe(12)
+        d.content = {**d.content, "pending_change": {"token": token, "content": _snapshot(content),
+                                                     "at": datetime.now(timezone.utc).isoformat()}} if result["done"] else \
+            {k: v for k, v in d.content.items() if k != "pending_change"}
+        db.commit()
+        return {"preview": {**result, "token": token if result["done"] else None}}
+    _save_inplace(db, d, r, job, content, _snapshot(d.content), "document.request_change", applied=len(result["done"]))
     return {"result": result, "document": doc_out(d)}
+
+
+@router.post("/documents/{did}/request-change/confirm")
+def confirm_change(did: int, body: ConfirmChange, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Apply the change you previewed — exactly what you saw, not a fresh guess."""
+    d, r, job = _inplace_doc(db, did, user)
+    pending = d.content.get("pending_change") or {}
+    if pending.get("token") != body.token:
+        raise HTTPException(409, "That preview is out of date — ask for the change again.")
+    content = pending["content"]
+    _save_inplace(db, d, r, job, content, _snapshot(d.content), "document.request_change",
+                  applied=len((content.get("requests") or [{}])[-1].get("done", [])))
+    return {"result": (content.get("requests") or [{}])[-1], "document": doc_out(d)}
+
+
+@router.post("/documents/{did}/request-change/cancel")
+def cancel_change(did: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    d = owned(db, Document, did, user)
+    if "pending_change" in (d.content or {}):
+        d.content = {k: v for k, v in d.content.items() if k != "pending_change"}
+        db.commit()
+    return {"ok": True}
+
+
+@router.post("/documents/{did}/undo")
+def undo_change(did: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    """Put the resume back the way it was before your last change request."""
+    d, r, job = _inplace_doc(db, did, user)
+    prev = d.content.get("undo")
+    if not prev:
+        raise HTTPException(400, "There's nothing to undo.")
+    last = (d.content.get("requests") or [{}])[-1].get("text", "")
+    prev = dict(prev)
+    prev["requests"] = list(prev.get("requests") or []) + [{
+        "text": f"Undo: {last}"[:2000], "at": datetime.now(timezone.utc).isoformat(), "via": "undo",
+        "understood_as": "", "done": ["Put your resume back the way it was before that request"], "notes": [], "skipped": []}]
+    _save_inplace(db, d, r, job, prev, None, "document.undo")
+    return {"document": doc_out(d)}
 
 
 @router.put("/documents/{did}")
 def edit_document(did: int, body: DocumentEdit, user: User = Depends(current_user), db: Session = Depends(get_db)):
     d = owned(db, Document, did, user)
     if d.content.get("format") == "inplace":
-        d.content = _merge_inplace_edit(d.content, body.content)
+        d.content = _merge_inplace_edit(_snapshot(d.content), body.content)  # a manual edit replaces any preview and undo
         r = db.get(Resume, d.content["resume_id"])
         job = db.get(Job, d.job_id)
         try:

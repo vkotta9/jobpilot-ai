@@ -23,7 +23,12 @@ def match_out(m: MatchAssessment) -> dict:
 
 
 def doc_out(d: Document) -> dict:
-    return to_dict(d)
+    out = to_dict(d)
+    c = out.get("content")
+    if isinstance(c, dict) and ("undo" in c or "pending_change" in c):
+        out["content"] = {k: v for k, v in c.items() if k not in ("undo", "pending_change")}
+        out["content"]["can_undo"] = bool(c.get("undo"))
+    return out
 
 
 def app_out(a: Application, m: Optional[MatchAssessment] = None) -> dict:

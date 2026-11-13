@@ -21,12 +21,13 @@ from .profile import rescore_all
 from .serialize import job_out
 
 router = APIRouter(prefix="/api", tags=["role tracks"])
+MAX_TITLES = 30  # job titles per track
 
 
 class TrackIn(BaseModel):
     family: str = Field(default="custom", max_length=20)
     name: str = Field(default="", max_length=80)
-    target_titles: list[str] = Field(default_factory=list, max_length=12)
+    target_titles: list[str] = Field(default_factory=list, max_length=100)
     resume_id: Optional[int] = None
 
     @field_validator("family")
@@ -96,7 +97,7 @@ def list_tracks(user: User = Depends(current_user), db: Session = Depends(get_db
                 "suggested_roles": suggest_roles(r.text)}
                for r in db.query(Resume).filter_by(user_id=user.id).order_by(Resume.id.desc()).all()]
     unassigned = sum(1 for jid, (_, tid) in latest.items() if jid in visible and tid is None)
-    return {"max": MAX_TRACKS, "tracks": [_track_out(t, db, latest, visible) for t in tracks],
+    return {"max": MAX_TRACKS, "max_titles": MAX_TITLES, "tracks": [_track_out(t, db, latest, visible) for t in tracks],
             "resumes": resumes, "unassigned_jobs": unassigned}
 
 
@@ -105,6 +106,8 @@ def _defaults(body: TrackIn) -> tuple[str, list[str]]:
     name = body.name.strip() or (fam.name if fam else "")
     if not name:
         raise HTTPException(400, "Give this track a name (e.g. 'Platform Engineer').")
+    if len(body.target_titles) > MAX_TITLES:
+        raise HTTPException(400, f"A track can have up to {MAX_TITLES} job titles (this one has {len(body.target_titles)}).")
     titles = body.target_titles or (list(fam.titles[:4]) if fam else [name])
     return name, titles
 

@@ -58,12 +58,22 @@ function resumeSelect(resumes, current) {
     resumes.map((r) => h("option", { value: r.id, selected: r.id === current }, r.filename)));
 }
 
+const MAX_TITLES = 30;
+function titleCounter(ta) {
+  const c = h("span", { class: "small muted" });
+  const upd = () => { const n = list(ta.value).length; c.textContent = `${n}/${MAX_TITLES} titles`; c.style.color = n > MAX_TITLES ? "var(--bad, #c0392b)" : ""; };
+  ta.addEventListener("input", upd); upd();
+  return { el: c, upd, tooMany: () => list(ta.value).length > MAX_TITLES };
+}
+
 function trackCard(t, resumes, jobs, root) {
   const res = resumeSelect(resumes, t.resume?.id);
-  const titles = h("textarea", { rows: 2, "aria-label": "Job titles for this track" }, t.target_titles.join(", "));
-  const addTitle = (x) => { const cur = list(titles.value); if (!cur.includes(x)) titles.value = [...cur, x].join(", "); };
+  const titles = h("textarea", { rows: 3, "aria-label": "Job titles for this track" }, t.target_titles.join(", "));
+  const count = titleCounter(titles);
+  const addTitle = (x) => { const cur = list(titles.value); if (!cur.includes(x)) titles.value = [...cur, x].join(", "); count.upd(); };
   const save = h("button", { class: "btn-sm btn-primary" }, "Save");
   save.addEventListener("click", busy(save, async () => {
+    if (count.tooMany()) return toast(`A track can have up to ${MAX_TITLES} job titles.`, "bad");
     await api.put(`/api/tracks/${t.id}`, { family: t.family, name: t.name, target_titles: list(titles.value), resume_id: res.value ? Number(res.value) : null });
     toast("Saved. Re-scoring your jobs…");
     render(root);
@@ -81,7 +91,8 @@ function trackCard(t, resumes, jobs, root) {
     h("div", { class: "row", style: { gap: "14px", margin: "4px 0 10px" } },
       stat(t.stats.jobs, "jobs"), stat(t.stats.strong, "≥ 70 ATS"), stat(t.stats.average ?? "–", "avg ATS")),
     field("Resume", res),
-    field("Job titles", titles, "JobPilot searches for these and keeps matching roles from the companies you follow."),
+    field("Job titles", titles, `Up to ${MAX_TITLES}, comma-separated. JobPilot searches for these and keeps matching roles from the companies you follow.`),
+    count.el,
     t.suggested_titles.length ? h("div", { class: "row", style: { gap: "4px", margin: "-4px 0 8px" } },
       h("span", { class: "faint small" }, "Related:"),
       t.suggested_titles.map((x) => h("button", { class: "btn-ghost btn-sm", onclick: () => addTitle(x), title: "Add this title" }, "+ " + x))) : null,
@@ -109,10 +120,12 @@ function addCard(families, resumes, tracks, root) {
   if (best) fam.value = best;
   const name = h("input", { placeholder: "Track name (optional)" });
   const res = resumeSelect(resumes, resumes.find((r) => r.suggested_roles[0]?.key === fam.value && !r.used_by)?.id);
-  const titles = h("textarea", { rows: 2, placeholder: "Job titles, comma-separated" });
+  const titles = h("textarea", { rows: 3, placeholder: "Job titles, comma-separated (up to 30)" });
+  const count = titleCounter(titles);
   const fill = () => {
     const f = families.find((x) => x.key === fam.value);
     titles.value = f ? f.titles.slice(0, 4).join(", ") : "";
+    count.upd();
     name.placeholder = f ? `Track name (default: ${f.name})` : "Track name, e.g. Solutions Architect";
     const r = resumes.find((x) => x.suggested_roles[0]?.key === fam.value && !x.used_by);
     if (r) res.value = String(r.id);
@@ -122,6 +135,7 @@ function addCard(families, resumes, tracks, root) {
   const add = h("button", { class: "btn-primary" }, "Add track");
   add.addEventListener("click", busy(add, async () => {
     if (fam.value === "custom" && !name.value.trim()) return toast("Give your custom track a name.", "bad");
+    if (count.tooMany()) return toast(`A track can have up to ${MAX_TITLES} job titles.`, "bad");
     await api.post("/api/tracks", { family: fam.value, name: name.value.trim(), target_titles: list(titles.value), resume_id: res.value ? Number(res.value) : null });
     toast("Track added. Re-scoring your jobs against it…");
     render(root);
@@ -129,6 +143,6 @@ function addCard(families, resumes, tracks, root) {
   return h("div", { class: "card", style: { marginTop: "16px" } },
     h("h2", {}, tracks.length ? "Add another track" : "Create your first track"),
     h("div", { class: "form-grid" }, field("Role", fam), field("Resume", res), field("Name", name),
-      h("div", { class: "full" }, field("Job titles", titles, "Pre-filled with the usual titles for this role; edit freely."))),
+      h("div", { class: "full" }, field("Job titles", titles, "Pre-filled with the usual titles for this role; edit freely — up to 30."), count.el)),
     h("div", { class: "row", style: { justifyContent: "flex-end", marginTop: "10px" } }, add));
 }

@@ -244,6 +244,32 @@ def _home_line(skill: str, lines: list[dict]) -> Optional[dict]:
     return None
 
 
+def _likely_lines(skill: str, lines: list[dict]) -> list[dict]:
+    """Up to 3 lines to offer for a skill: its kind's line first, then the rest in order."""
+    home = _home_line(skill, lines)
+    return ([home] if home else []) + [ln for ln in lines if ln is not home][: 3 - (1 if home else 0)]
+
+
+def diff_lines(before: dict, after: dict, units: dict) -> list[dict]:
+    """Every line a request changed: {line, before, after} in plain text, in resume order."""
+    out = []
+    old_sk = {ln["id"]: ln for ln in current_skill_lines(before, units)}
+    new_sk = {ln["id"]: ln for ln in current_skill_lines(after, units)}
+    old_u = {e["id"]: e for e in before["units"]}
+    for e in after["units"]:
+        if e["id"] in new_sk:
+            a, b = old_sk.get(e["id"]), new_sk[e["id"]]
+            if a is None or a["items"] != b["items"]:
+                out.append({"line": b["label"], "kind": "skills",
+                            "before": ", ".join(a["items"]) if a else "", "after": ", ".join(b["items"])})
+        elif e["kind"] in ("bullet", "paragraph"):
+            o = old_u.get(e["id"])
+            if o is not None and plain(o["final"]) != plain(e["final"]):
+                out.append({"line": e.get("heading") or e.get("section") or "Line", "kind": e["kind"],
+                            "before": plain(o["final"]), "after": plain(e["final"])})
+    return out
+
+
 def _line_with(item: str, lines: list[dict]) -> Optional[dict]:
     return next((ln for ln in lines if find_item(ln["items"], item) is not None), None)
 
@@ -377,6 +403,8 @@ def _llm_plan(cfg, request: str, content: dict, units: dict, job) -> tuple[list[
             "position": {"type": "string", "description": "'' (default: end), 'end', 'start', 'after:<skill>' or 'before:<skill>'"}})},
         "remove_skills": {"type": "array", "items": llm.strict_schema({"line_id": {"type": "string"}, "skill": {"type": "string"}})},
         "not_done": {"type": "array", "items": {"type": "string"}},
+        "question": {"type": "string", "description": "'' unless the request could mean clearly different things"},
+        "choices": {"type": "array", "items": {"type": "string"}},
     })
     task = (
         "You are the tailoring assistant inside JobPilot. The candidate is editing THEIR OWN resume and types a request in <request>. "
@@ -392,6 +420,11 @@ def _llm_plan(cfg, request: str, content: dict, units: dict, job) -> tuple[list[
         "- The request is the candidate's own statement about themselves: add what they explicitly ask for, but never invent other "
         "tools, numbers or achievements.\n"
         "- understood_as: one short plain sentence restating what you did. not_done: anything you couldn't do and why.\n"
+        "- Only skill names go in add_skills ('Terraform', never 'Terraform as a skill' or a word like 'Developing'). If no line "
+        "fits, put it on the line whose kind matches best; never on an unrelated line.\n"
+        "- If the request could mean clearly different things (which line, which bullet, add vs replace) and guessing wrong would "
+        "change the resume in a way they didn't want, make NO changes for that part: set question to one short question and "
+        "choices to 2–4 complete requests they can pick from (e.g. 'Add AWS to Cloud & DevOps'). Otherwise question is ''.\n"
         "- The job description is context only."
     )
     history = "\n".join(f"- {r['text']}" for r in (content.get("requests") or [])[-3:])
@@ -417,7 +450,8 @@ def _llm_plan(cfg, request: str, content: dict, units: dict, job) -> tuple[list[
             pos = {"where": p.split(":", 1)[0], "ref": p.split(":", 1)[1].strip()}
         ops.append({"op": "add_skill", "skill": x["skill"], "line_id": x["line_id"], "position": pos, "req": request})
     ops += [{"op": "set", "id": x["id"], "text": x["text"], "req": request} for x in out.get("edits", []) if x.get("id") and x.get("text")]
-    return ops, not_done, "ai:" + cfg.model, out.get("understood_as", "")
+    ask = {"question": (out.get("question") or "").strip(), "choices": [c.strip() for c in out.get("choices") or [] if c and c.strip()][:4]}
+    return ops, not_done, "ai:" + cfg.model, out.get("understood_as", ""), ask
 
 
 # ------------------------------------------------------------------ applying
@@ -483,20 +517,27 @@ def apply_request(db, user_id: int, content: dict, resume, job, request: str) ->
         raise ValueError("The original resume file is missing — upload it again.")
     kind = content["file_kind"]
     units = {u.id: u for u in engine(kind).analyze(data)["units"]}
+    before = content
     content = {**content, "units": [dict(e) for e in content["units"]], "skills": [dict(s) for s in content.get("skills", [])],
-               "skill_removals": [dict(r) for r in content.get("skill_removals", []) or []]}
+               "skill_removals": [dict(r) for r in content.get("skill_removals", []) or []],
+               "requests": list(content.get("requests") or [])}
     by_id = {e["id"]: e for e in content["units"]}
     jd = job.description_text or ""
     cfg = llm.config_for(db, user_id)
     via, unclear, understood, notes = "rules", [], "", []
     ops: list[dict] = []
     ai_not_done: list[str] = []
+    ask: dict = {"question": "", "choices": []}
+    choices: list[str] = []
     if cfg:
         try:
-            ops, ai_not_done, via, understood = _llm_plan(cfg, request, content, units, job)
+            plan = _llm_plan(cfg, request, content, units, job)
+            ops, ai_not_done, via, understood = plan[:4]
+            if len(plan) > 4:
+                ask = plan[4]
         except llm.LLMError as e:
             notes.append(f"Your AI model was unavailable ({e}), so JobPilot's built-in interpreter handled this.")
-    if not ops:
+    if not ops and not ask.get("question"):
         r_ops, r_unclear = _rules(request, content, units)
         if r_ops or not ai_not_done:
             ops, unclear, via = r_ops, r_unclear, "rules"
@@ -546,6 +587,7 @@ def apply_request(db, user_id: int, content: dict, resume, job, request: str) ->
             if target is None and where.strip():
                 skipped.append(f"Didn't add {skill}: couldn't tell which skills line “{where.strip()}” is. Your lines are: "
                                + ", ".join(ln["label"] for ln in lines) + ".")
+                choices += [f"Add {skill} to {ln['label']}" for ln in _likely_lines(skill, lines)]
                 continue
             if target is None:
                 owner = _line_with(skill, lines)
@@ -559,6 +601,7 @@ def apply_request(db, user_id: int, content: dict, resume, job, request: str) ->
                     if target is None and lines:
                         skipped.append(f"Didn't add {skill}: which line should it go on? Say e.g. 'add {skill} to "
                                        f"{lines[0]['label'] if lines else 'Skills'}'.")
+                        choices += [f"Add {skill} to {ln['label']}" for ln in _likely_lines(skill, lines)]
                         continue
             if target is None:
                 skipped.append(f"Add {skill}: no skills section was found in your resume.")
@@ -661,9 +704,16 @@ def apply_request(db, user_id: int, content: dict, resume, job, request: str) ->
                 skipped.append(f"Add “{kw}”: couldn't find a natural place that fits — " +
                                ("try again when your AI model is available, or " if cfg else "connect an AI model for full rewrites, or ") +
                                "edit the line yourself above.")
-    content.setdefault("requests", []).append({
+    if not understood and done:
+        understood = "; ".join(d.split(" → ")[0] for d in done)[:300]
+    question = ask.get("question", "")
+    choices = list(dict.fromkeys((ask.get("choices") or []) + choices))[:4]
+    if choices and not question:
+        question = "Which did you mean?"
+    content["requests"].append({
         "text": request[:2000], "at": datetime.now(timezone.utc).isoformat(), "via": via, "understood_as": understood,
-        "done": done, "notes": notes,
+        "done": done, "notes": notes, "question": question, "choices": choices,
+        "changes": diff_lines(before, content, units),
         "skipped": skipped + ai_not_done + [f"Didn't understand: “{u}”" + ("" if cfg else " — for open-ended requests like rewrites, connect an AI model "
                                                                   "(Settings → Connections, Gemini is free).") for u in unclear],
     })
