@@ -44,7 +44,7 @@ def tick() -> list[int]:
             lock = user_lock(uid)
             if lock.acquire(blocking=False):
                 try:
-                    score_unscored(db, uid, limit=100)
+                    score_unscored(db, uid, limit=300)
                 finally:
                     lock.release()
     with session_scope() as db:

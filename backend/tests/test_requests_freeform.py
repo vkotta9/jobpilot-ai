@@ -189,3 +189,28 @@ def test_track_takes_up_to_30_titles(client):
     assert r.json()["target_titles"] == titles
     r = client.post("/api/tracks", headers=h, json={"family": "custom", "name": "Too wide", "target_titles": titles + ["One more"]})
     assert r.status_code == 400 and "30" in r.json()["detail"]
+
+
+def test_stale_scores_refresh_and_poor_fits_sort_last(client):
+    """A role two levels above you never sits at the top of 'best match', even if scored by an older model."""
+    from app.db import SessionLocal
+    from app.models import Job, MatchAssessment
+
+    from .test_api import _mock_jobs, make_user, setup_profile
+
+    h, _ = make_user(client)
+    setup_profile(client, h)
+    items = _mock_jobs(client, h)
+    with SessionLocal() as db:
+        j = db.get(Job, items[0]["id"])
+        j.title = "Principal Software Engineer – Backend"
+        uid = j.user_id
+        # pretend an older scoring model gave it 99 and no level penalty
+        m = db.query(MatchAssessment).filter_by(job_id=j.id).order_by(MatchAssessment.id.desc()).first()
+        m.score, m.fit, m.scoring_version = 99, "good", 1
+        db.commit()
+    got = client.get("/api/jobs?sort=score&fit=", headers=h).json()["items"]
+    top = next(x for x in got if x["id"] == items[0]["id"])
+    assert top["match"]["score"] < 99 and top["match"]["fit"] == "poor", top["match"]["score"]
+    fits = [x["match"]["fit"] for x in got if x.get("match")]
+    assert fits == sorted(fits, key=lambda f: f == "poor")  # every poor fit after every other role

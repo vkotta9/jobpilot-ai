@@ -216,8 +216,11 @@ def list_jobs(
     if pipeline:
         want_p = set(pipeline.split(","))
         jobs = [j for j in jobs if (j.application.status if j.application else "discovered") in want_p]
+    # best match first: roles you fit ahead of stretch roles, poor fits (a level above you, can't sponsor, …) last
+    fit_rank = {"good": 0, "stretch": 1, None: 1, "poor": 2}
     keyf = {
-        "score": lambda j: -(scores[j.id].score if j.id in scores else -1),
+        "score": lambda j: (fit_rank.get(latest[j.id][4], 1) if j.id in latest else 1,
+                            -(scores[j.id].score if j.id in scores else -1)),
         "posted": lambda j: -((j.posted_at or j.discovered_at).timestamp()),
         "score_asc": lambda j: (scores[j.id].score if j.id in scores else 999),
         "discovered": lambda j: -j.discovered_at.timestamp(),
@@ -239,11 +242,36 @@ def list_jobs(
     total = len(jobs)
     page = jobs[offset: offset + limit]
     ids = [j.id for j in page]
+    if _refresh_stale(db, user.id, ids, latest):  # re-scored: re-order this page with the new scores and fits
+        scores.update({k: _S(v[1]) for k, v in latest.items() if k in ids})
+        page.sort(key=keyf)
+        ids = [j.id for j in page]
     full = {m.job_id: m for m in db.query(MatchAssessment).filter(
         MatchAssessment.id.in_([latest[i][0] for i in ids if i in latest]))} if ids else {}
     snips = dict(db.query(Job.id, func.substr(Job.description_text, 1, 220)).filter(Job.id.in_(ids)).all()) if ids else {}
     return {"total": total, "hidden_higher_degree": hidden, "counts": counts, "view": view,
             "items": [job_out(j, full.get(j.id), snippet=snips.get(j.id) or "") for j in page]}
+
+
+def _refresh_stale(db: Session, user_id: int, ids: list[int], latest: dict) -> int:
+    """Jobs on this page scored by an older scoring model are re-scored now, so what you see is current
+    (the background catch-up re-scores the rest)."""
+    from ..models import MatchAssessment
+    from ..services.matching import SCORING_VERSION, score_jobs
+
+    if not ids:
+        return 0
+    current = {jid for (jid,) in db.query(MatchAssessment.job_id).filter(
+        MatchAssessment.user_id == user_id, MatchAssessment.job_id.in_(ids), MatchAssessment.scoring_version >= SCORING_VERSION)}
+    stale = [i for i in ids if i in latest and i not in current][:25]  # the free server's CPU is small: top of the page first
+    if stale:
+        score_jobs(db, user_id, stale)
+        db.commit()
+        for jid_, aid, sc, edu, tid, fv in db.query(MatchAssessment.job_id, MatchAssessment.id, MatchAssessment.score,
+                                                    MatchAssessment.edu_status, MatchAssessment.track_id, MatchAssessment.fit) \
+                .filter(MatchAssessment.job_id.in_(stale)).order_by(MatchAssessment.id):
+            latest[jid_] = (aid, sc, edu, tid, fv)
+    return len(stale)
 
 
 @router.get("/jobs/{jid}")
@@ -253,7 +281,9 @@ def job_detail(jid: int, user: User = Depends(current_user), db: Session = Depen
     # fill in the full description from the source if we only have a summary, then (re)score
     changed = describe_now(db, job)
     m = latest_assessment(db, job.id)
-    if profile is not None and (changed or m is None):
+    from ..services.matching import SCORING_VERSION
+
+    if profile is not None and (changed or m is None or (m.scoring_version or 1) < SCORING_VERSION):
         score_job(db, job, profile)
         db.commit()
         m = latest_assessment(db, job.id)
