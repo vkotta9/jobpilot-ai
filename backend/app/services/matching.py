@@ -209,6 +209,48 @@ def _candidate_level(prefs: dict, yoe: Optional[float]) -> Optional[int]:
     return 1 if yoe < 1 else 2 if yoe < 4 else 3 if yoe < 7 else 4
 
 
+LEVEL_NAMES = {0: "intern", 1: "entry-level", 2: "mid-level", 3: "senior", 4: "staff / lead", 5: "principal"}
+
+
+def level_factor(job: Job, prefs: dict, targets: list[str], yoe: Optional[float]) -> tuple[float, str]:
+    """How well the role's level and kind of work fit the candidate, as a multiplier on the match score.
+
+    Keyword overlap alone ranks a Principal or a Business Development role at the top for anyone whose resume
+    shares its words; the match score has to say "not for you yet". The strongest single reason applies (no
+    compounding): 1.0 = right level and kind of work."""
+    from . import ats
+
+    title = job.title or ""
+    want_mgr = any(PEOPLE_MANAGER.search(t) for t in targets) or any(
+        (s or "").lower() in ("manager", "head", "director", "vp", "chief") for s in prefs.get("seniority") or [])
+    reasons: list[tuple[float, str]] = []
+    m = OTHER_FUNCTION.search(title)
+    if m and not any(OTHER_FUNCTION.search(t) for t in targets):
+        reasons.append((0.5, f"a {m.group(0).lower()} role, not the kind of work you target"))
+    if PEOPLE_MANAGER.search(title) and not want_mgr and not re.search(r"(?i)product manager|program manager|project manager", title):
+        reasons.append((0.6, "a people-manager role; you target individual-contributor roles"))
+    cand, lvl = _candidate_level(prefs, yoe), seniority_of(title)
+    if cand is not None and lvl is not None and not PEOPLE_MANAGER.search(title):
+        gap = lvl - cand
+        if gap >= 2:
+            reasons.append((0.55, f"a {LEVEL_NAMES.get(lvl, 'senior')} title, {gap} levels above you"))
+        elif gap == 1:
+            reasons.append((0.85, f"a {LEVEL_NAMES.get(lvl, 'senior')} title, one level above you"))
+    req = required_years(job.description_text)
+    implied = ats.implied_years(title) if req is None else None
+    need = req if req is not None else (implied[0] if implied else None)
+    if need is not None and yoe is not None:
+        how = f"asks for {need}+ years" if req is not None else f"a {implied[1]} title usually means {need}+ years"
+        if need > yoe + 2:
+            reasons.append((0.7, f"{how}; you have about {yoe:g}"))
+        elif need > yoe + 0.5:
+            reasons.append((0.9, f"{how}; you have about {yoe:g}"))
+    if not reasons:
+        return 1.0, "Right level and kind of role for you."
+    f, why = min(reasons, key=lambda r: r[0])
+    return f, why[0].upper() + why[1:] + "."
+
+
 def fit_verdict(job: Job, prefs: dict, targets: list[str], yoe: Optional[float], score: int, title_score: float,
                 edu_status: str, flags: list[str]) -> dict:
     """Is this a role the candidate fits — not just one their keywords overlap with?
@@ -316,14 +358,18 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: 
     if job.is_simulated:
         flags.append("SIMULATED listing (demo data) — not a real job.")
 
+    # the match score includes level fit: a role two levels above you can't rank as a 100
+    tgt = targets if targets is not None else (prefs.get("target_titles") or [])
+    ats_score = score
+    factor, level_note = level_factor(job, prefs, tgt, yoe)
+    score = round(ats_score * factor)
     rec = "apply" if score >= 70 else "review" if score >= 50 else "skip"
     hard = any(f.startswith(("Work authorization:", "Contains excluded", "Listing is no longer", "Location:")) for f in flags)
     if hard and rec == "apply":
         rec = "review"
     if edu["status"] == "below":
         rec = "skip"  # e.g. a PhD-only role for a master's graduate: don't suggest it
-    tgt = targets if targets is not None else (prefs.get("target_titles") or [])
-    fit = fit_verdict(job, prefs, tgt, yoe, score, (a["breakdown"].get("title") or {}).get("score", 1.0), edu["status"], flags)
+    fit = fit_verdict(job, prefs, tgt, yoe, ats_score, (a["breakdown"].get("title") or {}).get("score", 1.0), edu["status"], flags)
     if fit["verdict"] == "poor":
         rec = "skip"  # not the candidate's kind of role or level: don't suggest it, whatever the keyword overlap
     elif fit["verdict"] == "stretch" and rec == "apply":
@@ -333,7 +379,8 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: 
     strengths = [k.replace("_", " ") for k, v in bd.items() if v["score"] >= 0.75]
     weak = [k.replace("_", " ") for k, v in bd.items() if v["score"] < 0.4]
     explanation = (
-        f"ATS match {score}/100. "
+        (f"Match {score}/100 = ATS {ats_score} × level fit {factor:g} ({level_note.rstrip('.')}). " if factor < 1
+         else f"ATS match {score}/100. ")
         + (f"Strong on {', '.join(strengths)}. " if strengths else "")
         + (f"Weak on {', '.join(weak)}. " if weak else "")
         + (f"Missing required keywords: {', '.join(a['missing_required'][:8])}. " if a["missing_required"] else "")
@@ -357,6 +404,7 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: 
     breakdown["_preferred"] = a.get("preferred")
     breakdown["_experience_bars"] = a.get("experience_bars")
     breakdown["_fit"] = fit
+    breakdown["_level"] = {"factor": factor, "ats_score": ats_score, "note": level_note}
 
     return {
         "score": score,
@@ -377,7 +425,8 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: 
 # Bump when scoring changes so existing jobs are re-scored in the background (scheduler → score_unscored).
 # 2: scored against preferred qualifications (preferred years/degree/skills), any-of lists, example lists.
 # 3: fit verdict (level, years, kind of role, title) — poor fits become "skip" and aren't alerted.
-SCORING_VERSION = 3
+# 4: level fit multiplies the match score; years implied by Senior/Staff/Principal titles; thin postings scored cautiously.
+SCORING_VERSION = 4
 
 
 def load_tracks(db: Session, user_id: int) -> list:

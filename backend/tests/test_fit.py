@@ -106,3 +106,32 @@ def test_rescoring_keeps_one_assessment_per_job_and_dashboard_stays_light(client
         assert set(sc) >= {x["id"] for x in jobs} and isinstance(sc[j.id].score, int)
         assert set(latest_scores(db, uid, [j.id])) == {j.id}
     assert client.get("/api/dashboard", headers=h).status_code == 200
+
+
+def test_level_fit_lowers_the_match_score_for_roles_above_you():
+    from app.services.matching import level_factor
+
+    def lf(title, jd="Build services.", yoe=3.0, prefs=None, targets=TARGETS):
+        return level_factor(NS(title=title, description_text=jd), prefs or {}, targets, yoe)
+
+    assert lf("Software Engineer II")[0] == 1.0
+    f, why = lf("Principal Platform Software Engineer, AI")
+    assert f == 0.55 and "principal" in why.lower()
+    assert lf("Lead Software Engineer — Hybrid Cloud")[0] == 0.55
+    assert lf("Senior Software Engineer")[0] == 0.85  # one level up: a stretch with 3 years
+    assert lf("Senior Software Engineer", yoe=2.0)[0] == 0.7  # Senior usually means 5+ years: 3 short
+    assert lf("Software Engineer", jd="We need 5+ years of experience.")[0] == 0.9  # 2 short: a stretch
+    assert lf("Software Engineer", jd="We need 6+ years of experience.")[0] == 0.7  # 3 short
+    assert lf("Engineering Manager")[0] == 0.6
+    assert lf("AI Software Business Development Manager")[0] == 0.5
+    assert lf("Senior Software Engineer", yoe=6.0, prefs={"seniority": ["senior"]})[0] == 1.0
+
+
+def test_ats_uses_years_implied_by_the_title_and_is_cautious_with_thin_postings():
+    from app.services import ats
+
+    resume = "Software Engineer, Acme, Jan 2023 - Dec 2025. Python Java AWS platform AI engineer."
+    r = ats.score(resume, "Principal Platform Software Engineer, AI", "We need Python, Java and AWS.")
+    assert r["breakdown"]["experience"]["score"] < 0.4 and "Principal" in r["breakdown"]["experience"]["note"]
+    assert r["breakdown"]["keywords"]["score"] == 0.8 and "cautiously" in r["breakdown"]["keywords"]["note"]
+    assert r["score"] < 85

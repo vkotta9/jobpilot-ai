@@ -558,6 +558,28 @@ def _found(norm: str, k: Keyword) -> bool:
     return has_soft(norm, k.term) if k.kind == "soft" else has_term(norm, k.term)
 
 
+# what a seniority word in the title usually means when the posting doesn't state years
+TITLE_YEARS = [(r"\b(principal|distinguished|fellow)\b", 10, "Principal"), (r"\b(staff|lead|architect)\b", 7, "Staff / Lead"),
+               (r"\b(senior|sr\.?|iii)\b", 5, "Senior")]
+FEW_KEYWORDS = 6
+
+
+def implied_years(job_title: str) -> Optional[tuple[int, str]]:
+    t = (job_title or "").lower()
+    for rx, yrs, name in TITLE_YEARS:
+        if re.search(rx, t):
+            return yrs, name
+    return None
+
+
+def _cautious(share: Optional[float], n: int) -> float:
+    """3 of 3 keywords isn't a perfect match — it's a thin posting. Few keywords pull the share toward 0.6."""
+    if share is None:
+        return 0.5
+    k = max(0, FEW_KEYWORDS - n)
+    return (share * n + 0.6 * k) / (n + k) if n + k else share
+
+
 def score(resume_text: str, job_title: str, jd_text: str, company: str = "", weights: Optional[dict] = None,
           targets: Optional[list[str]] = None, degrees: Optional[list[str]] = None) -> dict:
     w = {"keywords": 45, "title": 15, "experience": 15, "education": 15, "soft_skills": 10}
@@ -585,7 +607,16 @@ def score(resume_text: str, job_title: str, jd_text: str, company: str = "", wei
     have_y = resume_years(resume_text)
     edu = education_match(jd_text, resume_text, degrees)
     bars = experience_bars(jd_text, edu["have"])
-    exp_s, exp_note = experience_score(have_y, bars)
+    implied = None
+    if not bars["required"] and not bars["preferred"]:
+        implied = implied_years(job_title)
+    if implied:
+        # no years in the posting, but the title says it: a Principal role isn't open to anyone with any experience
+        exp_s, exp_note = experience_score(have_y, {"required": {"years": implied[0], "degree": 0}, "preferred": None})
+        exp_note = (f"Posting doesn't state years; a {implied[1]} title usually means about {implied[0]}+ years. "
+                    + exp_note.split(". ", 1)[-1])
+    else:
+        exp_s, exp_note = experience_score(have_y, bars)
     edu_s, edu_note = edu["score"], edu["note"]
     pf = edu["preferred"]
     pref_bar = bars["preferred"]
@@ -612,9 +643,11 @@ def score(resume_text: str, job_title: str, jd_text: str, company: str = "", wei
     }
 
     comps = {
-        "keywords": (hard_s if hard_s is not None else 0.5,
+        "keywords": (_cautious(hard_s, len(_units(hard))),
                      f"{sum(1 for u in _units(hard) if _unit_share(u, hard_got) >= 0.5)} of {len(_units(hard))} qualifications and keywords "
-                     f"from the posting (required and preferred) appear in your resume." if hard else "No hard-skill keywords found in the posting."),
+                     f"from the posting (required and preferred) appear in your resume."
+                     + (f" Only {len(_units(hard))} found in this posting, so this is scored cautiously." if 0 < len(_units(hard)) < FEW_KEYWORDS else "")
+                     if hard else "No hard-skill keywords found in the posting."),
         "title": (title_s, title_note),
         "experience": (exp_s, exp_note),
         "education": (edu_s, edu_note),

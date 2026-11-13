@@ -92,7 +92,7 @@ export async function render(root) {
           j.remote_type !== "unknown" && h("span", { class: "badge" }, j.remote_type), sal && h("span", { class: "badge good" }, sal),
           j.is_simulated && simBadge(), j.listing_status === "closed" && h("span", { class: "badge bad" }, "Closed"),
           m && (m.flags || []).some((f) => f.startsWith("Work authorization")) && h("span", { class: "badge warn" }, "Sponsorship conflict"),
-          m && eduBadge(m.edu_status), m && fitBadge(m), m && fitBadge(m), m && v !== "applied" && h("span", { class: `badge ${m.recommendation === "apply" ? "good" : m.recommendation === "review" ? "warn" : ""}` },
+          m && eduBadge(m.edu_status), m && fitBadge(m), m && v !== "applied" && h("span", { class: `badge ${m.recommendation === "apply" ? "good" : m.recommendation === "review" ? "warn" : ""}` },
             { apply: "strong match", review: "worth a look", skip: "weak match" }[m.recommendation] || m.recommendation)),
         h("div", { class: "faint row", style: { marginTop: "3px", gap: "6px" } }, sourceCredit(j.source_kind) || j.source_kind,
           `· checked ${ago(j.last_checked_at)}`, j.posted_at ? ` · posted ${ago(j.posted_at)}` : "",

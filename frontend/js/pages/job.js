@@ -102,6 +102,10 @@ function atsCard(m, rescore) {
       h("strong", {}, { good: "Good fit. ", stretch: "Stretch role. ", poor: "Poor fit. " }[m.fit] || ""),
       (m.breakdown._fit.reasons || []).filter((r) => !r.startsWith("Good fit")).join(" ") || (m.breakdown._fit.reasons || [])[0]?.replace(/^Good fit: /, "") || ""),
     h("p", {}, m.explanation),
+    m.breakdown._level && m.breakdown._level.factor < 1 && h("div", { class: "row", style: { gap: "10px", alignItems: "center", margin: "4px 0 8px" } },
+      h("strong", {}, "Level fit"),
+      h("span", { class: `badge ${m.breakdown._level.factor <= 0.6 ? "bad" : "warn"}` }, `× ${m.breakdown._level.factor}`),
+      h("span", { class: "small muted" }, `${m.breakdown._level.note} Keyword ATS ${m.breakdown._level.ats_score} × ${m.breakdown._level.factor} = match ${m.score}.`)),
     (m.flags || []).map((f) => h("div", { class: `alert ${f.startsWith("SIMULATED") ? "sim" : "warn"}`, style: { margin: "6px 0" } }, f)),
     h("hr"),
     comps.map(([k, b]) => [
