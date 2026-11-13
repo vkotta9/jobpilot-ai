@@ -354,7 +354,7 @@ function companyListCard(top, root, { title, intro, defaultDirectOnly = false })
     googleMonthly > JSEARCH_FREE_MONTH ? h("div", { class: "alert warn small" },
       `Following all ${google.length} Google Jobs companies would use about ${googleMonthly} JSearch searches a month — JSearch's free plan has about ${JSEARCH_FREE_MONTH}. `,
       "Pick the ones you care about, or use a paid JSearch plan.") : null,
-    top.jsearch_connected ? null : h("div", { class: "alert warn small" }, "Google Jobs companies need your free JSearch key — ", h("a", { href: "#/settings" }, "Settings → Connections"),
+    top.jsearch_connected || !google.length ? null : h("div", { class: "alert warn small" }, "Google Jobs companies need your free JSearch key — ", h("a", { href: "#/settings" }, "Settings → Connections"),
       ". Until then, “Follow all” follows the direct feeds only."),
     h("div", { class: "row", style: { justifyContent: "flex-end", gap: "8px", margin: "8px 0" } }, google.length ? bDirect : null, bAll),
     h("details", {}, h("summary", { style: { cursor: "pointer", fontWeight: 600 } }, "Choose individual companies"),

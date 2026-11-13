@@ -162,7 +162,7 @@ def _clean_item(raw: str) -> list[str]:
     t = re.sub(r"\([^)]*\)", " ", raw)
     t = t.strip()
     while True:  # 'or other program analysis tools' -> 'program analysis tools'
-        t2 = re.sub(r"^(?:and|or|other|the|a|an|any|some|various|etc)\b\s*", "", t, flags=re.I)
+        t2 = re.sub(r"^(?:and|or|other|the|a|an|any|some|various|etc|with|in|on|of|for|using|including|to|like)\b\s*", "", t, flags=re.I)
         if t2 == t:
             break
         t = t2
@@ -436,15 +436,17 @@ def qualification_paths(jd: str) -> list[dict]:
     """Each degree/years combination the posting states, e.g. a preferred section with "Master's AND 6+ years"
     and "OR Bachelor's AND 8+ years" gives two preferred paths. section: req | pref."""
     out = []
-    for cls, sent in _sentences(jd):
+    for cls, sentence in _sentences(jd):
         if cls == "other":
             continue
-        yrs = [int(x) for x in _YEARS_RX.findall(sent) if 0 < int(x) <= 20]
-        if not yrs:
-            continue
-        lv = degree_levels(sent)
-        section = "pref" if cls == "pref" or _PREF_WORDS.search(sent) else "req"
-        out.append({"section": section, "degree": min(lv) if lv else 0, "years": min(yrs)})
+        section = "pref" if cls == "pref" or _PREF_WORDS.search(sentence) else "req"
+        # "Master's AND 5+ years, OR Bachelor's AND 7+ years" in one sentence = two paths
+        for sent in re.split(r",?\s+\bOR\b\s+|;\s*or\s+|,\s*or\s+(?=(?:a\s+)?(?:bachelor|master|ph\.?d|doctorate|associate|high school))", sentence):
+            yrs = [int(x) for x in _YEARS_RX.findall(sent) if 0 < int(x) <= 20]
+            if not yrs:
+                continue
+            lv = degree_levels(sent)
+            out.append({"section": section, "degree": min(lv) if lv else 0, "years": min(yrs)})
     return out
 
 

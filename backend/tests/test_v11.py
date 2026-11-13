@@ -112,3 +112,18 @@ def test_old_scores_are_rescored_in_the_background(client):
         newest = db.query(MatchAssessment).filter_by(job_id=jid).order_by(MatchAssessment.id.desc()).first()
         assert newest.scoring_version == SCORING_VERSION
         assert score_unscored(db, uid) == 0
+
+
+def test_or_paths_in_one_sentence():
+    jd = ("Required Qualifications:\nBachelor's degree AND 3+ years of experience.\nPreferred Qualifications:\n"
+          "Master's degree AND 5+ years of experience, OR Bachelor's degree AND 7+ years of experience.\n")
+    assert ats.experience_bars(jd, 1)["preferred"]["years"] == 7
+    assert ats.experience_bars(jd, 2)["preferred"]["years"] == 5
+    assert ats.experience_bars(jd, 1)["required"]["years"] == 3
+
+
+def test_list_items_drop_leading_prepositions():
+    items, mode = ats.list_items("Experience with Java, Python, or Go.")
+    assert items == ["java", "python", "go"] and mode == "any"
+    terms = {k.term for k in ats.extract_keywords("Preferred:\nExperience with Kubernetes, Docker, and CI/CD pipelines.\n")}
+    assert "with kubernetes" not in terms and "kubernetes" in terms

@@ -426,7 +426,8 @@ def assess(job: Job, profile: CandidateProfile, resume_text: str = "", targets: 
 # 2: scored against preferred qualifications (preferred years/degree/skills), any-of lists, example lists.
 # 3: fit verdict (level, years, kind of role, title) — poor fits become "skip" and aren't alerted.
 # 4: level fit multiplies the match score; years implied by Senior/Staff/Principal titles; thin postings scored cautiously.
-SCORING_VERSION = 4
+# 5: "MS + 5 OR BS + 7 years" in one sentence read as two paths; list items without leading "with"/"in".
+SCORING_VERSION = 5
 
 
 def load_tracks(db: Session, user_id: int) -> list:
