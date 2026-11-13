@@ -221,7 +221,9 @@ def split_skill_line(unit) -> tuple[list[tuple[str, bool]], list[str]]:
 
 
 def skill_line_runs(label_runs: list[tuple[str, bool]], items: list[str]) -> list[tuple[str, bool]]:
-    return list(label_runs) + [((" " if label_runs else "") + ", ".join(items), False)]
+    # a full stop belongs only at the end of the line ("Git, Linux." + "Docker" → "Git, Linux, Docker")
+    items = [x.rstrip(" .;") if k < len(items) - 1 else x for k, x in enumerate(items)]
+    return list(label_runs) + [((" " if label_runs else "") + ", ".join(x for x in items if x), False)]
 
 
 def _norm_item(x: str) -> str:

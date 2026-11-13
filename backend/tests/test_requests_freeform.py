@@ -214,3 +214,41 @@ def test_stale_scores_refresh_and_poor_fits_sort_last(client):
     assert top["match"]["score"] < 99 and top["match"]["fit"] == "poor", top["match"]["score"]
     fits = [x["match"]["fit"] for x in got if x.get("match")]
     assert fits == sorted(fits, key=lambda f: f == "poor")  # every poor fit after every other role
+
+
+def test_wrapped_skills_line_is_one_line(monkeypatch):
+    """'…, Algorithms, Object-' / 'Oriented Programming (OOP)': additions never split the hyphenated word."""
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=letter)
+    y = 720
+    c.setFont("Times-Bold", 13); c.drawString(36, y, "Technical Skills"); y -= 15
+    rows = [("Languages:", ["Java, Python, SQL, JavaScript, TypeScript, C"]),
+            ("Backend:", ["Microservices, REST APIs, Apache Camel, Message Queues (Azure Service Bus), Data Structures, Algorithms, Object-",
+                          "Oriented Programming (OOP)"]),
+            ("Cloud & DevOps:", ["Microsoft Azure, Azure DevOps, AWS, Kubernetes, Docker, CI/CD, GitHub Actions, Git, Splunk, Grafana,",
+                                 "Geneva, Agile/Scrum."])]
+    for lab, parts in rows:
+        c.setFont("Times-Bold", 10.5); c.drawString(36, y, lab); w = c.stringWidth(lab, "Times-Bold", 10.5)
+        c.setFont("Times-Roman", 10.5); c.drawString(36 + w + 3, y, parts[0]); y -= 12.5
+        for r in parts[1:]:
+            c.drawString(36, y, r); y -= 12.5
+    c.setFont("Times-Bold", 13); c.drawString(36, y - 4, "Experience"); y -= 20
+    c.setFont("Times-Roman", 10.5); c.drawString(36, y, "•"); c.drawString(46, y, "Built Java services for payments.")
+    c.save()
+
+    class RW(R):
+        file_data = buf.getvalue()
+
+    monkeypatch.setattr(llm, "config_for", lambda db, uid: None)
+    content, _, _ = tailor_inplace.build_plan(_NoDB(), 1, J(), RW())
+    lines = [u for u in content["units"] if u["kind"] == "skill_line"]
+    assert len(lines) == 3 and lines[1]["original"].endswith("Object-Oriented Programming (OOP)")
+    content, res = tailor_request.apply_request(_NoDB(), 1, content, RW(), J(),
+                                                "add GraphQL and System Integrations to backend, add Terraform to devops")
+    out = " ".join(inplace_pdf.full_text(tailor_inplace.render(content, RW())[0]).split())
+    assert "Object-Oriented Programming (OOP)" in out and "Object-GraphQL" not in out and "Object-System" not in out, out
+    assert "GraphQL" in out and "System Integrations" in out and "Terraform" in out
+    assert "Scrum.," not in out and "Agile/Scrum. Experience" in out, out  # the full stop stays only at the end

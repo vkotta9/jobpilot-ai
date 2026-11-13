@@ -297,8 +297,15 @@ def analyze(data: bytes) -> dict:
             continue
         if section == "skills":
             flush_para()
-            _add_unit(units, "skill_line", section, heading, [ln], False, right_margin, doc_pitch, body)
-            i += 1
+            # a line that wrapped ("…, Object-" / "Oriented Programming (OOP)") is ONE skills line: edits must see
+            # every item, or an addition lands mid-word and the wrapped tail is left behind
+            group = [ln]
+            j = i + 1
+            while j < len(lines) and _continues_skill_line(group[-1], lines[j], right_margin, doc_pitch, body):
+                group.append(lines[j])
+                j += 1
+            _add_unit(units, "skill_line", section, heading, group, False, right_margin, doc_pitch, body)
+            i = j
             continue
         if section == "summary":
             if para and (ln.baseline - para[-1].baseline > doc_pitch * 1.45 or ln.page != para[-1].page):
@@ -312,6 +319,26 @@ def analyze(data: bytes) -> dict:
         u.id = f"u{n}"
     doc.close()
     return {"units": units, "body_size": body, "right": right_margin, "pitch": doc_pitch}
+
+
+def _has_label(ln: Line) -> bool:
+    """'Languages: …' (often a bold label) starts a new skills line."""
+    text = "".join(sp.text for sp in ln.spans).strip()
+    first = next((sp for sp in ln.spans if sp.text.strip()), None)
+    if first is not None and first.bold and first.text.strip().endswith(":"):
+        return True
+    head = text.split(":", 1)[0] if ":" in text[:45] else ""
+    return bool(head) and len(head.split()) <= 6 and "," not in head
+
+
+def _continues_skill_line(prev: Line, nxt: Line, right_margin: float, doc_pitch: float, body: float) -> bool:
+    if nxt.page != prev.page or _is_heading(nxt, body) or _starts_bullet(nxt) or _has_label(nxt):
+        return False
+    if nxt.baseline - prev.baseline > doc_pitch * 1.45:
+        return False
+    tail = "".join(sp.text for sp in prev.spans).rstrip()
+    # the previous line broke mid-list (", " "-" "/" "&") or ran to the right margin
+    return tail.endswith((",", "-", "/", "&", "(")) or prev.bbox[2] > right_margin - 0.12 * (right_margin - prev.bbox[0])
 
 
 def _add_unit(units: list[Unit], kind: str, section: str, heading: str, group: list[Line], bullet: bool,
